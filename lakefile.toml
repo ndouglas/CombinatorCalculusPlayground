@@ -1,0 +1,10 @@
+name = "CombinatorCalculusPlayground"
+version = "0.1.0"
+defaultTargets = ["combinatorcalculusplayground"]
+
+[[lean_lib]]
+name = "CombinatorCalculusPlayground"
+
+[[lean_exe]]
+name = "combinatorcalculusplayground"
+root = "Main"
