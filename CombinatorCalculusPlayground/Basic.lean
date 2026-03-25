@@ -81,5 +81,11 @@ inductive Steps : Term → Term → Prop
       Step t u → Steps u v → Steps t v
       -- One step from t to u, then a path from u to v, gives a path from t to v
 
+open Steps
+
 -- The `*` is the conventional "zero or more" symbol, like in regex.
 infix:50 " ⟶* " => Steps
+
+theorem I_reduces (x : Term) : app I x ⟶* x :=
+  tail (S_red K K x) (tail (K_red x (app K x)) (refl x))
+  -- S K K x -> K x (K x) -> xf
