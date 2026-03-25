@@ -1,10 +1,10 @@
 name = "CombinatorCalculusPlayground"
 version = "0.1.0"
-defaultTargets = ["combinatorcalculusplayground"]
+defaultTargets = ["ccp"]
 
 [[lean_lib]]
 name = "CombinatorCalculusPlayground"
 
 [[lean_exe]]
-name = "combinatorcalculusplayground"
+name = "ccp"
 root = "Main"
