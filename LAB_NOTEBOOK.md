@@ -187,3 +187,95 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Next per the DAG: Stage 3 (taxonomy) is unblocked; C1/C2/C3 (see
   CONJECTURES.md) all remain open, with C2 now carrying a proven
   size-preservation constraint on any hunted cycle.
+
+## 2026-07-23 — Stage 3: The universality taxonomy
+
+- The universality definitions are now formal objects: `RS.lean` (abstract
+  rewriting systems, generic `Steps`/`Conv` closures, instances `RS.SK`/
+  `RS.PureS`/`RS.Tag`), `Universality/Defs.lean` (`Simulation`,
+  `PreservesNormalizes`/`PreservesConv`, `UniversalReach`/`UniversalNorm`/
+  `UniversalConv`), `Universality/Taxonomy.lean` (the implication lattice:
+  `RS.SK_churchRosser`, `Simulation.conv_preserve`/`conv_reflect`/
+  `preservesConv`/`normalizes_preserve`, `UniversalReach.toUniversalConv`).
+  Six tasks, one commit per task, sorry-free throughout.
+- Proof friction, task by task:
+  - Task 1 (warm-ups: `snf_iff_SNF`, `SNF.spineLength_le`): both candidates
+    compiled verbatim on the first try. The catch-all case everyone was
+    braced for — `fun_induction snf`'s `case4` (the shapes `SNF` can't
+    inhabit) — was the feared fight-site carried over from Stage 0/1; it
+    never materialized as an explosion. `fun_induction` produced exactly
+    four clean cases, mirroring `snf`'s four match arms, and the planned
+    closer dispatched `case4` in one shot. `#print axioms snf_iff_SNF`
+    reports `[propext, Quot.sound]` (inherited, same trail as
+    `stepOnce_isSome_of_step`); `SNF.spineLength_le` reports `[propext]`
+    only. Separately, review caught a stale comment in `Enumerate.lean`
+    still describing `snf ↔ SNF` as unproven; fixed. The controller then
+    went a step further and tightened the wording to state the snf/
+    stepOnce agreement as the corollary chain it actually is — it needs
+    `snf_iff_SNF` plus `SNF_iff` plus `stepOnce`'s own soundness/
+    completeness certificates, and only holds for K-free terms.
+  - Task 2 (`RS` interface): the plan's own prose miscounted its own code
+    block — it said "six lemmas," the stubbed block (and the candidates)
+    contained seven (`Steps.single`/`trans`, `Conv.of_steps`/`trans`/
+    `snoc_fwd`/`snoc_bwd`/`symm`). The implementer followed the literal
+    code, which is authoritative, and flagged the miscount rather than
+    silently absorbing it. The toy `countdown` sanity examples needed
+    `@[reducible]` on the local `RS` def plus explicit type ascriptions
+    (`RS.Steps.refl (0 : countdown.Carrier)`) before numeral elaboration
+    would resolve through a concrete instance — an artifact of the toy
+    example, not of the `RS` interface itself.
+  - Task 3 (instances `RS.SK`/`RS.PureS`/`RS.Tag`): the real Lean friction
+    of this stage. `induction` on `RS.Steps` FAILS at a concrete carrier
+    (`RS.SK.Steps`, `RS.PureS.Steps`) with an `mkElimApp` "expected first
+    3 arguments of motive" error — the same tactic works fine when the
+    `RS` is a bound variable (as in `RS.Steps.trans`), so the motive
+    generator only chokes on a concrete literal. `unfold`,
+    `induction … using RS.Steps.rec`, and `induction … with` all hit the
+    identical error. Workaround: drive the recursor by hand
+    (`h.rec (fun a => _root_.Steps.refl a) (fun s _ ih => ...)`), commented
+    at both call sites as a regression trap for future readers who reach
+    for `induction` there. The reviewer hand-verified both motives
+    independently. The subtype `refl` case in `PureS_steps_iff` — flagged
+    beforehand as a likely second fight-site needing `Subtype.ext` — closed
+    for free instead: `⟨t, ht⟩` and `⟨t, hu⟩` are definitionally equal
+    because `KFree` is a `Prop` (definitional proof irrelevance), exactly
+    as the plan had predicted as the optimistic case.
+  - Task 4 (`Universality/Defs.lean`): byte-exact against the brief, first
+    try, zero deviations. Reviewer's mathematical audit (not just a diff
+    check): `bwd`'s image-restricted quantification (reachability between
+    encoded states, not encoded-to-arbitrary) is the right strength for
+    blocking the answer-smuggling form of the 2007 dispute; the
+    reflexive-`fwd` slack is confined to self-loops and doesn't leak into
+    anything provable; even a degenerate one-state source still forces an
+    antichain-shaped demand on the host under `dec_enc`. Conclusion: the
+    definitions are not accidentally vacuous.
+  - Task 5 (`Universality/Taxonomy.lean`, the lattice): all 8 candidates
+    compiled verbatim (the brief's prose miscounted again — "seven" vs. 8
+    theorem statements in its own code block, same pattern as Task 2;
+    followed the code). Axiom audit: `RS.SK_churchRosser` carries
+    `[propext]` (inherited from Stage 1's `confluence`); the generic
+    lattice results audited directly — `Simulation.preservesConv` and
+    `UniversalReach.toUniversalConv` — depend on ZERO axioms.
+  - Task 6 (this entry): the definitions ledger in CONJECTURES.md and this
+    notebook entry. All cited theorem/instance names re-verified by grep
+    against the actual tree before writing, per the brief's instruction.
+- Running theme, three stages into this taxonomy work now: plan candidate
+  scripts survive close to verbatim at the variable-abstraction level
+  (`{A : RS}`-scoped lemmas, generic inductions); concrete-instance
+  elaboration is consistently where Lean pushes back — numeral
+  elaboration through a reducible local def (Task 2), the `mkElimApp`
+  motive bug on `induction` at a literal `RS` (Task 3). Both stages'
+  hardest-looking proof sites (the `snf` catch-all, the subtype `refl`)
+  turned out easier than feared; the actual fights were elsewhere.
+- Design decision, registered rather than formalized: computability of
+  `enc`/`dec` in `Simulation` is NOT internally pinned. Every Lean `def`
+  is computable by construction, but that is a metatheoretic fact about
+  the ambient language, not a hypothesis these definitions can state or
+  test from inside a zero-dependency development. A full internal answer
+  to that half of the 2007 dispute would need a computability theory in
+  the repo; short of that, the honest move is to say so in the docstring
+  and the ledger rather than either silently assuming it or omitting the
+  gap.
+- Next per the DAG: Stage 4 (closing `UniversalReach`/`UniversalNorm`/
+  `UniversalConv` cells for `RS.SK` against `RS.Tag`, per the ledger) is
+  unblocked. C1/C2/C3 remain open.

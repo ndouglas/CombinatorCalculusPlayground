@@ -18,6 +18,11 @@ no erasure), and K-free normal forms are exactly the spine-≤2 shapes
 (`SNF_iff`). Honest framing per the spec: these explain why naive
 erasure-based encodings fail; they are NOT an impossibility argument —
 the erasure-free λI-calculus is complete (Church 1941; Barendregt §9.5).
+As of Stage 3, the universality definitions themselves are formal objects
+(`Universality/Defs.lean`) over abstract rewriting systems (`RS.lean`),
+with a machine-checked implication lattice (`Universality/Taxonomy.lean`)
+and instances for SK, pure S, and the tag-system reference. See the
+Definitions ledger below.
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
@@ -102,3 +107,34 @@ Two observations from the fuel=200, n=1..12 run:
    it, with the extra starting leaves surviving un-reduced off to the side —
    this is an observation about the fuel=200 cutoff, not a claim about
    unbounded fuel behavior, and it is not yet explained by any proved lemma.
+
+## Definitions ledger (Stage 3)
+
+Universality is relative to a reference system R and an observation mode
+(Universality/Defs.lean). Designated reference: 2-symbol tag systems
+(`RS.Tag`) — universal by Cocke–Minsky 1964, an EXTERNAL fact cited, not
+machine-checked. The encoding class pins uniformity and decoder-inversion
+formally; computability of encoders is NOT internally pinned (no
+computability theory in a zero-dependency setting) — an explicit,
+registered limitation.
+
+Proven lattice edges (Universality/Taxonomy.lean): simulations preserve
+convertibility unconditionally (`Simulation.conv_preserve`); they reflect
+it when the host is Church–Rosser and image-closed
+(`Simulation.conv_reflect`); they preserve normalization under
+normal-form correspondence (`Simulation.normalizes_preserve`). SK is
+Church–Rosser in RS-language (`RS.SK_churchRosser`, riding Stage 1).
+
+Status of `UniversalReach (RS.Tag T) — / UniversalNorm — / UniversalConv —`
+for each host:
+
+| Host        | Reach (Simulation)      | Norm                          | Conv |
+|-------------|-------------------------|-------------------------------|------|
+| `RS.SK`     | open (Stage 4 target)   | open                          | open |
+| `RS.PureS`  | open (prize-adjacent)   | externally expected FALSE for |open |
+|             |                         | nontrivial R: Waldmann 2000   |      |
+|             |                         | (S-normalization decidable) — |      |
+|             |                         | NOT machine-checked here      |      |
+
+No cell of this table is a theorem yet; the table is the register the
+spec's Stage 3 success criterion requires ("proven or explicitly open").
