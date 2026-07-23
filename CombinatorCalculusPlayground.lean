@@ -4,6 +4,7 @@ import CombinatorCalculusPlayground.Confluence
 import CombinatorCalculusPlayground.Bracket
 import CombinatorCalculusPlayground.SFragment
 import CombinatorCalculusPlayground.RS
+import CombinatorCalculusPlayground.Iota
 import CombinatorCalculusPlayground.Universality.Defs
 import CombinatorCalculusPlayground.Universality.Taxonomy
 import CombinatorCalculusPlayground.Census.Eval
