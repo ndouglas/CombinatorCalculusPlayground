@@ -105,8 +105,9 @@ where
   let tr := trace 50 t
   (tr.zip tr.tail).all fun (a, b) => leafCount a ≤ leafCount b
 
--- snf is proven equivalent to the certified reducer's verdict on normality
--- (snf_iff_SNF, SFragment.lean). This guard checks the executable Bool version
--- against the certified reducer for every K-free term with at most 6 leaves.
+-- For K-free t, snf t = true ↔ stepOnce t = none is a corollary chain:
+-- snf_iff_SNF + SNF_iff (SFragment.lean) + stepOnce's soundness and
+-- completeness (Eval.lean). This guard executes that chain's content on
+-- every K-free term with at most 6 leaves.
 #guard (List.range 7).all fun n => (sTerms n).all fun t =>
   snf t == (stepOnce t).isNone
