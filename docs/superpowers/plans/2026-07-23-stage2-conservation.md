@@ -50,7 +50,7 @@ Create `CombinatorCalculusPlayground/SFragment.lean`:
 -- halting-as-normalization tricks that rely on erasure don't transfer.
 -- They are NOT an impossibility argument. The λI-calculus (equivalently
 -- the {S,B,C,I} basis) is also erasure-free, and it is computationally
--- complete for total computable functions (Church–Kleene 1936). Whatever
+-- complete for total computable functions (Church 1941; Barendregt §9.5). Whatever
 -- blocks S alone — if anything does — is not mere non-erasure.
 import CombinatorCalculusPlayground.Step
 
@@ -474,7 +474,7 @@ As of Stage 2, the S-fragment's conservation laws are machine-checked
 no erasure), and K-free normal forms are exactly the spine-≤2 shapes
 (`SNF_iff`). Honest framing per the spec: these explain why naive
 erasure-based encodings fail; they are NOT an impossibility argument —
-the erasure-free λI-calculus is complete (Church–Kleene 1936).
+the erasure-free λI-calculus is complete (Church 1941; Barendregt §9.5).
 ```
 
 - [ ] **Step 4: Add the `LAB_NOTEBOOK.md` entry**

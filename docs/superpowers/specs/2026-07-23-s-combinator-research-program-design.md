@@ -31,7 +31,7 @@ is a real, standalone deliverable even if the summit is never reached.
   decidable. Consequence: any universality definition based on
   "encode halting as normalization" is dead for S. The definitional stage
   must offer definitions that survive this.
-- **λI-calculus** (Church–Kleene 1936): the erasure-free calculus — combinator
+- **λI-calculus** (Church 1941, *The Calculi of Lambda Conversion*; Barendregt §9.5): the erasure-free calculus — combinator
   basis {S, B, C, I} — is computationally complete for total computable
   functions. Consequence: "S can't erase" is NOT an obstruction to
   universality by itself. Conservation-law results must be framed honestly.
