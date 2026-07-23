@@ -46,3 +46,30 @@ theorem kFree_iff : ∀ {t : Term}, kFree t = true ↔ KFree t := by
 
 instance : DecidablePred KFree := fun t =>
   decidable_of_iff (kFree t = true) kFree_iff
+
+-- ## Closure under reduction
+-- The S-fragment is a world unto itself: reduction can never manufacture
+-- a K. (The K-redex case is vacuous — a K-free term cannot contain the
+-- K that would fire.)
+theorem KFree.of_step {t u : Term} (hk : KFree t) (h : t ⟶ u) : KFree u := by
+  induction h with
+  | K_red x y =>
+    -- t = app (app K x) y and KFree t: invert twice to expose KFree K.
+    cases hk with | app hl _ =>
+    cases hl with | app hK _ =>
+    cases hK
+  | S_red f g x =>
+    -- t = app (app (app S f) g) x: harvest KFree f, g, x, reassemble.
+    cases hk with | app hl hx =>
+    cases hl with | app hl2 hg =>
+    cases hl2 with | app _ hf =>
+    exact KFree.app (KFree.app hf hx) (KFree.app hg hx)
+  | appL _ ih =>
+    cases hk with | app hl hr => exact KFree.app (ih hl) hr
+  | appR _ ih =>
+    cases hk with | app hl hr => exact KFree.app hl (ih hr)
+
+theorem KFree.of_steps {t u : Term} (hk : KFree t) (h : t ⟶* u) : KFree u := by
+  induction h with
+  | refl => exact hk
+  | tail s _ ih => exact ih (hk.of_step s)
