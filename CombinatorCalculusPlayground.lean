@@ -1,5 +1,6 @@
 import CombinatorCalculusPlayground.Term
 import CombinatorCalculusPlayground.Step
 import CombinatorCalculusPlayground.Confluence
+import CombinatorCalculusPlayground.SFragment
 import CombinatorCalculusPlayground.Census.Eval
 import CombinatorCalculusPlayground.Census.Enumerate
