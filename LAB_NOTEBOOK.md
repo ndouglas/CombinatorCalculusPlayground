@@ -196,7 +196,7 @@ what automation could and couldn't do. This file is a first-class deliverable
   `PreservesNormalizes`/`PreservesConv`, `UniversalReach`/`UniversalNorm`/
   `UniversalConv`), `Universality/Taxonomy.lean` (the implication lattice:
   `RS.SK_churchRosser`, `Simulation.conv_preserve`/`conv_reflect`/
-  `preservesConv`/`normalizes_preserve`, `UniversalReach.toUniversalConv`).
+  `preservesConv`/`normalizes_preserve`, `Simulation.toUniversalConv` — renamed from `UniversalReach.toUniversalConv` by the final-review fix, see addendum).
   Six tasks, sorry-free throughout; several tasks carried additional
   review-fix commits (comment precision, the .rec why-comment).
 - Proof friction, task by task:
@@ -256,7 +256,7 @@ what automation could and couldn't do. This file is a first-class deliverable
     followed the code). Axiom audit: `RS.SK_churchRosser` carries
     `[propext]` (inherited from Stage 1's `confluence`); the generic
     lattice results audited directly — `Simulation.preservesConv` and
-    `UniversalReach.toUniversalConv` — depend on ZERO axioms.
+    `UniversalReach.toUniversalConv` (since renamed `Simulation.toUniversalConv`, see addendum) — depend on ZERO axioms.
   - Task 6 (this entry): the definitions ledger in CONJECTURES.md and this
     notebook entry. All cited theorem/instance names re-verified by grep
     against the actual tree before writing, per the brief's instruction.
