@@ -92,8 +92,9 @@ where
 -- The conservation laws, checked empirically against the census machinery,
 -- for every K-free term with at most 6 leaves (n = 0..6; sTerms 0 is empty,
 -- harmless). These guards tie the PROVEN laws (KFree closure, leaf
--- monotonicity) to the EXECUTABLE census world, and validate the unproven
--- Bool twin snf against the certified reducer.
+-- monotonicity) to the EXECUTABLE census world. Since snf is proven equivalent
+-- to SNF (snf_iff_SNF, SFragment.lean), these guards now serve as executable
+-- checks of the certified reducer.
 
 -- Everything sTerms enumerates is K-free (it never mints a K).
 #guard (List.range 7).all fun n => (sTerms n).all kFree
@@ -104,8 +105,8 @@ where
   let tr := trace 50 t
   (tr.zip tr.tail).all fun (a, b) => leafCount a ≤ leafCount b
 
--- snf agrees with the certified reducer's verdict on normality, for every
--- K-free term with at most 6 leaves: snf t = true exactly when
--- stepOnce t = none.
+-- snf is proven equivalent to the certified reducer's verdict on normality
+-- (snf_iff_SNF, SFragment.lean). This guard checks the executable Bool version
+-- against the certified reducer for every K-free term with at most 6 leaves.
 #guard (List.range 7).all fun n => (sTerms n).all fun t =>
   snf t == (stepOnce t).isNone
