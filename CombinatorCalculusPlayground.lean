@@ -4,5 +4,6 @@ import CombinatorCalculusPlayground.Confluence
 import CombinatorCalculusPlayground.SFragment
 import CombinatorCalculusPlayground.RS
 import CombinatorCalculusPlayground.Universality.Defs
+import CombinatorCalculusPlayground.Universality.Taxonomy
 import CombinatorCalculusPlayground.Census.Eval
 import CombinatorCalculusPlayground.Census.Enumerate
