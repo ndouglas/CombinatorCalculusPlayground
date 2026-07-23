@@ -6,6 +6,7 @@
 -- strategy reaches a normal form, this one does — which is exactly what a
 -- census needs.
 import CombinatorCalculusPlayground.Step
+import CombinatorCalculusPlayground.Confluence
 
 open Term
 
@@ -147,8 +148,10 @@ def trace (fuel : Nat) (t : Term) : List Term :=
 -- normal form. But the census CLI (classify, Main.lean) does not walk this
 -- path — it runs on stepOnce directly. What actually grounds the census's
 -- verdicts is stepOnce_sound (every step taken is legal) together with
--- stepOnce_none_normal (a stepOnce = none really is a normal form);
--- normalize_sound below certifies normalize itself, a road not (yet) taken.
+-- stepOnce_none_normal (a stepOnce = none really is a normal form).
+-- normalize itself is certified by two theorems below: normalize_sound (the
+-- run really is a reduction sequence from t to u) and normalize_normal (u
+-- really is a normal form) — a road not (yet) taken by the census CLI.
 theorem normalize_sound :
     ∀ (fuel : Nat) {t u : Term} {k : Nat},
       normalize fuel t = some (u, k) → t ⟶* u := by
@@ -195,3 +198,12 @@ theorem normalize_normal :
   | case4 t t' hsome f hrec ih =>
     -- recursive run ran out of fuel: none, no success to explain.
     intro u k h; simp at h
+
+-- Putting the pieces together: normalize's answer is canonical. Any
+-- reduction path from t to any normal form v must land on exactly the
+-- term normalize returned. (nf_unique does the heavy lifting; the two
+-- normalize certificates supply its hypotheses.)
+theorem normalize_unique {fuel : Nat} {t u v : Term} {k : Nat}
+    (h : normalize fuel t = some (u, k))
+    (hv : t ⟶* v) (hnv : NormalForm v) : v = u :=
+  nf_unique hv (normalize_sound fuel h) hnv (normalize_normal fuel h)

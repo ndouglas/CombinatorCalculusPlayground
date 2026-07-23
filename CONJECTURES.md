@@ -7,9 +7,10 @@ normalizing strategy; "exhausted" verdicts are fuel-outs, NOT divergence proofs.
 As of Stage 1, SK reduction is proven confluent (`confluence`,
 `Confluence.lean`) with unique normal forms (`nf_unique`), and
 `normalize` is certified on both ends (`normalize_sound`,
-`normalize_normal`): when the census reports a normal form, that term IS
-the unique normal form of its input. (The classifier's step-counting and
-cycle bookkeeping remain unverified census tooling.)
+`normalize_normal`): when `normalize` reports a normal form, that term IS
+the unique normal form of its input. (The classifier's LOOP — its
+step-counting and cycle bookkeeping alike — remains unverified census
+tooling built over the verified `stepOnce`.)
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):

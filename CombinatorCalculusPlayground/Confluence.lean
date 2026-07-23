@@ -116,6 +116,9 @@ theorem Par.triangle : ∀ {t u : Term}, Par t u → Par u (dev t) := by
     simpa only [app3, dev] using Par.app (Par.app ihf ihx) (Par.app ihg ihx)
   | @app a a' b b' hl hr ihl ihr =>
     -- The crux. dev (app a b) depends on a's shape; mirror dev's match arms.
+    -- Below, every bare `exact Par.app ihl ihr` leaf is a non-redex head
+    -- shape (a itself is not a K- or S-redex, at whatever depth): dev
+    -- recurses the same way Par.app does, so the goal closes definitionally.
     cases a with
     | S => exact Par.app ihl ihr
     | K => exact Par.app ihl ihr
@@ -151,6 +154,10 @@ theorem Par.triangle : ∀ {t u : Term}, Par t u → Par u (dev t) := by
               | app h1 h2 =>
                 cases h1 with
                 | app _ hf' => exact Par.S_red hf' h2 ihr
+
+-- The complete development is itself a legal parallel step: triangle
+-- applied to the empty step. A sanity anchor tying dev to Par.
+theorem Par.to_dev (t : Term) : Par t (dev t) := (Par.rfl t).triangle
 
 -- ## Diamond, and up the ladder to confluence
 -- Triangle → diamond: both arms rejoin at dev t. No induction needed.
