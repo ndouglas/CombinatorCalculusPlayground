@@ -33,3 +33,50 @@ def sTerms (n : Nat) : List Term :=
 #guard (sTerms 5).all (fun t => leafCount t = 5)
 -- No duplicates (checked at a small size).
 #guard (sTerms 5).eraseDups.length = 14
+
+-- ## Classifying a trajectory
+-- Three verdicts, with three different epistemic standings:
+--   terminating — CERTIFIED: a normal form was reached (stepOnce = none,
+--                 which stepOnce_none_normal proves is really normal).
+--   cyclic      — CERTIFIED: stepOnce is deterministic, so revisiting a
+--                 term means the trajectory repeats forever.
+--   fuelExhausted — HONESTLY UNKNOWN. Not a divergence proof. We record the
+--                 final leaf count so growth is observable.
+inductive Dynamics : Type
+  | terminating (steps : Nat) (nf : Term)
+  | cyclic (entry period : Nat)
+  | fuelExhausted (finalLeaves : Nat)
+deriving Repr, DecidableEq
+
+-- Walk the trajectory keeping every visited term (in order) for cycle
+-- detection. `seen` always ends with the current term.
+def classify (fuel : Nat) (t : Term) : Dynamics :=
+  go fuel [t] t
+where
+  go : Nat → List Term → Term → Dynamics
+  | 0, _, cur => .fuelExhausted (leafCount cur)
+  | f + 1, seen, cur =>
+    match stepOnce cur with
+    | none => .terminating (seen.length - 1) cur
+    | some next =>
+      match seen.findIdx? (· == next) with
+      | some i => .cyclic i (seen.length - i)
+      | none => go f (seen ++ [next]) next
+
+-- S alone is normal.
+#guard classify 10 S = .terminating 0 S
+-- S S S S → (S S)(S S), which is normal (head S has only 2 args).
+#guard classify 10 (app3 S S S S) = .terminating 1 (app (app S S) (app S S))
+-- Ω (an SK-term) never terminates and never revisits... within tiny fuel it
+-- just exhausts. (Ω actually cycles: (SII)(SII) → I(SII)(I(SII)) → ... —
+-- we deliberately test only what the classifier certifies: not-done-yet.)
+#guard (match classify 3 (app (app2 S I I) (app2 S I I)) with
+        | .fuelExhausted _ => true
+        | .cyclic _ _ => true
+        | _ => false)
+-- A genuinely cyclic SK-term: t = (S I I)(S I I) revisits itself in
+-- leftmost-outermost reduction within modest fuel — if it does, classify
+-- must say cyclic, never terminating.
+#guard (match classify 100 (app (app2 S I I) (app2 S I I)) with
+        | .terminating _ _ => false
+        | _ => true)
