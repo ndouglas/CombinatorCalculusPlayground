@@ -1,6 +1,7 @@
 import CombinatorCalculusPlayground.Term
 import CombinatorCalculusPlayground.Step
 import CombinatorCalculusPlayground.Confluence
+import CombinatorCalculusPlayground.Bracket
 import CombinatorCalculusPlayground.SFragment
 import CombinatorCalculusPlayground.RS
 import CombinatorCalculusPlayground.Universality.Defs
