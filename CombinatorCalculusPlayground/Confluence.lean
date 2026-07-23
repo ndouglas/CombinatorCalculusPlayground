@@ -88,3 +88,66 @@ def dev : Term → Term
 --                         = (K S) ((K S) S)   [dev (K S K) = S]
 #guard dev (app3 S K (app K S) (app2 K S K))
        = app (app K S) (app (app K S) S)
+
+-- ## Inversion lemmas
+-- An atom has no redexes, so a parallel step from it can only stand still.
+-- `cases` sees that S/K is the only constructor whose conclusion matches.
+-- (Inside a `Par.*` declaration, bare `K` would resolve to the constructor
+-- `Par.K`, so the Term atoms are written qualified here.)
+theorem Par.K_inv {w : Term} (h : Par Term.K w) : w = Term.K := by cases h; rfl
+theorem Par.S_inv {w : Term} (h : Par Term.S w) : w = Term.S := by cases h; rfl
+
+-- ## The triangle property
+-- Wherever a parallel step from t lands, one more parallel step reaches
+-- dev t. Picture t at the top, u anywhere below, dev t at the bottom:
+-- every u closes the triangle. Diamond then falls out: two arms u, v both
+-- rejoin at dev t.
+theorem Par.triangle : ∀ {t u : Term}, Par t u → Par u (dev t) := by
+  intro t u h
+  induction h with
+  | S => exact Par.S
+  | K => exact Par.K
+  | K_red y hx ih =>
+    -- dev fires the same K-redex: dev (K x y) = dev x, and the IH says the
+    -- surviving piece x' rejoins at dev x.
+    simpa only [app2, dev] using ih
+  | S_red hf hg hx ihf ihg ihx =>
+    -- dev distributes developed pieces: reassemble the three IHs with app.
+    simpa only [app3, dev] using Par.app (Par.app ihf ihx) (Par.app ihg ihx)
+  | @app a a' b b' hl hr ihl ihr =>
+    -- The crux. dev (app a b) depends on a's shape; mirror dev's match arms.
+    cases a with
+    | S => exact Par.app ihl ihr
+    | K => exact Par.app ihl ihr
+    | app c d =>
+      cases c with
+      | S => exact Par.app ihl ihr
+      | K =>
+        -- app (app K d) b is a K-redex. Par can't fire it early: hl lives
+        -- one level down (Par (app K d) a'), where K_red's LHS is too deep
+        -- to match, so inversion leaves only Par.app — a' = app K d'.
+        cases hl with
+        | app hK hd =>
+          obtain rfl := Par.K_inv hK
+          -- ihl : Par (app K d') (app K (dev d)); invert it to extract
+          -- Par d' (dev d), then fire the redex on the u-side.
+          simp only [dev] at ihl ⊢
+          cases ihl with
+          | app _ hd' => exact Par.K_red b' hd'
+      | app e f =>
+        cases e with
+        | K => exact Par.app ihl ihr
+        | app _ _ => exact Par.app ihl ihr
+        | S =>
+          -- app (app (app S f) d) b is an S-redex; same story as K one
+          -- level deeper. Two inversions pin a' = app (app S f') d'.
+          cases hl with
+          | app hw hd =>
+            cases hw with
+            | app hS hf =>
+              obtain rfl := Par.S_inv hS
+              simp only [dev] at ihl ⊢
+              cases ihl with
+              | app h1 h2 =>
+                cases h1 with
+                | app _ hf' => exact Par.S_red hf' h2 ihr
