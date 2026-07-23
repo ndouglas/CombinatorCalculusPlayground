@@ -321,7 +321,7 @@ what automation could and couldn't do. This file is a first-class deliverable
   then built a STOP gate around it: Task 4's `#guard` probes had to
   confirm the growth numbers empirically, cheaply, before any proof
   effort was spent. The probes passed. The proofs then landed on the
-  FIRST full attempt — the third stage so far (after Stage 1's
+  FIRST full attempt — the third stage overall (after Stage 1's
   `Par.triangle`, Stage 2's `SNF` characterization) where this project's
   summit proof compiled first-try on the strongest model available.
 - Task 1 (simulation algebra: `Simulation.id`, `Simulation.comp`,
@@ -397,3 +397,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   Waldmann 2000's normalization-decidability result remains
   cited-not-formalized, and the λI ({S,B,C,I}) stretch goal was not
   attempted.
+- Final review, two notes carried forward for Stage 5: (a) the
+  `no_sim_SK_iota` refutation never uses `Simulation.bwd` (the
+  host-steps-imply-source-steps direction) — it goes through on `enc`,
+  `fwd` (via `fwd_steps`), and `dec`/`dec_enc` (via `enc_injective`)
+  alone, so it survives any future weakening or removal of `bwd` from
+  the `Simulation` class for free; this could be stated as an explicit
+  lemma later, but isn't needed now. (b) the
+  suggested first nontrivial `Simulation` inhabitant for Stage 5 is the
+  PureS→SK inclusion (`enc := Subtype.val`, `bwd` via the `KFree`
+  closure) — cheap to build, and landing it would blunt any
+  "`Simulation` is near-vacuous" objection before harder positive work
+  (e.g. Tag→SK) is attempted.
