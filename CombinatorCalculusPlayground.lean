@@ -1,3 +1,4 @@
 import CombinatorCalculusPlayground.Term
 import CombinatorCalculusPlayground.Step
 import CombinatorCalculusPlayground.Census.Eval
+import CombinatorCalculusPlayground.Census.Enumerate
