@@ -151,3 +151,60 @@ theorem Par.triangle : ∀ {t u : Term}, Par t u → Par u (dev t) := by
               | app h1 h2 =>
                 cases h1 with
                 | app _ hf' => exact Par.S_red hf' h2 ihr
+
+-- ## Diamond, and up the ladder to confluence
+-- Triangle → diamond: both arms rejoin at dev t. No induction needed.
+theorem Par.diamond {t u v : Term} (hu : Par t u) (hv : Par t v) :
+    ∃ w, Par u w ∧ Par v w :=
+  ⟨dev t, hu.triangle, hv.triangle⟩
+
+-- Multi-step parallel reduction, mirroring Steps.
+inductive Pars : Term → Term → Prop
+  | refl (t : Term) : Pars t t
+  | tail {t u v : Term} : Par t u → Pars u v → Pars t v
+
+-- The strip lemma: one Par step against many, rejoined with the shapes
+-- swapped (many against one). This is the induction that lifts the
+-- diamond from Par to Pars one "strip" at a time.
+theorem Pars.strip {t u v : Term} (hu : Par t u) (hv : Pars t v) :
+    ∃ w, Pars u w ∧ Par v w := by
+  induction hv generalizing u with
+  | refl => exact ⟨u, Pars.refl u, hu⟩
+  | tail hp _ ih =>
+    -- t —hp→ t₁ —…→ v, and t —hu→ u. Diamond hu/hp gives w₁;
+    -- recurse on the tail from t₁ against Par t₁ w₁.
+    obtain ⟨w₁, huw₁, hpw₁⟩ := Par.diamond hu hp
+    obtain ⟨w, hww, hvw⟩ := ih hpw₁
+    exact ⟨w, Pars.tail huw₁ hww, hvw⟩
+
+theorem Pars.diamond {t u v : Term} (hu : Pars t u) (hv : Pars t v) :
+    ∃ w, Pars u w ∧ Pars v w := by
+  induction hu generalizing v with
+  | refl => exact ⟨v, hv, Pars.refl v⟩
+  | tail hp _ ih =>
+    obtain ⟨w₁, hw₁, hvw₁⟩ := Pars.strip hp hv
+    obtain ⟨w, huw, hw₁w⟩ := ih hw₁
+    exact ⟨w, huw, Pars.tail hvw₁ hw₁w⟩
+
+-- The sandwich Step ⊆ Par ⊆ Steps makes the closures coincide.
+theorem Steps.to_pars {t u : Term} (h : t ⟶* u) : Pars t u := by
+  induction h with
+  | refl => exact Pars.refl _
+  | tail s _ ih => exact Pars.tail (Par.of_step s) ih
+
+theorem Pars.to_steps {t u : Term} (h : Pars t u) : t ⟶* u := by
+  induction h with
+  | refl => exact Steps.refl _
+  | tail hp _ ih => exact Steps.trans (Par.to_steps hp) ih
+
+-- ## Church–Rosser
+theorem confluence {t u v : Term} (h1 : t ⟶* u) (h2 : t ⟶* v) :
+    ∃ w, (u ⟶* w) ∧ (v ⟶* w) := by
+  obtain ⟨w, hw1, hw2⟩ := Pars.diamond (Steps.to_pars h1) (Steps.to_pars h2)
+  exact ⟨w, hw1.to_steps, hw2.to_steps⟩
+
+-- The payoff for the census: "the" normal form is well-defined.
+theorem nf_unique {t u v : Term} (h1 : t ⟶* u) (h2 : t ⟶* v)
+    (hu : NormalForm u) (hv : NormalForm v) : u = v := by
+  obtain ⟨w, hw1, hw2⟩ := confluence h1 h2
+  rw [← hu.steps_eq hw1, ← hv.steps_eq hw2]
