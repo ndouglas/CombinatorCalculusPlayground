@@ -38,3 +38,32 @@ def stepOnce : Term → Option Term
 -- (Left side K S K → S is a one-step K-redex; right side app I K also has a
 -- redex but must wait.)
 #guard stepOnce (app (app2 K S K) (app I K)) = some (app S (app I K))
+
+-- ## Soundness
+-- Everything stepOnce does is a legal Step. This is what lets the census
+-- make *claims*: when the evaluator says "t reduced to u", that's a theorem,
+-- not just program output.
+theorem stepOnce_sound : ∀ {t u : Term}, stepOnce t = some u → t ⟶ u := by
+  intro t
+  fun_induction stepOnce t with
+  | case1 x y =>
+    intro u h
+    cases h
+    exact Step.K_red ..
+  | case2 f g x =>
+    intro u h
+    cases h
+    exact Step.S_red ..
+  | case3 a b _ _ a' hstep ih =>
+    intro u h
+    injection h with h
+    subst h
+    exact Step.appL (ih hstep)
+  | case4 a b _ _ _ b' hstep _ ih =>
+    intro u h
+    injection h with h
+    subst h
+    exact Step.appR (ih hstep)
+  | _ =>
+    intro u h
+    simp_all
