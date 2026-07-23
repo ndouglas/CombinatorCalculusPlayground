@@ -4,6 +4,7 @@
 -- type plus a step relation — never over `Term` directly. SK, pure S,
 -- tag systems, and any future reference machine are instances. This is
 -- what makes the taxonomy comparative rather than bespoke.
+import CombinatorCalculusPlayground.SFragment
 
 /-- A rewriting system: things, and one-step rewrites between them. -/
 structure RS where
@@ -86,3 +87,86 @@ example : countdown.Normalizes 2 :=
 -- 1 and 2 are convertible without either reducing to the other directly:
 -- 2 → 1 forward.  And 0 connects everything below any n.
 example : countdown.Conv 1 2 := RS.Conv.bwd rfl (RS.Conv.refl _)
+
+-- ## The instances
+namespace RS
+
+/-- Full SK reduction as a rewriting system. -/
+def SK : RS := ⟨Term, Step⟩
+
+-- The generic closure agrees with Term's own ⟶* (they have the same
+-- constructors; this lemma lets Stage 1 theorems flow into RS-land).
+theorem SK_steps_iff {t u : Term} : RS.SK.Steps t u ↔ t ⟶* u := by
+  constructor
+  · -- `induction` chokes on `RS.Steps` at a concrete carrier (an
+    -- `mkElimApp` motive error — it needs the `RS` to be a variable, as in
+    -- `RS.Steps.trans`), so drive the recursor by hand instead.
+    intro h
+    exact h.rec (fun a => _root_.Steps.refl a) (fun s _ ih => _root_.Steps.tail s ih)
+  · intro h
+    induction h with
+    | refl => exact RS.Steps.refl _
+    | tail s _ ih => exact RS.Steps.tail s ih
+
+/-- The pure-S fragment: carriers are terms WITH their K-freeness proof.
+Legal as a rewriting system precisely because of Stage 2's closure
+theorem — a step from a K-free term lands on a K-free term, so the
+subtype is closed under the inherited relation. -/
+def PureS : RS := ⟨{t : Term // KFree t}, fun a b => Step a.val b.val⟩
+
+private theorem PureS_steps_of_steps :
+    ∀ {t u : Term} (_ : t ⟶* u) (ht : KFree t) (hu : KFree u),
+      RS.PureS.Steps ⟨t, ht⟩ ⟨u, hu⟩ := by
+  intro t u h
+  induction h with
+  | refl => intro ht hu; exact RS.Steps.refl _
+    -- ⟨t, ht⟩ = ⟨t, hu⟩ definitionally: KFree is a Prop, proof irrelevance.
+  | tail s _ ih =>
+    intro ht hu
+    -- The middle carrier keeps a fresh K-freeness certificate (Stage 2's
+    -- `KFree.of_step`); typing the step forces `PureS.step` to unfold to
+    -- the underlying `Step`, so the raw `s` fits.
+    have hstep : RS.PureS.step ⟨_, ht⟩ ⟨_, ht.of_step s⟩ := s
+    exact RS.Steps.tail hstep (ih (ht.of_step s) hu)
+
+theorem PureS_steps_iff {a b : {t : Term // KFree t}} :
+    RS.PureS.Steps a b ↔ a.val ⟶* b.val := by
+  constructor
+  · intro h
+    exact h.rec (fun a => _root_.Steps.refl a.val) (fun s _ ih => _root_.Steps.tail s ih)
+  · intro h
+    obtain ⟨t, ht⟩ := a
+    obtain ⟨u, hu⟩ := b
+    exact PureS_steps_of_steps h ht hu
+
+end RS
+
+/-- A 2-symbol tag system: read the head symbol, delete `m` symbols from
+the front, append `rule head` at the back.
+
+REFERENCE MODEL — EPISTEMIC STATUS: 2-tag systems are computationally
+universal by Cocke–Minsky (1964). That fact is EXTERNAL knowledge, cited
+here so the universality definitions in Universality/ have a concrete
+reference system to be stated against; it is NOT machine-checked in this
+repository and nothing here depends on its truth. -/
+structure TagSystem where
+  m : Nat
+  rule : Bool → List Bool
+
+/-- One tag step, as a relation (deterministic in fact, relational in form
+to fit RS). -/
+def TagSystem.stepRel (T : TagSystem) (w w' : List Bool) : Prop :=
+  ∃ a rest, w = a :: rest ∧ T.m ≤ w.length ∧ w' = w.drop T.m ++ T.rule a
+
+/-- A tag system as a rewriting system. -/
+def RS.Tag (T : TagSystem) : RS := ⟨List Bool, T.stepRel⟩
+
+-- Sanity example: in the tag system (m := 2, a ↦ [a]), the word
+-- [true, false, false] steps to [false, true].
+example : (RS.Tag ⟨2, fun a => [a]⟩).step [true, false, false] [false, true] :=
+  ⟨true, [false, false], rfl, by simp, rfl⟩
+
+-- A word shorter than m is stuck (normal form).
+example : (RS.Tag ⟨2, fun a => [a]⟩).NormalForm [true] := by
+  rintro ⟨w', a, rest, hw, hlen, _⟩
+  simp at hlen
