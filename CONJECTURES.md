@@ -11,6 +11,13 @@ As of Stage 1, SK reduction is proven confluent (`confluence`,
 the unique normal form of its input. (The classifier's LOOP — its
 step-counting and cycle bookkeeping alike — remains unverified census
 tooling built over the verified `stepOnce`.)
+As of Stage 2, the S-fragment's conservation laws are machine-checked
+(`SFragment.lean`): K-freeness is closed under reduction
+(`KFree.of_step`), leaf count never decreases (`leafCount_le_of_steps` —
+no erasure), and K-free normal forms are exactly the spine-≤2 shapes
+(`SNF_iff`). Honest framing per the spec: these explain why naive
+erasure-based encodings fail; they are NOT an impossibility argument —
+the erasure-free λI-calculus is complete (Church 1941; Barendregt §9.5).
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
@@ -56,6 +63,11 @@ fuel).` printed by every run in this file's data). Conjecture: pure-S
 leftmost-outermost trajectories never cycle. (NOTE: cycle-freedom under ALL
 strategies is a stronger, separate claim; this census only ever runs
 leftmost-outermost.)
+
+**Proven constraint (Stage 2):** any K-free reduction cycle is
+leaf-count-constant (`cycle_leafCount_eq`, `SFragment.lean`) — a cycle
+hunt may restrict to size-preserving steps, i.e. S-redexes whose third
+argument is a single leaf. C2 itself remains open.
 
 ## C3: Growth-pattern regularities observed — status: open
 Two observations from the fuel=200, n=1..12 run:

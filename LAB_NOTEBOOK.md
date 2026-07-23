@@ -124,3 +124,66 @@ what automation could and couldn't do. This file is a first-class deliverable
   `[propext]` only, unaffected.
 - Next per the DAG: Stage 2 (conservation laws) and Stage 3 (taxonomy)
   both remain unblocked.
+
+## 2026-07-23 — Stage 2: Conservation laws
+
+- The S-fragment's conservation story, machine-checked in `SFragment.lean`:
+  `KFree`/`kFree`/`kFree_iff` (K-freeness, executable twin, and their proven
+  agreement), `KFree.of_step`/`of_steps` (closure under reduction),
+  `leafCount_pos`/`leafCount_le_of_step`/`of_steps` (no erasure),
+  `cycle_leafCount_eq` (a bonus constraint on C2), and `SNF`/`SNF_iff` (the
+  shape of K-free normal forms). Five tasks, one commit per task, sorry-free
+  throughout.
+- Proof friction, task by task:
+  - Task 1 (`KFree`/`kFree`/`kFree_iff`): candidate scripts worked verbatim.
+    The one real snag wasn't in the proof but in the plan's own docstring —
+    the reviewer caught a citation error: "Church–Kleene 1936" misattributed
+    the λI-calculus's total-completeness result. Corrected to Church 1941 /
+    Barendregt §9.5, and propagated across the spec, the plan, and the
+    `SFragment.lean` module docstring by the controller before the next
+    task was dispatched.
+  - Task 2 (`KFree.of_step`/`of_steps`, closure under reduction): candidates
+    also worked verbatim. The `K_red` case is the interesting one — it
+    closes not by doing anything, but by genuine inversion-to-absurdity:
+    a K-free term can't contain the `K` a `K_red` step requires, so
+    `cases hk`/`cases hl`/`cases hK` bottoms out in a case with no
+    constructor to match, discharging the goal for free.
+  - Task 3 (no-erasure: `leafCount_pos`, `leafCount_le_of_step`/`of_steps`):
+    one real deviation from the brief. The plan's closers for the `appL`/
+    `appR` descent cases called for `Nat.add_le_add_right`/`_left` to lift
+    the inductive hypothesis across the shared addend; both failed as
+    written, because `simp [leafCount]` had already cancelled the shared
+    addend out of the goal before the lemma could apply to it. Bare
+    `exact ih` closed both cases once that was noticed.
+  - Task 4 (`SNF`/`SNF_iff`, the fiddly one): first-try success on the
+    strongest model available, with case-nesting never exceeding depth 2.
+    `#print axioms SNF_iff` comes back with ZERO axioms — not even
+    `propext` — independently re-verified by the reviewer. The instructive
+    moment was in `SNF.normal`'s inversion: Lean's elimination on indexed
+    families silently discards cases whose constructor's argument-count
+    (pattern depth) can't match the shape at hand, so the `K_red`/`S_red`
+    redex cases never even needed to be written out as absurdities inside
+    the `app1`/`app2` branches — they were dismissed before the `cases s
+    with` block had to consider them, leaving only the `appL`/`appR`
+    structural cases to actually discharge against the IHs.
+  - Task 5 (`snf` Bool twin + census guards, this entry): candidate
+    scripts weren't the mechanism here — `snf` is a plain executable def,
+    not a proof, and its epistemic status is deliberately weaker than
+    `kFree`'s: `snf ↔ SNF` is NOT proven, by design, only cross-validated
+    against the certified `stepOnce` by a `#guard` over all 42 six-leaf
+    K-free terms. That agreement guard passed on the first try, with no
+    adaptation needed — the tuple-lambda guard syntax from the brief
+    (`fun (a, b) => ...` over `tr.zip tr.tail`) also compiled as written,
+    no `⟨a, b⟩` rewrite required.
+- Running two-stage theme, now visible across both stages: candidate
+  scripts for structural inductions (KFree closure, leaf monotonicity,
+  the SNF shapes) survive largely verbatim; in both Stage 1 and Stage 2,
+  each stage's single hardest proof (`Par.triangle` in Stage 1, `SNF`'s
+  characterization in Stage 2) has landed on the first attempt when run
+  on the strongest model, with the real friction concentrated instead in
+  smaller things: a misattributed citation, a `simp` that already did a
+  lemma's job for it, an indexed-family elimination quietly pruning cases
+  nobody had to write.
+- Next per the DAG: Stage 3 (taxonomy) is unblocked; C1/C2/C3 (see
+  CONJECTURES.md) all remain open, with C2 now carrying a proven
+  size-preservation constraint on any hunted cycle.

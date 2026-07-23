@@ -205,3 +205,19 @@ theorem SNF.of_normal {t : Term} (hk : KFree t) (hn : NormalForm t) : SNF t := b
 -- The characterization, both directions bundled.
 theorem SNF_iff {t : Term} : SNF t ↔ KFree t ∧ NormalForm t :=
   ⟨fun h => ⟨h.kFree, h.normal⟩, fun ⟨hk, hn⟩ => SNF.of_normal hk hn⟩
+
+-- Executable twin of SNF, for census cross-validation. NOTE (epistemics):
+-- snf ↔ SNF is NOT proven — the Bool twin is census tooling, validated
+-- against the certified reducer by the guards in Census/Enumerate.lean,
+-- not by a theorem. (kFree ↔ KFree, by contrast, IS proven: kFree_iff.)
+def snf : Term → Bool
+  | .S => true
+  | .app .S t => snf t
+  | .app (.app .S t) u => snf t && snf u
+  | _ => false
+
+#guard snf S = true
+#guard snf (app S S) = true
+#guard snf (app (app S S) S) = true
+#guard snf (app (app (app S S) S) S) = false   -- three arguments: a redex
+#guard snf K = false

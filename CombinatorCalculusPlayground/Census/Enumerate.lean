@@ -1,5 +1,6 @@
 --! # The census: enumerate and classify pure-S terms
 import CombinatorCalculusPlayground.Census.Eval
+import CombinatorCalculusPlayground.SFragment
 
 open Term
 
@@ -86,3 +87,22 @@ where
 #guard (match classify 100 (app (app2 S I I) (app2 S I I)) with
         | .terminating _ _ => false
         | _ => true)
+
+-- ## Stage 2 cross-validation
+-- The conservation laws, checked empirically against the census machinery
+-- at small sizes. These guards tie the PROVEN laws (KFree closure, leaf
+-- monotonicity) to the EXECUTABLE census world, and validate the unproven
+-- Bool twin snf against the certified reducer.
+
+-- Everything sTerms enumerates is K-free (it never mints a K).
+#guard (sTerms 6).all kFree
+
+-- Leaf count never decreases along any leftmost-outermost trajectory of a
+-- K-free term (empirical face of leafCount_le_of_steps).
+#guard (sTerms 6).all fun t =>
+  let tr := trace 50 t
+  (tr.zip tr.tail).all fun (a, b) => leafCount a ≤ leafCount b
+
+-- snf agrees with the certified reducer's verdict on normality, for every
+-- K-free term up to 6 leaves: snf t = true exactly when stepOnce t = none.
+#guard (sTerms 6).all fun t => snf t == (stepOnce t).isNone
