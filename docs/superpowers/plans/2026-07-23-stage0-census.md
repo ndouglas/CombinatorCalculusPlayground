@@ -236,7 +236,9 @@ open Term
 -- (I = S K K applied to nothing... but here app I S) contains its own redex.
 #guard stepOnce (app2 K (app I S) S) = some (app I S)
 -- Leftmost wins: both sides of this app contain a redex; the left one fires.
-#guard stepOnce (app (app I S) (app I K)) = some (app S (app I K))
+-- (Left side K S K → S is a one-step K-redex; right side app I K also has a
+-- redex but must wait.)
+#guard stepOnce (app (app2 K S K) (app I K)) = some (app S (app I K))
 ```
 
 - [ ] **Step 2: Run to verify failure**
