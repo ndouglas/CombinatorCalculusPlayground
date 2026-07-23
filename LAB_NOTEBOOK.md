@@ -197,7 +197,8 @@ what automation could and couldn't do. This file is a first-class deliverable
   `UniversalConv`), `Universality/Taxonomy.lean` (the implication lattice:
   `RS.SK_churchRosser`, `Simulation.conv_preserve`/`conv_reflect`/
   `preservesConv`/`normalizes_preserve`, `UniversalReach.toUniversalConv`).
-  Six tasks, one commit per task, sorry-free throughout.
+  Six tasks, sorry-free throughout; several tasks carried additional
+  review-fix commits (comment precision, the .rec why-comment).
 - Proof friction, task by task:
   - Task 1 (warm-ups: `snf_iff_SNF`, `SNF.spineLength_le`): both candidates
     compiled verbatim on the first try. The catch-all case everyone was
