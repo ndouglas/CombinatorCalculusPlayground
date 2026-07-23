@@ -103,3 +103,65 @@ theorem stepOnce_none_normal : ∀ {t : Term}, stepOnce t = none → NormalForm 
   intro t hnone ⟨u, hstep⟩
   have := stepOnce_isSome_of_step hstep
   simp [hnone] at this
+
+-- ## Fuel-based normalization
+-- Lean requires all functions to terminate, but reduction might not! The
+-- standard trick: a `fuel` counter that strictly decreases. `none` means
+-- "didn't finish within fuel" — it does NOT mean the term diverges.
+def normalize (fuel : Nat) (t : Term) : Option (Term × Nat) :=
+  match stepOnce t with
+  | none => some (t, 0)
+  | some t' =>
+    match fuel with
+    | 0 => none
+    | f + 1 =>
+      match normalize f t' with
+      | some (nf, k) => some (nf, k + 1)
+      | none => none
+
+-- The trajectory: t, then everything it steps through, until normal form
+-- or fuel exhaustion. Always non-empty (starts with t).
+def trace (fuel : Nat) (t : Term) : List Term :=
+  match stepOnce t, fuel with
+  | none, _ => [t]
+  | some _, 0 => [t]
+  | some t', f + 1 => t :: trace f t'
+
+-- I S → K S (K S) → S : two steps to normal form.
+#guard normalize 10 (app I S) = some (S, 2)
+-- Already normal: zero steps.
+#guard normalize 10 (app S K) = some (app S K, 0)
+-- Fuel 0 can still succeed on an already-normal term...
+#guard normalize 0 S = some (S, 0)
+-- ...but a term needing steps runs out.
+#guard normalize 1 (app I S) = none
+-- Ω = (S I I)(S I I) loops forever (an SK-term; I = S K K). Fuel exhausts.
+#guard normalize 100 (app (app2 S I I) (app2 S I I)) = none
+-- trace records the trajectory including the start.
+#guard (trace 10 (app I S)).length = 3
+#guard (trace 10 (app I S)).head? = some (app I S)
+
+-- ## The certificate
+-- A successful normalize run IS a reduction sequence: census "terminating"
+-- verdicts are theorems. (With stepOnce_none_normal, the result is moreover
+-- a normal form — the classifier relies on both.)
+theorem normalize_sound :
+    ∀ (fuel : Nat) {t u : Term} {k : Nat},
+      normalize fuel t = some (u, k) → t ⟶* u := by
+  intro fuel t
+  fun_induction normalize fuel t with
+  | case1 fuel t hnone =>
+    -- normal form: the result is t itself, in zero steps.
+    intro u k h
+    injection h with h'; injection h' with h1 _; subst h1; exact Steps.refl t
+  | case2 t t' hsome =>
+    -- fuel 0 with a redex present: normalize returns none, no success to explain.
+    intro u k h; simp at h
+  | case3 t t' hsome f nf k' hrec ih =>
+    -- one certified step (stepOnce_sound), then the IH on the remaining run.
+    intro u k h
+    injection h with h'; injection h' with h1 _; subst h1
+    exact Steps.tail (stepOnce_sound hsome) (ih hrec)
+  | case4 t t' hsome f hrec ih =>
+    -- recursive run ran out of fuel: none, no success to explain.
+    intro u k h; simp at h
