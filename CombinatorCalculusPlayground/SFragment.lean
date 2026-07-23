@@ -122,3 +122,86 @@ theorem cycle_leafCount_eq {t u : Term} (hk : KFree t)
   Nat.le_antisymm
     (leafCount_le_of_steps hk h1)
     (leafCount_le_of_steps (hk.of_steps h1) h2)
+
+-- ## The shape of a K-free normal form
+-- A K-free term is a tree of S's; it is normal exactly when no S has
+-- three arguments — i.e. every head spine has length ≤ 2. SNF captures
+-- that shape structurally: an S, an S with one normal argument, or an S
+-- with two. This is the S-fragment's answer to "what do values look
+-- like?", and a stepping stone toward Waldmann-style normalization
+-- analysis in later stages.
+inductive SNF : Term → Prop
+  | S : SNF Term.S
+  | app1 {t : Term} : SNF t → SNF (Term.app Term.S t)
+  | app2 {t u : Term} : SNF t → SNF u → SNF (Term.app (Term.app Term.S t) u)
+
+-- A step inside either side of an application lifts to the whole —
+-- so a normal application has normal sides (contrapositive).
+theorem NormalForm.of_appL {t u : Term} (h : NormalForm (Term.app t u)) :
+    NormalForm t :=
+  fun ⟨t', s⟩ => h ⟨Term.app t' u, Step.appL s⟩
+
+theorem NormalForm.of_appR {t u : Term} (h : NormalForm (Term.app t u)) :
+    NormalForm u :=
+  fun ⟨u', s⟩ => h ⟨Term.app t u', Step.appR s⟩
+
+theorem SNF.kFree {t : Term} (h : SNF t) : KFree t := by
+  induction h with
+  | S => exact KFree.S
+  | app1 _ ih => exact KFree.app KFree.S ih
+  | app2 _ _ ih1 ih2 => exact KFree.app (KFree.app KFree.S ih1) ih2
+
+-- The heart of the characterization: none of the three SNF shapes can
+-- step. Head spines of length ≤ 2 starve both redex rules (K_red needs a
+-- K head, S_red needs a spine of 3), and the inner steps that appL/appR
+-- would lift are killed by the induction hypotheses.
+theorem SNF.normal {t : Term} (h : SNF t) : NormalForm t := by
+  induction h with
+  | S =>
+    -- An atom has no step: no Step constructor's LHS is atomic.
+    intro ⟨u, s⟩
+    cases s
+  | app1 _ ih =>
+    -- t = app S t', with ih : NormalForm t'. K_red/S_red can't match
+    -- (head is S with spine 1), leaving appL (a step out of the atom S —
+    -- impossible) and appR (a step out of t' — contradicts ih).
+    intro ⟨u, s⟩
+    cases s with
+    | appL sS => cases sS
+    | appR sR => exact ih ⟨_, sR⟩
+  | app2 _ _ iht ihu =>
+    -- t = app (app S t') u'. S_red needs spine 3, this has 2; K_red needs
+    -- head K. appR steps inside u' (contradicts ihu); appL steps inside
+    -- app S t', which recurses one level as in the app1 case.
+    intro ⟨u, s⟩
+    cases s with
+    | appL sL =>
+      cases sL with
+      | appL sS => cases sS
+      | appR sR => exact iht ⟨_, sR⟩
+    | appR sR => exact ihu ⟨_, sR⟩
+
+-- Conversely: a K-free normal term must wear one of the three shapes.
+-- Structural induction on the term; the left component's own SNF shape
+-- decides which constructor applies — and the one forbidden shape
+-- (spine already 2 on the left) would make the whole term an S-redex.
+theorem SNF.of_normal {t : Term} (hk : KFree t) (hn : NormalForm t) : SNF t := by
+  induction t with
+  | S => exact SNF.S
+  | K => cases hk
+  | app l r ihl ihr =>
+    cases hk with | app hkl hkr =>
+    have hl : SNF l := ihl hkl hn.of_appL
+    have hr : SNF r := ihr hkr hn.of_appR
+    -- Which shape is l? SNF gives exactly three possibilities.
+    cases hl with
+    | S => exact SNF.app1 hr
+    | app1 hl' => exact SNF.app2 hl' hr
+    | app2 hl' hr' =>
+      -- l = app (app S a) b, so app l r = S a b r — an S-redex,
+      -- contradicting hn.
+      exact absurd ⟨_, Step.S_red ..⟩ hn
+
+-- The characterization, both directions bundled.
+theorem SNF_iff {t : Term} : SNF t ↔ KFree t ∧ NormalForm t :=
+  ⟨fun h => ⟨h.kFree, h.normal⟩, fun ⟨hk, hn⟩ => SNF.of_normal hk hn⟩
