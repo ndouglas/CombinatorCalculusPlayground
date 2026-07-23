@@ -54,3 +54,37 @@ theorem Par.to_steps {t u : Term} (h : Par t u) : t ⟶* u := by
   | S_red _ _ _ ihf ihg ihx =>
     -- app3 S f g x ⟶ (f x)(g x) ⟶* (f' x')(g' x')
     exact Steps.tail (Step.S_red ..) (Steps.congApp (Steps.congApp ihf ihx) (Steps.congApp ihg ihx))
+
+-- ## The complete development
+-- `dev t` fires EVERY redex in t simultaneously — the maximal parallel step.
+-- Takahashi's insight: any parallel step from t can be "completed" to dev t
+-- (the triangle property below), which makes the diamond property a
+-- two-line corollary instead of a painful double induction.
+-- Match arms mirror stepOnce: redexes first, then structural descent.
+def dev : Term → Term
+  | .app (.app .K x) _ => dev x
+  | .app (.app (.app .S f) g) x =>
+      .app (.app (dev f) (dev x)) (.app (dev g) (dev x))
+  | .app t u => .app (dev t) (dev u)
+  | t => t
+
+-- Atoms and non-redexes are fixed points of dev.
+#guard dev S = S
+#guard dev K = K
+#guard dev (app S K) = app S K
+#guard dev I = I
+-- A K-redex fires, and dev keeps working inside the kept argument:
+-- dev (K (K S K) t) = dev (K S K) = S.  (t = S here, discarded.)
+#guard dev (app2 K (app2 K S K) S) = S
+-- An S-redex fires with developed pieces distributed:
+-- dev (S K K S) = (dev K) (dev S) applied pairwise = (K S)(K S).
+#guard dev (app I S) = app (app K S) (app K S)
+-- Descent when the head is not a redex: both sides develop independently.
+#guard dev (app (app2 K S K) (app2 K K S)) = app S K
+-- dev fires nested redexes in ONE pass that Step needs two for:
+-- (K S K) is a redex inside the S-redex's argument position... but dev of
+-- the S-redex develops f, g, x BEFORE distributing:
+-- dev (S K (K S) (K S K)) = (K (dev (K S K))) ((K S) (dev (K S K)))
+--                         = (K S) ((K S) S)   [dev (K S K) = S]
+#guard dev (app3 S K (app K S) (app2 K S K))
+       = app (app K S) (app (app K S) S)
