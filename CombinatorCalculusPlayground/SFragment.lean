@@ -73,3 +73,52 @@ theorem KFree.of_steps {t u : Term} (hk : KFree t) (h : t ⟶* u) : KFree u := b
   induction h with
   | refl => exact hk
   | tail s _ ih => exact ih (hk.of_step s)
+
+-- ## No erasure
+-- The heart of the conservation story. An S-step S f g x → (f x)(g x)
+-- keeps one copy of f and g and DUPLICATES x; nothing is discarded.
+-- Leaf count: |f|+|g|+|x|+1 becomes |f|+|g|+2|x|, a gain of |x|-1 ≥ 0.
+-- (K-steps erase — which is exactly why they're excluded by KFree.)
+
+-- Every term has at least one leaf.
+theorem leafCount_pos : ∀ (t : Term), 1 ≤ leafCount t := by
+  intro t
+  induction t with
+  | S => simp [leafCount]
+  | K => simp [leafCount]
+  | app l r ihl ihr => simp [leafCount]; omega
+
+theorem leafCount_le_of_step {t u : Term} (hk : KFree t) (h : t ⟶ u) :
+    leafCount t ≤ leafCount u := by
+  induction h with
+  | K_red x y =>
+    cases hk with | app hl _ => cases hl with | app hK _ => cases hK
+  | S_red f g x =>
+    -- |S f g x| = |f|+|g|+|x|+1 ≤ |f|+|x|+(|g|+|x|) = |(f x)(g x)|
+    have := leafCount_pos x
+    simp [leafCount, app3]
+    omega
+  | appL _ ih =>
+    cases hk with | app hl _ =>
+    simp [leafCount]
+    exact ih hl
+  | appR _ ih =>
+    cases hk with | app _ hr =>
+    simp [leafCount]
+    exact ih hr
+
+theorem leafCount_le_of_steps {t u : Term} (hk : KFree t) (h : t ⟶* u) :
+    leafCount t ≤ leafCount u := by
+  induction h with
+  | refl => exact Nat.le_refl _
+  | tail s rest ih =>
+    exact Nat.le_trans (leafCount_le_of_step hk s) (ih (hk.of_step s))
+
+-- A proven constraint on census conjecture C2: if a K-free term sits on
+-- a reduction cycle, every term on that cycle has the SAME leaf count.
+-- Any hunt for S-cycles can restrict to size-preserving steps.
+theorem cycle_leafCount_eq {t u : Term} (hk : KFree t)
+    (h1 : t ⟶* u) (h2 : u ⟶* t) : leafCount t = leafCount u :=
+  Nat.le_antisymm
+    (leafCount_le_of_steps hk h1)
+    (leafCount_le_of_steps (hk.of_steps h1) h2)
