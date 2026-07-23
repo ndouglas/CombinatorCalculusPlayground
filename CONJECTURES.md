@@ -65,9 +65,10 @@ strategies is a stronger, separate claim; this census only ever runs
 leftmost-outermost.)
 
 **Proven constraint (Stage 2):** any K-free reduction cycle is
-leaf-count-constant (`cycle_leafCount_eq`, `SFragment.lean`) — a cycle
-hunt may restrict to size-preserving steps, i.e. S-redexes whose third
-argument is a single leaf. C2 itself remains open.
+leaf-count-constant (`cycle_leafCount_eq`, `SFragment.lean`). Hence —
+an immediate corollary on paper, not formalized — a cycle hunt may
+restrict to size-preserving steps, i.e. S-redexes whose third argument
+is a single leaf. C2 itself remains open.
 
 ## C3: Growth-pattern regularities observed — status: open
 Two observations from the fuel=200, n=1..12 run:

@@ -116,7 +116,8 @@ theorem leafCount_le_of_steps {t u : Term} (hk : KFree t) (h : t ⟶* u) :
 
 -- A proven constraint on census conjecture C2: if a K-free term sits on
 -- a reduction cycle, every term on that cycle has the SAME leaf count.
--- Any hunt for S-cycles can restrict to size-preserving steps.
+-- (That a cycle hunt can then restrict to size-preserving steps is an
+-- immediate corollary on paper, not itself a formalized statement.)
 theorem cycle_leafCount_eq {t u : Term} (hk : KFree t)
     (h1 : t ⟶* u) (h2 : u ⟶* t) : leafCount t = leafCount u :=
   Nat.le_antisymm
