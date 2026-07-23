@@ -67,3 +67,39 @@ theorem stepOnce_sound : ∀ {t u : Term}, stepOnce t = some u → t ⟶ u := by
   | _ =>
     intro u h
     simp_all
+
+-- ## Completeness
+-- When stepOnce gives up, there really is no legal step: `none` certifies a
+-- normal form. Together with soundness this makes the census classifier's
+-- "terminating" verdict a machine-checked fact.
+def NormalForm (t : Term) : Prop := ¬ ∃ u, t ⟶ u
+
+-- If any step is possible, stepOnce finds one (maybe a different one:
+-- leftmost-outermost picks its own redex, but it never misses).
+theorem stepOnce_isSome_of_step : ∀ {t u : Term}, t ⟶ u → (stepOnce t).isSome := by
+  intro t u h
+  induction h with
+  | K_red x y => simp [stepOnce, app2]
+  | S_red f g x => simp [stepOnce, app3]
+  | @appL t t' u s ih =>
+    -- The left side can step, so stepOnce t = some w by the IH. Splitting on
+    -- stepOnce's match arms: the two redex arms return some outright, and the
+    -- descent arm consults stepOnce t — which hw says is some.
+    rcases Option.isSome_iff_exists.mp ih with ⟨w, hw⟩
+    rw [stepOnce.eq_def]
+    split <;> simp_all
+  | @appR t u u' s ih =>
+    -- Same shape, but the descent arm tries stepOnce t *first*: if it's some
+    -- we're done immediately, and only if it's none does hw's stepOnce u kick
+    -- in — hence the extra case split on stepOnce t.
+    rcases Option.isSome_iff_exists.mp ih with ⟨w, hw⟩
+    rw [stepOnce.eq_def]
+    split <;> simp_all
+    cases hst : stepOnce t <;> simp_all
+
+-- Contrapositive: if stepOnce found nothing, no step exists — because if one
+-- did, stepOnce_isSome_of_step would contradict the `none` we were handed.
+theorem stepOnce_none_normal : ∀ {t : Term}, stepOnce t = none → NormalForm t := by
+  intro t hnone ⟨u, hstep⟩
+  have := stepOnce_isSome_of_step hstep
+  simp [hnone] at this
