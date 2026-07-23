@@ -23,6 +23,13 @@ As of Stage 3, the universality definitions themselves are formal objects
 with a machine-checked implication lattice (`Universality/Taxonomy.lean`)
 and instances for SK, pure S, and the tag-system reference. See the
 Definitions ledger below.
+As of Stage 4, the taxonomy is calibrated in both directions: {S,K}
+combinatory completeness is machine-checked (`Bracket.lean`), and the
+first-order reading of the one-combinator iota basis is machine-checked
+NOT to host SK (`Universality/Calibration.lean`) — with Barker's λ-level
+iota universality explicitly registered as external and out of
+first-order scope. Simulations compose (`Simulation.comp`), so
+universality transports along hosts (`UniversalReach.of_sim`).
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
@@ -160,3 +167,45 @@ universality, which is precisely why it was replaced).
 
 No cell of this table is a theorem yet; the table is the register the
 spec's Stage 3 success criterion requires ("proven or explicitly open").
+
+Updated table (Stage 4):
+
+| Host        | Reach (Simulation)                          | Norm                  | Conv |
+|-------------|----------------------------------------------|-----------------------|------|
+| `RS.SK`     | combinatory completeness proven at TermV level (`combinatory_completeness`, `Bracket.lean`); Tag→SK still open | open | open |
+| `RS.Iota`   | **REFUTED** against SK (`no_sim_SK_iota`) — see below | open | open |
+| `RS.PureS`  | open (prize-adjacent) | open, expected FALSE¹ | open |
+
+### Stage 4 calibration results
+
+- **Positive:** {S,K} is combinatorially complete
+  (`combinatory_completeness`, `Bracket.lean`): every single-variable term
+  over {S,K,·} is realized by a closed combinator, via naive bracket
+  abstraction (`bracket_beta`). This is the classic sense in which S and K
+  suffice; the Tag→SK Reach cell below remains open (encoding a reference
+  machine is Stage 5-adjacent work).
+- **Negative (machine-checked):** `UniversalReach RS.SK RS.Iota` is
+  **REFUTED** (`no_sim_SK_iota`, `Universality/Calibration.lean`): every
+  first-order iota step strictly grows leaf count (`iota_step_lt`), SK has
+  an explicit 5-step reduction cycle (Ω = (SII)(SII)), and no injective
+  encoding survives both. IMPORTANT SCOPE: this refutes the FIRST-ORDER
+  reading of ι (`RS.Iota` as defined). Barker's one-combinator
+  universality is a λ-calculus (higher-order, erasing) result — external,
+  NOT contradicted, and not expressible as a first-order RS in this
+  framework. The taxonomy just drew that boundary precisely.
+- **Deviation register (spec-sanctioned):** (1) the spec's "universality
+  of iota under the taxonomy" deliverable became the refutation above —
+  the finding forced it; (2) the spec's "confirm formally that Waldmann's
+  result kills only the normalization-based definition" takes the spec's
+  own Risks-section downgrade: Waldmann 2000 remains cited-not-formalized
+  (a formal kill needs a computability theory; zero-dep constraint).
+  The λI ({S,B,C,I}) stretch goal was not attempted this stage.
+
+## C4: No single-rule first-order combinator basis hosts SK — status: open
+`no_sim_SK_iota` refutes iota specifically, via strict growth. Conjecture:
+the argument generalizes — any ONE-combinator, single-rule, first-order
+system whose rule is non-erasing (every rule variable occurs in the
+reduct) cannot host SK under `Simulation`. (Non-erasure alone gives ≤,
+not <; the generalization needs care where the rule preserves size.
+Compare pure S — non-erasing but size-PRESERVING steps exist, so this
+argument does NOT apply to S; C2's cycle question stays genuinely open.)

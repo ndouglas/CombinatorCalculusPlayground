@@ -310,3 +310,90 @@ what automation could and couldn't do. This file is a first-class deliverable
   only a review holding the whole branch up against the external
   literature and against adversarial witness constructions had the
   altitude to catch them.
+
+## 2026-07-23 — Stage 4: Calibration (completeness proven, iota refuted)
+
+- The headline, worth stating plainly because it's the point of the whole
+  census-first method: pre-planning analysis PREDICTED the iota
+  refutation before a single line of proof code existed — the size
+  argument (every first-order ι-step grows leaf count by +8, while SK has
+  a genuine reduction cycle) was written into the plan up front. The plan
+  then built a STOP gate around it: Task 4's `#guard` probes had to
+  confirm the growth numbers empirically, cheaply, before any proof
+  effort was spent. The probes passed. The proofs then landed on the
+  FIRST full attempt — the third stage so far (after Stage 1's
+  `Par.triangle`, Stage 2's `SNF` characterization) where this project's
+  summit proof compiled first-try on the strongest model available.
+- Task 1 (simulation algebra: `Simulation.id`, `Simulation.comp`,
+  `UniversalReach.of_sim`): candidate scripts worked verbatim.
+- Task 2 (`TermV`, `Bracket.lean`'s term layer): byte-exact transcription
+  from the brief. Reviewer verified the four closure lemmas
+  (`StepsV.trans`/`congL`/`congR`/`congApp`) are honest mirrors of
+  `Step.lean`'s `Steps.trans`/`congL`/`congR`/`congApp` — same shape,
+  same proof pattern, ported to the variable-carrying syntax.
+- Task 3 (`combinatory_completeness`, `bracket_beta`): the REAL fight of
+  the stage. `occurs_bracket`'s `var` case needed Nat-`beq` bookkeeping
+  that a naive `simp` couldn't close cleanly — early attempts either left
+  goals open or triggered the `unusedSimpArgs` linter flip-flopping under
+  `<;>` (an arg needed in one branch of the case split was flagged unused
+  in the other). Closed with `grind` — the first `grind` use in this
+  project — which pulls `[Classical.choice, Quot.sound]` into
+  `combinatory_completeness`'s axiom trail (confirmed by `#print axioms`:
+  `[propext, Classical.choice, Quot.sound]`). The reviewer probed three
+  alternative closers looking for a choice-free route; none was cheap —
+  a manual `[propext]`-only proof of the same lemma is possible but is
+  deliberate additional work, logged here for future triage rather than
+  done under this stage's budget. `bracket_beta` itself, the theorem the
+  stage actually needed, stays at `[propext]` only — the `grind` cost is
+  fully contained in `occurs_bracket`, a supporting lemma.
+- Task 4 (`Iota.lean`, the census-style probes): byte-exact against the
+  brief. One empirical surprise: `fun_induction` on `stepOnce` for
+  `IotaTerm` produced case arities that didn't match `Eval.lean`'s
+  `Term`-level precedent — `IotaTerm` has one redex pattern
+  (`app .iota x`) where `Term` has two (`K_red`/`S_red`), so
+  `fun_induction`'s case count came out different from what the Stage-0
+  memory of "that tactic gives four cases" predicted. Discovered
+  empirically rather than by re-deriving it on paper first; corrected
+  once the actual case list was in front of us.
+- Task 5 (`Universality/Calibration.lean`, the refutation): both risk
+  sites flagged ahead of time turned out quiet. `iota_steps_le`'s `.rec`
+  call needed no explicit motive beyond what the brief's sketch already
+  supplied — the concrete-instance `induction`-fails-on-`RS.Steps` bug
+  from Stage 3 was worked around the same way (hand-driven `.rec`), and
+  the motive Lean needed matched the plan's hand-derived one on the first
+  try. The `Wdup`/`omegaSK`/`Mcycle` reduction-cycle chains
+  (`omega_to_M`, `M_to_omega`) elaborated exactly as written, each step
+  firing on the definitional unfolding the plan predicted (`I = S K K`
+  behind the scenes). `omega_ne_M` closed by plain `decide` on the
+  derived `DecidableEq` — no `native_decide` needed or used.
+- Axiom audit (`#print axioms`, re-run directly against the built tree
+  for this entry): `bracket_beta` → `[propext]`;
+  `combinatory_completeness` → `[propext, Classical.choice, Quot.sound]`
+  (the `grind` cost, see Task 3 above); `no_sim_SK_iota` /
+  `iota_not_universal_for_SK` / `iota_step_lt` / `iota_steps_le` → all
+  `[propext, Quot.sound]` (the `Quot.sound` here is the same inherited
+  trail riding `RS.Steps`/`RS.SK_steps_iff` since Stage 3, not new).
+- Meta-observation for the notebook: this is the first stage where the
+  PLAN itself did original mathematics — the iota refutation wasn't a
+  known result being formalized, it was discovered during pre-planning
+  analysis of the leaf-count arithmetic — rather than a formalization
+  exercise over an already-known theorem. The census-first gate (probe
+  the growth numbers cheaply before committing proof effort) is exactly
+  what made that safe: if the `#guard` probes in Task 4 had disagreed
+  with the pre-planning arithmetic, the stage would have stopped there
+  instead of chasing a false refutation through two proof-heavy tasks.
+- How this differs from the Stage 3 atlas's own expectation: the
+  Definitions ledger going into this stage listed `RS.SK` vs. the
+  tag-system reference as the Stage 4 target, with iota mentioned only as
+  a secondary calibration point ("under the taxonomy"). What actually
+  shipped is the reverse emphasis — Tag→SK reach stays open (Stage
+  5-adjacent), while iota went from "a basis to eventually calibrate
+  against" to "the stage's proven negative result," entirely because the
+  size argument, once looked at directly, forced the conclusion before
+  any Tag-system work was even started.
+- Next: `lake build` clean, zero warnings; ledger and this entry committed
+  together per the task brief. Two items explicitly registered rather
+  than closed this stage (see CONJECTURES.md's deviation register):
+  Waldmann 2000's normalization-decidability result remains
+  cited-not-formalized, and the λI ({S,B,C,I}) stretch goal was not
+  attempted.
