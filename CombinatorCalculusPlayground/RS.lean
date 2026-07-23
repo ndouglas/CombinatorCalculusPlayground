@@ -133,6 +133,8 @@ theorem PureS_steps_iff {a b : {t : Term // KFree t}} :
     RS.PureS.Steps a b ↔ a.val ⟶* b.val := by
   constructor
   · intro h
+    -- Raw recursor for the same reason as SK_steps_iff above: `induction`
+    -- fails on RS.Steps at a concrete instance (mkElimApp motive error).
     exact h.rec (fun a => _root_.Steps.refl a.val) (fun s _ ih => _root_.Steps.tail s ih)
   · intro h
     obtain ⟨t, ht⟩ := a
