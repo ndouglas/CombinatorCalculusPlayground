@@ -70,9 +70,9 @@ theorem stepOnce_sound : ∀ {t u : Term}, stepOnce t = some u → t ⟶ u := by
 
 -- ## Completeness
 -- When stepOnce gives up, there really is no legal step: `none` certifies a
--- normal form. Together with soundness this makes the census classifier's
--- "terminating" verdict a machine-checked fact.
-def NormalForm (t : Term) : Prop := ¬ ∃ u, t ⟶ u
+-- normal form (`NormalForm`, defined in Step.lean). Together with soundness
+-- this makes the census classifier's "terminating" verdict a machine-checked
+-- fact.
 
 -- If any step is possible, stepOnce finds one (maybe a different one:
 -- leftmost-outermost picks its own redex, but it never misses).

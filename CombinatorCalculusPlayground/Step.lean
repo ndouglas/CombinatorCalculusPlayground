@@ -50,3 +50,35 @@ theorem Steps.trans {t u v : Term} (h1 : t ⟶* u) (h2 : u ⟶* v) : t ⟶* v :=
 theorem I_reduces (x : Term) : app I x ⟶* x :=
   tail (S_red K K x) (tail (K_red x (app K x)) (refl x))
   -- S K K x → K x (K x) → x
+
+-- ## Normal forms
+-- A term is in normal form when no step applies. (This is a property of the
+-- reduction relation, so it lives here; it was born in Census/Eval.lean and
+-- moved once confluence needed it.)
+def NormalForm (t : Term) : Prop := ¬ ∃ u, t ⟶ u
+
+-- A normal form goes nowhere: any path out of it has length zero.
+theorem NormalForm.steps_eq {t u : Term} (hn : NormalForm t) (h : t ⟶* u) :
+    u = t := by
+  cases h with
+  | refl => rfl
+  | tail s _ => exact absurd ⟨_, s⟩ hn
+
+-- ## Congruence
+-- Multi-step reduction passes through both sides of an application.
+-- (Named congL/congR, not appL/appR, to avoid clashing with Step's
+-- constructors under `open`.)
+theorem Steps.congL {t t' u : Term} (h : t ⟶* t') : app t u ⟶* app t' u := by
+  induction h with
+  | refl => exact Steps.refl _
+  | tail s _ ih => exact Steps.tail (Step.appL s) ih
+
+theorem Steps.congR {t u u' : Term} (h : u ⟶* u') : app t u ⟶* app t u' := by
+  induction h with
+  | refl => exact Steps.refl _
+  | tail s _ ih => exact Steps.tail (Step.appR s) ih
+
+-- Reduce the left side fully, then the right side.
+theorem Steps.congApp {t t' u u' : Term} (h1 : t ⟶* t') (h2 : u ⟶* u') :
+    app t u ⟶* app t' u' :=
+  Steps.trans (Steps.congL h1) (Steps.congR h2)
