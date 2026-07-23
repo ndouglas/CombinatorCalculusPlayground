@@ -111,3 +111,30 @@ theorem bareEncNorm_trivial (R B : RS)
   by_cases h : R.Normalizes a
   · simp [h]; exact hy
   · simp [h]; exact hn
+
+-- ## Simulation algebra
+-- Simulations compose, so universality is transitive along hosts — the
+-- lattice's transport layer.
+
+/-- Every system simulates itself. -/
+def Simulation.id (A : RS) : Simulation A A where
+  enc := fun a => a
+  dec := fun a => some a
+  dec_enc := fun _ => rfl
+  fwd := fun s => RS.Steps.single s
+  bwd := fun h => h
+
+/-- A inside B and B inside C gives A inside C. -/
+def Simulation.comp {A B C : RS} (S1 : Simulation A B) (S2 : Simulation B C) :
+    Simulation A C where
+  enc := fun a => S2.enc (S1.enc a)
+  dec := fun c => (S2.dec c).bind S1.dec
+  dec_enc := fun a => by simp [S2.dec_enc, S1.dec_enc]
+  fwd := fun s => S2.fwd_steps (S1.fwd s)
+  bwd := fun h => S1.bwd (S2.bwd h)
+
+/-- Universality transports along a host-to-host simulation. -/
+theorem UniversalReach.of_sim {R B C : RS}
+    (h : UniversalReach R B) (S : Simulation B C) : UniversalReach R C := by
+  obtain ⟨S1⟩ := h
+  exact ⟨S1.comp S⟩
