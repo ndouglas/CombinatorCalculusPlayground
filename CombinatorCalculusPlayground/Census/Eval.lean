@@ -169,3 +169,29 @@ theorem normalize_sound :
   | case4 t t' hsome f hrec ih =>
     -- recursive run ran out of fuel: none, no success to explain.
     intro u k h; simp at h
+
+-- The other half of the certificate: a successful normalize run ends at a
+-- genuine normal form (it only ever returns terms stepOnce said `none` on).
+-- With normalize_sound and nf_unique (Confluence.lean), the census value of
+-- a terminating term is THE normal form, full stop.
+theorem normalize_normal :
+    ∀ (fuel : Nat) {t u : Term} {k : Nat},
+      normalize fuel t = some (u, k) → NormalForm u := by
+  intro fuel t
+  fun_induction normalize fuel t with
+  | case1 fuel t hnone =>
+    -- normal form: the result is t itself, and hnone already certifies it.
+    intro u k h
+    injection h with h'; injection h' with h1 _; subst h1
+    exact stepOnce_none_normal hnone
+  | case2 t t' hsome =>
+    -- fuel 0 with a redex present: normalize returns none, no success to explain.
+    intro u k h; simp at h
+  | case3 t t' hsome f nf k' hrec ih =>
+    -- one certified step taken, then the IH certifies the rest of the run.
+    intro u k h
+    injection h with h'; injection h' with h1 _; subst h1
+    exact ih hrec
+  | case4 t t' hsome f hrec ih =>
+    -- recursive run ran out of fuel: none, no success to explain.
+    intro u k h; simp at h

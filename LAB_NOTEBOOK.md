@@ -61,3 +61,66 @@ what automation could and couldn't do. This file is a first-class deliverable
     though still not a divergence proof.
 - Next: Stage 1 (confluence) / Stage 2 (conservation) / Stage 3 (taxonomy)
   are all unblocked per the DAG.
+
+## 2026-07-23 — Stage 1: Confluence
+
+- Church–Rosser for SK reduction proved via Par + complete development
+  (Takahashi triangle): `Par`, `Par.rfl`, `Par.of_step`, `Par.to_steps`,
+  `dev`, `Par.K_inv`/`Par.S_inv`, `Par.triangle`, `Par.diamond`, `Pars`,
+  `Pars.strip`, `Pars.diamond`, `Steps.to_pars`/`Pars.to_steps`,
+  `confluence`, `nf_unique` (Confluence.lean), plus `normalize_normal`
+  (Census/Eval.lean) closing out the census certificate. 6 tasks, one
+  commit per task, sorry-free throughout; zero deps held.
+- Proof friction, task by task (per-task subagent reports and reviewer
+  notes):
+  - Task 1 (NormalForm move to Step.lean + congruence lemmas): candidate
+    scripts worked verbatim — a pure refactor plus straightforward
+    inductions.
+  - Task 2 (`Par` + the Step/Steps sandwich): candidates also worked
+    verbatim; independent review confirmed the Takahashi-form `S_red`
+    (with `x` duplicated into the reduced term, not left as one copy) and
+    that `Par.rfl` only needs induction on atoms and `app` — no redex
+    cases required for reflexivity.
+  - Task 3 (`dev`, the complete development): compiled on the first
+    attempt with all eight hand-derived match-arm guards passing; no
+    guard corrections needed.
+  - Task 4 (`Par.triangle`, the summit of the stage): proved on the first
+    full attempt by a Fable-tier agent. The real friction wasn't the
+    induction shape but the plan's helper-lemma sketches — `Par.K_inv`/
+    `Par.S_inv` were written assuming bare `K`/`S` would resolve to the
+    `Term` constructors, but inside the `Par` namespace bare `K`/`S`
+    resolve to `Par`'s own constructors instead, so the lemma statements
+    needed explicit `Term.K`/`Term.S` qualification. Once qualified, the
+    app-case's nested redex inversions (two levels of `cases hl with`
+    to peel back to the K- or S-head) closed by definitional equality —
+    no extra `dev`-rewriting steps were needed beyond the `simp only
+    [dev]` already in the sketch.
+  - Task 5 (the ladder: `Pars`, `Pars.strip`, `Pars.diamond`,
+    `Steps.to_pars`/`Pars.to_steps`, `confluence`, `nf_unique`): all
+    seven candidate scripts compiled verbatim, including the one piece
+    flagged as risky beforehand — `Pars.strip`'s induction generalizing
+    over the one-step side (`generalizing u`) while inducting on the
+    many-step side. `#print axioms confluence` came back `[propext]`
+    only, independently re-verified in this task's review.
+  - Task 6 (`normalize_normal`, this entry): the brief's `first | ... |
+    simp_all | simp_all` sketch was replaced with named `fun_induction`
+    cases before ever trying the catch-all — Stage 0 already burned that
+    lesson twice, so it wasn't re-litigated here. Mirroring
+    `normalize_sound`'s four named cases (`case1`..`case4`) matched
+    the goals exactly on the first try: the success arm reduces directly
+    to `stepOnce_none_normal`, the recursive arm is the IH applied to the
+    inner equation (`ih hrec`, matching `normalize_sound`'s
+    `ih hrec`/`Steps.tail` pattern exactly), and the two fuel/propagated-
+    `none` arms are `simp at h`. Zero-warning build on the first full
+    compile of the real (non-sorry) proof — no red/fail cycle beyond
+    the initial `sorry` placeholder.
+- The sandwich (Step ⊆ Par ⊆ Steps) and the census payoff
+  (`normalize_normal` + `nf_unique`) landed as planned, no deviations
+  from the task DAG or the stated theorem signatures. `#print axioms
+  normalize_normal` reports `[propext, Quot.sound]` — the `Quot.sound`
+  is not new to this stage; it's inherited from Stage 0's
+  `stepOnce_isSome_of_step` (via `stepOnce_none_normal`), which already
+  carried it. `confluence` and `nf_unique` themselves stay at
+  `[propext]` only, unaffected.
+- Next per the DAG: Stage 2 (conservation laws) and Stage 3 (taxonomy)
+  both remain unblocked.

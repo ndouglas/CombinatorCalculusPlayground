@@ -4,6 +4,12 @@ Census-generated claims, each with a status:
 **open** / **proved** (link the theorem) / **refuted** (link the counterexample).
 Census methodology: leftmost-outermost reduction (`stepOnce`), which is the
 normalizing strategy; "exhausted" verdicts are fuel-outs, NOT divergence proofs.
+As of Stage 1, SK reduction is proven confluent (`confluence`,
+`Confluence.lean`) with unique normal forms (`nf_unique`), and
+`normalize` is certified on both ends (`normalize_sound`,
+`normalize_normal`): when the census reports a normal form, that term IS
+the unique normal form of its input. (The classifier's step-counting and
+cycle bookkeeping remain unverified census tooling.)
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
