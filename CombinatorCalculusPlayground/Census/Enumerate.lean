@@ -35,11 +35,17 @@ def sTerms (n : Nat) : List Term :=
 #guard (sTerms 5).eraseDups.length = 14
 
 -- ## Classifying a trajectory
--- Three verdicts, with three different epistemic standings:
---   terminating — CERTIFIED: a normal form was reached (stepOnce = none,
---                 which stepOnce_none_normal proves is really normal).
---   cyclic      — CERTIFIED: stepOnce is deterministic, so revisiting a
---                 term means the trajectory repeats forever.
+-- Three verdicts, with three different epistemic standings. No theorem
+-- about classify itself exists — the seen-list/step-counting/cycle-index
+-- bookkeeping below is unverified census tooling built on top of the
+-- verified stepOnce. What each verdict can actually lean on:
+--   terminating — grounded in the verified core: stepOnce_none_normal
+--                 proves the halt condition really is a normal form, and
+--                 stepOnce_sound proves every step taken to get there is
+--                 legal. classify's own bookkeeping (step count) is not
+--                 itself verified.
+--   cyclic      — rests on stepOnce's determinism (informal: not proven
+--                 here) plus the unverified revisit bookkeeping above.
 --   fuelExhausted — HONESTLY UNKNOWN. Not a divergence proof. We record the
 --                 final leaf count so growth is observable.
 inductive Dynamics : Type

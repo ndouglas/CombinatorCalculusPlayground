@@ -142,9 +142,13 @@ def trace (fuel : Nat) (t : Term) : List Term :=
 #guard (trace 10 (app I S)).head? = some (app I S)
 
 -- ## The certificate
--- A successful normalize run IS a reduction sequence: census "terminating"
--- verdicts are theorems. (With stepOnce_none_normal, the result is moreover
--- a normal form — the classifier relies on both.)
+-- A successful normalize run IS a reduction sequence: this is a verified
+-- path from t to u, and (with stepOnce_none_normal) u is moreover a genuine
+-- normal form. But the census CLI (classify, Main.lean) does not walk this
+-- path — it runs on stepOnce directly. What actually grounds the census's
+-- verdicts is stepOnce_sound (every step taken is legal) together with
+-- stepOnce_none_normal (a stepOnce = none really is a normal form);
+-- normalize_sound below certifies normalize itself, a road not (yet) taken.
 theorem normalize_sound :
     ∀ (fuel : Nat) {t u : Term} {k : Nat},
       normalize fuel t = some (u, k) → t ⟶* u := by
