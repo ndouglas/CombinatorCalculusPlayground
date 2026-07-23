@@ -84,8 +84,8 @@ example : countdown.Normalizes 2 :=
   ⟨0, RS.Steps.tail rfl (RS.Steps.tail rfl (RS.Steps.refl (0 : countdown.Carrier))),
    fun ⟨_, h⟩ => by omega⟩
 
--- 1 and 2 are convertible without either reducing to the other directly:
--- 2 → 1 forward.  And 0 connects everything below any n.
+-- 1 does not reduce to 2, yet Conv 1 2 holds — the zig-zag sees the
+-- backward edge (2 → 1 is a step, walked in reverse).
 example : countdown.Conv 1 2 := RS.Conv.bwd rfl (RS.Conv.refl _)
 
 -- ## The instances
@@ -143,32 +143,36 @@ theorem PureS_steps_iff {a b : {t : Term // KFree t}} :
 
 end RS
 
-/-- A 2-symbol tag system: read the head symbol, delete `m` symbols from
-the front, append `rule head` at the back.
+/-- A tag system over an arbitrary symbol alphabet: read the head symbol,
+delete `m` symbols from the front, append `rule head` at the back.
 
-REFERENCE MODEL — EPISTEMIC STATUS: 2-tag systems are computationally
-universal by Cocke–Minsky (1964). That fact is EXTERNAL knowledge, cited
-here so the universality definitions in Universality/ have a concrete
-reference system to be stated against; it is NOT machine-checked in this
-repository and nothing here depends on its truth. -/
+REFERENCE MODEL — EPISTEMIC STATUS: deletion-number-2 tag systems
+(`m = 2`) over finite alphabets are computationally universal by
+Cocke–Minsky (1964). That fact is EXTERNAL knowledge, cited here so the
+universality definitions in Universality/ have a concrete reference class
+to be stated against; it is NOT machine-checked in this repository and
+nothing here depends on its truth. (`m = 0` instances are degenerate —
+they never consume input — and the literature's tag systems have m ≥ 1;
+no field constraint is imposed.) -/
 structure TagSystem where
+  Sym : Type
   m : Nat
-  rule : Bool → List Bool
+  rule : Sym → List Sym
 
 /-- One tag step, as a relation (deterministic in fact, relational in form
 to fit RS). -/
-def TagSystem.stepRel (T : TagSystem) (w w' : List Bool) : Prop :=
+def TagSystem.stepRel (T : TagSystem) (w w' : List T.Sym) : Prop :=
   ∃ a rest, w = a :: rest ∧ T.m ≤ w.length ∧ w' = w.drop T.m ++ T.rule a
 
 /-- A tag system as a rewriting system. -/
-def RS.Tag (T : TagSystem) : RS := ⟨List Bool, T.stepRel⟩
+def RS.Tag (T : TagSystem) : RS := ⟨List T.Sym, T.stepRel⟩
 
--- Sanity example: in the tag system (m := 2, a ↦ [a]), the word
--- [true, false, false] steps to [false, true].
-example : (RS.Tag ⟨2, fun a => [a]⟩).step [true, false, false] [false, true] :=
+-- Sanity example: in the tag system (Sym := Bool, m := 2, a ↦ [a]), the
+-- word [true, false, false] steps to [false, true].
+example : (RS.Tag ⟨Bool, 2, fun a => [a]⟩).step [true, false, false] [false, true] :=
   ⟨true, [false, false], rfl, by simp, rfl⟩
 
 -- A word shorter than m is stuck (normal form).
-example : (RS.Tag ⟨2, fun a => [a]⟩).NormalForm [true] := by
+example : (RS.Tag ⟨Bool, 2, fun a => [a]⟩).NormalForm [true] := by
   rintro ⟨w', a, rest, hw, hlen, _⟩
   simp at hlen

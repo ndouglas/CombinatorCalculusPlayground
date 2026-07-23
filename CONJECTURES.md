@@ -111,10 +111,18 @@ Two observations from the fuel=200, n=1..12 run:
 ## Definitions ledger (Stage 3)
 
 Universality is relative to a reference system R and an observation mode
-(Universality/Defs.lean). Designated reference: 2-symbol tag systems
-(`RS.Tag`) — universal by Cocke–Minsky 1964, an EXTERNAL fact cited, not
-machine-checked. The encoding class pins uniformity and decoder-inversion
-formally; computability of encoders is NOT internally pinned (no
+(Universality/Defs.lean). Designated reference: deletion-number-2 tag
+systems (`RS.Tag`, arbitrary symbol alphabet) — m = 2 tag systems over
+finite alphabets are universal by Cocke–Minsky 1964, an EXTERNAL fact
+cited, not machine-checked. All three Universal* definitions
+(`UniversalReach`/`UniversalNorm`/`UniversalConv`) quantify over the
+pinned `Simulation` class — uniform encoder, decoder-inversion,
+step-faithful `fwd`/`bwd` — never over bare encoding functions. The
+bare-function variant is machine-checked to be trivial
+(`bareEncNorm_trivial`, Universality/Defs.lean): a classical oracle
+encoder witnesses it for ANY source system (given the host has one
+normalizing and one non-normalizing state), so an unpinned definition
+measures nothing. Computability of encoders is NOT internally pinned (no
 computability theory in a zero-dependency setting) — an explicit,
 registered limitation.
 
@@ -122,19 +130,33 @@ Proven lattice edges (Universality/Taxonomy.lean): simulations preserve
 convertibility unconditionally (`Simulation.conv_preserve`); they reflect
 it when the host is Church–Rosser and image-closed
 (`Simulation.conv_reflect`); they preserve normalization under
-normal-form correspondence (`Simulation.normalizes_preserve`). SK is
-Church–Rosser in RS-language (`RS.SK_churchRosser`, riding Stage 1).
+normal-form correspondence (`Simulation.normalizes_preserve`); one such
+simulation into a Church–Rosser, image-closed host already witnesses
+Conv-universality (`Simulation.toUniversalConv`). SK is Church–Rosser in
+RS-language (`RS.SK_churchRosser`, riding Stage 1).
 
 Status of `UniversalReach (RS.Tag T) — / UniversalNorm — / UniversalConv —`
 for each host:
 
-| Host        | Reach (Simulation)      | Norm                          | Conv |
-|-------------|-------------------------|-------------------------------|------|
-| `RS.SK`     | open (Stage 4 target)   | open                          | open |
-| `RS.PureS`  | open (prize-adjacent)   | externally expected FALSE for |open |
-|             |                         | nontrivial R: Waldmann 2000   |      |
-|             |                         | (S-normalization decidable) — |      |
-|             |                         | NOT machine-checked here      |      |
+| Host        | Reach (Simulation)    | Norm                  | Conv |
+|-------------|-----------------------|-----------------------|------|
+| `RS.SK`     | open (Stage 4 target) | open                  | open |
+| `RS.PureS`  | open (prize-adjacent) | open, expected FALSE¹ | open |
+
+¹ With the definitions now pinned (`UniversalNorm` ranges over
+`Simulation`, not bare functions), the external expectation is that this
+cell is FALSE for any reference R with undecidable halting: Waldmann 2000
+shows pure-S normalization is decidable, so a COMPUTABLE encoder making
+normalization agree would make R's halting decidable — killing every
+computable step-faithful encoding. Both ingredients stay external:
+Waldmann's decidability result is not machine-checked here, and encoder
+computability is not internally pinned (see above), so the cell is
+registered open-expected-false, not refuted. The BARE-function variant of
+this cell is not worth a register entry at all: `bareEncNorm_trivial`
+(Universality/Defs.lean) proves it holds for ANY source once the host has
+one normalizing and one non-normalizing state (for pure S the latter's
+existence is exactly C1 — so the unpinned cell tracks C1, not
+universality, which is precisely why it was replaced).
 
 No cell of this table is a theorem yet; the table is the register the
 spec's Stage 3 success criterion requires ("proven or explicitly open").

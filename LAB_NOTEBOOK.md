@@ -280,3 +280,33 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Next per the DAG: Stage 4 (closing `UniversalReach`/`UniversalNorm`/
   `UniversalConv` cells for `RS.SK` against `RS.Tag`, per the ledger) is
   unblocked. C1/C2/C3 remain open.
+
+### Addendum, 2026-07-23 — whole-branch review caught two Critical definitional flaws
+
+- A final review of the whole branch (as opposed to the per-task reviews
+  above) found two Critical problems that every per-task review had
+  passed:
+  1. `UniversalNorm`/`UniversalConv` quantified over a BARE encoding
+     function, and that makes them classically trivial: a classical
+     oracle encoder — decide the source term's fate, ship a canned
+     answer — witnesses the bare property for ANY source system, which
+     the reviewer machine-checked. Fixed by making all three Universal*
+     definitions quantify over `Simulation` (step-faithful, decodable);
+     the trivialization itself is now IN the tree as a negative control
+     (`bareEncNorm_trivial`, Universality/Defs.lean), so the definitions
+     can't be quietly re-loosened without someone noticing what the
+     pinning buys. (The lattice edge was also restated at the witness
+     level — `Simulation.toUniversalConv` replaces the ∀-image-closure
+     `UniversalReach.toUniversalConv` — so Stage 4 can use it with one
+     good simulation in hand.)
+  2. `TagSystem` fixed the alphabet to `Bool` and varied only the
+     deletion number m, while citing Cocke–Minsky 1964 — which is about
+     deletion-number-2 tag systems over ARBITRARY finite alphabets, a
+     class the `Bool`-fixed structure does not cover. Fixed by
+     generalizing the alphabet to a `Sym : Type` field; the sanity
+     examples instantiate `Sym := Bool`.
+- Why per-task review couldn't see these: each task matched its brief
+  exactly — the flaws lived in the plan's definitions themselves, and
+  only a review holding the whole branch up against the external
+  literature and against adversarial witness constructions had the
+  altitude to catch them.

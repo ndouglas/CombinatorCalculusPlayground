@@ -93,8 +93,11 @@ theorem normalizes_preserve (S : Simulation A B)
 end Simulation
 
 -- ## The lattice at the Universal* level
-theorem UniversalReach.toUniversalConv {R B : RS}
-    (h : UniversalReach R B) (hcr : B.ChurchRosser)
-    (hic : ∀ S : Simulation R B, S.ImageClosed) : UniversalConv R B := by
-  obtain ⟨S⟩ := h
-  exact ⟨S.enc, S.preservesConv hcr (hic S)⟩
+-- Stated at the witness level: ONE good simulation (into a Church–Rosser
+-- host, image-closed) already yields Conv-universality — exactly the form
+-- Stage 4 needs. (An earlier version quantified image-closure over ALL
+-- simulations; that was strictly weaker for a user holding a single
+-- witness, so it was removed rather than kept alongside.)
+theorem Simulation.toUniversalConv {R B : RS} (S : Simulation R B)
+    (hcr : B.ChurchRosser) (hic : S.ImageClosed) : UniversalConv R B :=
+  ⟨S, S.preservesConv hcr hic⟩

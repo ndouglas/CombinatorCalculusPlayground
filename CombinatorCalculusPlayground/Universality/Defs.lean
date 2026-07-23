@@ -11,6 +11,10 @@
 -- back. Simulations must track steps structurally (`fwd`/`bwd`), which
 -- blocks the grossest form of the 2007 Wolfram-prize objection (an
 -- "encoding" that performs the computation itself and ships the answer).
+-- ALL THREE Universal* definitions below range over this pinned
+-- Simulation class, never over bare functions; the bare-function variant
+-- survives only as a negative control (`bareEncNorm_trivial`) showing
+-- what unpinned definitions collapse to.
 -- NOT PINNED, and not formalizable in this zero-dependency setting: that
 -- `enc`/`dec` are COMPUTABLE. Every Lean `def` is computable by
 -- construction, but that is a metatheoretic fact, not a hypothesis these
@@ -68,19 +72,42 @@ def PreservesConv (A B : RS) (enc : A.Carrier → B.Carrier) : Prop :=
   ∀ a a', A.Conv a a' ↔ B.Conv (enc a) (enc a')
 
 -- ## Universality, relative to a reference system R
--- Universality claims are ∃-encoding (exhibit one); non-universality
--- claims are ∀-encoding over the pinned class (the quantifier asymmetry
--- from the spec).
+-- All three definitions quantify over the pinned Simulation class:
+-- universality claims are ∃-Simulation (exhibit one step-faithful,
+-- decodable encoding); non-universality claims are ∀-Simulation over the
+-- same pinned class (the quantifier asymmetry from the spec). None of
+-- them ranges over bare functions — see the negative control below for
+-- why that would measure nothing.
 
 /-- Reachability-based universality: B hosts a full step-faithful
 simulation of the reference. -/
 def UniversalReach (R B : RS) : Prop := Nonempty (Simulation R B)
 
-/-- Normalization-based universality: some encoding makes halting agree. -/
+/-- Normalization-based universality: some simulation's encoding makes
+halting agree. -/
 def UniversalNorm (R B : RS) : Prop :=
-  ∃ enc : R.Carrier → B.Carrier, PreservesNormalizes R B enc
+  ∃ S : Simulation R B, PreservesNormalizes R B S.enc
 
-/-- Convertibility-based universality: some encoding embeds the reference's
-equational theory. -/
+/-- Convertibility-based universality: some simulation's encoding embeds
+the reference's equational theory. -/
 def UniversalConv (R B : RS) : Prop :=
-  ∃ enc : R.Carrier → B.Carrier, PreservesConv R B enc
+  ∃ S : Simulation R B, PreservesConv R B S.enc
+
+-- ## Why the pinning matters (negative control)
+-- If universality were merely "∃ some function making normalization
+-- agree", a classical oracle encoder — decide the source's fate, ship a
+-- canned answer — would witness it for ANY source system (given the host
+-- has one normalizing and one non-normalizing state). That is the
+-- 2007-dispute cheat in its purest form, and the reason UniversalNorm
+-- and UniversalConv quantify over Simulation (step-faithful, decodable)
+-- rather than bare functions. Machine-checked so nobody re-loosens the
+-- definitions without noticing what they buy:
+theorem bareEncNorm_trivial (R B : RS)
+    (y : B.Carrier) (hy : B.Normalizes y)
+    (n : B.Carrier) (hn : ¬ B.Normalizes n) :
+    ∃ enc : R.Carrier → B.Carrier, PreservesNormalizes R B enc := by
+  classical
+  refine ⟨fun a => if R.Normalizes a then y else n, fun a => ?_⟩
+  by_cases h : R.Normalizes a
+  · simp [h]; exact hy
+  · simp [h]; exact hn
