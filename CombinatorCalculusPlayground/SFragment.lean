@@ -208,9 +208,10 @@ theorem SNF_iff {t : Term} : SNF t ↔ KFree t ∧ NormalForm t :=
   ⟨fun h => ⟨h.kFree, h.normal⟩, fun ⟨hk, hn⟩ => SNF.of_normal hk hn⟩
 
 -- Executable twin of SNF, for census cross-validation. NOTE (epistemics):
--- snf ↔ SNF is NOT proven — the Bool twin is census tooling, validated
--- against the certified reducer by the guards in Census/Enumerate.lean,
--- not by a theorem. (kFree ↔ KFree, by contrast, IS proven: kFree_iff.)
+-- `snf_iff_SNF` (below) proves the Bool twin agrees with `SNF`, so snf may
+-- be used inside proofs — the census guards in Census/Enumerate.lean now
+-- double as checks of the certified reducer, not of snf itself. (Same
+-- footing as kFree ↔ KFree, proven earlier as kFree_iff.)
 def snf : Term → Bool
   | .S => true
   | .app .S t => snf t
@@ -222,3 +223,31 @@ def snf : Term → Bool
 #guard snf (app (app S S) S) = true
 #guard snf (app (app (app S S) S) S) = false   -- three arguments: a redex
 #guard snf K = false
+
+-- ## Retiring the informal bridges (queued by the Stage 2 final review)
+-- The Bool twin and the Prop agree after all — snf may now be used inside
+-- proofs, like kFree before it.
+theorem snf_iff_SNF : ∀ {t : Term}, snf t = true ↔ SNF t := by
+  intro t
+  fun_induction snf t with
+  | case1 =>            -- t = S
+    simp; exact SNF.S
+  | case2 t ih =>       -- t = app S t
+    simp [ih]
+    exact ⟨fun h => SNF.app1 h, fun h => by cases h with | app1 h' => exact h'⟩
+  | case3 t u iht ihu => -- t = app (app S t) u
+    simp [iht, ihu, Bool.and_eq_true]
+    exact ⟨fun ⟨h1, h2⟩ => SNF.app2 h1 h2,
+           fun h => by cases h with | app2 h1 h2 => exact ⟨h1, h2⟩⟩
+  | case4 =>            -- catch-all: shapes SNF cannot inhabit
+    simp
+    intro h
+    cases h <;> simp_all
+
+-- The spec's "spine structure" reading of SNF, as a lemma: a K-free
+-- normal form's head spine carries at most two arguments.
+theorem SNF.spineLength_le {t : Term} (h : SNF t) : spineLength t ≤ 2 := by
+  cases h with
+  | S => simp [spineLength]
+  | app1 _ => simp [spineLength]
+  | app2 _ _ => simp [spineLength]
