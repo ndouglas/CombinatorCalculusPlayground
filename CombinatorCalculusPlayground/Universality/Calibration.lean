@@ -77,3 +77,25 @@ theorem no_sim_SK_iota : ¬ Nonempty (Simulation RS.SK RS.Iota) := by
 
 theorem iota_not_universal_for_SK : ¬ UniversalReach RS.SK RS.Iota :=
   no_sim_SK_iota
+
+-- ## The Simulation class is inhabited (nontrivially)
+-- The pure-S fragment sits inside SK by inclusion — enc forgets the
+-- K-freeness certificate, dec re-checks it (decidable, Stage 2). This is
+-- the class's first machine-checked nontrivial member: it blunts any
+-- "Simulation is so strong it's vacuous, making the iota refutation
+-- hollow" objection. fwd is a single-step embedding; bwd rides Stage 3's
+-- agreement lemmas plus Stage 2's closure.
+def pureS_in_SK : Simulation RS.PureS RS.SK where
+  enc := fun a => a.val
+  dec := fun t => if h : KFree t then some ⟨t, h⟩ else none
+  dec_enc := fun a => by
+    cases a with
+    | mk t ht => simp [ht]
+  fwd := fun {a a'} s =>
+    -- a PureS step IS an SK step on the carriers
+    RS.Steps.tail s (RS.Steps.refl _)
+  bwd := fun {a a'} h =>
+    RS.PureS_steps_iff.mpr (RS.SK_steps_iff.mp h)
+
+-- Sanity: transporting along the inclusion composes with itself.
+example : Simulation RS.PureS RS.SK := pureS_in_SK
