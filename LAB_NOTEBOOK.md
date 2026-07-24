@@ -409,3 +409,114 @@ what automation could and couldn't do. This file is a first-class deliverable
   closure) — cheap to build, and landing it would blunt any
   "`Simulation` is near-vacuous" objection before harder positive work
   (e.g. Tag→SK) is attempted.
+
+## 2026-07-24 — Stage 5, Slice 1: bounded reachability
+
+- Where this slice came from: an ideonomy shake over the program's open
+  questions surfaced a latent asset that had been sitting in the tree
+  since Stage 2 — `leafCount_le_of_steps` (no K-free step ever shrinks a
+  term) doesn't just explain why erasure-based encodings fail, it also
+  confines any path from `t` to `u` inside the FINITE universe of terms
+  with at most `leafCount u` leaves. That is a bounded-search argument
+  for reachability decidability, for free, off a lemma proved for an
+  unrelated reason two stages ago. The slice plan was built around
+  formalizing that observation and searching honestly for where it runs
+  out (the abstract `Decidable` instance; C2's theorem-level form).
+- Task 1 (`succs` + the CENSUS-FIRST STOP gate): all four probes (A ×2,
+  B, C) passed on the first build, confirming the bounded-path premise
+  empirically before any proof effort was spent — the gate did its job
+  by finding nothing wrong, which is itself useful information. The one
+  real slip was in the plan's own prose: Probe C's comment described a
+  stronger one-step-closure claim than what its actual guard checked;
+  the controller caught and reworded it to match before Task 1 was
+  dispatched, rather than letting a probe's comment silently overstate
+  what it verifies.
+- Task 2 (`succs_sound`/`succs_complete`): `fun_induction` — the tactic
+  that had repeatedly bailed out proof friction in Stages 0-3 — turned
+  out to be unavailable here because `rootRed` isn't a recursive
+  function (it's a single non-recursive match), so plain `unfold` +
+  `split` did the job instead. The more interesting friction was a
+  reviewer catch, not an implementer one: the reviewer traced Lean core
+  source to confirm `++`'s left-associativity (and the resulting
+  `List.mem_append` nesting), which corrected an assumption baked into
+  the controller's own prompt for this task rather than into the
+  candidate proof script.
+- Task 3 (`closureStep`/`boundedClosure` + membership lemmas): Lean core
+  4.28 has no `mem_eraseDups`, so a small helper
+  (`mem_of_mem_eraseDups`, length-recursive) had to be written from
+  scratch. More consequentially: the plan's own fuel-0 guard instance
+  would have FAILED as written — the closure it names saturates
+  instantly at that bound, so the guard's expected verdict was wrong —
+  and the implementer's replacement instance was independently
+  hand-verified as necessary by the reviewer before being accepted.
+- Task 4 (`mem_of_saturated`/`reachable?_correct`, the slice's summit):
+  compiled on the first full attempt by a Fable-tier agent. The one
+  adjustment needed was procedural, not mathematical: Lean 4's
+  `induction h` on the `Steps` hypothesis auto-reverts `KFree t` into the
+  motive (it depends on the moving left endpoint) and reintroduces it as
+  an inaccessible hypothesis per case, so the `tail` case needed
+  `rename_i hk` to reclaim it before continuing — no `generalizing`
+  clause was needed, contrary to what the brief's caution suggested might
+  be required.
+- Task 5 (`onCycle?` + the ≤6-leaves cycle-freedom guard): this slice's
+  best epistemics moment, and it was the IMPLEMENTER, not a downstream
+  reviewer, who caught it. The plan's draft prose called the guard's
+  result "kernel-checked"; the implementer read Lean 4.28's own doc
+  comment for `#guard` (`Init/Guard.lean` — "this uses the untrusted
+  evaluator, so `#guard` passing is *not* a proof") and flagged the
+  mismatch before it shipped. Fixed: the guard's comment now says
+  "evaluator-checked... NOT a kernel proof," and two genuine kernel-level
+  theorems were added alongside it for concrete 4- and 5-leaf instances
+  (`S S S S`, `S S S S S`), each via `succs_complete` + `by rfl` +
+  `reachable?_correct`, so the file carries both an honest
+  evaluator-level sweep and real per-instance kernel proofs, clearly
+  distinguished. The stretch theorem (`no_small_cycle`, the general form
+  over `⟶⁺`) was attempted 3 times and escape-hatched exactly where the
+  brief had predicted it might be: it needs an `sTerms`-completeness
+  theorem that doesn't exist, and attempting it further exposed a deeper
+  reason why not — `sTermsTable`'s `Id.run do`/`Array`/range-loop
+  definition isn't `rfl`/`decide`/`simp`-transparent even at the smallest
+  instance (`sTerms 1 = [S]` doesn't close by plain `rfl`). Registered in
+  CONJECTURES.md as a blocked chain, not silently dropped.
+- Task 6 (the convertibility trichotomy: `Joinable`, `conv_iff_joinable`,
+  `joinable_normalizes`, `joinable_iff_nf_eq`): all three theorems land at
+  axiom footprint `[propext]` only. The one bookkeeping note: `nf_unique`'s
+  actual orientation (`u = v` from `t ⟶* u`, `t ⟶* v`, both normal) gave
+  `joinable_iff_nf_eq`'s forward direction directly — `nt = nu` in exactly
+  the goal's orientation — where the brief's rough candidate had reached
+  for a `.symm ▸ rfl` that turned out unnecessary. Simpler than sketched,
+  not harder.
+- Task 7 (`pureS_in_SK`, the `Simulation` class's first nontrivial
+  inhabitant): compiled close to verbatim, `[propext]` only. Review
+  caught a real gap, not a cosmetic one: the def's doc comment claimed
+  the inclusion was "nontrivial" but nothing in the tree exhibited an
+  actual `PureS` step — the claim was asserted, not evidenced. Fixed by
+  adding a concrete machine-checked witness
+  (`RS.PureS.step ⟨S S S S, ...⟩ ⟨(S S)(S S), ...⟩ := Step.S_red S S S`)
+  and by replacing a vacuous "composes with itself" example with a
+  genuine composition through `Simulation.id`.
+- Axiom audits across the slice, `#print axioms` re-run against the built
+  tree: `mem_of_saturated`/`reachable?_correct` → `[propext, Quot.sound]`
+  (the `Quot.sound` is inherited, not new); `conv_iff_joinable`/
+  `joinable_normalizes`/`joinable_iff_nf_eq` → `[propext]`; `pureS_in_SK`
+  → `[propext]`. No `sorry`, no `native_decide`, no `Classical.choice`
+  anywhere in the slice.
+- Meta: this is the third time in the program that a review-or-shake
+  process — not the prover — did real research work. First was Stage 3's
+  whole-branch review catching the `UniversalNorm`/`UniversalConv`
+  trivialization and the `TagSystem` alphabet flaw, both invisible to
+  every per-task review that had already passed. Second was this slice's
+  own premise: the ideonomy shake surfacing the bounded-path argument
+  latent in Stage 2's monotonicity lemma before any Reachability code
+  existed. Third is inside this same slice: the census-first STOP gate
+  (Task 1) empirically confirmed that premise before proof effort was
+  spent, Task 3's fuel-0 guard was caught as wrong and replaced under
+  reviewer hand-verification, Task 5's implementer caught the plan's own
+  "kernel-checked" overclaim against Lean's own `#guard` documentation,
+  and Task 7's review caught an asserted-not-evidenced nontriviality
+  claim. None of these were prover failures — every candidate proof
+  script that reached the kernel, reached it cleanly — the friction was
+  entirely in catching what the plan's prose claimed versus what the
+  code and the trusted kernel actually established. The process keeps
+  finding the gaps between what's true and what's merely asserted; that
+  is the slice's real product, alongside the theorems.

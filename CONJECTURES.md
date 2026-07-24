@@ -36,6 +36,13 @@ machine-checked NOT to host SK (`Universality/Calibration.lean`) — with
 Barker's λ-level iota universality explicitly registered as external and
 out of first-order scope. Simulations compose (`Simulation.comp`), so
 universality transports along hosts (`UniversalReach.of_sim`).
+As of Stage 5 Slice 1, Stage 2's monotonicity gets a second life: bounded
+reachability between pure S-terms is a CERTIFIED per-instance decision
+procedure (`reachable?`, `reachable?_correct`, `Reachability.lean`), the
+convertibility question narrows to its true open core (non-normalizing
+pairs, `Joinable`/`conv_iff_joinable`), and `Simulation` gets its first
+nontrivial inhabitant (`pureS_in_SK`, `Universality/Calibration.lean`).
+See the Stage 5, Slice 1 section below for the honest-scope register.
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
@@ -87,6 +94,30 @@ leaf-count-constant (`cycle_leafCount_eq`, `SFragment.lean`). Hence —
 an immediate corollary on paper, not formalized — a cycle hunt may
 restrict to size-preserving steps, i.e. S-redexes whose third argument
 is a single leaf. C2 itself remains open.
+
+**Stage 5 Slice 1 upgrade, with the epistemic level stated precisely:**
+every pure-S term with ≤ 6 leaves is checked cycle-free at COMPILE TIME
+via `onCycle?` and a `#guard` (`Reachability.lean`) — this is an
+EVALUATOR-checked fact (Lean's untrusted `#guard` evaluator, per its own
+doc comment), NOT a kernel proof. Separately, two CONCRETE instances (the
+4-leaf term `S S S S` and the 5-leaf term `S S S S S`) are proven
+cycle-free at the kernel level (two `example`s in `Reachability.lean`,
+each via `succs_complete` pinning the sole successor, a `by rfl`-evaluated
+`reachable? ... = some false`, and `reachable?_correct` lifting that to a
+genuine `¬ ∃ v, (t ⟶ v) ∧ (v ⟶* t)` fact) — these ARE kernel-checked. The
+general theorem form (`no_small_cycle : ∀ t, KFree t → leafCount t ≤ 5 →
+¬ ∃ v, (t ⟶ v) ∧ (v ⟶* t)`) was attempted and escape-hatched after 3
+tries: it is blocked on an `sTerms`-completeness theorem (`∀ t, KFree t →
+t ∈ sTerms (leafCount t)`) that does not yet exist, which is itself
+blocked on `sTermsTable`'s imperative `Id.run do`/`Array`/range-loop
+definition not being `rfl`/`decide`/`simp`-transparent at the needed
+generality — confirmed concretely: even `sTerms 1 = [S]` does not close
+by plain `rfl`. Fixing this chain would likely mean reimplementing
+`sTermsTable` in a structurally-recursive style (with a proven-equal
+imperative version kept for performance) or proving a general unfold
+lemma for the `for`-loop first. Registered as a blocked chain, queued
+alongside the reachability pigeonhole item (see the Stage 5, Slice 1
+section) — not claimed as a theorem. C2 in full remains open.
 
 ## C3: Growth-pattern regularities observed — status: open
 Two observations from the fuel=200, n=1..12 run:
@@ -233,3 +264,57 @@ under `Simulation`. (Compare pure S — non-erasing but size-PRESERVING
 steps exist at the minimal instantiation, so this class excludes S by
 construction and the argument does NOT apply to it; C2's cycle question
 stays genuinely open.)
+
+### Stage 5, Slice 1: bounded reachability
+
+- **The north-star question moves.** The spec's Goal 3 — is reachability
+  t ⟶* u between pure S-terms decidable? — is now answered per-instance
+  by a CERTIFIED decision procedure (`reachable?`, `reachable?_correct`,
+  `Reachability.lean`): monotonicity (Stage 2's `leafCount_le_of_steps`)
+  confines every path inside the finite universe of terms with at most
+  `leafCount u` leaves, so a saturated `boundedClosure` (built from `succs`/
+  `succs_sound`/`succs_complete`, saturation witnessed by
+  `mem_closureStep`/`boundedClosure_sound`/`boundedClosure_subset`/
+  `boundedClosure_saturated`/`mem_of_saturated`) decides. Every `some`
+  answer is a theorem-backed verdict; `none` is fuel exhaustion and
+  verdicts nothing. HONEST SCOPE: the abstract `Decidable (t ⟶* u)`
+  instance needs one more ingredient — a finite-pigeonhole argument that
+  sufficient fuel always saturates — queued as the next slice, not
+  claimed here. FOLKLORE CAVEAT: the paper-level observation
+  (monotone size ⇒ bounded search) is two lines given Stage 2 and may
+  well be known in the rewriting literature; the machine-checked
+  procedure and certificates are the contribution claimed.
+- **Convertibility narrows to its true open core** (`Joinable`,
+  `conv_iff_joinable`, `joinable_normalizes`, `joinable_iff_nf_eq`):
+  convertibility of normalizing pairs reduces to normal-form equality;
+  a normalizing term is never convertible with a non-normalizing one
+  (contrapositive of `joinable_normalizes`); the open frontier is
+  exactly: convertibility of two NON-normalizing S-terms.
+- **C2 upgraded at small sizes, epistemic level stated precisely:**
+  cycle-freedom for all pure-S terms with ≤ 6 leaves is EVALUATOR-checked
+  at compile time (`onCycle?` + `#guard`, `Reachability.lean` — Lean's
+  untrusted evaluator, NOT a kernel proof), upgrading the census's
+  fuel-bounded observation; two concrete instances (`S S S S`,
+  `S S S S S`) are additionally proven cycle-free at the KERNEL level
+  (see the C2 entry above for the exact theorem chain). The general
+  theorem form (`no_small_cycle`) is blocked on `sTerms`-completeness,
+  itself blocked on `sTermsTable`'s `Id.run do`/`Array`/range-loop
+  definition not being `rfl`/`decide`/`simp`-transparent — registered as
+  a blocked chain, queued for the next slice alongside the reachability
+  pigeonhole item. C2 in full remains open.
+- **`Simulation` is nontrivially inhabited** (`pureS_in_SK`): the pure-S
+  fragment embeds in SK by inclusion, with the decoder re-checking
+  K-freeness (decidable by Stage 2), and a concrete `RS.PureS.step`
+  witness (`S S S S → (S S)(S S)`) confirms the embedding carries real
+  dynamics, not a vacuous inclusion. The calibration-sandwich criterion
+  (a) at last has a machine-checked instance — modest, but real; a
+  known-universal-system certification remains open (Tag→SK).
+
+**Next-slice queue (both items registered here, not attempted this
+slice):** (1) the finite-pigeonhole saturation-existence argument needed
+to promote `reachable?` from a per-instance certified procedure to the
+abstract `Decidable (t ⟶* u)` instance; (2) the `no_small_cycle` blocked
+chain above (`sTerms`-completeness, itself blocked on `sTermsTable`
+transparency) — a separate gap, but one that also blocks any future
+theorem-level (as opposed to per-instance/evaluator-level) generalization
+of C2.
