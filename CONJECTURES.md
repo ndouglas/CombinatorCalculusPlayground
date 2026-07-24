@@ -1652,3 +1652,35 @@ stages and five reviews:
   arguments is stuck), which is weak evidence `{S,B}` may be acyclic and therefore
   refutable by the *existing* mechanism — the opposite verdict from rung one, and
   the reason rung two is the next thing worth doing.
+
+### Stage 18: the ladder is a hierarchy, and it answers acyclicity not universality
+
+Two corrections to Stage 17, both from the sixth review, and the second matters
+more than the first.
+
+- **The rungs are not independent.** `not_acyclic_of_pathEncoding`
+  (`Universality/Taxonomy.lean`, AXIOM-FREE) is the contrapositive of
+  `PathEncoding.refute_of_acyclic` and is five lines: cycles propagate along path
+  encodings, so a cyclic basis makes every system it path-encodes into cyclic
+  too. **Rung one is an upward-closed family, not a point** — any basis with a
+  definable `I` inherits its cycle and is beyond the acyclicity mechanism.
+  Concrete witness: `siInSK` sends the primitive `I` to `S K K`, and
+  `SK_not_acyclic_via_rung1` re-derives SK's non-acyclicity from rung one, by a
+  route independent of the Ω ↔ M cycle in `Calibration.lean`. Two independent
+  routes to the same fact, which is a check on the generic theorem as much as a
+  result.
+- **HONESTY CORRECTION — the ladder answers ACYCLICITY, not universality.** The
+  spec says "classify universality of bases between {S} and {S,K}." What this
+  program can answer per rung is acyclicity, which only bounds *refutability*:
+  an acyclic basis is refutable as an SK-host by the existing mechanism, a cyclic
+  one is not touchable by it. **Rung one does NOT say `{S,I}` is or is not
+  universal.** It says the refutation tool cannot reach it. Stage 17's write-up
+  did not state this and rung one reads like a universality result without it —
+  the same misreading the `Tag → Tag` result in Stage 16 was explicitly scoped
+  against, recurring one stage later in a different place. STATUS.md now names
+  the ladder an *acyclicity ladder* and states the gap to the spec's wording.
+- **The rung procedure is written down** (STATUS.md), with the ordering rationale:
+  step 3 (hunt a cycle) must precede step 4 (hunt a combined measure), because a
+  cycle makes step 4 provably futile. Rung one got that order right by luck.
+  Rung 2's step-4 tool is now named concretely: a **lexicographic** measure, since
+  step 1 shows no single component is monotone on `{S,B}` or `{S,C}`.

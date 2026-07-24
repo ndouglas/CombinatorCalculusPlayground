@@ -134,7 +134,7 @@ hour.
 
 ---
 
-## The relaxation ladder (spec Stage 5, second component)
+## The relaxation ladder — an ACYCLICITY ladder (spec Stage 5, second component)
 
 The spec's Stage 5 has **two** components. The north star — reachability
 decidability — is Goal 3 above and is closed. The other is the *bracketing
@@ -143,13 +143,61 @@ program*: "classify universality of bases between {S} and {S,K} — e.g., {S,I},
 universality is lost." Sixteen stages engaged only with the first; the ladder was
 opened in Stage 17.
 
-| rung | basis | status |
+**WHAT THIS LADDER ANSWERS, AND WHAT IT DOES NOT.** The spec says "classify
+**universality** of bases." What this program can answer per rung is
+**acyclicity** — and acyclicity only bounds *refutability*: an acyclic basis can
+be refuted as a host of SK by the existing mechanism, a cyclic one cannot be
+touched by it. **No rung below settles universality.** Rung one does *not* say
+`{S,I}` is or is not universal; it says the program's refutation tool cannot
+reach it. Stated here because rung one otherwise reads like a universality
+result, which would be the same misreading the `Tag → Tag` result was scoped
+against in Stage 16.
+
+| rung | basis | acyclicity verdict |
 |---|---|---|
-| 0 | `{S}` | acyclic (`no_pure_S_cycle`); refuted as a host of SK |
-| 1 | `{S,I}` | **has a cycle** (`omegaSI_cycle`); NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) |
-| 2 | `{S,B}` | open. `leafCount` non-monotone both ways; needs a τ-style combined measure. The obvious Ω attempt terminates — weak evidence it may be acyclic |
+| 0 | `{S}` | **acyclic** (`no_pure_S_cycle`); hence refuted as a host of SK |
+| 1 | `{S,I}` | **cyclic** (`omegaSI_cycle`). NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) — so the mechanism is not merely unhelpful here, it is provably inapplicable |
+| 2 | `{S,B}` | open. `leafCount` non-monotone both ways; needs a **lexicographic** measure (neither component is monotone alone). The obvious Ω attempt terminates — weak evidence it may be acyclic |
 | 3 | `{S,C}` | open, same shape as rung 2 |
-| top | `{S,K}` | classically universal; has the Ω ↔ M cycle |
+| top | `{S,K}` | **cyclic** — by the Ω ↔ M cycle, and independently by inheritance from rung one (`SK_not_acyclic_via_rung1`) |
+
+**The rungs are not independent — the ladder is a hierarchy.** Cycles propagate
+along path encodings (`not_acyclic_of_pathEncoding`, axiom-free), so a cyclic
+basis makes every system it path-encodes into cyclic as well. Rung one is
+therefore an **upward-closed family**, not a point: any basis with a definable
+`I` inherits its cycle. `siInSK` witnesses this at the top of the ladder, and
+`SK_not_acyclic_via_rung1` re-derives SK's non-acyclicity by that route —
+independent of the Ω ↔ M cycle, so the two agree.
+
+### The rung procedure
+
+Order is load-bearing. Rung one ran this before it was written down.
+
+```
+0. PRECONDITION: the basis {S, X} and X's rule as a rewrite schema.
+
+1. Compute each rule's leafCount delta at minimal instantiation.
+   -> know whether leafCount is monotone up, down, or neither.  [arithmetic]
+
+2. IF every rule strictly increases: RS.Acyclic.of_strict_measure -> refuted.
+   STOP. [one line -- where iota and all of C4 land]
+
+3. ELSE hunt for a cycle. Canonical attempt: Omega = (S X X)(S X X).
+   -> a cycle KILLS every monotone measure in both directions, so step 4
+      becomes provably futile; or the attempt terminates, weak evidence
+      toward acyclic. [small; absence of a cycle is not proof of none]
+
+4. ONLY IF no cycle: hunt a combined measure -- lexicographic, since by
+   step 1 no single component is monotone. [a full slice, as C2 was]
+
+5. Record the rung, and say which question was answered (acyclicity,
+   not universality).
+```
+
+**Step 3 must precede step 4**, because a cycle makes step 4 provably
+impossible. At rung one that ordering saved the expensive step entirely — by
+luck rather than design, which is why it is written down now. Steps 1 and 3 are
+independent and can run together.
 
 **What rung 1 establishes.** The program's entire negative apparatus routes
 through one mechanism, `RS.Acyclic.of_strict_measure` — and that mechanism

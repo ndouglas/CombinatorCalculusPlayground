@@ -1590,3 +1590,55 @@ what automation could and couldn't do. This file is a first-class deliverable
   make the ladder's first contrast; (2) rung three, {S,C}; (3) Tag → SK, still
   research-blocked and still the only other irreversible item; (4) transcription
   (C1(a), C5); (5) C6, declined a fifth time.
+
+## 2026-07-24 — Stage 18: a five-line theorem and an honesty correction
+
+- Sixth ideonomy pass. Its operator pair repeated from the fourth, so all its
+  value came from the fresh organon and prompts — worth recording, because it
+  says the picker's organon/prompt axes are now carrying more than the operator
+  axis. Three items, two of them corrections to Stage 17, which I had shipped
+  one stage earlier.
+- **The hierarchy, from the hierarchicalness prompt.** I had written the ladder up
+  as a flat set of independent rungs. Basis inclusion was sitting on it the whole
+  time, and the machinery was already in the tree: the contrapositive of
+  `PathEncoding.refute_of_acyclic` says cycles propagate along path encodings.
+  Five lines, axiom-free. Rung one goes from one basis to an upward-closed family.
+- Built the concrete witness rather than asserting the propagation: `{S,I}`
+  path-encodes into SK by sending primitive `I` to `S K K`, and
+  `SK_not_acyclic_via_rung1` re-derives SK's non-acyclicity from rung one. That
+  fact was already known here by the Ω ↔ M cycle, so this is a second independent
+  route to it — which is the point. A generic theorem whose first instance
+  re-proves something already known by another route is a theorem you can trust.
+- Injectivity needed one helper I had not anticipated: `siToTerm_ne_K`. `I`'s
+  image is `S K K`, which contains `K`s, so injectivity is not immediate — it
+  holds because nothing in the SOURCE maps to `K`, there being no `K` in `{S,I}`.
+  Small, but it is the kind of thing that would have blocked the encoding if the
+  source basis had contained K.
+- **The correction that matters: the ladder answers ACYCLICITY, not
+  universality.** The spec says "classify universality of bases". What the program
+  can deliver per rung is acyclicity, which bounds only refutability. Rung one
+  does not say {S,I} is or is not universal — it says the refutation tool cannot
+  reach it. Stage 17's write-up omitted this, and rung one reads like a
+  universality result without it.
+- That is worth dwelling on because of the timing: in Stage 16 I explicitly
+  scoped the `Tag → Tag` result against exactly this misreading, wrote a SCOPE
+  paragraph before the theorem, and said in the notebook that the overclaim was
+  "available and attractive". One stage later I made the same class of overclaim
+  in a different place and did not notice until a review asked. The discipline is
+  not transferring between stages on its own; it is transferring because the
+  reviews keep asking. Something to keep in mind if the reviews stop.
+- Also wrote the rung procedure down, with the ordering rationale — step 3 before
+  step 4, because a cycle makes step 4 provably futile. Rung one got that right by
+  luck. And named rung 2's step-4 tool concretely: a lexicographic measure, since
+  neither component is monotone alone on {S,B} or {S,C}. That is a sharper start
+  than "τ-style combined measure", which is what Stage 17 left.
+- Not attempted, and registered: the joinability-insensitive abstraction lifter
+  that the modularity prompt identified as the missing module for Tag → SK. The
+  reasoning there is sound — the program's modular parts all finished cheaply and
+  its one monolithic part is the one blocked — and the ingredients are present
+  (`ChurchRosser`, `Joinable`, SK confluence). It is the honest route to Goal 2's
+  open instance and it is a research-grade attempt, not bulk work.
+- Ranking: (1) **rung two, {S,B}**, now with a written procedure and a named tool;
+  (2) the joinability-insensitive abstraction lifter, as the modular route to
+  Tag → SK; (3) rung three, {S,C}; (4) transcription (C1(a), C5); (5) C6,
+  declined a sixth time.
