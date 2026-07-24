@@ -804,3 +804,89 @@ what automation could and couldn't do. This file is a first-class deliverable
   invariant forcing a redex, rather than hunting for one and hoping a
   certificate exists; (3) the diverging-pairs core (`Joinable`, Slice 1);
   (4) the pigeonhole queue (`sTerms`-completeness), unchanged.
+
+## 2026-07-24 — Stage 5, Slice 5: C1 split, minimality proved
+
+- Where this slice came from: a second ideonomy pass, aimed at the program's
+  own trajectory rather than at its mathematics. The tuple was
+  organon-construction + substitution on a timeline, with
+  discovery-vs-invention, predictability and cyclicity as the prompts. The
+  timeline was built from real numbers — Lean and prose line counts across
+  all 89 commits — and it said three uncomfortable things: the prose/Lean
+  ratio had sat between 0.23 and 0.48 for six stages and then inverted at
+  Slice 3 (2.33) and stayed near parity at Slice 4; the invention/discovery
+  mix had drifted toward invention, with Slice 4 two-thirds invention by
+  item count; and one conjecture had been resolved in nine stages, by the
+  late-program slice with the LOWEST prose ratio.
+- The operative move was substitution on the discovery-vs-invention axis.
+  The census frame is discovery-shaped — "which existing term is the
+  smallest diverging one?" Substituting an invention frame — "build a term
+  that provably diverges" — exposed that C1 was never one claim. It bundles
+  EXISTENCE with MINIMALITY, and the bundle is what made both halves look
+  uniformly hard. Nine stages of attacking the bundle; nobody had written
+  the two lines separately.
+- What fell out immediately once split: minimality is FINITE. 65 terms
+  (1+1+2+5+14+42), census-recorded maxSteps of 4 over that range, and
+  `normalize` already certified on both ends since Stage 1. The only gap was
+  `sTerms`-completeness — the chain blocked since Slice 1, escape-hatched
+  after three attempts, and standing at priority FOUR in this notebook's own
+  ranking. That ranking was an artifact of the unsplit conjecture: the
+  chain's standing description said it blocked `no_small_cycle` and the
+  abstract `Decidable` instance, and never once mentioned that it also gated
+  half of C1, because with C1 unsplit there was no "half of C1" to gate.
+- Route that worked, after three previous failures on the other route: stop
+  trying to make `sTermsTable`'s `Id.run do`/`Array`/range-loop definition
+  transparent, and prove both directions about a structurally-recursive twin
+  instead. The trick that makes `enum` structural is a depth budget as the
+  first argument — a two-sided size recursion cannot be seen to decrease
+  through `List.range`, but the budget can. `enum_sound` and `enum_complete`
+  went through without drama; the whole module typechecks in 1.7s. The
+  imperative enumerator is untouched and still runs the census, with
+  `#guard`s pinning agreement in length and both containment directions for
+  n ≤ 7 so the two cannot silently drift apart.
+- Then `no_small_divergence` in a few lines: completeness places a small
+  term in a finite list, a `decide`d `List.all` over sizes 0..6 discharges
+  it, `normalize_sound`/`normalize_normal` convert the success into a
+  genuine normal form. Fuel 10, comfortably above the observed maxSteps of
+  4. No `native_decide`.
+- The catch worth recording, because the tree's axiom discipline nearly
+  slipped: the first version of `enum_complete` reported
+  `[propext, Classical.choice, Quot.sound]` — `Classical.choice` would have
+  been the FIRST use of it anywhere in this tree. Bisected it to a single
+  site: `omega` discharging a non-arithmetic goal (`∃ d', d = d' + 1`) out
+  of contradictory hypotheses. Replaced with an explicit witness via
+  `Nat.succ_pred_eq_of_pos`, where `omega` only ever proves arithmetic. Same
+  failure mode and same fix as Slice 2's choice-free τ decrease, which is
+  the second time this exact leak has appeared — worth remembering that
+  `omega` proving a NON-arithmetic goal is the smell.
+- Register: C1(b) is the program's first proved POSITIVE result about pure
+  S. Every previously settled result is negative (two hosting refutations)
+  or structural (acyclicity, the consolidation, the frozen head). Stated
+  plainly in the ledger, along with the limit — minimality gives zero
+  leverage on existence, and if pure S is strongly normalizing then C1(b)
+  stays true while C1(a) is simply false.
+- What this says about method, which is the part I would keep: the
+  resolution came from neither a new probe nor a new definition. It came
+  from noticing that a conjecture was two conjectures. Slices 3 and 4 were
+  both honest and both produced good artifacts, and neither could have found
+  this, because both took the conjecture list as given. Reviewing the
+  PROGRAM rather than the mathematics was what surfaced it — and the review
+  that did it was cheap.
+- Next-target ranking, revised (the C5 demotion is deliberate and the reason
+  matters): (1) **construct-don't-search for C1(a)** — now the highest-value
+  live item, and the one census property no slice has yet negated. Under an
+  invention frame the witness need not be `c1`: any diverging pure-S term
+  settles existence, so a construction may pick a convenient, self-similar,
+  large term designed alongside its own invariant, rather than the smallest
+  one, which is the term least likely to have exploitable structure. Nine
+  stages went after the hardest possible witness for reasons of taste rather
+  than necessity. (2) **C5** (λI conservation) — unchanged in value,
+  demoted in order: it is a known classical theorem, so its information gain
+  is zero and it is labour rather than inquiry. It still gates the loop route
+  to C1(a), so it is not optional, only not urgent. (3) the pigeonhole /
+  abstract `Decidable (t ⟶* u)` item — cheaper now that `enum_complete`
+  exists, since the finiteness ingredient it wanted is exactly what
+  completeness supplies; worth re-scoping before attempting. (4) the
+  diverging-pairs core (`Joinable`, Slice 1). Note that item (3) moved up
+  by two places purely as a side effect of this slice, which is the second
+  thing the split bought.

@@ -96,6 +96,21 @@ BIGGER than `c1`; structure gained, search space not. (3) C6 survived a
 4× fuel test unchanged, and the ledger gained `probed`/`weakened` status
 labels. C1, C3, C4, C5, C6 all remain open. See the Stage 5, Slice 4
 section below.
+As of Stage 5 Slice 5, **C1 is SPLIT and half of it is PROVED**. The
+conjecture bundled two independent claims — existence (some pure-S term
+diverges) and minimality (none with ≤ 6 leaves does) — and nine stages had
+only ever attacked the bundle. Minimality is finite: 65 terms, each
+normalizing in ≤ 4 steps. Its one obstacle was the `sTerms`-completeness
+chain, blocked since Slice 1 and ranked FOURTH because nobody had noticed
+what it gated. Bypassing the imperative enumerator's opacity — a
+structurally-recursive `enum` with both directions proved (`enum_sound`,
+`enum_complete`, `Census/Completeness.lean`) rather than another attempt to
+make `sTermsTable` transparent — closes it: `no_small_divergence` proves
+every K-free term with ≤ 6 leaves reaches a normal form, and
+`seven_is_the_floor` gives the contrapositive. **C1(b): PROVED. C1(a):
+still open.** This is the program's first proved POSITIVE result about pure
+S; everything settled before it was negative or structural. C3, C4, C5, C6
+unchanged. See the Stage 5, Slice 5 section below.
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
@@ -120,16 +135,65 @@ no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
   n=10 at both fuel values — see the C6 entry for the result and the
   reproduction snippet.
 
-## C1: Smallest non-normalizing pure-S term — status: probed (open)
-Probed and CONSISTENT: fuel-insensitivity now checked at a second fuel
-value (800, Slice 4 — the n=7 exhausted count is still exactly 2), and the
+## C1: Smallest non-normalizing pure-S term — SPLIT into C1(a) and C1(b)
+
+**Slice 5 restructuring.** As originally written, C1 bundled two logically
+independent claims, and for nine stages every attempt went after the bundle:
+
+- **C1(a) EXISTENCE** — some pure-S term has no normal form (concretely:
+  `c1` diverges). Status: **probed (open)**.
+- **C1(b) MINIMALITY** — no pure-S term with ≤ 6 leaves diverges, so 7 is
+  the floor. Status: **PROVED** (`no_small_divergence`,
+  `Census/Completeness.lean`).
+
+Separating them was the whole trick. (b) is a FINITE claim — 65 terms
+(1+1+2+5+14+42), each normalizing in at most 4 leftmost-outermost steps —
+and its only obstacle was the `sTerms`-completeness chain that had been
+sitting in the queue since Slice 1 at priority 4. Nobody had noticed that
+chain gated half of the program's flagship conjecture, because the halves
+were fused and the fused claim looked uniformly hard.
+
+### C1(b): minimality — PROVED
+
+`no_small_divergence` (`Census/Completeness.lean`): for every K-free `t`
+with `leafCount t ≤ 6`, there is a `u` with `t ⟶* u` and `NormalForm u`.
+Contrapositive `seven_is_the_floor`: a diverging pure-S term has at least 7
+leaves. Axioms `[propext, Quot.sound]`, matching the tree's inherited pair;
+no `native_decide`.
+
+Mechanism, and how the old blocker was bypassed: rather than making
+`sTermsTable`'s `Id.run do`/`Array`/range-loop definition transparent —
+three prior attempts died there, and even `sTerms 1 = [S]` will not close
+by plain `rfl` — a structurally-recursive enumerator `enum` was added
+alongside it and BOTH directions proved about that (`enum_sound`,
+`enum_complete`, `mem_enumAt_iff`). `enum` recurses on a depth budget,
+which is what makes it structural where a two-sided size recursion is not.
+The imperative `sTerms` is unchanged and still runs the census; the two are
+tied by `#guard` (equal lengths and containment both ways for n ≤ 7), so
+the verified enumerator is not a parallel universe. `enum_complete` then
+places any small term in a finite list, a `decide`d `List.all` over sizes
+0..6 discharges it, and Stage 1's `normalize_sound`/`normalize_normal`
+certificates turn the `normalize` success into a genuine normal form.
+
+This is the program's **first proved positive result about pure S**.
+Everything settled before it was negative (two hosting refutations) or
+structural (acyclicity, the consolidation, the frozen head).
+
+WHAT IT IS NOT: not evidence that any pure-S term diverges. If pure S turns
+out to be strongly normalizing, C1(b) stays true and C1(a) is simply false.
+The two halves are independent in both directions.
+
+### C1(a): existence — probed (open)
+
+Probed and CONSISTENT: fuel-insensitivity checked at a second fuel value
+(800, Slice 4 — the n=7 exhausted count is still exactly 2), and the
 trajectory's structure is now partly proved rather than observed (the
-frozen head, below). Nothing has come back against C1. It remains open:
+frozen head, below). Nothing has come back against it. It remains open:
 every probe is still fuel-bounded, and no divergence proof exists.
 
-Census (fuel N=200) finds all S-terms with ≤6 leaves normalize; at 7 leaves,
-2 of 132 terms exhaust fuel. Candidates (rendered, standard combinator
-notation, left-associative application):
+Census (fuel N=200) finds all S-terms with ≤6 leaves normalize — now a
+theorem, C1(b) above; at 7 leaves, 2 of 132 terms exhaust fuel. Candidates
+(rendered, standard combinator notation, left-associative application):
 
 ```
 S S S (S S) S S
@@ -197,7 +261,7 @@ existed.
 **Slice 3 strategy note:** neither candidate self-embeds (nor
 cross-embeds, beyond the one-step relation just noted) within 120
 leftmost-outermost steps (`isSubterm` guards, `Reachability.lean` —
-fuel-bounded census data, three honest negatives). The loop route to C1
+fuel-bounded census data, three honest negatives). The loop route to C1(a)
 therefore has no cheap witness in the explored prefix; the two live
 routes are (a) a leftmost-outermost reduction invariant (a decidable
 predicate preserved by `stepOnce`, implying reducibility — none known
@@ -456,8 +520,10 @@ registered open-expected-false, not refuted. The BARE-function variant of
 this cell is not worth a register entry at all: `bareEncNorm_trivial`
 (Universality/Defs.lean) proves it holds for ANY source once the host has
 one normalizing and one non-normalizing state (for pure S the latter's
-existence is exactly C1 — so the unpinned cell tracks C1, not
-universality, which is precisely why it was replaced).
+existence is exactly **C1(a)** — so the unpinned cell tracks C1(a), not
+universality, which is precisely why it was replaced. Note this is the
+existence half specifically; C1(b), now proved, is no help here — a
+non-normalizing state is exactly what minimality does not supply).
 
 No cell of this table is a theorem yet; the table is the register the
 spec's Stage 3 success criterion requires ("proven or explicitly open").
@@ -550,7 +616,7 @@ In erasure-free calculi, weak normalization implies strong normalization
 the modern treatment). Pure S is erasure-free (Stage 2), so conservation
 SHOULD hold — but it is not formalized here, and nothing in this tree
 depends on it yet. WHY IT MATTERS: it is the missing link of the loop
-route to C1 — a self-embedding t →⁺ C[t] yields an infinite reduction;
+route to **C1(a)** — a self-embedding t →⁺ C[t] yields an infinite reduction;
 conservation would upgrade that to "no normal form." Without it, a loop
 proves only the existence of one infinite trajectory. Registered as a
 future-slice target; classical proof routes exist (external), none
@@ -864,9 +930,53 @@ vocabulary.
   "open", indistinguishable from C5 which has never been tested at all.
   Both halves of C3 are now **weakened**; C1 and C6 are **probed**.
 
-**What did NOT happen:** C1, C3, C4, C5 and C6 all remain open. No
+**What did NOT happen** (status labels as of Slice 4; SUPERSEDED for C1 by
+Slice 5, which split it and proved the minimality half — see below):
+C1, C3, C4, C5 and C6 all remain open. No
 conjecture was resolved this slice. The theorems added are a
 strengthening of existing refutations (`PathEncoding`) and a structural
 reduction of C1 (`frozen_normalizes_iff`) that makes the target term
 BIGGER, not smaller — 15 leaves against `c1`'s 7. Registered plainly so
 the slice is not read as progress toward a divergence proof.
+
+### Stage 5, Slice 5: C1 split, minimality proved
+
+The first slice since Slice 2 to resolve anything, and it did so by
+restructuring a conjecture rather than by attacking it harder.
+
+- **C1 split into existence and minimality.** See the C1 entry above. The
+  bundled statement had made both halves look uniformly hard; separated,
+  minimality is a finite claim over 65 terms and existence is the genuinely
+  open one. This is pure bookkeeping and it is what made the rest visible.
+- **The `sTerms`-completeness chain is closed** (`enum_sound`,
+  `enum_complete`, `mem_enumAt_iff`, `Census/Completeness.lean`). Blocked
+  since Slice 1, attempted and escape-hatched three times, and ranked
+  FOURTH in the standing queue — a ranking that was itself an artifact of
+  the unsplit C1, since the chain's description ("blocks `no_small_cycle`
+  and the abstract `Decidable` instance") never mentioned that it also
+  gated half of C1. Route: stop trying to make the imperative
+  `sTermsTable` transparent and prove both directions about a
+  structurally-recursive twin instead, with `#guard`s tying the two
+  together so they cannot drift.
+- **C1(b) PROVED** — `no_small_divergence` / `seven_is_the_floor`. The
+  program's first proved POSITIVE result about pure S. Everything settled
+  before it was negative (`no_sim_SK_iota`, `no_sim_SK_pureS`) or
+  structural (`no_pure_S_cycle`, `refute_of_acyclic`, the frozen head).
+- **Still open, and unaffected:** C1(a), C3, C4, C5, C6. Minimality gives
+  no leverage on existence — if pure S turns out to be strongly
+  normalizing, C1(b) remains true and C1(a) is simply false.
+- **Choice-freeness maintained.** A first version of `enum_complete` leaked
+  `Classical.choice`, which would have been the tree's first use of it. It
+  came from `omega` discharging a non-arithmetic goal (an existential) out
+  of contradictory hypotheses; replaced with an explicit witness. The whole
+  chain now reports `[propext, Quot.sound]`, and
+  `smallAllNormalize_true` reports `[propext]` alone.
+
+**Method note, since the last two slices raised it.** Slices 3 and 4 both
+resolved nothing while writing more prose than Lean; a timeline of the
+program showed the prose/Lean ratio inverting at Slice 3 and the
+invention/discovery mix drifting toward invention. This slice's resolution
+came from neither more invention nor a new probe, but from noticing that an
+existing conjecture was two conjectures. The re-ranking that followed
+(`sTerms`-completeness from 4th to 1st, C5 demoted for having zero
+information gain) is recorded in LAB_NOTEBOOK.md.
