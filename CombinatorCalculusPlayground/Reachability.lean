@@ -480,3 +480,70 @@ theorem joinable_iff_nf_eq {t u nt nu : Term}
 #guard (sTerms 4).any (fun t => match t with
   | .app (.app (.app .S _) _) .S => true
   | _ => false)
+
+-- ## Slice 3: the self-embedding hunt (C1 reconnaissance)
+-- Rewriting theory's standard non-termination witness is the LOOP
+-- t →⁺ C[t] — the term reappears as a subterm of its own reduct, and
+-- congruence pumps forever. Whether either C1 candidate loops this way
+-- has never been checked. Either answer is a finding.
+
+/-- Is s a subterm of t (including t itself)? -/
+def isSubterm (s t : Term) : Bool :=
+  t == s ||
+    match t with
+    | .app a b => isSubterm s a || isSubterm s b
+    | _ => false
+
+#guard isSubterm S (app S K) = true
+#guard isSubterm K (app S K) = true
+#guard isSubterm (app S K) (app S K) = true
+#guard isSubterm (app K S) (app S K) = false
+#guard isSubterm (app S S) (app (app S S) (app K K)) = true
+
+-- The two 7-leaf non-normalization candidates (CONJECTURES C1), as terms:
+--   c1 = S S S (S S) S S      c2 = S (S S) S S S S
+def c1 : Term :=
+  Term.app (Term.app (Term.app (Term.app (Term.app S S) S) (Term.app S S)) S) S
+def c2 : Term :=
+  Term.app (Term.app (Term.app (Term.app (Term.app S (Term.app S S)) S) S) S) S
+
+#guard leafCount c1 = 7
+#guard leafCount c2 = 7
+#guard (sTerms 7).contains c1
+#guard (sTerms 7).contains c2
+-- Pin the renderings against the ledger's candidate strings:
+#guard render c1 = "S S S (S S) S S"
+#guard render c2 = "S (S S) S S S S"
+
+-- ## Recorded outcome (exploration fuel: 120; achieved without reduction —
+-- guard compile time stayed well under budget, see task report)
+--
+-- Four directions hunted: self-embedding for c1, self-embedding for c2,
+-- and both cross-embeddings (c1-into-c2's-trace, c2-into-c1's-trace).
+-- Three land as Outcome B (honest fuel-bounded negatives); ONE lands as
+-- Outcome A — and it is not a subtle deep-subterm match but the starkest
+-- possible case: **c2 reduces to c1 in exactly one leftmost-outermost
+-- step** (`stepOnce c2 = some c1`, confirmed by kernel-checked `rfl`
+-- below). The two C1 candidates are not independent witnesses; they sit
+-- one step apart on a single trajectory, which is new information beyond
+-- CONJECTURES.md's "equivalently, by the same evidence" hedge. This is
+-- NOT a self-embedding loop witness (c1 is not shown to recur as a
+-- subterm of its OWN later reduct) and does NOT by itself open a
+-- congruence-pumping divergence route — but it DOES mean any future
+-- divergence proof for c1 transfers immediately to c2 (and vice versa),
+-- since their trajectories coincide from this point on. No divergence
+-- proof is attempted here (that is C5/Task 4's job).
+
+-- OUTCOME A (cross-direction c1-into-c2's-trace): found at step k = 1.
+-- The exact, strongest form of the finding:
+#guard stepOnce c2 = some c1
+#guard isSubterm c1 ((trace 1 c2).getLastD c2) = true
+
+-- OUTCOME B (the other three directions, fuel F = 120): honest negatives.
+-- Within 120 leftmost-outermost steps, c1 never contains itself as a
+-- subterm of a later reduct, c2 never contains itself, and c1's
+-- trajectory never contains c2. (Fuel-bounded census data, not a
+-- theorem about all steps.)
+#guard ((trace 120 c1).drop 1).all (fun u => !(isSubterm c1 u))
+#guard ((trace 120 c2).drop 1).all (fun u => !(isSubterm c2 u))
+#guard ((trace 120 c1).drop 1).all (fun u => !(isSubterm c2 u))
