@@ -721,8 +721,9 @@ reduction cycle, not formalized here.
   (a formal kill needs a computability theory; zero-dep constraint).
   The λI ({S,B,C,I}) stretch goal was not attempted this stage.
 
-## C4: No single-rule first-order combinator basis hosts SK — REDUCED
-**Status: semantic core PROVED; syntactic residue open.**
+## C4: No single-rule first-order combinator basis hosts SK — PROVED (arity 1)
+**Status: semantic core PROVED (Stage 7); syntactic class PROVED for arity 1
+(Stage 14); open for arity ≥ 2.**
 - Materiality: **HIGH** — it is a claim about a CLASS of encodings and hosts,
   so it lives at the taxonomy level, which is where this program's
   comparative advantage is. Resolving it changes what the taxonomy can say
@@ -1479,3 +1480,41 @@ on top of it. It broke, and it breaks Stage 10's preferred fix with it.
   normal, so a fixpoint's self-application is safe. The problem is specifically
   the pending recursive call, which is data-shaped and not normal. Pieces (i)
   and (ii) are unaffected and still needed.
+
+### Stage 14: C4's syntactic residue closed for arity 1
+
+Switched off criterion (a) deliberately, on Stage 13's own evidence: the piece
+(vi) estimate had been revised upward three times monotonically, which is
+evidence it would move again, while C4's residue was assessed as bulk work with
+no hidden research problem. Acted on that rather than walking down (a) one
+revision at a time.
+
+- **The class, formalized** (`Universality/OneRule.lean`): `Mono` (one
+  combinator plus application), `Pat1` (reduct patterns with one rule variable),
+  `Pat1.inst`, `countC`, `countVar`, `MonoStep`, `RS.Mono1`.
+- **C4's condition becomes arithmetic.** C4 said "each rule variable occurs at
+  least once in the reduct AND the reduct is strictly larger even at the minimal
+  instantiation". That is now exactly `1 ≤ countVar rhs` and `2 ≤ countC rhs` —
+  two decidable counts on the reduct pattern. The bridge is
+  `Pat1.leafCount_inst`: instantiation is LINEAR in the argument's size.
+- **`no_pathEncoding_SK_mono1`** (with `no_sim_SK_mono1` as corollary): no
+  arity-1 one-combinator one-rule system passing that check can path-encode SK.
+  `[propext, Quot.sound]`.
+- **Why arity 1 is not an arbitrary cut.** It is exactly ι's arity, so this
+  generalizes the instance C4 was abstracted FROM — from "ι specifically" to
+  "every arity-1 one-rule system passing a decidable check". ι's rule is written
+  as a `Pat1` with both clauses discharged by `decide` (`countVar = 1`,
+  `countC = 9`).
+  SCOPE, stated in the file: `RS.Mono1 iotaRhs` is ι's RULE SHAPE over the
+  abstract carrier `Mono`, not the `RS.Iota` instance (carrier `IotaTerm`).
+  Nothing re-derives `no_pathEncoding_SK_iota`; the example shows C4's condition
+  is satisfiable by a rule the program already cares about.
+- **What remains, precisely delimited.** General arity. The size formula
+  generalizes to `countC R + Σ_{i<n} (countVar i R)·|σ i|` against a left-hand
+  side of `1 + Σ_{i<n} |σ i|`, with the same condition shape and the same proof
+  idea — but establishing it needs sums over `i < n` and their algebra
+  (additivity over `app`, an indicator-sum lemma for the `var` case, a partition
+  lemma to split the variable list at an application node). None exist in core
+  4.28 in usable form, and this tree has no Mathlib. **So the obstacle is
+  list-sum algebra, not anything about combinators** — bulk work, exactly as
+  Stage 13 assessed.

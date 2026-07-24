@@ -1388,3 +1388,49 @@ what automation could and couldn't do. This file is a first-class deliverable
   on the Stage 10 countdown machine before any encoding work; (2) C4's syntactic
   residue, which is now comparatively more attractive, being bulk work with no
   hidden research problem in it; (3) transcription (C1(a), C5); (4) C6.
+
+## 2026-07-24 — Stage 14: taking my own advice and switching targets
+
+- Stage 13 ended with two facts I had written down and not acted on: the piece
+  (vi) difficulty estimate had been revised upward three times MONOTONICALLY,
+  and C4's residue was "bulk work with no hidden research problem in it". The
+  first is evidence the estimate will move again; the second is a target with
+  known cost. Continuing on (a) would have been walking down the same corridor
+  for a fourth revision. Switched to C4.
+- Worth being explicit about the reasoning, since it is the same move I have
+  been recommending and then not following: a monotone sequence of upward
+  revisions is information. I noted it in Stage 13 as a lesson about the SECOND
+  revision. Applying it forward instead of backward is the actual use.
+- C4's residue turned out much cheaper than expected once I looked at arity. The
+  general-arity case needs occurrence VECTORS and sums over `i < n`; the arity-1
+  case needs a single coefficient and no sums at all. And arity 1 is exactly
+  ι's arity — so the arity-1 theorem generalizes the instance C4 was abstracted
+  from, which is the most useful part of the whole class to have.
+- The satisfying part: C4's informal English collapses into two `decide`-able
+  counts. "Each rule variable occurs at least once in the reduct" is
+  `1 ≤ countVar rhs`. "The reduct is strictly larger even at the minimal
+  instantiation" is `2 ≤ countC rhs`. The bridge is one lemma —
+  `Pat1.leafCount_inst`, that instantiation is linear in the argument's size —
+  and everything else is arithmetic. A conjecture stated in prose for eleven
+  stages turned out to be two inequalities.
+- Non-vacuity handled carefully, because there was an easy overclaim available:
+  `RS.Mono1 iotaRhs` is ι's rule SHAPE over the abstract carrier `Mono`, NOT the
+  `RS.Iota` instance whose carrier is `IotaTerm`. They are isomorphic but nothing
+  here re-derives `no_pathEncoding_SK_iota`. Said so in the file, because
+  "C4 proved and it recovers the iota refutation" would have read better and been
+  wrong.
+- Lean friction, one item: `omega` cannot distribute a variable product, so
+  `(a.countVar + b.countVar) * |x|` had to be broken up with `Nat.add_mul` in the
+  simp set before `omega` could close the `app` case. One iteration.
+- Honest scope on the headline: C4 is PROVED for arity 1 and OPEN for arity ≥ 2.
+  The remaining obstacle is list-sum algebra in a Mathlib-free tree — additivity,
+  an indicator-sum lemma, and a partition lemma — not anything about
+  combinators. That matches Stage 13's assessment of the residue as bulk work,
+  and it is the first time in five stages that a difficulty estimate has held up
+  on contact.
+- Ranking: (1) **C4 general arity** — now the most attractive item on the board:
+  known cost, no research risk, and the arity-1 case has already validated the
+  proof shape, so the only question is the list algebra. (2) criterion (a),
+  where the open decision is still which route-(1) variant to attempt for the
+  abstraction, and which should be prototyped before any encoding work.
+  (3) transcription (C1(a), C5). (4) C6.
