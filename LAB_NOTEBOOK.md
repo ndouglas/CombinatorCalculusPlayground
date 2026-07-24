@@ -1077,3 +1077,60 @@ what automation could and couldn't do. This file is a first-class deliverable
   deliverables under Goals 1 and 4, correctly labelled as importing.
   (4) C6, explicitly NOT promoted despite being cheap, because cheapness is
   what made C1 attractive for nine stages.
+
+## 2026-07-24 — Stage 8: attack the blocker, not the encoding
+
+- Continued straight down the Stage 7 ranking: spec Goal 2 criterion (a),
+  the only open stated spec goal. The obvious move is to start building a
+  Tag → SK encoding. I did not, and the reasoning is the entry's point: the
+  encoding's hard field is `bwd`, so anything built before `bwd` is derivable
+  is built on top of an unsolved problem. Make `bwd` derivable first.
+- What went in: the classic adequacy technique, proved once at the taxonomy
+  level. An abstraction function on ALL host states, each host step either
+  stuttering or advancing the abstraction by exactly one source step, yields
+  `bwd` (`RS.abstraction_tracks`, `RS.bwd_of_abstraction`) and packages into
+  `Simulation.ofAbstraction`, which also absorbs `dec_enc` since the
+  abstraction doubles as the decoder. All axiom-free, and the proof is short —
+  induction on the host path carrying "the abstraction of the current state is
+  some source state reachable from the start."
+- Register, stated in the module header and the commit: this does NOT remove
+  the blocker. It changes its KIND — from "characterise every path between
+  encoded states", which is open-ended, to "define the abstraction and check
+  each rule stutters or advances", which is mechanical per machine. Worth
+  being precise because "bwd blocker solved" is exactly the overclaim this
+  notebook keeps catching, and it would be wrong.
+- Non-vacuity check chosen deliberately: rebuild `pureS_in_SK` through the new
+  constructor. It works, and it is degenerate in an instructive way — no step
+  ever stutters, because every SK step out of a K-free term advances the
+  source by exactly one PureS step (Stage 2's KFree.of_step). So the example
+  exercises the interface and NOT the hard case, since a real machine
+  encoding stutters on most steps and advances on few. Recorded as such
+  rather than presented as evidence the technique scales.
+- **The structural finding, which I did not expect and which reframes the
+  Stage 4 result.** Checking what Bracket.lean could contribute, I found there
+  is no bridge from `TermV` to `Term` and no transfer from `StepsV` to
+  `Steps`. Bracket.lean is a closed universe. So `combinatory_completeness` —
+  the program's headline POSITIVE calibration result since Stage 4 — has never
+  been in the same language as any of its negative results, all of which live
+  in the RS/Term layer. CONJECTURES.md had flagged it as "a theorem about
+  TermV, not routed through Simulation", which reads as a stylistic caveat;
+  the gap is structural. The positive and negative halves of this program's
+  calibration have never met. That is a much better argument for criterion
+  (a)'s priority than the one I gave in Stage 7, and it was sitting in the
+  import graph the whole time.
+- Criterion (a) decomposed into six pieces with difficulty named (recorded in
+  CONJECTURES.md). Five are mechanical-but-bulky; the residual risk is
+  concentrated in the last, where `abs` must be total on SK terms including
+  garbage and tracking must survive every intermediate state the driver
+  passes through. That is the piece to prototype first if this is picked up,
+  because it is the one that can fail in kind rather than in volume.
+- Meta-goal note: this is the first stage in a while where the right move was
+  to build infrastructure for a problem rather than attack the problem, and
+  the reason it was identifiable is that Stage 7 had already proved `bwd`
+  load-bearing. A blocker that is known to be principled is worth building
+  against; one that might be incidental is worth trying to route around
+  first. Those are different responses and the distinction came from a
+  theorem, not from judgement.
+- Ranking unchanged: (1) criterion (a), now with piece (vi) flagged as the
+  prototype-first risk; (2) C4's syntactic residue; (3) transcription
+  (C1(a), C5); (4) C6, still deliberately not promoted.

@@ -1270,3 +1270,46 @@ art was always densest. The top (what faithful encoding MEANS: `Simulation`,
 negative controls) is where this tree's theorem mass actually sits and where
 the literature check found nothing. C4 and spec Goal 2 criterion (a) are both
 at the top, and they are the two live items that matter.
+
+### Stage 8: the `bwd` blocker made standard
+
+Work on spec Goal 2 criterion (a), attacking the blocker rather than starting
+the encoding.
+
+- **`bwd` is now derivable from a stuttering abstraction**
+  (`RS.abstraction_tracks`, `RS.bwd_of_abstraction`,
+  `Simulation.ofAbstraction`, `Universality/Defs.lean`; all AXIOM-FREE). Give
+  an abstraction function on ALL host states such that every host step either
+  stutters (abstraction unchanged) or advances it by exactly one source step,
+  and `bwd` follows; the abstraction doubles as the decoder, so `dec_enc` goes
+  with it and `fwd` is left as the only obligation.
+  SCOPE: this does not make `bwd` easy, it makes it STANDARD — a per-machine
+  mechanical check instead of an open-ended characterisation of every path
+  between encoded states. Exercised on `pureS_in_SK`, rebuilt through the
+  constructor; that instance is degenerate in a useful way (no step ever
+  stutters, since every SK step out of a K-free term advances the source
+  exactly one PureS step), so it checks the interface, not the hard case.
+- **A structural fact about the tree, previously unregistered.** There is no
+  bridge from `TermV` (Bracket.lean's terms-with-variables) to `Term`, and no
+  transfer from `StepsV` to `Steps`. So `combinatory_completeness` — the
+  program's Stage 4 "positive" calibration result — lives in a universe
+  disconnected from the `RS`/`Term` layer where every NEGATIVE result lives.
+  CONJECTURES.md already noted it is "a theorem about TermV, not routed
+  through `Simulation`"; what was not noted is that the gap is structural, not
+  stylistic. **The positive and negative sides of this program's calibration
+  have never been in the same universe.** That is a second, independent reason
+  criterion (a) is the item that matters: it is the only thing that would put
+  a positive result in the same language as the refutations.
+- **Criterion (a), decomposed.** Remaining work, in order, with difficulty
+  named: (i) a closed-`TermV` → `Term` bridge with `StepsV` → `Steps`
+  transfer — infrastructure, mechanical; (ii) multi-variable bracket
+  abstraction by iterating `bracket` — mechanical, needs one iteration lemma;
+  (iii) Church-style data: a codable finite alphabet, lists, booleans,
+  conditionals — mechanical but bulky; (iv) a fixpoint combinator with its
+  unfolding lemma — small, standard; (v) the tag step as a combinator (length
+  test, head, drop m, append rule output) and `fwd` proving the driver takes
+  `enc w` to `enc w'` — bulky, the largest single piece; (vi) the abstraction
+  function and its stutter-or-advance proof — now mechanical thanks to this
+  stage, but voluminous, and where the residual RISK sits: `abs` must be
+  total on SK terms including garbage, and tracking must survive every
+  intermediate state the driver passes through.
