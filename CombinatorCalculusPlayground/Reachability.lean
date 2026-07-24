@@ -9,8 +9,8 @@
 -- procedure is the contribution (see CONJECTURES.md for the register).
 --
 -- HONESTY CONTRACT: the procedure returns Option Bool. `some b` is a
--- certified verdict (theorem `reachable?_correct`); `none` means fuel
--- ran out before the closure saturated and is NEVER evidence.
+-- certified verdict for K-free `t` (theorem `reachable?_correct`); `none`
+-- means fuel ran out before the closure saturated and is NEVER evidence.
 import CombinatorCalculusPlayground.Confluence
 import CombinatorCalculusPlayground.Census.Enumerate
 import CombinatorCalculusPlayground.Universality.Taxonomy
@@ -56,9 +56,9 @@ def succs : Term → List Term
 -- and a hand-set of K-bearing terms.)
 #guard (List.range 7).all fun n => (sTerms n).all fun t =>
   match stepOnce t with
-  | none => (succs t).isEmpty   -- no leftmost redex ⇒ no redex at all? NO —
-    -- careful: stepOnce none means NO redex exists (stepOnce_none_normal),
-    -- so succs must be empty too. This tests succs' emptiness agreement.
+  | none => (succs t).isEmpty   -- no leftmost redex ⇒ no redex at all? Yes,
+    -- but not trivially — Stage 0's `stepOnce_none_normal` proves it, so
+    -- succs must be empty too. This branch tests that agreement.
   | some w => (succs t).contains w
 
 #guard [app2 K S K, app I K, app (app2 K S S) (app2 K K K)].all fun t =>
@@ -293,6 +293,10 @@ theorem mem_of_saturated {acc : List Term} {bound : Nat}
     exact ih hk1 hub ht1
 
 -- ## The certified decision procedure
+-- Note: no `KFree u` hypothesis — a K-bearing u is provably unreachable
+-- from K-free t (KFree.of_steps), and the closure's members all lie on
+-- genuine paths from t, so the verdict is a correct `some false` in that
+-- case.
 theorem reachable?_correct {t u : Term} {fuel : Nat} {b : Bool}
     (hk : KFree t) (h : reachable? t u fuel = some b) :
     b = true ↔ t ⟶* u := by
@@ -350,14 +354,15 @@ def onCycle? (t : Term) (fuel : Nat) : Option Bool :=
 -- evaluator — NOT a kernel proof): NO pure-S term with ≤ 6 leaves sits on
 -- a reduction cycle. This upgrades the census's fuel-bounded observation
 -- (C2, CONJECTURES.md) to a compile-time-checked fact at these sizes.
--- For kernel-level facts on concrete instances, see the examples below.
+-- For kernel-level facts on concrete instances, see the theorems below.
 #guard (List.range 7).all fun n => (sTerms n).all fun t =>
   onCycle? t 100 == some false
 
 -- Kernel-level per-instance cycle-freedom: for these CONCRETE terms the
 -- claim is a genuine theorem (rfl-evaluated verdicts lifted through
 -- reachable?_correct), not just an evaluator pass.
-example : ¬ ∃ v, ((app3 S S S S) ⟶ v) ∧ (v ⟶* (app3 S S S S)) := by
+theorem ssss_not_on_cycle :
+    ¬ ∃ v, ((app3 S S S S) ⟶ v) ∧ (v ⟶* (app3 S S S S)) := by
   rintro ⟨v, hstep, hback⟩
   have hv : v ∈ succs (app3 S S S S) := succs_complete hstep
   -- succs (app3 S S S S) is the concrete singleton [(S S)(S S)]:
@@ -368,7 +373,7 @@ example : ¬ ∃ v, ((app3 S S S S) ⟶ v) ∧ (v ⟶* (app3 S S S S)) := by
 
 -- A second, size-5 instance: S S S S S (leafCount 5), whose only
 -- successor is the concrete term below.
-example :
+theorem sssss_not_on_cycle :
     ¬ ∃ v, ((app (app3 S S S S) S) ⟶ v) ∧ (v ⟶* (app (app3 S S S S) S)) := by
   rintro ⟨v, hstep, hback⟩
   have hv : v ∈ succs (app (app3 S S S S) S) := succs_complete hstep

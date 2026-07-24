@@ -99,10 +99,14 @@ is a single leaf. C2 itself remains open.
 every pure-S term with ≤ 6 leaves is checked cycle-free at COMPILE TIME
 via `onCycle?` and a `#guard` (`Reachability.lean`) — this is an
 EVALUATOR-checked fact (Lean's untrusted `#guard` evaluator, per its own
-doc comment), NOT a kernel proof. Separately, two CONCRETE instances (the
+doc comment), NOT a kernel proof. `onCycle?` itself is unverified census
+tooling: its cycle-freedom reading additionally rides the proven-on-paper,
+unformalized skip-larger-successors corollary of Stage 2 monotonicity
+(noted at its definition in Reachability.lean). Separately, two CONCRETE instances (the
 4-leaf term `S S S S` and the 5-leaf term `S S S S S`) are proven
-cycle-free at the kernel level (two `example`s in `Reachability.lean`,
-each via `succs_complete` pinning the sole successor, a `by rfl`-evaluated
+cycle-free at the kernel level (two theorems in `Reachability.lean`,
+`ssss_not_on_cycle` and `sssss_not_on_cycle`, each via `succs_complete`
+pinning the sole successor, a `by rfl`-evaluated
 `reachable? ... = some false`, and `reachable?_correct` lifting that to a
 genuine `¬ ∃ v, (t ⟶ v) ∧ (v ⟶* t)` fact) — these ARE kernel-checked. The
 general theorem form (`no_small_cycle : ∀ t, KFree t → leafCount t ≤ 5 →
@@ -278,8 +282,8 @@ stays genuinely open.)
   `succs_sound`/`succs_complete`, saturation witnessed by
   `mem_closureStep`/`boundedClosure_sound`/`boundedClosure_subset`/
   `boundedClosure_saturated`/`mem_of_saturated`) decides. Every `some`
-  answer is a theorem-backed verdict; `none` is fuel exhaustion and
-  verdicts nothing. HONEST SCOPE: the abstract `Decidable (t ⟶* u)`
+  answer is a theorem-backed verdict (for K-free `t`); `none` is fuel
+  exhaustion and verdicts nothing. HONEST SCOPE: the abstract `Decidable (t ⟶* u)`
   instance needs one more ingredient — a finite-pigeonhole argument that
   sufficient fuel always saturates — queued as the next slice, not
   claimed here. FOLKLORE CAVEAT: the paper-level observation
@@ -296,7 +300,10 @@ stays genuinely open.)
   cycle-freedom for all pure-S terms with ≤ 6 leaves is EVALUATOR-checked
   at compile time (`onCycle?` + `#guard`, `Reachability.lean` — Lean's
   untrusted evaluator, NOT a kernel proof), upgrading the census's
-  fuel-bounded observation; two concrete instances (`S S S S`,
+  fuel-bounded observation. `onCycle?` itself is unverified census tooling:
+  its cycle-freedom reading additionally rides the proven-on-paper,
+  unformalized skip-larger-successors corollary of Stage 2 monotonicity
+  (noted at its definition in Reachability.lean). Separately, two concrete instances (`S S S S`,
   `S S S S S`) are additionally proven cycle-free at the KERNEL level
   (see the C2 entry above for the exact theorem chain). The general
   theorem form (`no_small_cycle`) is blocked on `sTerms`-completeness,
