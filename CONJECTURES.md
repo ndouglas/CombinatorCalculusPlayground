@@ -16,6 +16,14 @@ in the latter position while labelled like the former.
   Still logically open; the label records that the evidence now leans the
   other way. A weakened conjecture should not be quoted as support for
   anything.
+- **external** — settled in the literature, NOT machine-checked here. Added
+  in Stage 6, when a literature check found that C1 had been externally
+  known all along (see the C1 entry). This is the same epistemic level the
+  file already uses for Cocke–Minsky, Waldmann and Church/Barendregt; it had
+  simply never been available as a *conjecture* status, so an
+  externally-settled claim could sit indefinitely labelled "open".
+  Formalizing an **external** claim is transcription, not research, and the
+  distinction should be visible before effort is spent.
 - **proved** (link the theorem) — kernel-checked.
 - **refuted** (link the counterexample) — kernel-checked.
 
@@ -179,13 +187,71 @@ This is the program's **first proved positive result about pure S**.
 Everything settled before it was negative (two hosting refutations) or
 structural (acyclicity, the consolidation, the frozen head).
 
+**Stage 6 correction to the novelty claim.** The FACT is external too:
+Wolfram's "at size 7 and above" states the threshold, which is exactly this
+half of C1 (see C1(a) above for citations). So `no_small_divergence` is a
+machine-checked proof of an externally-known fact — precisely the standing of
+`combinatory_completeness` (classical) and, very likely, `no_pure_S_cycle`
+(see C2). That is a legitimate contribution and it is what this project is
+FOR (spec Goal 1 and Goal 4), but "first proved positive result" is a claim
+about this tree's internal history, NOT a discovery claim, and the earlier
+wording invited the stronger reading. Corrected here rather than deleted, so
+the overreach stays visible.
+
 WHAT IT IS NOT: not evidence that any pure-S term diverges. If pure S turns
 out to be strongly normalizing, C1(b) stays true and C1(a) is simply false.
 The two halves are independent in both directions.
 
-### C1(a): existence — probed (open)
+### C1(a): existence — EXTERNAL (known in the literature)
 
-Probed and CONSISTENT: fuel-insensitivity checked at a second fuel value
+**Stage 6 literature check — the finding that should have come first.** Both
+halves of C1 were already settled externally, and this file had presented
+them as open conjectures for nine stages. The check cost under an hour and
+was never performed, despite this file maintaining a careful
+external/internal register for every OTHER background fact it relies on
+(Cocke–Minsky, Waldmann, Church/Barendregt, Barker).
+
+What the literature says:
+
+- Wolfram, *Combinators: A Centennial View* / the S Combinator Challenge
+  materials: **"At size 7 and above there are S combinator expressions that
+  do not terminate."**
+- The Wolfram Data Repository resource *Non-Terminating Combinator
+  Expressions* ships, as data, **"S combinator expressions of leaf counts 1
+  through 10 that do not halt"**, with its worked example at leaf count 7.
+
+So non-normalizing pure-S terms are known to exist, the threshold is known
+to be 7 leaves, and the underlying decision technology is Waldmann's
+(normalization of S-terms is decidable — RTA 1998 / *Information and
+Computation* 159(1–2):2–21, 2000, already cited in this file's Background,
+using rational/regular tree languages).
+
+HONEST SCOPE OF THIS CHECK: the two Wolfram sources agree and are enough to
+register the fact at **external** level — the same standing as every other
+cited result here. What was NOT done: the explicit leaf-7 expressions were
+not extracted from the dataset and compared term-by-term with `c1`/`c2`, so
+"their non-halting terms are exactly ours" is UNVERIFIED. The agreement
+established is on the threshold (7) and on existence, not on the identity of
+the witnesses. Extracting the dataset would settle it and is cheap.
+
+**What this changes.** C1(a) is transcription, not research. Formalizing it
+means importing an argument that exists — most plausibly Waldmann's
+procedure, or a direct non-termination witness — not discovering one. The
+census independently rediscovered a known threshold, which is a genuine
+(if modest) validation of the census tooling, and that is the honest way to
+describe what Stage 0 achieved.
+
+**What this does NOT change.** The Wolfram prize question is UNIVERSALITY,
+not non-termination, and it remains open. Non-terminating S-terms existing
+is background for the prize, not progress on it. Related external work to
+register alongside `no_sim_SK_pureS`: F. Vatan, *On Universality of the S
+Combinator* (arXiv:2210.12893, 2022), which argues K is not expressible in
+terms of S alone — an informal-level cousin of this tree's precisely-scoped
+`no_pathEncoding_SK_pureS`, not a substitute for it and not machine-checked
+here.
+
+Prior internal status, retained as the record of what the census could see
+on its own: probed and CONSISTENT — fuel-insensitivity checked at a second fuel value
 (800, Slice 4 — the n=7 exhausted count is still exactly 2), and the
 trajectory's structure is now partly proved rather than observed (the
 frozen head, below). Nothing has come back against it. It remains open:
@@ -289,7 +355,23 @@ same inherited trail present since Stage 0's completeness lemmas; nothing
 new to this slice). The τ
 technique is standard term-rewriting technology (polynomial
 interpretation); its application here may be folklore — the
-machine-checked resolution is the contribution claimed. The Slice 1
+machine-checked resolution is the contribution claimed.
+
+**Stage 6 sharpening of that hedge, from the literature check:** it is not
+merely "may be" folklore. Secondary sources on Waldmann's work state that he
+studied CL(S) and showed **it admits no ground loops** — which is C2, or
+close enough that C2 should be assumed external until someone reads the
+paper and confirms the exact statement. Registered at **external** level
+with that caveat: the primary source was not obtained (the Springer chapter
+is paywalled and the redirect could not be followed), so the precise
+relationship between `no_pure_S_cycle` and Waldmann's loop result is
+UNCONFIRMED. What is unaffected: the τ proof here is axiom-light,
+strategy-independent and size-independent, and it is machine-checked, which
+is the contribution this project claims. What should change is the framing —
+C2 was described as "the program's first RESOLVED conjecture", and resolved
+is right while first-to-know is not.
+
+The Slice 1
 evaluator sweep and kernel instances (`onCycle?`, `ssss_not_on_cycle`,
 `sssss_not_on_cycle`) remain in the tree as independent evidence paths
 that now agree with the general theorem.
@@ -344,12 +426,26 @@ lemma for the `for`-loop first. Registered as a blocked chain, queued
 alongside the reachability pigeonhole item (see the Stage 5, Slice 1
 section) — not claimed as a theorem. C2 in full remains open.
 
-## C3: Growth-pattern regularities observed — status: WEAKENED (both parts)
-Re-labelled in Slice 4. Both halves of C3 have now been probed and both
-probes came back against them; the entry had nonetheless been sitting at
-plain "open", indistinguishable from C5 which has never been tested at
-all. Neither is refuted — these are observations whose motivating reading
-lost support, not false claims.
+## C3: Growth-pattern regularities observed — RETIRED (closed as artifact)
+
+**Stage 6: closed, not carried.** C3 was never a conjecture about pure S —
+its own title says "regularities *observed*", and both regularities are
+properties of the fuel-200 census cutoff rather than of S-reduction. Both
+halves were probed, both probes came back against them (details retained
+below), and continuing to carry an entry in this state invites re-probing
+something the evidence already leans against. Retired with the data kept as
+the record.
+
+Anything genuinely at stake here was absorbed elsewhere: the "explosive
+growth" content lives in C1(a) and C6; the argmax structural question is
+answered negatively at n=7..9 and would need the n≥10 argmaxes recomputed
+(runtime-prohibitive) to say more; and the spine-length observation was
+superseded outright by Slice 4's frozen head, which shows spine length is a
+property of the STARTING term that does not survive its own trajectory.
+
+Re-labelled WEAKENED in Slice 4 before retirement here. Neither half is
+refuted — these are observations whose motivating reading lost support, not
+false claims.
 
 - **C3.1 (head shape) — weakened by sample collapse, twice over.** Slice 3
   showed the two n=7 "samples" are adjacent points on ONE trajectory
@@ -980,3 +1076,67 @@ came from neither more invention nor a new probe, but from noticing that an
 existing conjecture was two conjectures. The re-ranking that followed
 (`sTerms`-completeness from 4th to 1st, C5 demoted for having zero
 information gain) is recorded in LAB_NOTEBOOK.md.
+
+### Stage 6: the spec's goals, and a literature check that reframes C1
+
+Prompted by re-reading the design spec, which showed that the C-conjecture
+list is not the goal set. The spec's Goal 3 is the north star and had never
+been ranked first; C1, which had absorbed most of Stage 5, is Stage 0 census
+output.
+
+- **Spec Goal 3 CLOSED — reachability between pure S-terms is decidable**
+  (`stepsDecidable`, `steps_decidable_of_kFree`, `Decidability.lean`).
+  Slice 1 had a certified per-instance procedure and one gap: nothing proved
+  that enough fuel always saturates the closure. That gap needed exactly the
+  finiteness of the bounded term universe, which Slice 5's `enum_complete`
+  supplies. Pigeonhole with an explicit measure: `smallTerms bound` is the
+  finite universe, `deficit` counts what is uncollected, `deficit_lt` shows a
+  non-empty frontier strictly reduces it, `boundedClosure_isSome` concludes.
+  All four of Slice 1's hand-tuned examples re-verdict at the PROVED fuel
+  (`reachFuel`), so the bound is usable and not merely finite. Axioms
+  `[propext, Quot.sound]`.
+  HONEST FRAMING: on paper this is folklore-adjacent — "monotone size ⇒
+  bounded search" is two lines given Stage 2 — and the rewriting literature
+  may have it. The machine-checked version is the claim.
+- **C1 reframed by literature check — both halves were EXTERNAL all along.**
+  See the C1 entry. Non-terminating pure-S terms are known to exist and the
+  7-leaf threshold is known (Wolfram; Wolfram Data Repository dataset for
+  leaf counts 1–10; Waldmann's decidability result as the underlying
+  technology). C1(a) is therefore transcription, not research. C1(b), proved
+  in Slice 5, is a machine-checked proof of a known fact — a legitimate
+  contribution under spec Goals 1 and 4, but not a discovery, and the
+  "first proved positive result" wording has been corrected in place.
+  C2 is very likely external too (secondary sources credit Waldmann with
+  showing CL(S) admits no ground loops); registered with the caveat that the
+  primary source was not obtained.
+- **Spec Goal 2 criterion (a) — assessed, still open, blocker stated.** The
+  criterion wants a `Simulation` inhabitant certifying a KNOWN-universal
+  system, i.e. Tag → SK; `pureS_in_SK` does not discharge it because pure S
+  is not known-universal. Deliberately NOT attempted this stage. What it
+  needs: a concrete finite-alphabet tag system (the current `TagSystem.Sym`
+  is an arbitrary `Type`, so it cannot be encoded as-is), Church-style list
+  and symbol encodings, a fixpoint combinator, multi-variable bracket
+  abstraction (`Bracket.lean` has the single-variable case only), and then
+  `fwd` — all substantial but mechanical. The actual blocker is **`bwd`**:
+  `RS.SK.Steps (enc w) (enc w') → RS.Tag.Steps w w'` is a full adequacy
+  theorem, asserting no spurious SK path connects two encoded words. `bwd`
+  was free for `pureS_in_SK` only because that encoder is inclusion. For a
+  real encoding it is research-grade and is the hard part of the whole
+  criterion. Recorded rather than half-built.
+- **Negative control added to the taxonomy** (`universalReach_self`,
+  `universalNorm_self`, `universalConv_self`, `Universality/Taxonomy.lean`):
+  `Simulation.id` makes all three Universal* predicates trivially true on
+  the diagonal, so a ledger cell carries information only when R ≠ B. Every
+  row of the actual table has R = `RS.Tag` ≠ B, so nothing in it is
+  affected — this exists so nobody discharges criterion (a) by exhibiting a
+  diagonal instance, which would be the reflexive analogue of the
+  oracle-encoder cheat `bareEncNorm_trivial` already rules out.
+- **C3 RETIRED** as a census artifact — see the C3 entry.
+
+**Standing status after Stage 6.** Proved here: C1(b), C2, Goal 3
+decidability, both hosting refutations (at `PathEncoding` strength), the
+frozen head, combinatory completeness, confluence, the Stage 2 conservation
+laws. External and unformalized: C1(a), C5, and probably C2's priority.
+Open and genuinely unsettled: C4, C6, spec Goal 2's criterion (a), and the
+Wolfram prize question itself — which is about UNIVERSALITY and is untouched
+by anything in the C1 literature.

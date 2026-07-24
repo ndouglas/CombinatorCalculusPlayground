@@ -102,6 +102,26 @@ theorem Simulation.toUniversalConv {R B : RS} (S : Simulation R B)
     (hcr : B.ChurchRosser) (hic : S.ImageClosed) : UniversalConv R B :=
   ⟨S, S.preservesConv hcr hic⟩
 
+-- ## Negative control: the definitions measure nothing on the diagonal
+-- Companion to `bareEncNorm_trivial` (Defs.lean), found while assessing
+-- spec Goal 2's calibration-sandwich criterion (a). `Simulation.id` makes
+-- ALL THREE Universal* predicates trivially true whenever the reference and
+-- the host are the SAME system — so a cell of the definitions ledger carries
+-- information only when R ≠ B, and "B is universal for B" is never evidence
+-- of anything. Every row of the actual table has R = RS.Tag ≠ B, so nothing
+-- in the ledger is affected; this is stated so nobody discharges criterion
+-- (a) by pointing at a diagonal instance, which would be the reflexive
+-- analogue of the oracle-encoder cheat.
+
+theorem universalReach_self (A : RS) : UniversalReach A A :=
+  ⟨Simulation.id A⟩
+
+theorem universalNorm_self (A : RS) : UniversalNorm A A :=
+  ⟨Simulation.id A, fun _ => Iff.rfl⟩
+
+theorem universalConv_self (A : RS) : UniversalConv A A :=
+  ⟨Simulation.id A, fun _ _ => Iff.rfl⟩
+
 -- ## One refutation mechanism, stated once
 -- Both hosting refutations (iota, Stage 4; pure S, Slice 2) are instances
 -- of a single fact: an injective PATH-PRESERVING encoding cannot carry a

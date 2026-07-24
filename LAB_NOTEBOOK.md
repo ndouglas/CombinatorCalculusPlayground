@@ -890,3 +890,94 @@ what automation could and couldn't do. This file is a first-class deliverable
   diverging-pairs core (`Joinable`, Slice 1). Note that item (3) moved up
   by two places purely as a side effect of this slice, which is the second
   thing the split bought.
+
+## 2026-07-24 — Stage 6: the spec's goals, and the check nobody ran
+
+- Where this came from: not an ideonomy pass this time but a plain
+  re-reading of the design spec, prompted by noticing that two consecutive
+  strategy answers had ranked work against the C-conjecture list. The spec
+  does not have a C-list. Its Goal 3 is "is reachability between pure S-terms
+  decidable?", and I had ranked that item THIRD after having just written the
+  note explaining that Slice 5 made it tractable. Third time the same failure
+  shape: taking a derived artifact (first C1-as-one-conjecture, then the
+  C-list, then my own queue) as the fixed target while the spec sat there
+  being the actual authority.
+- Goal 3 went through cleanly and fast. The whole content is that
+  `enum_complete` supplies the finiteness the Slice 1 gap needed:
+  `smallTerms` as the finite universe, `deficit` as the measure,
+  `deficit_lt` for the pigeonhole step, then saturation by induction on fuel
+  rather than well-founded recursion (the deficit bound is threaded as a
+  hypothesis, which keeps it structural). Two generic list lemmas had to be
+  written — filtering one list by two comparable predicates, both the ≤ and
+  the < form — neither in core 4.28.
+- Lean friction worth recording: core 4.28 has only ONE direction of
+  `eraseDups` membership, and the project had already hand-written that one
+  (`mem_of_mem_eraseDups`, Slice 1). I needed the other direction and
+  briefly started writing it, then realised the proof does not need it —
+  take the pigeonhole witness from the DEDUPED frontier via `eraseDups_cons`
+  and the existing direction covers the rest. Cheaper than adding a lemma.
+- Also: `cases h : e with` substitutes the scrutinee into the goal, so a
+  follow-up `rw [h]` fails with "pattern not found". Cost two iterations.
+  And `by_contra` is Mathlib, not core — `Nat.lt_or_ge` plus `absurd` is the
+  zero-dependency replacement, same as Slice 5 needed.
+- **The literature check, which is the real result of this stage and is
+  uncomfortable.** Under an hour of searching established that BOTH halves of
+  C1 have been known externally the whole time. Wolfram states plainly that
+  "at size 7 and above there are S combinator expressions that do not
+  terminate", and the Wolfram Data Repository ships the non-halting S
+  expressions for leaf counts 1 through 10 as a dataset. Waldmann's
+  decidability result — cited in this project's own spec Background since
+  Stage 0 — is the underlying technology. So the census independently
+  rediscovered a known threshold, and this file recorded the rediscovery as
+  an open conjecture for nine stages.
+- What makes that a process failure rather than bad luck: this project
+  maintains a meticulous external/internal register. Cocke–Minsky, Waldmann,
+  Church/Barendregt and Barker are all cited precisely, with "EXTERNAL fact,
+  not machine-checked" attached. The register was applied to every
+  background fact the program LEANED on and to none of the facts it was
+  trying to establish. There was no **external** status available for a
+  conjecture, so an externally-settled claim had nowhere to sit except
+  "open". Added that status this stage; it is the missing primitive.
+- Honest limit on the check: I did not extract the explicit leaf-7
+  expressions from the dataset to compare with `c1`/`c2` term by term. The
+  agreement established is on existence and on the threshold, not on the
+  identity of the witnesses. Cheap to finish and worth finishing.
+- Consequences taken rather than deferred: C1(a) re-labelled external
+  (transcription, not research); the "first proved positive result" claim on
+  C1(b) corrected in place rather than deleted, so the overreach stays
+  visible; C2's folklore hedge sharpened from "may be folklore" to "assume
+  external until the primary source is read", since secondary sources credit
+  Waldmann with no-ground-loops for CL(S).
+- Goal 2 criterion (a): assessed and deliberately not attempted. The
+  encoding machinery needed is substantial but mechanical; the blocker is
+  `bwd`, which for a real encoder is a full adequacy theorem (no spurious SK
+  path between encoded words). `bwd` was free for `pureS_in_SK` only because
+  that encoder is inclusion — which in hindsight makes `pureS_in_SK` a much
+  weaker demonstration of the Simulation class than it reads as. Recorded
+  the blocker instead of leaving a half-built encoding in the tree.
+- One cheap real finding fell out of that assessment: `Simulation.id` makes
+  all three Universal* predicates trivially true on the diagonal. Added as a
+  negative control beside `bareEncNorm_trivial`. It does not affect any
+  ledger row (all have R = Tag ≠ B) but it closes the reflexive analogue of
+  the oracle-encoder cheat.
+- C3 retired as a census artifact. Both halves weakened, never a claim about
+  S-reduction, and carrying it was inviting re-probing.
+- Next-target ranking, revised again and now anchored to the spec rather
+  than to the C-list: (1) **spec Goal 2 criterion (a)** — the only stated
+  spec goal still open, and the taxonomy is the spec's declared intellectual
+  centre; needs to be scoped as a multi-slice project with `bwd` as the
+  known hard part, not attempted opportunistically. (2) **C4** — genuinely
+  open, genuinely ours, and the one conjecture on the list with no external
+  answer found; it generalises the iota refutation to all strictly-growing
+  one-rule bases and `PathEncoding` already gives the right hypothesis
+  shape. (3) C6 — open, ours, cheap to extend. (4) transcription work
+  (C1(a), C5) — real deliverables under Goals 1 and 4, now correctly
+  labelled as importing rather than discovering. Note that C1 has left the
+  top of this list for the first time since Stage 0, and that the two items
+  now above it are the two nobody has found an external answer for.
+- Meta-goal note (spec Goal 4): the spec says "if Stage 5 never terminates,
+  the notebook is the result." Three stages of strategy advice in this
+  notebook were mis-ranked in the same way, and each time the correction came
+  from re-reading a document that was already in the repo rather than from
+  new mathematics. That is a finding about this working setup, and it belongs
+  in the meta-goal's record as much as any proof-friction note does.
