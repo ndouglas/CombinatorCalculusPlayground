@@ -522,3 +522,76 @@ what automation could and couldn't do. This file is a first-class deliverable
   code and the trusted kernel actually established. The process keeps
   finding the gaps between what's true and what's merely asserted; that
   is the slice's real product, alongside the theorems.
+
+## 2026-07-24 — Stage 5, Slice 2: the isometric fragment (C2 resolved)
+
+- Where this slice came from: an ideonomy pass over the program's open
+  questions, this time explicitly cross-domain — the general technique of
+  proving term-rewriting termination via a polynomial (weighted)
+  interpretation was brought to bear on C2's cycle question, rather than
+  growing out of a lemma already sitting in the tree (Slice 1's origin
+  story). The head-weight measure τ was derived on paper first: each
+  leaf's weight doubles per left-edge on its root path, so an S-redex
+  firing at the head burns weight even when leaf count is flat. The
+  arithmetic (τ(S S S S) = 15, τ((S S)(S S)) = 9, a drop of exactly 6) was
+  hand-checked twice independently before Task 1 was dispatched, and the
+  whole slice was built behind a STOP gate: no proof effort until cheap
+  `#guard` probes confirmed the arithmetic empirically.
+- Task 1 (`tau` + the STOP-gate probes): both probes passed on the first
+  build. Probe A (τ strictly drops on every size-preserving successor
+  over all ≤6-leaf pure-S terms) held unweakened. Probe B (the root
+  isometric redex drops τ by exactly 6) was checked for non-vacuousness
+  with a scratch probe outside the tracked tree: exactly one size-4
+  pure-S term matches the root-redex pattern, and it is `S S S S` — the
+  classic case the file's header comment names — so Probe B genuinely
+  exercised the claimed arithmetic rather than passing on an empty case.
+- Task 2 (`tau_pos`, `KFree.leafCount_eq_one`, `tau_lt_of_isometric_step`):
+  the brief's named-binder `cases` syntax for the K-freeness lemma
+  (`| app (t := l) (u := r) hl hr`) is not valid Lean 4 `cases` syntax;
+  fixed by matching `| app hl hr` and naming the subterms afterward with
+  `rename_i l r`. The real catch was the reviewer's, not the
+  implementer's: a scratch `#print axioms` run showed
+  `tau_lt_of_isometric_step` pulling in `Classical.choice`, traced by
+  bisecting the proof's `simp` call sites down to the `appL`/`appR`
+  congruence cases — the default `simp` set (not the hand-written
+  arithmetic) was the source. Swapping `simp [leafCount]`/`simp [tau]`
+  for `simp only [leafCount]`/`simp only [tau]` at those four call sites
+  eliminated the choice dependency; re-audited at `[propext, Quot.sound]`
+  only. Fixed within the same task, before the commit landed.
+- Task 3 (`tau_lt_of_steps_size_eq`, `no_pure_S_cycle` — C2 itself): the
+  first full attempt at this theorem. The new proofs use no `simp` at
+  all (`omega`, `rcases`, `rw`, term-mode), so no choice-leak risk arose
+  here in the first place. The brief's equality-orientation warning
+  proved accurate: in `no_pure_S_cycle`'s case split the size-preserving
+  disjunct arrives as `v = t` (the return leg's endpoint equated to the
+  starting term), exactly the orientation the brief flagged as the one
+  to watch rather than its mirror `t = v` — `rw [heq] at hdrop` and
+  `Nat.lt_irrefl` closed it as anticipated.
+- Task 4 (`Steps.head_of_ne`, `no_sim_SK_pureS`, and the three
+  `pureS_not_universal*_for_SK` corollaries — the prize-adjacent
+  refutation): also a first full attempt. The only adaptation needed was
+  a binder rename: the brief's `fun ⟨S, _⟩ => ...` destructuring pattern
+  for the Norm/Conv corollaries collided with `Term.S` under the file's
+  `open Term`, so the elaborator resolved the bound name to the
+  constructor instead of a fresh `Simulation` variable. Renamed the
+  binder to `Sim`; the statements themselves needed no change.
+- Milestone: **this is the program's first conjecture RESOLUTION** — C2
+  moves from open to PROVED, and the theorem (`no_pure_S_cycle`) is
+  strictly stronger than the census conjecture that produced it on both
+  the strategy and size axes. It is also the second time the SK Ω ↔ M
+  reduction cycle has served as the refuting witness in this taxonomy:
+  Stage 4 used it against iota (strict growth means no injective
+  encoding can carry a cycle into a strictly-growing system), and this
+  slice reuses the exact same cycle against pure S (acyclicity means no
+  injective encoding can carry a cycle into a cycle-free system). One
+  mechanism — a cyclic source cannot be hosted by a system whose
+  reduction order admits no return trips — with two independent causes
+  now machine-checked to trigger it.
+- Note for the future: C1 (the smallest non-normalizing pure-S term)
+  remains the natural next research target, and it needs the other
+  polarity of this slice's toolbox — NON-termination tools, not
+  termination ones (a divergence proof, not a decrease measure). That
+  sits alongside the two items already queued from Slice 1: the
+  finite-pigeonhole saturation argument for the abstract `Decidable (t
+  ⟶* u)` instance, and the `sTerms`-completeness chain blocking
+  `no_small_cycle`'s general kernel form.

@@ -43,6 +43,13 @@ convertibility question narrows to its true open core (non-normalizing
 pairs, `Joinable`/`conv_iff_joinable`), and `Simulation` gets its first
 nontrivial inhabitant (`pureS_in_SK`, `Universality/Calibration.lean`).
 See the Stage 5, Slice 1 section below for the honest-scope register.
+As of Stage 5 Slice 2, the program has its first resolved conjecture —
+`no_pure_S_cycle` (`Isometric.lean`) proves C2 outright via a
+head-weight measure (`tau`) — and the same acyclicity powers a
+precisely-scoped, prize-adjacent refutation, `no_sim_SK_pureS`
+(`Universality/Calibration.lean`): pure S cannot host SK under the
+pinned `Simulation` class. See the Stage 5, Slice 2 section below for
+the full mechanism and its scope.
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
@@ -81,8 +88,37 @@ with genuine unbounded/explosive growth along the trajectory, not with a
 near-normal-form plateau that a little more fuel would resolve — but it
 remains fuel-exhaustion, not a divergence proof.
 
-## C2: No proper cycles in pure-S reduction — status: open
-No S-term with ≤12 leaves revisits a previous term (leftmost-outermost,
+## C2: No proper cycles in pure-S reduction — status: PROVED
+
+**Resolved (Stage 5, Slice 2):** `no_pure_S_cycle` (`Isometric.lean`) —
+for every K-free t there is no v with t ⟶ v and v ⟶* t. The theorem is
+STRONGER than the census conjecture on both axes: any strategy (not just
+leftmost-outermost) and any size (not just ≤ 12 leaves). Mechanism: any
+cycle must preserve leaf count at every step (Stage 2 monotonicity
+squeezed around the loop); a size-preserving K-free step is an S-redex
+with atomic third argument; the head-weight measure τ (τ(app a b) =
+2·τ(a) + τ(b)) strictly drops by 6 at every such redex
+(`tau_lt_of_isometric_step`) and cannot return. Axioms: `#print axioms`
+against the built tree — `tau_pos`, `KFree.leafCount_eq_one`,
+`tau_lt_of_isometric_step`, `tau_lt_of_steps_size_eq`, and
+`no_pure_S_cycle` all report `[propext, Quot.sound]` (the `Quot.sound` is
+the inherited RS-quotient trail carried since Stage 3, not new). The τ
+technique is standard term-rewriting technology (polynomial
+interpretation); its application here may be folklore — the
+machine-checked resolution is the contribution claimed. The Slice 1
+evaluator sweep and kernel instances (`onCycle?`, `ssss_not_on_cycle`,
+`sssss_not_on_cycle`) remain in the tree as independent evidence paths
+that now agree with the general theorem.
+
+### History (pre-resolution census and Slice 1 text, superseded above)
+
+The three paragraphs below are kept verbatim as the historical record of
+how C2 stood before Stage 5 Slice 2; where they say "remains open" that
+was accurate at the time of writing and is superseded by the PROVED
+resolution above.
+
+No S-term with ≤12
+leaves revisits a previous term (leftmost-outermost,
 fuel 200). Confirmed at every n = 1..12 (`No cycles found at any size (within
 fuel).` printed by every run in this file's data). Conjecture: pure-S
 leftmost-outermost trajectories never cycle. (NOTE: cycle-freedom under ALL
@@ -217,7 +253,7 @@ Updated table (Stage 4):
 |-------------|----------------------------------------------|-----------------------|------|
 | `RS.SK`     | combinatory completeness proven at TermV level (`combinatory_completeness`, `Bracket.lean`); Tag→SK still open | open | open |
 | `RS.Iota`   | open in general² | open | open |
-| `RS.PureS`  | open (prize-adjacent) | open, expected FALSE¹ | open |
+| `RS.PureS`  | REFUTED vs SK (`pureS_not_universalReach_for_SK`)³; open vs Tag (prize-adjacent) | REFUTED vs SK (`pureS_not_universalNorm_for_SK`)³; open vs Tag, expected FALSE¹ | REFUTED vs SK (`pureS_not_universalConv_for_SK`)³; open vs Tag |
 
 ² Against reference SK, ALL THREE observation modes fall for first-order
 iota: `no_sim_SK_iota` refutes `UniversalReach RS.SK RS.Iota`, and since
@@ -228,6 +264,20 @@ here, not added to the tree; the same growth argument would refute
 Tag→Iota for any tag system with a genuine reduction cycle, not
 formalized). Against the table's own reference, `RS.Tag`, none of the
 three cells is refuted — the Iota row is open in general against `RS.Tag`.
+
+³ Against reference SK, ALL THREE observation modes fall for pure S too,
+by the mirror-image mechanism (acyclicity instead of strict growth —
+see the Stage 5, Slice 2 section below): `no_sim_SK_pureS`
+(`Universality/Calibration.lean`) refutes `UniversalReach RS.SK
+RS.PureS`, with `pureS_not_universalNorm_for_SK` and
+`pureS_not_universalConv_for_SK` as immediate named corollaries (all
+three quantify over `Simulation`). SCOPE, restated from the Slice 2
+section: this refutes STEP-FAITHFUL hosting under the pinned
+`Simulation` class only — it does NOT resolve the Wolfram prize
+question, whose informal universality admits broader, non-step-faithful
+encodings. Against the table's own reference, `RS.Tag`, this cell
+remains open — the same acyclicity mechanism would refute Tag→PureS for
+any tag system with a genuine reduction cycle, not formalized here.
 
 ### Stage 4 calibration results
 
@@ -327,3 +377,30 @@ chain above (`sTerms`-completeness, itself blocked on `sTermsTable`
 transparency) — a separate gap, but one that also blocks any future
 theorem-level (as opposed to per-instance/evaluator-level) generalization
 of C2.
+
+### Stage 5, Slice 2: the isometric fragment
+
+- **C2 is the program's first resolved conjecture** (see C2 above).
+- **Prize-adjacent refutation, precisely scoped:** `no_sim_SK_pureS`
+  (`Universality/Calibration.lean`) — under this taxonomy's pinned
+  Simulation class, pure S cannot host SK: SK's explicit Ω ↔ M reduction
+  cycle cannot be carried by an injective encoding into a system that
+  `no_pure_S_cycle` proves cycle-free. All three observation modes fall
+  together as named theorems (`pureS_not_universalReach_for_SK`,
+  `pureS_not_universalNorm_for_SK`, `pureS_not_universalConv_for_SK`),
+  since all three quantify over `Simulation`. SCOPE — read before
+  quoting: this does NOT resolve the Wolfram prize question, whose
+  informal universality admits broader encodings than step-faithful
+  simulation. What is now machine-checked: **if S alone is universal,
+  its encoding must do non-step-faithful work.** The taxonomy has
+  located the prize question in the gap between the pinned class and
+  the informal one — which is exactly the definitional territory the
+  program was built to map.
+- **The refutation mechanism, unified:** iota fell to strict growth
+  (Stage 4); pure S falls to acyclicity (this slice). Both are instances
+  of one pattern — a system whose reduction order admits no return trips
+  cannot host a cyclic source under injective step-faithful encoding.
+  C4's strictly-size-increasing class is one cause of no-return; τ-style
+  termination of the isometric fragment is another. (C4's statement is
+  unchanged; this remark widens the observed pattern, not the
+  conjecture.)
