@@ -1134,3 +1134,54 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking unchanged: (1) criterion (a), now with piece (vi) flagged as the
   prototype-first risk; (2) C4's syntactic residue; (3) transcription
   (C1(a), C5); (4) C6, still deliberately not promoted.
+
+## 2026-07-24 — Stage 9: the bridge, and a claim weakened instead of an axiom paid
+
+- Continued down the ranking. Criterion (a)'s prototype-first risk is piece
+  (vi), but Stage 8's structural finding made piece (i) the better move: it
+  repairs a real defect in the program's centrepiece and is on the critical
+  path regardless.
+- First confirmation was worse than the Stage 8 write-up: Bracket.lean did not
+  merely lack a bridge, it had **no import line at all**. A completely
+  standalone file holding the program's only positive calibration result. The
+  Stage 8 entry said "closed universe"; it was literally closed.
+- The bridge went in cleanly. The pleasant surprise: `step_toTerm` needs NO
+  closedness hypothesis. `StepV`'s four rules are `Step`'s four rules,
+  `toTerm` is a homomorphism for application, and variables are inert on both
+  sides — so every variable-level step projects to a genuine `Term` step
+  unconditionally. Both transfer lemmas are axiom-free. I had budgeted for a
+  closedness side-condition threaded through every proof and it never
+  materialised.
+- Placement was a deliberate choice: `combinatory_completeness_RS` went into
+  Calibration.lean rather than Bracket.lean, so the positive result physically
+  sits beside the refutations it is supposed to be comparable with, and
+  Bracket.lean stops at `Term`/`Step` without importing the conservation
+  layer. Calibration.lean now reads as one sandwich in one language, with a
+  comment stating what the sandwich still does NOT contain — the positive side
+  is about realizing λ-bodies, criterion (a) wants hosting a MACHINE. Making a
+  gap legible is not closing it and the file says so.
+- **The fourth Classical.choice leak, and the first one I did not fix.** The
+  stronger faithfulness lemma — `ClosedV v → ofTerm (toTerm v) = v`, i.e.
+  `toTerm` is faithful on every variable-free TermV and not just on ofTerm's
+  image — needs `(n == n) = true` in its `var` case. Four routes tried:
+  `beq_self_eq_true` (leaks), `simp` finding it (leaks), a hand-rolled
+  `Nat.beq n n = true` by structural recursion (axiom-free, but will not
+  connect to `==` — the `BEq Nat` instance does not reduce `succ k == succ k`
+  to `k == k`), and the same at the `==` level (same wall). The leak is in the
+  BEq/LawfulBEq instance layer, not in my proof.
+- The three-attempt rule applied, so I stopped and reassessed instead of
+  finding a fifth route. The reassessment is the useful part: the lemma is
+  DECORATIVE — nothing in the tree depends on it — and the bridge only ever
+  transfers FROM `Term`s, so what is actually needed is that `toTerm` inverts
+  `ofTerm`, which was already axiom-free. Weakened the claim to
+  `ofTerm_injective` and wrote the dropped claim, the reason, and the four
+  failed routes into the doc comment. Whole bridge reports [propext] or less.
+- Worth stating as a rule, since this is the first time the choice: when a
+  decorative lemma costs an axiom the tree has never used, weaken the claim.
+  When a load-bearing one does, pay it and register it loudly. The previous
+  three leaks were all in load-bearing proofs and all had rewrites available;
+  this one had neither property, which is why it read differently.
+- Ranking, unchanged in order: (1) criterion (a) — piece (i) DONE, next is
+  (ii) multi-variable bracket abstraction, then (vi) as the prototype-first
+  risk before the bulk of (iii)–(v); (2) C4's syntactic residue; (3)
+  transcription (C1(a), C5); (4) C6, still not promoted.

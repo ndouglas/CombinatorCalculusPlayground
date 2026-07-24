@@ -1313,3 +1313,38 @@ the encoding.
   stage, but voluminous, and where the residual RISK sits: `abs` must be
   total on SK terms including garbage, and tracking must survive every
   intermediate state the driver passes through.
+
+### Stage 9: the TermV/Term bridge — one language at last
+
+Piece (i) of the criterion (a) decomposition, and the repair for Stage 8's
+structural finding.
+
+- **Bracket.lean imported nothing.** Not "was stylistically separate" —
+  imported nothing at all, so `combinatory_completeness` had no connection to
+  `Term`, `Step` or `RS`. The program's POSITIVE calibration result had never
+  been stated about the same system as any of its NEGATIVE results.
+- **The bridge** (`ofTerm`, `toTerm`, `toTerm_ofTerm`, `ofTerm_injective`,
+  `closedV_ofTerm`, `step_toTerm`, `steps_toTerm`; Bracket.lean). Step
+  transfer needs no closedness hypothesis — `StepV`'s rules are `Step`'s,
+  `toTerm` is an application homomorphism, variables are inert on both sides —
+  and both transfer lemmas are AXIOM-FREE.
+- **`combinatory_completeness_RS`** (`Universality/Calibration.lean`, placed
+  deliberately beside the refutations): an actual SK `Term` `F` with
+  `RS.SK.Steps (app F u) …` for every `Term u`. That is literally the relation
+  `no_sim_SK_pureS` and `no_sim_SK_iota` are stated about, so the calibration
+  now reads as one sandwich in one language:
+  - POSITIVE: `combinatory_completeness_RS`
+  - NEGATIVE: `no_pathEncoding_SK_pureS`, `no_pathEncoding_SK_iota`,
+    `no_pathEncoding_SK_of_strict_measure`
+- **What this does NOT close.** The positive side is about SK realizing
+  λ-style BODIES; criterion (a) wants SK hosting a known-universal MACHINE via
+  a `Simulation`. Putting both sides in one language makes the gap legible; it
+  does not close it. Stated in the file so the sandwich is not misread.
+- **A claim deliberately weakened rather than an axiom paid.** The stronger
+  faithfulness lemma `ClosedV v → ofTerm (toTerm v) = v` needs
+  `(n == n) = true`, and every route to that in this toolchain pulls
+  `Classical.choice` through the `BEq`/`LawfulBEq` instances — which would be
+  this tree's first use of it. Four attempts failed. The lemma is decorative
+  and the bridge only ever transfers FROM `Term`s, so the claim was reduced to
+  `ofTerm_injective`. Recorded at the lemma and in the notebook; the whole
+  bridge reports `[propext]` or less.
