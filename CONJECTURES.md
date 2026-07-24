@@ -1446,3 +1446,36 @@ normal, `normalForm_bracket`); (iii)–(v) remain, under the
 force-before-duplicate discipline. The residual risk is unchanged and specific:
 a fixpoint's reduct hands the step function a pending recursive call, which is
 not normal.
+
+### Stage 13: the pending-call risk — Stage 10's preferred route is insufficient
+
+Prototyping the residual risk Stage 11 left, before building pieces (iii)–(v)
+on top of it. It broke, and it breaks Stage 10's preferred fix with it.
+
+- **`naive_bracket_duplicates` / `naive_bracket_drifts`** (`AdequacyProbe.lean`,
+  both axiom-free). `bracket` is the naive algorithm — no occurs-check — so
+  `[x](a b) = S ([x]a) ([x]b)` distributes the argument to BOTH branches even
+  when `x` occurs in one, and `S A B u → (A u)(B u)` duplicates `u` at every
+  application node of the body. Demonstrated on a body that uses its variable
+  **exactly once** and still duplicates; the doomed copy then drifts.
+- **What this corrects.** Stage 10 preferred route (2) — constrain the encoding
+  so duplication only hits normal forms — over route (1), an abstraction up to
+  `Joinable`. Route (2) implicitly assumed duplication is under the driver
+  author's control. It is not:
+  - occurrence-counting does not help (single-occurrence bodies duplicate);
+  - the duplicate is DOOMED (`(K S) u` discards `u`) but exists for at least one
+    step, and a syntactic abstraction must still assign a source state to the
+    drifted intermediate;
+  - transient duplicates are not an artefact of the naive algorithm. In SK every
+    `S`-redex duplicates its third argument, so moving a value past another
+    costs a transient copy. An occurs-check-optimized abstraction reduces how
+    MANY copies appear; it cannot reduce them to zero.
+- **Revised difficulty for piece (vi), third revision.** Stage 8: mechanical.
+  Stage 10: mechanical conditional on (v)'s design. Stage 13: **not mechanical.**
+  The abstraction must be insensitive to doomed subterms — defined up to
+  `Joinable` (using SK confluence, which this tree has) or reading only the live
+  spine. Route (1) is back and probably unavoidable.
+- **What survives unchanged.** Stage 11's `normalForm_bracket`: machine CODE is
+  normal, so a fixpoint's self-application is safe. The problem is specifically
+  the pending recursive call, which is data-shaped and not normal. Pieces (i)
+  and (ii) are unaffected and still needed.

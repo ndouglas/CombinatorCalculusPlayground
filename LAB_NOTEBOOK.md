@@ -1335,3 +1335,56 @@ what automation could and couldn't do. This file is a first-class deliverable
   call, which is not normal. That is the next thing worth prototyping, and by
   the Stage 10/11 pattern it should be prototyped before (iii)–(v) get built,
   not after.
+
+## 2026-07-24 — Stage 13: the third revision of one difficulty estimate
+
+- Followed the Stage 10/11 rule: prototype the known risk before building on
+  it. The risk was the pending recursive call. It broke, and it took Stage 10's
+  preferred fix down with it.
+- The mechanism is embarrassingly simple in hindsight. `bracket` is the NAIVE
+  algorithm — the file's own comment says so, and says the tradeoff is bigger
+  terms for smaller proofs. What nobody had noticed is that "bigger terms"
+  means DUPLICATED ARGUMENTS: `[x](a b) = S ([x]a) ([x]b)` sends the argument
+  to both branches whether or not `x` occurs in them, and `S A B u → (A u)(B u)`
+  copies `u`. So the abstracted argument is duplicated once per application node
+  in the body. I demonstrated it on a body that uses its variable exactly once.
+- That kills route (2) as a standalone fix. Stage 10 framed the choice as
+  "define the abstraction up to Joinable (hard)" versus "constrain the encoding
+  so duplication only hits normal forms (a design constraint)", and preferred
+  the latter. But route (2) assumed the driver's author controls what gets
+  duplicated. They do not — the abstraction algorithm decides, and it duplicates
+  unconditionally.
+- Worse, and this is the part that makes it a real result rather than a bug
+  report: transient duplicates are not fixable by a better abstraction
+  algorithm. In SK, `S f g x → (f x)(g x)` is the ONLY way to move a value into
+  two positions, and it always duplicates the third argument. Occurs-check
+  optimization reduces the NUMBER of copies; it cannot reach zero, because
+  getting a value past another value costs a copy. So some window always exists
+  in which a doomed copy is live and can drift.
+- Third revision of the same estimate, which is worth stating plainly: Stage 8
+  said piece (vi) was mechanical. Stage 10 said mechanical conditional on (v)'s
+  design. Stage 13 says not mechanical. Each revision came from probing one
+  level deeper, and each was cheap. The estimate has moved monotonically in one
+  direction, which is itself a signal — I should have weighted the first
+  revision as evidence about the second.
+- Where that leaves criterion (a): the abstraction has to be insensitive to
+  doomed subterms, either up to `Joinable` (Slice 1 has it, and SK confluence is
+  proved, so the machinery exists) or by reading only the live spine. That is a
+  research-shaped obligation, not a bulk one, and it is now the honest cost of
+  the criterion. Pieces (i) and (ii) are unaffected and still needed; Stage 11's
+  `normalForm_bracket` still holds and still matters, because CODE being normal
+  is what makes fixpoint self-application safe. The problem is narrowly the
+  pending recursive call.
+- Methodological note, and the reason I am not discouraged: four stages of
+  prototyping have cost roughly one stage of building and have prevented two
+  rewrites of piece (v). The alternative history — build (iii)–(v) on Stage 8's
+  "mechanical" rating, then discover in (vi) that the abstraction cannot be
+  written — would have wasted far more. The prototypes keep finding bad news
+  because they are aimed at the places most likely to contain it, which is what
+  they are for.
+- Ranking, revised in emphasis rather than order: (1) criterion (a), where the
+  next real decision is which of the two route-(1) variants to attempt — up to
+  `Joinable`, or live-spine-only — and that decision should itself be prototyped
+  on the Stage 10 countdown machine before any encoding work; (2) C4's syntactic
+  residue, which is now comparatively more attractive, being bulk work with no
+  hidden research problem in it; (3) transcription (C1(a), C5); (4) C6.
