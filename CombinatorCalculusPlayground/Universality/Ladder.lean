@@ -501,3 +501,88 @@ theorem no_monotone_counting_measure (a b : Nat) (hab : 0 < a ∨ 0 < b) :
 -- there being no cycle. That last possibility deserves real weight: the hunt
 -- reached 7 leaves and 400 steps, which is small, and rung one's cycle lives at
 -- 6 leaves. Recorded as open rather than as "nearly done".
+
+-- ## Stage 21: a faster detector — and what validating it revealed
+-- Stage 20 diagnosed `sbOnCycle` as quadratic (seen-list plus `contains`) and
+-- proposed a faster detector so the hunt could go deeper. Floyd's tortoise-and-hare
+-- does it in O(1) memory, since `sbStepOnce` is a FUNCTION and so the trajectory is
+-- a functional graph. Written generically, with a SIZE cap, so it can be
+-- instantiated on {S,I} too — which is what made the real finding possible.
+
+/-- Floyd cycle detection with a size cap. `some true` = the trajectory is
+eventually periodic; `some false` = it reached a normal form; `none` = the fuel or
+the size cap ran out, and NO verdict is given. -/
+def floydFind {α : Type} [BEq α] (size : α → Nat) (step : α → Option α)
+    (maxSize : Nat) : Nat → α → α → Option Bool
+  | 0, _, _ => none
+  | f + 1, slow, fast =>
+    if maxSize < size slow then none
+    else if maxSize < size fast then none
+    else match step slow with
+      | none => some false
+      | some s' => match step fast with
+        | none => some false
+        | some m => match step m with
+          | none => some false
+          | some f2 => if s' == f2 then some true else floydFind size step maxSize f s' f2
+
+def sbCycle? (maxSize fuel : Nat) (t : SBTerm) : Option Bool :=
+  floydFind SBTerm.leafCount sbStepOnce maxSize fuel t t
+
+-- ## Executable {S,I} reduction, and the validation that mattered
+-- An untested cycle detector reporting "no cycles found" is worthless, so the
+-- true-positive path had to be checked against a cycle known to exist. Rung one
+-- supplies one: `omegaSI_cycle` is KERNEL-PROVED. The detector was run on it and
+-- **did not find it.**
+
+def siStepOnce : SITerm → Option SITerm
+  | .app (.app (.app .S f) g) x => some (.app (.app f x) (.app g x))
+  | .app .I x => some x
+  | .app t u =>
+    match siStepOnce t with
+    | some t' => some (.app t' u)
+    | none => (siStepOnce u).map (.app t)
+  | _ => none
+
+def siTrace : Nat → SITerm → List SITerm
+  | 0, t => [t]
+  | f + 1, t => t :: (match siStepOnce t with | none => [] | some t' => siTrace f t')
+
+-- **The strategy gap, demonstrated.** `omegaSI` is provably on a cycle
+-- (`omegaSI_cycle`), yet leftmost-outermost reduction never returns to it — 60
+-- steps and counting. The proved cycle's closing step is `appR (I_red)`, an INNER
+-- redex; leftmost-outermost fires the head S-redex instead and walks away forever.
+#guard ((siTrace 60 omegaSI).drop 1).all (fun u => u != omegaSI)
+#guard floydFind SITerm.leafCount siStepOnce 500 200 omegaSI omegaSI != some true
+
+-- The leftmost-outermost trajectory grows without bound instead of closing:
+-- sizes 6, 8, 7, 10, 9, 8, 12, 11, 10, 9, 14, ... — each S-redex adds an `I` layer
+-- faster than the I-reductions remove them.
+#guard (siTrace 10 omegaSI).map SITerm.leafCount = [6,8,7,10,9,8,12,11,10,9,14]
+
+-- ## The consequence for rungs two and three, stated as a correction
+-- Every cycle-hunt figure in this module is LEFTMOST-OUTERMOST ONLY. That was
+-- always literally true, and Stage 0's census carried exactly this caveat for pure
+-- S ("cycle-freedom under ALL strategies is a stronger, separate claim; this census
+-- only ever runs leftmost-outermost", CONJECTURES.md's C2 entry). I rebuilt Stage
+-- 0's methodology on a new rung and reproduced its caveat without noticing.
+--
+-- What is new is that the caveat now has a CONCRETE WITNESS rather than being
+-- theoretical: rung one's cycle is exactly a cycle that a leftmost-outermost hunt
+-- cannot see. So the {S,B} data below is much weaker evidence for acyclicity than
+-- Stages 19–20 treated it as being. It rules out leftmost-outermost cycles and says
+-- nothing about the relation.
+--
+-- With the faster detector the hunt does reach much further, and the figures are
+-- worth having at their correct strength:
+--
+--   n = 8:  109824 terms, 0 LO cycles, 109565 reach a normal form,
+--           259 no-verdict at size cap 1000 / fuel 300.   (6 seconds)
+--   n = 9:  732160 terms, 0 LO cycles, 727664 reach a normal form,
+--           4496 no-verdict at the same caps.              (38 seconds)
+--
+-- Compare Stage 20's quadratic detector, which was abandoned at n = 8 after ten
+-- minutes. The speedup is real; the epistemic value of the extra sizes is smaller
+-- than it looks, for the reason above.
+
+#guard (List.range 8).all (fun n => (sbTerms n).all (fun t => sbCycle? 500 200 t != some true))
