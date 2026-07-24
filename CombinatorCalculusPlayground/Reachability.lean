@@ -396,6 +396,9 @@ theorem sssss_not_on_cycle :
 -- reproving `sTermsTable` against a structurally-recursive characterization,
 -- not just induction on `KFree`. See task-5-report.md for the attempt log;
 -- queued for CONJECTURES.md (Task 8).
+-- SUPERSEDED (Slice 2): `no_pure_S_cycle` (Isometric.lean) proves the general
+-- form directly; the ≤5 statement is now a trivial corollary and the
+-- sTerms-completeness blocker is moot for C2.
 
 -- ## Convertibility narrows to its true open core
 -- Trichotomy: both normalize → decidable by normal-form comparison;
@@ -472,3 +475,8 @@ theorem joinable_iff_nf_eq {t u nt nu : Term}
   | .app (.app (.app .S _) _) .S =>
     (succs t).any fun v => leafCount v == leafCount t && tau t - tau v == 6
   | _ => true
+
+-- Probe B is non-vacuous: at least one size-4 term matches its pattern.
+#guard (sTerms 4).any (fun t => match t with
+  | .app (.app (.app .S _) _) .S => true
+  | _ => false)

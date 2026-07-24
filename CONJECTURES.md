@@ -101,8 +101,10 @@ with atomic third argument; the head-weight measure τ (τ(app a b) =
 (`tau_lt_of_isometric_step`) and cannot return. Axioms: `#print axioms`
 against the built tree — `tau_pos`, `KFree.leafCount_eq_one`,
 `tau_lt_of_isometric_step`, `tau_lt_of_steps_size_eq`, and
-`no_pure_S_cycle` all report `[propext, Quot.sound]` (the `Quot.sound` is
-the inherited RS-quotient trail carried since Stage 3, not new). The τ
+`no_pure_S_cycle` all report `[propext, Quot.sound]` (the `Quot.sound` rides
+core tactic machinery — `omega`/`simp` alone pull it in this toolchain — the
+same inherited trail present since Stage 0's completeness lemmas; nothing
+new to this slice). The τ
 technique is standard term-rewriting technology (polynomial
 interpretation); its application here may be folklore — the
 machine-checked resolution is the contribution claimed. The Slice 1
@@ -117,8 +119,7 @@ how C2 stood before Stage 5 Slice 2; where they say "remains open" that
 was accurate at the time of writing and is superseded by the PROVED
 resolution above.
 
-No S-term with ≤12
-leaves revisits a previous term (leftmost-outermost,
+No S-term with ≤12 leaves revisits a previous term (leftmost-outermost,
 fuel 200). Confirmed at every n = 1..12 (`No cycles found at any size (within
 fuel).` printed by every run in this file's data). Conjecture: pure-S
 leftmost-outermost trajectories never cycle. (NOTE: cycle-freedom under ALL
@@ -319,7 +320,8 @@ size-preserving when the third argument is a single leaf) cannot host SK
 under `Simulation`. (Compare pure S — non-erasing but size-PRESERVING
 steps exist at the minimal instantiation, so this class excludes S by
 construction and the argument does NOT apply to it; C2's cycle question
-stays genuinely open.)
+needed the separate τ-measure route — resolved by `no_pure_S_cycle`
+(Stage 5, Slice 2).)
 
 ### Stage 5, Slice 1: bounded reachability
 
@@ -360,7 +362,8 @@ stays genuinely open.)
   itself blocked on `sTermsTable`'s `Id.run do`/`Array`/range-loop
   definition not being `rfl`/`decide`/`simp`-transparent — registered as
   a blocked chain, queued for the next slice alongside the reachability
-  pigeonhole item. C2 in full remains open.
+  pigeonhole item. C2 in full remains open — superseded: C2 PROVED in
+  Slice 2, see the C2 entry.
 - **`Simulation` is nontrivially inhabited** (`pureS_in_SK`): the pure-S
   fragment embeds in SK by inclusion, with the decoder re-checking
   K-freeness (decidable by Stage 2), and a concrete `RS.PureS.step`
@@ -376,7 +379,9 @@ abstract `Decidable (t ⟶* u)` instance; (2) the `no_small_cycle` blocked
 chain above (`sTerms`-completeness, itself blocked on `sTermsTable`
 transparency) — a separate gap, but one that also blocks any future
 theorem-level (as opposed to per-instance/evaluator-level) generalization
-of C2.
+of C2 — NOTE (Slice 2): `no_pure_S_cycle` resolved C2's generalization
+WITHOUT this chain; the chain remains queued only for the
+pigeonhole/`Decidable` item.
 
 ### Stage 5, Slice 2: the isometric fragment
 
