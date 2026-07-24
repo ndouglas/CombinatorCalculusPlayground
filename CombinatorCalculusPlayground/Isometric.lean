@@ -98,3 +98,53 @@ theorem tau_lt_of_isometric_step : ∀ {t u : Term}, KFree t → (t ⟶ u) →
     have := ih hr (by omega)
     simp only [tau]
     omega
+
+-- ## Around a size-plateau, τ can only fall
+theorem tau_lt_of_steps_size_eq : ∀ {t u : Term}, KFree t → (t ⟶* u) →
+    leafCount t = leafCount u → t = u ∨ tau u < tau t := by
+  intro t u hk h
+  induction h with
+  | refl => intro _; exact Or.inl rfl
+  | @tail t' w u' s rest ih =>
+    intro hsize
+    -- t' ⟶ w ⟶* u' on a size plateau: both legs are size-equal by the
+    -- monotonicity squeeze (|t'| ≤ |w| ≤ |u'| = |t'|).
+    have hk1 := hk.of_step s
+    have hw_le := leafCount_le_of_step hk s
+    have hu_le := leafCount_le_of_steps hk1 rest
+    have hw_eq : leafCount t' = leafCount w := by omega
+    have hwu_eq : leafCount w = leafCount u' := by omega
+    have hdrop := tau_lt_of_isometric_step hk s hw_eq
+    rcases ih hk1 hwu_eq with heq | hlt
+    · exact Or.inr (heq ▸ hdrop)
+    · exact Or.inr (Nat.lt_trans hlt hdrop)
+
+-- ## C2, resolved: pure-S reduction never cycles — any size, any strategy.
+-- (The census conjectured this for leftmost-outermost up to 12 leaves;
+-- the theorem is strictly stronger on both axes.)
+theorem no_pure_S_cycle : ∀ {t : Term}, KFree t →
+    ¬ ∃ v, (t ⟶ v) ∧ (v ⟶* t) := by
+  rintro t hk ⟨v, hstep, hback⟩
+  have hkv : KFree v := hk.of_step hstep
+  -- the squeeze: |t| ≤ |v| (one step) and |v| ≤ |t| (the return) — equal.
+  have h1 := leafCount_le_of_step hk hstep
+  have h2 := leafCount_le_of_steps hkv hback
+  have hsize_tv : leafCount t = leafCount v := by omega
+  have hsize_vt : leafCount v = leafCount t := by omega
+  -- τ drops on the step...
+  have hdrop := tau_lt_of_isometric_step hk hstep hsize_tv
+  -- ...and can only fall (or stall via equality) on the return.
+  rcases tau_lt_of_steps_size_eq hkv hback hsize_vt with heq | hlt
+  · -- v = t: then the step was t ⟶ t with τ t < τ t.
+    rw [heq] at hdrop
+    exact absurd hdrop (Nat.lt_irrefl _)
+  · -- τ t < τ v < τ t.
+    exact absurd (Nat.lt_trans hlt hdrop) (Nat.lt_irrefl _)
+
+-- Cross-check: the Slice 1 evaluator sweep (`onCycle?` over ≤ 6 leaves)
+-- and the kernel theorems `ssss_not_on_cycle`/`sssss_not_on_cycle` are
+-- now special cases of `no_pure_S_cycle`. They remain in the tree as
+-- independent evidence paths (evaluator, per-instance kernel, and now
+-- general kernel) — three levels that agree.
+example : ¬ ∃ v, ((app3 S S S S) ⟶ v) ∧ (v ⟶* (app3 S S S S)) :=
+  no_pure_S_cycle (by repeat constructor)
