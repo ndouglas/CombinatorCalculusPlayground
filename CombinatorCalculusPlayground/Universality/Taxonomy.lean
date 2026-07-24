@@ -172,3 +172,61 @@ theorem Simulation.refute_of_acyclic {A B : RS} (hB : RS.Acyclic B)
     (hne : a ≠ a') : ¬ Nonempty (Simulation A B) :=
   fun ⟨Sim⟩ =>
     PathEncoding.refute_of_acyclic hB h1 h2 hne ⟨Sim.toPathEncoding⟩
+
+-- ## Acyclicity from a measure (C4's engine)
+-- Strict growth (iota) was one CAUSE of acyclicity and τ-termination (pure
+-- S) another. Both are instances of a single sufficient condition: some
+-- Nat-valued measure that every step strictly moves in one direction.
+-- Stating that once is what turns C4 from a conjecture about a syntactic
+-- class into a corollary of a measure hypothesis.
+
+/-- A path can only raise a strictly step-increasing measure. -/
+theorem RS.mono_of_strict_measure {B : RS} (mu : B.Carrier → Nat)
+    (hmono : ∀ {b b' : B.Carrier}, B.step b b' → mu b < mu b')
+    {b b' : B.Carrier} (h : B.Steps b b') : mu b ≤ mu b' := by
+  induction h with
+  | refl => exact Nat.le_refl _
+  | tail s _ ih => exact Nat.le_trans (Nat.le_of_lt (hmono s)) ih
+
+/-- **Every step strictly grows a measure ⇒ acyclic.** A step out raises the
+measure; no path can bring it back down. (The dual — every step strictly
+DECREASES a measure — is symmetric, and is the shape a terminating system
+has; not needed here, since pure S's τ drops only on isometric steps and so
+required the separate argument in `Isometric.lean`.) -/
+theorem RS.Acyclic.of_strict_measure {B : RS} (mu : B.Carrier → Nat)
+    (hmono : ∀ {b b' : B.Carrier}, B.step b b' → mu b < mu b') :
+    RS.Acyclic B := by
+  intro b b' hstep hback
+  have h1 : mu b < mu b' := hmono hstep
+  have h2 : mu b' ≤ mu b := RS.mono_of_strict_measure mu hmono hback
+  omega
+
+-- ## Claim asymmetry: positive and negative claims want OPPOSITE classes
+-- Recorded because it corrects a plausible-sounding plan. `PathEncoding` is
+-- strictly weaker than `Simulation` (`pathEncoding_strictly_weaker`,
+-- Calibration.lean), and the direction of that inclusion cuts differently
+-- for the two kinds of claim:
+--
+--   NEGATIVE claim (¬∃ encoding): the LARGER the class, the STRONGER the
+--     claim — ruling out more possible encodings rules out more. So
+--     refutations belong at `PathEncoding`, which is what Slice 4 did.
+--   POSITIVE claim (∃ encoding): the SMALLER the class, the STRONGER the
+--     claim — exhibiting a member of a more demanding class says more. So
+--     certifications belong at `Simulation`.
+--
+-- Consequence for spec Goal 2 criterion (a): it CANNOT be weakened to
+-- `PathEncoding` to dodge the `bwd` blocker. A `PathEncoding`-level positive
+-- would be a weaker claim in the direction where weakness is not wanted, and
+-- the whole point of the criterion is to show the DEMANDING definition is
+-- satisfiable. `bwd` is therefore load-bearing, and the blocker is
+-- principled rather than incidental. This mirrors the spec's own quantifier
+-- asymmetry note (universality is ∃-encoding; non-universality is
+-- ∀-encoding over a pinned class).
+
+/-- The class inclusion at claim level: a Reach-universality witness yields a
+path encoding, never the converse. This is the formal content of the
+asymmetry above. -/
+theorem UniversalReach.toPathEncoding {R B : RS} (h : UniversalReach R B) :
+    Nonempty (PathEncoding R B) :=
+  match h with
+  | ⟨S⟩ => ⟨S.toPathEncoding⟩

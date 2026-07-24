@@ -177,6 +177,44 @@ theorem RS.Iota_acyclic : RS.Acyclic RS.Iota := by
   · exact absurd (heq ▸ hlt) (Nat.lt_irrefl _)
   · exact absurd (Nat.lt_trans hlt hlt2) (Nat.lt_irrefl _)
 
+-- ## C4's semantic core
+-- C4 conjectured that the iota refutation generalizes to every
+-- one-combinator, single-rule, first-order system whose rule strictly grows
+-- size. The conjecture bundles a SEMANTIC claim with a SYNTACTIC class, and
+-- the semantic claim is the whole mathematical content — it holds for ANY
+-- host with a strictly step-increasing measure, one-combinator or not, and
+-- follows in two lines from `RS.Acyclic.of_strict_measure` plus SK's
+-- Ω ↔ M cycle. Same lesson as C1: the bundle was what made it look hard.
+
+/-- **C4, semantic core — PROVED.** No host whose every step strictly
+increases some Nat-valued measure can path-encode SK. Stated at
+`PathEncoding` strength because this is a NEGATIVE claim, where the weaker
+class is the stronger result (see the asymmetry note in Taxonomy.lean). -/
+theorem no_pathEncoding_SK_of_strict_measure {B : RS} (mu : B.Carrier → Nat)
+    (hmono : ∀ {b b' : B.Carrier}, B.step b b' → mu b < mu b') :
+    ¬ Nonempty (PathEncoding RS.SK B) :=
+  PathEncoding.refute_of_acyclic (RS.Acyclic.of_strict_measure mu hmono)
+    (RS.SK_steps_iff.mpr omega_to_M) (RS.SK_steps_iff.mpr M_to_omega)
+    omega_ne_M
+
+/-- ...and the `Simulation`-level corollary, for citation alongside the
+original refutations. -/
+theorem no_sim_SK_of_strict_measure {B : RS} (mu : B.Carrier → Nat)
+    (hmono : ∀ {b b' : B.Carrier}, B.step b b' → mu b < mu b') :
+    ¬ Nonempty (Simulation RS.SK B) :=
+  -- destructuring Nonempty into a Prop goal needs no choice
+  fun ⟨Sim⟩ => no_pathEncoding_SK_of_strict_measure mu hmono
+    ⟨Sim.toPathEncoding⟩
+
+-- Confirmation that the generalization is the RIGHT one: iota's acyclicity,
+-- and hence Stage 4's refutation, is now an instance rather than a bespoke
+-- argument. (`RS.Iota_acyclic` above is kept as the original citable form.)
+example : RS.Acyclic RS.Iota :=
+  RS.Acyclic.of_strict_measure IotaTerm.leafCount iota_step_lt
+
+example : ¬ Nonempty (PathEncoding RS.SK RS.Iota) :=
+  no_pathEncoding_SK_of_strict_measure IotaTerm.leafCount iota_step_lt
+
 -- ## Subsumption: both refutations recovered as one-liners
 -- Stage 4's iota refutation and Slice 2's pure-S refutation both fall out
 -- of the generic mechanism, feeding it the acyclic-host instance and SK's
