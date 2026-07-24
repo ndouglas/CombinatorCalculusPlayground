@@ -329,3 +329,36 @@ example : ¬ ((app (app S S) (app S S)) ⟶* (app3 S S S S)) := by
   have h : reachable? (app (app S S) (app S S)) (app3 S S S S) 50 = some false := by rfl
   intro hsteps
   exact absurd ((reachable?_correct (by repeat constructor) h).mpr hsteps) (by simp)
+
+-- ## C2 at small sizes
+-- A term sits on a cycle iff one of its successors reaches back to it.
+-- By monotonicity a returning path can never exceed leafCount t, so the
+-- bound-t closure decides it (when saturated). Successors LARGER than t
+-- can never return (strict monotone segments can't shrink) — skip them.
+def onCycle? (t : Term) (fuel : Nat) : Option Bool :=
+  ((succs t).filter (fun v => leafCount v ≤ leafCount t)).foldl
+    (fun acc v =>
+      match acc, reachable? v t fuel with
+      | some false, some r => some r
+      | some true, _ => some true
+      | _, none => none
+      | none, _ => none)
+    (some false)
+
+-- Kernel-checked: NO pure-S term with ≤ 6 leaves sits on a reduction
+-- cycle. This upgrades the census's fuel-bounded observation (C2,
+-- CONJECTURES.md) to a compile-time-verified fact at these sizes.
+#guard (List.range 7).all fun n => (sTerms n).all fun t =>
+  onCycle? t 100 == some false
+
+-- ## Stretch (escape-hatched): `no_small_cycle` over `⟶⁺` as a theorem
+-- Attempted (3 tries) and NOT included: `∀ t, KFree t → leafCount t ≤ 5 →
+-- ¬ ∃ v, (t ⟶ v) ∧ (v ⟶* t)`. Blocked exactly where the brief predicted —
+-- bridging an arbitrary `t` to the finite `sTerms (leafCount t)` needs a
+-- completeness theorem `sTerms` doesn't have, and (found while attempting
+-- it) `sTermsTable`'s `Id.run do`/`Array`/range-loop definition is not
+-- `rfl`/`decide`-transparent even at the smallest instance (`sTerms 1 =
+-- [S]` does not close by `rfl`) — so proving completeness means first
+-- reproving `sTermsTable` against a structurally-recursive characterization,
+-- not just induction on `KFree`. See task-5-report.md for the attempt log;
+-- queued for CONJECTURES.md (Task 8).
