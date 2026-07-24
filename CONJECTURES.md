@@ -721,9 +721,12 @@ reduction cycle, not formalized here.
   (a formal kill needs a computability theory; zero-dep constraint).
   The λI ({S,B,C,I}) stretch goal was not attempted this stage.
 
-## C4: No single-rule first-order combinator basis hosts SK — PROVED (arity 1)
-**Status: semantic core PROVED (Stage 7); syntactic class PROVED for arity 1
-(Stage 14); open for arity ≥ 2.**
+## C4: No single-rule first-order combinator basis hosts SK — **PROVED**
+**Status: PROVED at every arity.** Semantic core Stage 7
+(`no_pathEncoding_SK_of_strict_measure`); syntactic class arity 1 Stage 14
+(`no_pathEncoding_SK_mono1`); general arity Stage 15
+(`no_pathEncoding_SK_poly`, `Universality/OneRule.lean`). C4 was the last
+conjecture on this list that was both open and unambiguously ours.
 - Materiality: **HIGH** — it is a claim about a CLASS of encodings and hosts,
   so it lives at the taxonomy level, which is where this program's
   comparative advantage is. Resolving it changes what the taxonomy can say
@@ -1518,3 +1521,34 @@ revision at a time.
   4.28 in usable form, and this tree has no Mathlib. **So the obstacle is
   list-sum algebra, not anything about combinators** — bulk work, exactly as
   Stage 13 assessed.
+
+### Stage 15: C4 closed at every arity
+
+- **`no_pathEncoding_SK_poly`** (with `no_sim_SK_poly`): no one-combinator,
+  single-rule, first-order system of ANY arity whose reduct uses every rule
+  variable and contains at least two combinators can path-encode SK. This is C4
+  as written. `[propext, Quot.sound]`.
+- **C4's informal condition, fully arithmetized.** "Each rule variable occurs at
+  least once in the reduct" is `∀ i < n, 1 ≤ countVar i rhs`; "strictly larger
+  even at the minimal instantiation" is `2 ≤ countC rhs`. The bridge is
+  `Pat.leafCount_inst`: `|inst σ p| = countC p + Σ_{i<n} (countVar i p)·|σ i|`.
+- **Stage 14's obstacle was mis-framed, in two ways** (both recorded in the file
+  rather than quietly fixed):
+  - the "list-sum algebra" was an artefact of assuming the rule's arguments
+    arrive as a LIST, which forces `getD` bookkeeping and a cons/append mismatch
+    against range-based sums. Taking the assignment as a FUNCTION `Nat → Mono`
+    with recursion on the arity removes lists entirely;
+  - the "partition lemma to split the variable list across an application node"
+    was never needed. It is only needed if one avoids the exact size formula;
+    proving the formula makes the `app` case decompose by plain additivity.
+  What was actually required: seven small facts about `Σ_{i<n}`.
+- **Non-vacuity at general arity:** ι's rule as a `Pat`, plus a genuine arity-3
+  example (`c x y z → x (y z) c c`) with all three hypotheses discharged.
+
+**Standing status after Stage 15.** Proved here: C1(b), **C4 (in full)**, C2,
+spec Goal 3 decidability, both hosting refutations at `PathEncoding` strength,
+the frozen head, combinatory completeness (now in `RS` language), confluence,
+the Stage 2 conservation laws. External and unformalized: C1(a), C5, probably
+C2's priority. Open and genuinely unsettled: **C6** (ours, low materiality),
+**spec Goal 2 criterion (a)** (blocked on the adequacy abstraction — see Stages
+10–13), and the Wolfram prize question itself.

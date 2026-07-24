@@ -1434,3 +1434,50 @@ what automation could and couldn't do. This file is a first-class deliverable
   where the open decision is still which route-(1) variant to attempt for the
   abstraction, and which should be prototyped before any encoding work.
   (3) transcription (C1(a), C5). (4) C6.
+
+## 2026-07-24 — Stage 15: C4 closed, and Stage 14's obstacle was imaginary
+
+- Stage 14 registered general-arity C4 as blocked on "list-sum algebra" and
+  named three needed lemmas, one of them a partition lemma to split a variable
+  list across an application node. It took about an hour to find that both
+  halves of that framing were wrong.
+- **The lists were self-inflicted.** I had assumed a rule's arguments arrive as a
+  `List Mono`, which forces `getD` indexing and then a cons/append mismatch
+  against `List.range`-based sums. Taking the assignment as a FUNCTION
+  `σ : Nat → Mono` and defining the left-hand side by recursion on the arity
+  (`applyVars`) removes every list from the development. That is a
+  representation choice, not a mathematical fact, and I had let the first
+  representation I thought of become the estimate.
+- **The partition lemma was never needed.** It is only needed if you try to
+  prove the INEQUALITY directly, where "every variable occurs" fails to
+  decompose over `app`. Proving the exact size formula instead makes the `app`
+  case pure additivity. I had actually worked this out in Stage 14 — the note in
+  that file says the formula "decomposes fine over app" — and then still listed
+  the partition lemma as required. Reading my own note more carefully would have
+  saved the pessimism.
+- What was genuinely needed: seven small facts about `Σ_{i<n}` (`sumTo` and six
+  lemmas), then `Pat.leafCount_inst` and three lines of arithmetic. The whole
+  general-arity section is shorter than the arity-1 section's prose.
+- Lean friction, two items. `sumTo_congr` made `rw` unify against the wrong
+  function inside the sum, so distributivity got its own lemma
+  (`sumTo_add_mul`) — worth remembering that congruence-style lemmas over
+  higher-order arguments are unreliable for `rw`. And `interval_cases` is
+  Mathlib-only; `rcases i with _|_|_|k` with an `omega` tail is the
+  zero-dependency replacement.
+- Kept the superseded Stage 14 "what remains" section in the file, marked as
+  such, with the correction beneath it. A mis-framing that produced a wrong
+  difficulty estimate is more useful preserved than deleted, and this file
+  already does that for C2's pre-resolution text.
+- **C4 was the last conjecture on the list that was both open and unambiguously
+  ours.** What is left: C6 (ours, but low materiality and cheap, deliberately
+  not promoted), criterion (a) (blocked on the adequacy abstraction — Stages
+  10–13, and the difficulty estimate there has moved upward three times), the
+  transcription items (C1(a), C5), and the prize question itself.
+- Pattern check across the last two stages: Stage 14's estimate was the first to
+  hold up on contact, and Stage 15's was wrong in the OPTIMISTIC direction's
+  mirror — I over-estimated the cost. So the running tally is now: four
+  under-estimates of difficulty (Stages 8, 10, 13 on piece vi; and the original
+  C4 framing) and one over-estimate (Stage 14 on general arity). The common
+  cause is the same in both directions: I was estimating from the first
+  representation that came to mind rather than from the problem. Worth carrying
+  forward as "estimate after choosing the representation, not before".
