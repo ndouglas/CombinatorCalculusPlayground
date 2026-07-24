@@ -71,12 +71,10 @@ def succs : Term → List Term
 #guard (List.range 7).all fun n => (sTerms n).all fun t =>
   (succs t).all fun w => leafCount t ≤ leafCount w
 
--- Probe C (bounded universes are genuinely closed): iterating succs from
--- any S-term of ≤ 5 leaves, filtered to size ≤ 8, never escapes size 8 —
--- trivially true by the filter, so probe the REAL claim: the set of
--- distinct terms seen in 200 rounds of unfiltered succs-iteration from
--- size-≤4 S-terms whose sizes stay ≤ 4 is finite and small. Concretely:
--- from any size-≤4 S-term, the size-preserving successor relation
--- revisits nothing new after at most (number of size-≤4 terms) rounds.
+-- Probe C (one-step K-freeness closure at the succs level): the
+-- size-bounded successors of small S-terms are themselves K-free. This
+-- checks ONE step only — the multi-step closure claim is what Task 3's
+-- boundedClosure + Stage 2's KFree.of_step deliver as theorems; this
+-- probe just confirms the new succs enumeration cooperates with them.
 #guard (List.range 5).all fun n => (sTerms n).all fun t =>
   ((succs t).filter (fun w => leafCount w ≤ 4)).all fun w => kFree w
