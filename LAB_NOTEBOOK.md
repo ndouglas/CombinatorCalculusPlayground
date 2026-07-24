@@ -508,13 +508,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   every per-task review that had already passed. Second was this slice's
   own premise: the ideonomy shake surfacing the bounded-path argument
   latent in Stage 2's monotonicity lemma before any Reachability code
-  existed. Third is inside this same slice: the census-first STOP gate
-  (Task 1) empirically confirmed that premise before proof effort was
-  spent, Task 3's fuel-0 guard was caught as wrong and replaced under
-  reviewer hand-verification, Task 5's implementer caught the plan's own
-  "kernel-checked" overclaim against Lean's own `#guard` documentation,
-  and Task 7's review caught an asserted-not-evidenced nontriviality
-  claim. None of these were prover failures — every candidate proof
+  existed. Third is inside this same slice — an episode of three distinct
+  within-slice catches, counted here as one event: Task 3's fuel-0 guard
+  was caught as wrong and replaced under reviewer hand-verification,
+  Task 5's implementer caught the plan's own "kernel-checked" overclaim
+  against Lean's own `#guard` documentation, and Task 7's review caught
+  an asserted-not-evidenced nontriviality claim. (The census-first STOP
+  gate, by contrast, CONFIRMED the premise rather than catching an error
+  — it did its job by finding nothing wrong, and belongs in a different
+  column of the ledger than the catches.) None of these were prover failures — every candidate proof
   script that reached the kernel, reached it cleanly — the friction was
   entirely in catching what the plan's prose claimed versus what the
   code and the trusted kernel actually established. The process keeps

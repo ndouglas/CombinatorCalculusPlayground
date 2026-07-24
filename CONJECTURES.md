@@ -106,8 +106,10 @@ each via `succs_complete` pinning the sole successor, a `by rfl`-evaluated
 `reachable? ... = some false`, and `reachable?_correct` lifting that to a
 genuine `¬ ∃ v, (t ⟶ v) ∧ (v ⟶* t)` fact) — these ARE kernel-checked. The
 general theorem form (`no_small_cycle : ∀ t, KFree t → leafCount t ≤ 5 →
-¬ ∃ v, (t ⟶ v) ∧ (v ⟶* t)`) was attempted and escape-hatched after 3
-tries: it is blocked on an `sTerms`-completeness theorem (`∀ t, KFree t →
+¬ ∃ v, (t ⟶ v) ∧ (v ⟶* t)` — stated at ≤ 5 rather than the sweep's ≤ 6
+because the theorem attempt deliberately targeted a smaller universe
+first; the blocker below is size-independent) was attempted and
+escape-hatched after 3 tries: it is blocked on an `sTerms`-completeness theorem (`∀ t, KFree t →
 t ∈ sTerms (leafCount t)`) that does not yet exist, which is itself
 blocked on `sTermsTable`'s imperative `Id.run do`/`Array`/range-loop
 definition not being `rfl`/`decide`/`simp`-transparent at the needed
