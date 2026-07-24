@@ -264,3 +264,68 @@ theorem boundedClosure_saturated {bound fuel : Nat} {start acc : List Term}
         rw [hemp] at this
         exact List.not_mem_nil this
     · exact ih h
+
+-- ## Completeness: saturated sets catch everything they bound
+-- THE key lemma, and the exact point where Stage 2's monotonicity does
+-- the work: on a path t ⟶* u, every intermediate w satisfies
+-- leafCount w ≤ leafCount u (apply monotonicity to the REMAINING segment
+-- w ⟶* u), so a set saturated at bound = leafCount u never loses the path.
+theorem mem_of_saturated {acc : List Term} {bound : Nat}
+    (hsat : ∀ w ∈ acc, ∀ v ∈ succs w, leafCount v ≤ bound → v ∈ acc) :
+    ∀ {t u : Term}, KFree t → (t ⟶* u) → leafCount u ≤ bound →
+      t ∈ acc → u ∈ acc := by
+  intro t u hk h
+  -- `induction h` auto-reverts hk (it depends on the moving left endpoint
+  -- t), so each case reintroduces its own KFree hypothesis — the Stage 2
+  -- `leafCount_le_of_steps` threading dance.
+  induction h with
+  | refl => exact fun _ ht => ht
+  | tail s rest ih =>
+    rename_i hk
+    intro hub ht
+    -- t ⟶ t₁ ⟶* u.  t₁'s size is ≤ u's size by monotonicity on `rest`,
+    -- and t₁ is K-free by Stage 2's closure.
+    have hk1 : KFree _ := hk.of_step s
+    have h1b : leafCount _ ≤ bound :=
+      Nat.le_trans (leafCount_le_of_steps hk1 rest) hub
+    have ht1 : _ ∈ acc := hsat _ ht _ (succs_complete s) h1b
+    exact ih hk1 hub ht1
+
+-- ## The certified decision procedure
+theorem reachable?_correct {t u : Term} {fuel : Nat} {b : Bool}
+    (hk : KFree t) (h : reachable? t u fuel = some b) :
+    b = true ↔ t ⟶* u := by
+  unfold reachable? at h
+  -- unpack the Option.map: boundedClosure ... = some acc, b = acc.contains u
+  cases hc : boundedClosure (leafCount u) fuel [t] with
+  | none => rw [hc] at h; simp at h
+  | some acc =>
+    rw [hc] at h
+    simp at h
+    subst h
+    constructor
+    · -- contains → Steps: closure soundness
+      intro hb
+      have hmem : u ∈ acc := by simpa using hb
+      exact boundedClosure_sound
+        (start := [t]) (fun w hw => by simp at hw; subst hw; exact Steps.refl _)
+        hc u hmem
+    · -- Steps → contains: saturation + mem_of_saturated
+      intro hsteps
+      have hsat := boundedClosure_saturated hc
+      have ht : t ∈ acc := boundedClosure_subset hc t (by simp)
+      have : u ∈ acc :=
+        mem_of_saturated hsat hk hsteps (Nat.le_refl _) ht
+      simpa using this
+
+-- ## Certified instances
+-- Each pair below is a kernel-checked reachability verdict: the guard
+-- forces the computation, `reachable?_correct` makes it a theorem about ⟶*.
+example : (app3 S S S S) ⟶* (app (app S S) (app S S)) := by
+  have h : reachable? (app3 S S S S) (app (app S S) (app S S)) 50 = some true := by rfl
+  exact (reachable?_correct (by repeat constructor) h).mp rfl
+
+example : ¬ ((app (app S S) (app S S)) ⟶* (app3 S S S S)) := by
+  have h : reachable? (app (app S S) (app S S)) (app3 S S S S) 50 = some false := by rfl
+  intro hsteps
+  exact absurd ((reachable?_correct (by repeat constructor) h).mpr hsteps) (by simp)
