@@ -624,7 +624,7 @@ what automation could and couldn't do. This file is a first-class deliverable
   step apart on a single trajectory — C1 effectively collapses to one
   candidate. This is the fourth time in the program that a process
   outside the prover's happy path has caught or discovered something —
-  the first three (per the Slice 2 entry) were all review-shaped
+  the first three (enumerated in the SLICE 1 entry above) were all review-shaped
   catches of overclaims; this one is different in kind: an EXPLORATION
   PROBE discovering a fact nobody had hypothesized, while the thing the
   hunt was actually looking for (a loop) simply wasn't there. Counted
@@ -634,9 +634,10 @@ what automation could and couldn't do. This file is a first-class deliverable
   n≥10 "+1 plateau" reading against n=7..9 data and returned a clean
   honest negative — no subterm nesting, no rider-append match in either
   direction, and leaf-count deltas that explode (×3, then ×7) rather than
-  staying small. This is the SECOND controller-authored hypothesis to
-  die under direct census contact in this program (counted plainly,
-  without claiming to have re-litigated the first one here) — the
+  staying small. A controller-authored hypothesis died under direct
+  census contact (no ordinal claimed — the ledger has no verifiable
+  earlier instance of this exact failure mode; the Stage 4 iota flip
+  was killed by pre-planning analysis, not census data) — the
   plateau-nesting reading was a real, reasonable extrapolation from six
   data points, and testing it against three more killed it cleanly rather
   than confirming it. The one surviving positive fact, `m7 == c1` exactly,
