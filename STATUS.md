@@ -12,8 +12,8 @@ Mathlib, no Batteries), **no `sorry`**, **no `native_decide`**, and **no
 throughout — `Quot.sound` rides core tactic machinery (`omega`/`simp`), a trail
 inherited since Stage 0.
 
-At time of writing: 46 build targets, ~190 theorems, ~175 build-enforced
-`#guard`s, ~4,400 lines of Lean.
+At time of writing: 48 build targets, ~200 theorems, ~177 build-enforced
+`#guard`s, ~4,700 lines of Lean.
 
 ---
 
