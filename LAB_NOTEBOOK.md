@@ -981,3 +981,99 @@ what automation could and couldn't do. This file is a first-class deliverable
   from re-reading a document that was already in the repo rather than from
   new mathematics. That is a finding about this working setup, and it belongs
   in the meta-goal's record as much as any proof-friction note does.
+
+## 2026-07-24 — Stage 7: C4 reduced, and a plan that broke on contact
+
+- Where this came from: a third ideonomy pass, tuple tree-finding +
+  cross-domain re-instantiation on a cycle, prompts homogeneity / side-effect
+  / polarity. Two of its findings survived execution and one did not, which
+  is the entry's main content.
+- **The finding that held: an altitude diagnosis.** Walking the tree upward
+  from "is S universal?" gives: do small S-terms diverge -> is S universal ->
+  is this one-combinator basis universal -> which minimal systems are
+  universal -> what does universal MEAN for a rewriting system -> when is a
+  translation between systems faithful rather than smuggling the answer. Prior
+  art is DENSE at the bottom and thin at the top. Counted the tree's own
+  theorems by area: 36 in Universality/ plus 11 in its RS substrate, with
+  Calibration.lean the single densest file. So the program's mass is at the
+  top while nine stages of effort went to the bottom — and of course prior art
+  is dense down there, because the bottom is the level enumeration reaches.
+  That single observation explains all three prior mis-rankings at once: they
+  were not three mistakes but one closed loop at the wrong altitude, sampled
+  three times. C1-as-one-conjecture, the C-list, and my own queue are all
+  bottom-level artifacts.
+- **The cycle diagnosis, also held.** Drawing the working loop from the commit
+  history: census -> conjecture -> attack -> prove-or-negative -> ledger ->
+  back to conjecture. The loop closes on `conjecture`, never on `spec`. So
+  after Stage 0 emitted the C-list, the spec sat outside the cycle for nine
+  stages and every correction required manually breaking out to re-read a
+  document that had been in the repo since day one. Two phases were missing
+  entirely — calibrate-against-prior-art and materiality-check, both belonging
+  between conjecture and attack. Both are now ledger fields.
+- **The finding that did NOT survive, which is the useful part.** The pass's
+  headline recommendation was to restate spec Goal 2 criterion (a) at
+  PathEncoding strength, since the refutations only need PathEncoding and the
+  blocker is `bwd`. It sounded strong enough that I led with it. It is wrong.
+  Positive and negative claims want OPPOSITE classes: not-exists-encoding
+  strengthens as the class grows, exists-encoding strengthens as the class
+  shrinks. Criterion (a) is positive, and its entire purpose is showing the
+  DEMANDING definition is satisfiable, so weakening the class weakens the
+  claim in the direction where weakness is not wanted. The spec's own
+  quantifier-asymmetry note says this, in different words, and I had read it
+  two stages earlier.
+- What I did about it: formalized the correction rather than deleting the
+  suggestion. UniversalReach.toPathEncoding gives the inclusion, and with
+  pathEncoding_strictly_weaker the two levels provably differ, so the
+  direction is substantive rather than bookkeeping. Recorded in the ledger as
+  superseding the suggestion, with the wrong reasoning left visible. The
+  outcome is that Goal 2's blocker is now known to be PRINCIPLED — `bwd` is
+  load-bearing — which is more useful than the bypass would have been if it
+  had worked.
+- **C4 went the way C1 went.** Same bundling: a semantic claim (strictly
+  growing measure ⇒ cannot host SK) fused to a syntactic class
+  (one-combinator, single-rule, first-order). The semantic half is two lines
+  given RS.Acyclic.of_strict_measure plus SK's cycle, and it is STRONGER than
+  C4 — any host, one-combinator or not. The syntactic half needs a
+  rule-schema formalism nobody has built. Registered as reduced, not resolved.
+  Third time now that splitting a bundled conjecture was the whole trick;
+  worth treating as a standing first move rather than a lucky one.
+- Confirmation the generalization is right: RS.Iota_acyclic and Stage 4's
+  refutation both drop out as one-line instances. Strict growth was never a
+  property of iota, only of its measure. Stage 4 had written a bespoke
+  argument for what turns out to be a corollary.
+- Proof-friction note: Classical.choice leaked again, in
+  no_sim_SK_of_strict_measure, from opening a Nonempty with Classical.choice
+  when destructuring into a Prop goal needs nothing. THIRD leak in three
+  slices (Slice 2: omega in congruence cases; Slice 5: omega on a
+  non-arithmetic goal; here: Nonempty elimination). All three were caught by
+  the axiom audit, none by review. The audit is doing real work and should
+  stay a per-slice ritual.
+- Cross-domain note worth keeping, since it produced the materiality field:
+  re-instantiating "apparatus for deciding when a translation is faithful"
+  into audit standards surfaced the pairing this file was missing.
+  Scope-honesty and materiality travel together in auditing; this project had
+  built an excellent attestation layer and no materiality test at all. Sport
+  rules-committees suggested a second move not yet taken — publish the test
+  battery separately from any particular ruling — which is the extraction
+  question below.
+- Extraction assessment (asked, answered honestly, not acted on): the
+  calibration suite (Simulation, PathEncoding, the strictness witness, the
+  three observation modes, bareEncNorm_trivial, the diagonal controls,
+  refute_of_acyclic, the measure engine) is coherent, portable, and its
+  natural peer set is encoding-legitimacy disputes across several fields
+  rather than combinator papers. It is NOT ready to stand alone, for one
+  concrete reason: it has no positive certification. Every calibration result
+  in it is negative or a triviality control, and a suite that only ever says
+  "not this" is a critic, not a standard. Goal 2 criterion (a) is exactly the
+  missing piece, which is a second and independent argument for ranking it
+  first. Extraction after (a), not before.
+- Next-target ranking, unchanged in order from Stage 6 and now better
+  motivated: (1) **spec Goal 2 criterion (a)** — the only open stated spec
+  goal, the taxonomy's missing positive side, and a prerequisite for the
+  suite standing alone. Needs scoping as a multi-slice project with `bwd` as
+  the known and now provably-necessary hard part. (2) **C4's syntactic
+  residue** — a rule-schema formalism; genuinely ours, no prior art found,
+  mathematics already done. (3) transcription work (C1(a), C5) — real
+  deliverables under Goals 1 and 4, correctly labelled as importing.
+  (4) C6, explicitly NOT promoted despite being cheap, because cheapness is
+  what made C1 attractive for nine stages.

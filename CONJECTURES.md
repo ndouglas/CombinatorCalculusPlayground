@@ -31,6 +31,29 @@ Note on what these labels are NOT: none of **open**/**probed**/**weakened**
 carries any proof content. Only **proved** and **refuted** do. The three
 soft labels track the state of the *evidence*, so that later readers can
 tell tested-and-survived from tested-and-dented from untested.
+
+## Two things every entry must carry (added Stage 7)
+
+Status answers "how well established is this?" It does not answer "should
+anyone work on it?", and nine stages went into a conjecture where the answer
+to the second question was no. Two further fields, each of which would have
+caught that on its own:
+
+- **Materiality** — does resolving this change a conclusion we care about?
+  Borrowed from audit standards, which pair scope-honesty with a materiality
+  test; this file had the first and not the second. **C1 is the worked
+  example of failure**: fully resolved in either direction it says nothing
+  whatever about universality, which is the program's actual question, so its
+  materiality was LOW from Stage 0 and nobody asked.
+- **Prior art** — has this been settled elsewhere? A one-line answer, or an
+  explicit "not checked". **C1 is the worked example here too**: both halves
+  were externally known and the check that found it took under an hour, in
+  Stage 6. The register was applied to every fact the program LEANED on
+  (Cocke–Minsky, Waldmann, Church, Barker) and to none of the facts it was
+  trying to establish.
+
+Rule going forward: no conjecture gets attacked before both fields are
+filled. "Not checked" is an acceptable value; a blank is not.
 Census methodology: leftmost-outermost reduction (`stepOnce`), which is the
 normalizing strategy; "exhausted" verdicts are fuel-outs, NOT divergence proofs.
 As of Stage 1, SK reduction is proven confluent (`confluence`,
@@ -144,6 +167,15 @@ no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
   reproduction snippet.
 
 ## C1: Smallest non-normalizing pure-S term — SPLIT into C1(a) and C1(b)
+- Materiality: **LOW, and it always was.** Resolved either way, C1 says
+  nothing about universality — the program's actual question. A
+  non-normalizing state does feed `bareEncNorm_trivial`'s hypothesis, but that
+  theorem is a negative control showing the UNPINNED definition measures
+  nothing, so C1 supports a result about a definition the program discarded.
+  This entry is the reason the materiality field exists.
+- Prior art: **settled externally, both halves** (Wolfram; Wolfram Data
+  Repository; Waldmann). Found in Stage 6, in under an hour, after nine
+  stages. This entry is also the reason the prior-art field exists.
 
 **Slice 5 restructuring.** As originally written, C1 bundled two logically
 independent claims, and for nine stages every attempt went after the bundle:
@@ -689,8 +721,43 @@ reduction cycle, not formalized here.
   (a formal kill needs a computability theory; zero-dep constraint).
   The λI ({S,B,C,I}) stretch goal was not attempted this stage.
 
-## C4: No single-rule first-order combinator basis hosts SK — status: open
-`no_sim_SK_iota` refutes iota specifically, via strict growth. Conjecture:
+## C4: No single-rule first-order combinator basis hosts SK — REDUCED
+**Status: semantic core PROVED; syntactic residue open.**
+- Materiality: **HIGH** — it is a claim about a CLASS of encodings and hosts,
+  so it lives at the taxonomy level, which is where this program's
+  comparative advantage is. Resolving it changes what the taxonomy can say
+  about systems nobody has examined individually.
+- Prior art: **none found.** The Stage 6 literature check turned up external
+  answers for C1 and probably C2; it found nothing for C4. As of Stage 7 this
+  is the one conjecture on the list that is both open and unambiguously ours.
+
+**Stage 7 — the semantic core, PROVED.** C4 bundles a semantic claim with a
+syntactic class, exactly as C1 bundled existence with minimality, and the
+semantic claim is the whole mathematical content:
+
+`no_pathEncoding_SK_of_strict_measure` (`Universality/Calibration.lean`) — no
+host whose every step strictly increases some Nat-valued measure can
+path-encode SK, with `no_sim_SK_of_strict_measure` as the `Simulation`-level
+corollary. Engine: `RS.Acyclic.of_strict_measure` (`Taxonomy.lean`) plus SK's
+Ω ↔ M cycle. This is STRONGER than C4 in the semantic direction — it holds
+for any host with such a measure, one-combinator or not — and it confirms the
+generalization was the right one, since `RS.Iota_acyclic` and Stage 4's
+refutation are both recovered as one-line instances. Strict growth was never
+a property of ι; it was a property of ι's measure.
+
+**The syntactic residue, stated precisely so this is not read as resolved.**
+C4 as WRITTEN quantifies over "one-combinator, single-rule, first-order
+systems whose rule is strictly size-increasing on every instance." Nothing in
+this tree formalizes that class: there is no datatype of rewrite-rule
+schemas, no matching, no substitution for rule variables. Closing C4 as
+written needs (i) that formalism and (ii) a proof that every system in the
+class has a strictly growing leaf-count measure — at which point (ii) feeds
+the theorem above and C4 falls out. So C4 is **reduced to a formalization
+task with the mathematics already done**, which is a different and better
+position than "open", but it is not proved.
+
+Original conjecture text follows. `no_sim_SK_iota` refutes iota specifically,
+via strict growth. Conjecture:
 the argument generalizes — any ONE-combinator, single-rule, first-order
 system whose rule is strictly size-increasing on every instance (each
 rule variable occurs at least once in the reduct AND the reduct is
@@ -706,7 +773,18 @@ needed the separate τ-measure route — resolved by `no_pure_S_cycle`
 (C5 was reserved and had not yet been registered — closed below, Stage 5
 Slice 3, per the reviewer note on Task 2.)
 
-## C5: Conservation for pure S (WN ⇒ SN) — status: open
+## C5: Conservation for pure S (WN ⇒ SN) — status: external (open here)
+- Materiality: **LOW as leverage, MEDIUM as a deliverable.** Its stated
+  purpose was to upgrade a C1 loop witness into a divergence proof — and C1(a)
+  is now external, so that purpose is gone. What remains is its value as a
+  formalization under spec Goals 1 and 4, plus the unbounded-trajectory
+  corollary.
+- Prior art: **settled externally** — the λI conservation theorem, Church
+  1941 / Barendregt §9.5, cited in this file since Stage 2. Re-labelled
+  **external** in Stage 7 for consistency: it was always a known classical
+  theorem, and calling it "open" conflated "we haven't done it" with "nobody
+  has." Formalizing it is transcription.
+
 In erasure-free calculi, weak normalization implies strong normalization
 (the λI conservation theorem — Church 1941 territory; Barendregt §9.5 has
 the modern treatment). Pure S is erasure-free (Stage 2), so conservation
@@ -725,6 +803,16 @@ revisit. Blocked on the same finiteness lemma as the pigeonhole queue
 (`sTerms`-completeness chain); registered, not claimed.
 
 ## C6: Divergence density grows with size — status: probed (open)
+- Materiality: **LOW.** A density asymptotic over small n bears on nothing
+  else in this tree; no theorem depends on it and it does not touch
+  universality. It is cheap and it is genuinely ours, and Stage 7's ranking
+  deliberately does NOT promote it on those grounds — cheapness is precisely
+  what made C1 attractive for nine stages.
+- Prior art: **not checked** for the density asymptotic specifically. Adjacent
+  work certainly exists (Wolfram's dataset covers leaf counts 1–10 and would
+  give the same counts); whether the monotone-to-1 conjecture is settled is
+  unknown. Checking is cheap and should precede any further work here.
+
 
 **Slice 4 fuel-sensitivity test — the table is NOT an artifact of fuel
 200.** This was the cheapest open item on the board and the most exposed:
@@ -1140,3 +1228,45 @@ laws. External and unformalized: C1(a), C5, and probably C2's priority.
 Open and genuinely unsettled: C4, C6, spec Goal 2's criterion (a), and the
 Wolfram prize question itself — which is about UNIVERSALITY and is untouched
 by anything in the C1 literature.
+
+### Stage 7: C4 reduced, and a plan corrected mid-execution
+
+- **C4's semantic core PROVED, syntactic residue registered.** See the C4
+  entry. `no_pathEncoding_SK_of_strict_measure` covers any host with a
+  strictly step-increasing measure, and `RS.Iota_acyclic` plus Stage 4's
+  refutation both fall out as one-line instances — strict growth was a
+  property of ι's MEASURE, never of ι. C4 as written still needs a
+  rule-schema formalism (variables, matching, substitution) that does not
+  exist here, so it is reduced-to-a-formalization-task, not resolved.
+- **The plan that produced this stage was wrong, and the correction is now a
+  theorem.** The prompting analysis recommended restating spec Goal 2
+  criterion (a) at `PathEncoding` strength to bypass the `bwd` blocker.
+  Working it showed that inverts the correct move: negative claims strengthen
+  as the encoding class GROWS (so refutations belong at `PathEncoding`, as
+  Slice 4 established), while positive claims strengthen as it SHRINKS (so
+  certifications belong at `Simulation`). Criterion (a) is a positive claim
+  whose whole purpose is to show the DEMANDING definition is satisfiable.
+  `UniversalReach.toPathEncoding` records the inclusion; with
+  `pathEncoding_strictly_weaker` the levels provably differ, so the direction
+  is substantive. **`bwd` is load-bearing and the Goal 2 blocker is
+  principled, not incidental.** This supersedes the suggestion; recorded
+  rather than quietly dropped.
+- **Two ledger fields added — materiality and prior art** (documented after
+  the status vocabulary). Status says how well established a claim is; it
+  never said whether anyone should work on it, and that is the question nine
+  stages got wrong. C1 is the worked failure of both fields: materiality LOW
+  from Stage 0, prior art settled externally and discoverable in an hour.
+  Every entry now carries both, "not checked" permitted, blank not.
+- **C5 re-labelled external** for consistency with C1(a): the λI conservation
+  theorem has been cited in this file since Stage 2, so calling it "open"
+  conflated "we haven't done it" with "nobody has." Its stated purpose —
+  upgrading a C1 loop witness — is also gone now that C1(a) is external.
+
+**Where the program stands, by level rather than by conjecture.** The bottom
+of the tree (facts about specific small S-terms: C1, C2, C6) is done or
+external — it is the level enumeration reaches, hence the level where prior
+art was always densest. The top (what faithful encoding MEANS: `Simulation`,
+`PathEncoding`, the three observation modes, the refutation mechanism, the
+negative controls) is where this tree's theorem mass actually sits and where
+the literature check found nothing. C4 and spec Goal 2 criterion (a) are both
+at the top, and they are the two live items that matter.
