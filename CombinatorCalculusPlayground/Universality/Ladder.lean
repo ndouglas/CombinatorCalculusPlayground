@@ -675,3 +675,114 @@ def onCycleAny {α : Type} [BEq α] (size : α → Nat) (succs : α → List α)
 -- leftmost-outermost cycles only, and Stage 21 showed that class of evidence misses
 -- real cycles. This rules out ALL strategies within a size bound, and the bound has
 -- been tested for sensitivity.
+
+-- ## Stage 23: τ on {S,B}, and an acyclic sub-fragment
+-- Two things pointed here. Stage 20 ruled out every LINEAR COUNTING measure and
+-- noted that τ is not a count — `τ(app a b) = 2τ(a) + τ(b)` weights by POSITION —
+-- flagging that as the live hint. Stage 22 then found the remaining hole in the
+-- census (a cycle swelling past the size cap) is not closable by brute force: the
+-- closure at cap 200 on the explosive 7-leaf terms did not finish in ten minutes.
+-- So the hole has to be attacked analytically, and τ is the tool to try.
+--
+-- It does not settle rung two, but it gets much closer than any count: τ strictly
+-- decreases on EVERY B-reduction, and on an S-reduction it moves by `2τ(x) - 8`,
+-- so it decreases there too whenever the third argument is τ-light. That isolates
+-- an acyclic sub-fragment — exactly C2's shape, where τ dropped on the isometric
+-- fragment of pure S.
+
+def tauSB : SBTerm → Nat
+  | .S => 1
+  | .B => 1
+  | .app a b => 2 * tauSB a + tauSB b
+
+theorem tauSB_pos (t : SBTerm) : 0 < tauSB t := by
+  induction t with
+  | S => exact Nat.zero_lt_one
+  | B => exact Nat.zero_lt_one
+  | app a b iha ihb => simp only [tauSB]; omega
+
+/-- On an S-reduction τ moves by exactly `2τ(x) - 8`: down when the duplicated
+argument is light, up when it is heavy. Same shape as pure S, where C2 used the
+`τ(x) = 1` case to get its drop of 6. -/
+theorem tauSB_S_red (f g x : SBTerm) :
+    tauSB (.app (.app f x) (.app g x)) + 8
+      = tauSB (.app (.app (.app .S f) g) x) + 2 * tauSB x := by
+  simp only [tauSB]; omega
+
+/-- On a B-reduction τ strictly decreases, always — by `2τ(x) + 8 ≥ 10`. `B`
+duplicates nothing, so there is no compensating term. -/
+theorem tauSB_B_red (x y z : SBTerm) :
+    tauSB (.app x (.app y z)) + (2 * tauSB x + 8)
+      = tauSB (.app (.app (.app .B x) y) z) := by
+  simp only [tauSB]; omega
+
+-- ## The τ-light fragment
+-- A step is light when it is a B-reduction, or an S-reduction whose duplicated
+-- argument has `τ ≤ 3` — precisely the condition making `2τ(x) - 8` negative.
+
+inductive SBLightStep : SBTerm → SBTerm → Prop
+  | S_red (f g x : SBTerm) (h : tauSB x ≤ 3) :
+      SBLightStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | B_red (x y z : SBTerm) :
+      SBLightStep (.app (.app (.app .B x) y) z) (.app x (.app y z))
+  | appL {t t' u : SBTerm} : SBLightStep t t' → SBLightStep (.app t u) (.app t' u)
+  | appR {t u u' : SBTerm} : SBLightStep u u' → SBLightStep (.app t u) (.app t u')
+
+theorem sbLightStep_isStep {t u : SBTerm} (h : SBLightStep t u) : SBStep t u := by
+  induction h with
+  | S_red f g x _ => exact SBStep.S_red f g x
+  | B_red x y z => exact SBStep.B_red x y z
+  | appL _ ih => exact SBStep.appL ih
+  | appR _ ih => exact SBStep.appR ih
+
+theorem tauSB_lt_of_light {t u : SBTerm} (h : SBLightStep t u) : tauSB u < tauSB t := by
+  induction h with
+  | S_red f g x hx =>
+    have := tauSB_S_red f g x
+    have hp := tauSB_pos x
+    omega
+  | B_red x y z =>
+    have := tauSB_B_red x y z
+    have hp := tauSB_pos x
+    omega
+  | appL _ ih => simp only [tauSB]; omega
+  | appR _ ih => simp only [tauSB]; omega
+
+def RS.SBLight : RS := ⟨SBTerm, SBLightStep⟩
+
+/-- **The τ-light fragment of {S,B} is acyclic.** The direct analogue of C2's
+isometric fragment for pure S: isolate the steps a measure controls, and no cycle
+can live inside them. -/
+theorem sbLight_acyclic : RS.Acyclic RS.SBLight :=
+  RS.Acyclic.of_decreasing_measure tauSB tauSB_lt_of_light
+
+/-- **Where a {S,B} cycle would have to live.** Since τ strictly drops on every
+light step, no cycle consists only of light steps — so any cycle must fire at least
+one S-reduction whose duplicated argument is τ-HEAVY (`τ(x) ≥ 4`). That is the
+narrowed target the census cap could not reach. -/
+theorem sbCycle_needs_heavy_S {t : SBTerm}
+    (hcyc : ∃ u, SBLightStep t u ∧ RS.SBLight.Steps u t) : False := by
+  obtain ⟨u, h1, h2⟩ := hcyc
+  exact sbLight_acyclic h1 h2
+
+-- τ-heavy arguments are not exotic — `S S` already has τ = 3 (light) and `S (S S)`
+-- has τ = 5 (heavy), so the boundary sits at very small terms.
+#guard tauSB .S = 1
+#guard tauSB (.app .S .S) = 3
+#guard tauSB (.app .S (.app .S .S)) = 5
+#guard tauSB (.app (.app .S .S) .S) = 7
+
+-- ## What rung two now is
+--   * no counting measure is monotone            (Stage 20, proved)
+--   * no cycle under ANY strategy up to 8 leaves
+--     within a 30-leaf cap, cap-insensitive to 120 (Stage 22, censused)
+--   * the cap cannot be lifted by brute force      (Stage 23, measured: cap 200 on
+--                                                   the explosive 7-leaf terms did
+--                                                   not finish in ten minutes)
+--   * τ strictly drops on every B-reduction and on
+--     every τ-light S-reduction, so the τ-light
+--     fragment is ACYCLIC                          (Stage 23, proved)
+--
+-- So a {S,B} cycle, if one exists, must fire an S-reduction duplicating a τ-heavy
+-- argument. Rung two remains OPEN, but the target is now a single named condition
+-- rather than an unbounded search.

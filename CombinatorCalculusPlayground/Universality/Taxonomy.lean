@@ -211,6 +211,21 @@ theorem not_acyclic_of_pathEncoding {A B : RS} (P : PathEncoding A B)
     ¬ RS.Acyclic B :=
   fun hAcyc => PathEncoding.refute_of_acyclic hAcyc h1 h2 hne ⟨P⟩
 
+/-- The dual: every step strictly DECREASES a measure ⇒ acyclic. Stated because
+`of_strict_measure` covers growing hosts (ι, C4) while terminating-style fragments
+need this direction; Stage 17 had an ad-hoc copy inside `SI_no_decreasing_measure`. -/
+theorem RS.Acyclic.of_decreasing_measure {B : RS} (mu : B.Carrier → Nat)
+    (hmono : ∀ {b b' : B.Carrier}, B.step b b' → mu b' < mu b) :
+    RS.Acyclic B := by
+  intro b b' hstep hback
+  have hdrop : mu b' < mu b := hmono hstep
+  have hpath : ∀ {a c : B.Carrier}, B.Steps a c → mu c ≤ mu a := by
+    intro a c h
+    exact h.rec (fun _ => Nat.le_refl _)
+      (fun s _ ih => Nat.le_trans ih (Nat.le_of_lt (hmono s)))
+  have := hpath hback
+  omega
+
 -- ## Claim asymmetry: positive and negative claims want OPPOSITE classes
 -- Recorded because it corrects a plausible-sounding plan. `PathEncoding` is
 -- strictly weaker than `Simulation` (`pathEncoding_strictly_weaker`,
