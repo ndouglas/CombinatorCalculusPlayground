@@ -1815,3 +1815,45 @@ what automation could and couldn't do. This file is a first-class deliverable
   the tooling is fast enough; (2) the joinability-insensitive abstraction lifter for
   Tag → SK; (3) rung three {S,C}, where the same tooling transfers immediately;
   (4) transcription (C1(a), C5); (5) C6, declined a tenth time.
+
+## 2026-07-24 — Stage 23: the computational route closed, the analytic one opened
+
+- Ranked task was "test the cap limit directly". Tested it, and it failed
+  informatively: raising the census cap from 30 to 200 on the six explosive 7-leaf
+  terms did not finish in ten minutes. That is the expected shape — those terms grow
+  to ~130k leaves and the all-strategies closure under a generous cap explores
+  enormous numbers of interleavings — but it is worth having measured rather than
+  assumed, because it converts "the cap is a limitation" into "the cap is not
+  liftable by brute force", which is what justifies switching approaches.
+- So I switched to the analytic route, and Stage 20 had already left the pointer:
+  its theorem rules out linear COUNTING measures, and τ is not a count. τ weights by
+  POSITION — `2τ(a) + τ(b)` — which is exactly why it escaped that theorem. I had
+  written that sentence in Stage 20 as a hint and then not followed it for three
+  stages.
+- τ turns out to behave beautifully on B and awkwardly on S, which is the useful
+  asymmetry. On a B-reduction it strictly drops by `2τ(x) + 8 ≥ 10`, always — `B`
+  duplicates nothing so there is no compensating term. On an S-reduction it moves by
+  exactly `2τ(x) - 8`, so it drops iff the duplicated argument is light. Both are
+  one-line `omega` proofs once the definition is unfolded; the content is entirely in
+  choosing τ.
+- That gives the C2 shape back. C2 could not use τ globally on pure S either — it
+  isolated the ISOMETRIC fragment and dropped τ there. Here the isolable fragment is
+  the τ-LIGHT one, and `sbLight_acyclic` is the analogue. It is a genuine positive
+  result about rung two, and it narrows the remaining question from "is there a
+  cycle anywhere" to "is there a cycle firing an S-reduction on a τ-heavy argument".
+- Worth noticing how the three stages compose rather than repeat: Stage 20's negative
+  (no counting measure) told me which class to leave; Stage 22's census bounded where
+  a cycle can be; Stage 23's fragment bounds what a cycle must DO. None of them
+  settles rung two and each narrows it differently. That is what a ladder rung is
+  supposed to look like, and it is the first time in this program that three
+  consecutive stages have accumulated instead of one correcting the next.
+- Small tidy: added `RS.Acyclic.of_decreasing_measure` to Taxonomy as the dual of
+  `of_strict_measure`. Stage 17 had inlined an ad-hoc copy inside
+  `SI_no_decreasing_measure`; now there is one general lemma and both users take it.
+- Ranking: (1) **hunt specifically for τ-heavy cycles** — the search space is now
+  named, so seed the strategy-independent hunt only from terms that can fire an
+  S-reduction on a τ-heavy argument, which should be far cheaper than the
+  unrestricted cap-lift that just timed out; (2) rung three {S,C}, where τ should be
+  computed the same way and may behave differently, since `C x y z → x z y`
+  duplicates nothing either; (3) the joinability-insensitive abstraction lifter for
+  Tag → SK; (4) transcription; (5) C6, declined an eleventh time.

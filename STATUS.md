@@ -157,7 +157,7 @@ against in Stage 16.
 |---|---|---|
 | 0 | `{S}` | **acyclic** (`no_pure_S_cycle`); hence refuted as a host of SK |
 | 1 | `{S,I}` | **cyclic** (`omegaSI_cycle`). NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) — so the mechanism is not merely unhelpful here, it is provably inapplicable |
-| 2 | `{S,B}` | **open, but the evidence is now strategy-independent.** `onCycleAny` (all successors, bounded closure): every term up to **8 leaves** gets a verdict and none is on a cycle within a 30-leaf cap — cap-insensitive to 120 at n=7. Both measure routes closed (`no_monotone_counting_measure`; decreasing measures ruled out by the fuel-outs). Remaining gap: a cycle swelling past the cap and returning |
+| 2 | `{S,B}` | **open, target narrowed to one condition.** No counting measure is monotone (`no_monotone_counting_measure`). No cycle under **any** strategy up to 8 leaves within a 30-leaf cap, cap-insensitive to 120 (`onCycleAny`); the cap is not liftable by brute force. **τ strictly drops on every B-reduction and every τ-light S-reduction, so the τ-light fragment is ACYCLIC** (`sbLight_acyclic`) — hence any cycle must fire an S-reduction duplicating a τ-**heavy** argument (`sbCycle_needs_heavy_S`) |
 | 3 | `{S,C}` | open, same shape as rung 2 |
 | top | `{S,K}` | **cyclic** — by the Ω ↔ M cycle, and independently by inheritance from rung one (`SK_not_acyclic_via_rung1`) |
 

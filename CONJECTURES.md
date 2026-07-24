@@ -1807,3 +1807,30 @@ shape `Reachability.lean` already uses for pure S.
   matters here in a way it would not for pure S, where monotonicity confines every
   path. This is the first place in the program where the *absence* of a monotone
   quantity degrades the census as well as the proof.
+
+### Stage 23: τ on {S,B} — the τ-light fragment is acyclic
+
+Stage 22 left one hole: a cycle swelling past the census size cap. It is not
+closable by brute force — the closure at cap 200 on the explosive 7-leaf terms did
+not finish in ten minutes — so it had to be attacked analytically. Stage 20 had
+already named the tool: τ is not a *count*, it weights by **position**
+(`τ(app a b) = 2τ(a) + τ(b)`), so Stage 20's no-counting-measure theorem does not
+apply to it.
+
+- **`tauSB_S_red`**: on an S-reduction τ moves by exactly `2τ(x) − 8` — down when the
+  duplicated argument is light, up when heavy. The same shape as pure S, where C2
+  used the `τ(x) = 1` case to get its drop of 6.
+- **`tauSB_B_red`**: on a B-reduction τ **strictly decreases**, always, by
+  `2τ(x) + 8 ≥ 10`. `B` duplicates nothing, so nothing compensates.
+- **`sbLight_acyclic`**: the τ-light fragment (B-reductions plus S-reductions with
+  `τ(x) ≤ 3`) is **ACYCLIC**. This is the direct analogue of C2's isometric fragment
+  for pure S — isolate the steps a measure controls, and no cycle can live inside
+  them.
+- **`sbCycle_needs_heavy_S`**: therefore any `{S,B}` cycle must fire an S-reduction
+  duplicating a τ-**heavy** argument (`τ(x) ≥ 4`). Rung two remains open, but the
+  target is a single named condition rather than an unbounded search. The boundary
+  sits at small terms: `S S` has τ = 3 (light), `S (S S)` has τ = 5 (heavy).
+- Also added **`RS.Acyclic.of_decreasing_measure`** (Taxonomy) — the dual of
+  `of_strict_measure`, which covers growing hosts while terminating-style fragments
+  need the other direction. Stage 17 had an ad-hoc copy inside
+  `SI_no_decreasing_measure`.
