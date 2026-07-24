@@ -345,11 +345,38 @@ def onCycle? (t : Term) (fuel : Nat) : Option Bool :=
       | none, _ => none)
     (some false)
 
--- Kernel-checked: NO pure-S term with ≤ 6 leaves sits on a reduction
--- cycle. This upgrades the census's fuel-bounded observation (C2,
--- CONJECTURES.md) to a compile-time-verified fact at these sizes.
+-- Evaluator-checked at compile time (via `#guard`, Lean's untrusted
+-- evaluator — NOT a kernel proof): NO pure-S term with ≤ 6 leaves sits on
+-- a reduction cycle. This upgrades the census's fuel-bounded observation
+-- (C2, CONJECTURES.md) to a compile-time-checked fact at these sizes.
+-- For kernel-level facts on concrete instances, see the examples below.
 #guard (List.range 7).all fun n => (sTerms n).all fun t =>
   onCycle? t 100 == some false
+
+-- Kernel-level per-instance cycle-freedom: for these CONCRETE terms the
+-- claim is a genuine theorem (rfl-evaluated verdicts lifted through
+-- reachable?_correct), not just an evaluator pass.
+example : ¬ ∃ v, ((app3 S S S S) ⟶ v) ∧ (v ⟶* (app3 S S S S)) := by
+  rintro ⟨v, hstep, hback⟩
+  have hv : v ∈ succs (app3 S S S S) := succs_complete hstep
+  -- succs (app3 S S S S) is the concrete singleton [(S S)(S S)]:
+  simp [succs, rootRed, app3] at hv
+  subst hv
+  have h : reachable? (app (app S S) (app S S)) (app3 S S S S) 50 = some false := by rfl
+  exact absurd ((reachable?_correct (by repeat constructor) h).mpr hback) (by simp)
+
+-- A second, size-5 instance: S S S S S (leafCount 5), whose only
+-- successor is the concrete term below.
+example :
+    ¬ ∃ v, ((app (app3 S S S S) S) ⟶ v) ∧ (v ⟶* (app (app3 S S S S) S)) := by
+  rintro ⟨v, hstep, hback⟩
+  have hv : v ∈ succs (app (app3 S S S S) S) := succs_complete hstep
+  -- succs (S S S S S) is the concrete singleton [((S S)(S S)) S]:
+  simp [succs, rootRed, app3] at hv
+  subst hv
+  have h : reachable? (app (app (app S S) (app S S)) S) (app (app3 S S S S) S) 50
+      = some false := by rfl
+  exact absurd ((reachable?_correct (by repeat constructor) h).mpr hback) (by simp)
 
 -- ## Stretch (escape-hatched): `no_small_cycle` over `⟶⁺` as a theorem
 -- Attempted (3 tries) and NOT included: `∀ t, KFree t → leafCount t ≤ 5 →
