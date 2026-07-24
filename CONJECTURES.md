@@ -1751,3 +1751,31 @@ correction is a theorem rather than a note.
 - **Runtime datapoint:** extending the hunt to 8 leaves (109824 terms) was
   abandoned after 10 minutes. The bottleneck is `sbOnCycle`'s seen-list, which is
   quadratic per term; a faster detector would be needed to go further.
+
+### Stage 21: a faster detector, and validating it invalidated the hunt's scope
+
+- **The detector.** `floydFind` (`Universality/Ladder.lean`) — Floyd
+  tortoise-and-hare with a size cap, O(1) memory, generic over the term type since
+  `sbStepOnce` is a function and the trajectory is a functional graph. Stage 20's
+  quadratic `sbOnCycle` was abandoned at n=8 after ten minutes; this reaches
+  **n=8 in 6 seconds (109824 terms) and n=9 in 38 seconds (732160 terms)**, with
+  0 cycles found and 259 / 4496 no-verdict at size cap 1000, fuel 300.
+- **The validation, which is the actual result.** An untested cycle detector
+  reporting "no cycles found" is worthless, so the true-positive path was checked
+  against a cycle known to exist: rung one's `omegaSI_cycle`, kernel-proved. **The
+  detector did not find it** — and that is not a bug. The proved cycle closes with
+  `appR (I_red)`, an INNER redex; leftmost-outermost fires the head S-redex instead
+  and never returns. Both facts are build-enforced: the LO trajectory from `omegaSI`
+  has sizes 6,8,7,10,9,8,12,11,10,9,14,… and never revisits it in 60 steps.
+- **Correction to Stages 19–20.** Every cycle-hunt figure in this module is
+  **leftmost-outermost only**, and Stages 19–20 read the `{S,B}` data as stronger
+  evidence for acyclicity than it is. It rules out LO cycles and says nothing about
+  the reduction relation. Rung one is now the concrete witness for why that gap
+  matters.
+- **The uncomfortable part.** Stage 0's census carried exactly this caveat for pure
+  S — *"cycle-freedom under ALL strategies is a stronger, separate claim; this
+  census only ever runs leftmost-outermost"* — and it is still in the C2 entry
+  above. I rebuilt Stage 0's methodology on a new rung and reproduced its caveat
+  without noticing. What Stage 21 adds is that the caveat now has a witness rather
+  than being theoretical. Pure S itself is unaffected: C2 proved acyclicity by a
+  measure, not by the census.

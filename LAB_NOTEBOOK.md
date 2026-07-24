@@ -1734,3 +1734,47 @@ what automation could and couldn't do. This file is a first-class deliverable
   joinability-insensitive abstraction lifter for Tag → SK; (3) rung three {S,C},
   which the census tooling extends to nearly for free; (4) transcription; (5) C6,
   declined an eighth time.
+
+## 2026-07-24 — Stage 21: the validation step justified itself
+
+- Ranked task was "a faster cycle detector, then extend the hunt". Floyd
+  tortoise-and-hare was the obvious fix — `sbStepOnce` is a function, so the
+  trajectory is a functional graph and O(1) memory suffices. It worked: n=8 went
+  from a ten-minute abandonment to 6 seconds, and n=9 (732160 terms) to 38.
+- I wrote it GENERICALLY rather than for `SBTerm` specifically, so it could be
+  instantiated on {S,I}. The only reason was to validate the true-positive path —
+  I said in Stage 19's write-up that an untested detector reporting "no cycles
+  found" is worthless, and rung one supplies a kernel-PROVED cycle to test against.
+  That single decision is what produced the stage's finding.
+- **The detector did not find rung one's cycle.** For about a minute I assumed a
+  bug. It is not: the proved cycle closes with `appR (I_red)` — an INNER redex —
+  and leftmost-outermost fires the head S-redex instead. The LO trajectory from
+  `omegaSI` goes 6, 8, 7, 10, 9, 8, 12, 11, 10, 9, 14, … growing forever, never
+  returning. So a cycle can exist in the RELATION and be completely invisible to a
+  leftmost-outermost hunt, and rung one is a worked example.
+- That devalues the data I had just spent the stage producing, which is the right
+  outcome and worth being blunt about. The {S,B} figures rule out LO cycles. They
+  say nothing about the relation. Stages 19 and 20 both leaned on them as evidence
+  for acyclicity and both leaned too hard.
+- **The part I keep turning over:** Stage 0 already knew this. CONJECTURES.md's C2
+  entry has carried "cycle-freedom under ALL strategies is a stronger, separate
+  claim; this census only ever runs leftmost-outermost" since the first census. I
+  rebuilt that census on a new rung, inherited the identical limitation, and did not
+  transfer the caveat. Twenty stages of ledger discipline and the caveat was in the
+  file I edit most often.
+- Two consolations, neither of which cancels it. First, the caveat is now backed by
+  a witness rather than a worry — that is a genuine upgrade, and it is the kind of
+  thing that makes a caveat stick. Second, pure S is untouched, because C2 proved
+  acyclicity with a measure and never depended on the census. Which is itself the
+  lesson: the census generates conjectures, measures settle them, and I have twice
+  now let census output stand in for a settled question.
+- Tally, updated honestly: five under-estimates of difficulty, one over-estimate, two
+  wrong forward specifications, and now one un-transferred caveat. The failure modes
+  have moved outward — from rating work, to specifying work, to noticing that a
+  method's known limits apply to its reuse. The common thread is that all four were
+  cheap to check and none was checked before being relied on.
+- Ranking: (1) **rung two under a non-LO strategy** — the hunt should be re-run
+  reducing innermost or by a redex-fair strategy, since that is exactly where rung
+  one's cycle hides and the tooling now runs fast enough to afford it; (2) the
+  joinability-insensitive abstraction lifter for Tag → SK; (3) rung three {S,C};
+  (4) transcription; (5) C6, declined a ninth time.
