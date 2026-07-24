@@ -1642,3 +1642,48 @@ what automation could and couldn't do. This file is a first-class deliverable
   (2) the joinability-insensitive abstraction lifter, as the modular route to
   Tag → SK; (3) rung three, {S,C}; (4) transcription (C1(a), C5); (5) C6,
   declined a sixth time.
+
+## 2026-07-24 — Stage 19: the procedure earned its keep immediately
+
+- First stage run against the written-down rung procedure, and it caught me. Step
+  3 says "hunt for a cycle"; Stage 17 had done ONE hand-traced Ω attempt and
+  recorded it as weak evidence, then let that single trace carry a verdict into
+  the STATUS.md table. The procedure says a hunt, so I built the census — and the
+  census disagreed with the trace's implications within two minutes of running.
+- What changed: up to 6 leaves everything normalizes, which is what the Ω trace
+  suggested. At SEVEN leaves, 6 of 16896 terms do not normalize at fuel 200, and
+  still 6 at fuel 1000. So {S,B} is not plausibly strongly normalizing at all. It
+  is plausibly ACYCLIC and plausibly NON-NORMALIZING — which is exactly pure S's
+  profile, C1 plus C2.
+- The Stage 17 error was small but instructive: I wrote "weak evidence it may be
+  acyclic and therefore refutable by the existing mechanism". The first clause was
+  fine. The second silently assumed acyclic ⇒ terminating, and this project has a
+  theorem saying otherwise — pure S is acyclic and (externally) has
+  non-normalizing terms. I had the counterexample in my own tree and still made
+  the inference.
+- **The free cross-validation is the nicest thing here.** Pure-S terms are
+  {S,B}-terms, so the rung-2 census strictly contains the rung-0 census. Two of the
+  six exhausted terms at 7 leaves are exactly C1's candidates, and
+  `S S S (S S) S S` came back with 120112 leaves after 200 steps — the identical
+  figure CONJECTURES.md has recorded for `c1` since Stage 0, now reproduced by a
+  reducer written independently for a different term type. Neither census was
+  built to check the other; the containment made it happen for free.
+- Also refined Stage 17's headline finding. Stage 17 ruled out erasure-freeness as
+  the explanation for pure S's acyclicity but did not say what replaced it. The
+  rung-2 data does: **arity**. `I` takes one argument, so `S I I x → (I x)(I x) →
+  x x` fires and returns. `B` takes three, so `S B B x → (B x)(B x)` leaves
+  everything one argument short and stalls. Rung one cycles and rung two does not,
+  and the discriminator is neither erasure nor duplication.
+- Step 4's target got sharper as a side effect: not a termination measure — the
+  fuel-outs rule that out — but a τ-style ACYCLICITY measure, which is precisely
+  what C2 needed and got for pure S. That is a much better-specified slice than
+  "combined measure", which is where Stage 17 left it.
+- Register kept: all of this is unverified census tooling plus build-enforced
+  `#guard`s over a bounded search. "No cycle found up to 7 leaves" is not
+  acyclicity, exactly as the pure-S census's fuel-outs are not divergence. Written
+  into the module header.
+- Ranking: (1) **rung two step 4** — the τ-style acyclicity measure for {S,B}, now
+  the best-specified open item on the board and a direct analogue of a slice that
+  already succeeded once; (2) the joinability-insensitive abstraction lifter for
+  Tag → SK; (3) rung three {S,C}, which the same census tooling extends to almost
+  for free; (4) transcription; (5) C6, declined a seventh time.

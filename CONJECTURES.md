@@ -1684,3 +1684,37 @@ more than the first.
   cycle makes step 4 provably futile. Rung one got that order right by luck.
   Rung 2's step-4 tool is now named concretely: a **lexicographic** measure, since
   step 1 shows no single component is monotone on `{S,B}` or `{S,C}`.
+
+### Stage 19: rung two censused — {S,B} looks like pure S
+
+Step 3 of the rung procedure, done properly. Stage 17 had one hand-traced Ω
+attempt; the procedure calls that weak evidence, so this runs Stage 0's census
+methodology on rung two. Tooling (`sbStepOnce`, `sbTerms`, `sbOnCycle`,
+`Universality/Ladder.lean`) is UNVERIFIED census tooling and labelled as such.
+
+- **Up to 6 leaves (3238 terms):** every term normalizes within fuel 100, no
+  cycles.
+- **At 7 leaves:** of 16896 terms, exactly **6 exhaust fuel 200 — and still 6 at
+  fuel 1000**, so not a cutoff artifact. None is on a detectable cycle within 400
+  steps. All six grow explosively (final sizes 20698–132443 leaves).
+- **So `{S,B}` looks structurally like PURE S:** plausibly acyclic *and* plausibly
+  non-normalizing — the C1 + C2 combination. **Correction to Stage 17:** it read
+  the terminating Ω attempt as "evidence toward acyclic, hence refutable". The
+  first half survives; the second was too quick, since acyclicity does not require
+  termination and pure S is the proof of that. Direction unchanged, basis now
+  16896 terms rather than one trace.
+- **Cross-validation, free.** Pure-S terms ARE {S,B}-terms, so the rung-2 census
+  CONTAINS the rung-0 census. Two of the six exhausted terms are exactly C1's
+  candidates, and `S S S (S S) S S` reproduces the **120112**-leaf figure recorded
+  for `c1` — computed by an independently written reducer. A check on both
+  censuses. The other four contain a `B` and are new to this rung.
+- **Why the Ω pattern fails here, and what a cycle would need.** `B` takes THREE
+  arguments and self-application supplies too few: `S B B x → (B x)(B x)` leaves
+  `B` applied to one argument on each side, and the whole to two — still short.
+  Rung one worked because `I` takes ONE. **Neither erasure nor duplication is the
+  discriminator; arity is.** That refines Stage 17's finding, which had ruled out
+  erasure-freeness without saying what replaced it.
+- **Step 4's target, sharpened:** not a termination measure but a τ-style
+  ACYCLICITY measure, lexicographic (neither `leafCount` nor B-count is monotone
+  alone — `B_red` removes a `B` while `S_red` duplicates its third argument). A
+  C2-sized slice, not attempted.

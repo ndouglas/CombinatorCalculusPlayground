@@ -157,7 +157,7 @@ against in Stage 16.
 |---|---|---|
 | 0 | `{S}` | **acyclic** (`no_pure_S_cycle`); hence refuted as a host of SK |
 | 1 | `{S,I}` | **cyclic** (`omegaSI_cycle`). NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) — so the mechanism is not merely unhelpful here, it is provably inapplicable |
-| 2 | `{S,B}` | open. `leafCount` non-monotone both ways; needs a **lexicographic** measure (neither component is monotone alone). The obvious Ω attempt terminates — weak evidence it may be acyclic |
+| 2 | `{S,B}` | open. **Census (Stage 19): no cycle up to 7 leaves / 400 steps, but 6 of 16896 terms at 7 leaves do not normalize at fuel 1000.** So {S,B} looks like pure S — plausibly acyclic *and* plausibly non-normalizing. Step 4's target is a τ-style acyclicity measure, lexicographic |
 | 3 | `{S,C}` | open, same shape as rung 2 |
 | top | `{S,K}` | **cyclic** — by the Ω ↔ M cycle, and independently by inheritance from rung one (`SK_not_acyclic_via_rung1`) |
 
