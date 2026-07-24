@@ -146,3 +146,68 @@ theorem step_app_K_pair {X u : Term} (hX : NormalForm X)
 -- discipline — force the recursive call before any duplication of it — and that
 -- is an obligation on the driver's construction, not a consequence of anything
 -- proved here.
+
+-- ## Stage 13: the pending-recursive-call risk, and a correction to Stage 10
+-- Stage 11 left one specific risk: a fixpoint's reduct `f (x x f)` hands the
+-- step function a PENDING RECURSIVE CALL, which is not normal, so if the driver
+-- duplicates it, drift returns. Stage 10's route (2) — "constrain the encoding
+-- so duplication only hits normal forms" — implicitly assumed duplication is
+-- something the driver's AUTHOR controls, e.g. by using the recursive call only
+-- once. That assumption is false for this program's abstraction algorithm, and
+-- the probe below shows why.
+--
+-- `bracket` is the NAIVE algorithm (its own comment says so): no occurs-check.
+-- So `[x](a b) = S ([x]a) ([x]b)` distributes the argument to BOTH branches
+-- even when `x` occurs in only one of them — and `S A B u → (A u)(B u)`
+-- duplicates `u` at EVERY application node of the body.
+
+/-- A body with exactly ONE occurrence of the abstracted variable. -/
+def body1 : TermV := TermV.app .S (.var 0)
+
+#guard toTerm (TermV.bracket 0 body1)
+  = Term.app (Term.app S (Term.app K S)) I
+
+/-- **Naive abstraction duplicates its argument even for a single-occurrence
+body.** One S-step and `u` appears twice: once in the live branch `I u`, once in
+the doomed branch `(K S) u` that will discard it. -/
+theorem naive_bracket_duplicates (u : Term) :
+    Term.app (toTerm (TermV.bracket 0 body1)) u ⟶
+      Term.app (Term.app (Term.app K S) u) (Term.app I u) :=
+  Step.S_red (Term.app K S) I u
+
+/-- ...and the doomed copy drifts independently of the live one. So the two
+copies of a non-normal argument differ, which is exactly the Stage 10 failure —
+reached here from a body that uses its variable ONCE. -/
+theorem naive_bracket_drifts :
+    Term.app (Term.app (Term.app K S) livePayload) (Term.app I livePayload) ⟶
+      Term.app (Term.app (Term.app K S)
+        (Term.app (Term.app K S) (Term.app K S))) (Term.app I livePayload) :=
+  Step.appL (Step.appR (Step.S_red K K S))
+
+-- ## What this corrects
+-- Stage 10 offered two routes and preferred (2), a design constraint, over
+-- (1), an abstraction defined up to `Joinable`. Stage 11 then discharged half
+-- of (2) by proving code is normal. The probe above shows (2) is NOT sufficient
+-- on its own:
+--
+--   * Occurrence-counting does not help. `body1` uses its variable once and
+--     still duplicates.
+--   * The duplicate is DOOMED — `(K S) u` discards `u` — but it exists for at
+--     least one step, and reduction can act on it in that window. A syntactic
+--     abstraction has to assign a source state to the drifted intermediate, and
+--     cannot.
+--   * Transient duplicates are not an artefact of naive `bracket` either. In
+--     SK every `S`-redex duplicates its third argument, so moving a value past
+--     another value costs a transient copy. An occurs-check-optimized
+--     abstraction reduces how MANY copies appear; it cannot reduce them to zero.
+--
+-- So Stage 10's route (1) is back on the table, and probably unavoidable: the
+-- abstraction must be insensitive to doomed subterms — either defined up to
+-- `Joinable` (Slice 1, with SK confluence doing the work), or defined so it
+-- reads only the live spine and ignores subterms destined for a `K`-discard.
+-- Either way this is a substantially harder obligation than "check each rule",
+-- and it is the real cost of piece (vi).
+--
+-- Stage 11's `normalForm_bracket` is unaffected and still useful: machine CODE
+-- is normal, so the fixpoint's self-application is safe. The problem is
+-- specifically the pending recursive call, which is data-shaped and not normal.
