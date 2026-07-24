@@ -13,6 +13,7 @@ import CombinatorCalculusPlayground.Universality.Defs
 import CombinatorCalculusPlayground.Universality.Taxonomy
 import CombinatorCalculusPlayground.Iota
 import CombinatorCalculusPlayground.Isometric
+import CombinatorCalculusPlayground.Bracket
 
 open Term
 
@@ -318,3 +319,34 @@ theorem pathEncoding_strictly_weaker :
   have hpath : RS.SK.Steps (S.enc true) (S.enc false) := by
     rw [hS]; exact RS.SK_steps_iff.mpr omega_to_M
   exact absurd (RS.Discrete2_steps_eq (S.bwd hpath)) (by decide)
+
+-- ## Stage 9: the positive and negative calibration results, at last in one
+-- ## language
+-- Stage 8 found Bracket.lean imported nothing, so `combinatory_completeness`
+-- — the program's POSITIVE calibration result since Stage 4 — had never been
+-- stated about the same system as the refutations in this file. Stage 9's
+-- bridge (`ofTerm`/`toTerm`, Bracket.lean) closes that. Restated here, in
+-- `RS` language, so it sits beside `no_sim_SK_pureS` and `no_sim_SK_iota`
+-- and is directly comparable with them.
+
+/-- **{S,K} is combinatorially complete, in `RS` language.** `F` is a genuine
+`Term` and the reduction is `RS.SK.Steps` — the same system, and the same
+relation, that every refutation in this file is stated about. -/
+theorem combinatory_completeness_RS (x : Nat) (t : TermV)
+    (h : ∀ y, TermV.occurs y t = true → y = x) :
+    ∃ F : Term, ∀ u : Term,
+      RS.SK.Steps (Term.app F u) (toTerm (TermV.subst x (ofTerm u) t)) := by
+  obtain ⟨F, hF⟩ := combinatory_completeness_Term x t h
+  exact ⟨F, fun u => RS.SK_steps_iff.mpr (hF u)⟩
+
+-- The calibration, now readable as one sandwich in one language:
+--   POSITIVE  combinatory_completeness_RS  : RS.SK realizes every
+--             single-variable body            (RS.SK.Steps, Term)
+--   NEGATIVE  no_pathEncoding_SK_pureS     : pure S cannot host RS.SK
+--             no_pathEncoding_SK_iota      : iota cannot host RS.SK
+--             no_pathEncoding_SK_of_strict_measure : nor can any
+--                                            strictly-growing host
+-- What is still MISSING, and is exactly spec Goal 2 criterion (a): the
+-- positive side is about SK realizing lambda-style bodies, NOT about SK
+-- hosting a known-universal MACHINE via a `Simulation`. Bringing the two
+-- into one language does not close that gap; it makes the gap legible.

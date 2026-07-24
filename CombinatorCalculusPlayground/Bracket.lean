@@ -1,4 +1,8 @@
 --! # Terms with variables
+-- (Stage 8 found this file imported NOTHING — see the bridge section at the
+-- bottom, added in Stage 9 to connect it to the Term/RS layer.)
+import CombinatorCalculusPlayground.Step
+
 -- Combinatory completeness needs something to be complete FOR: terms
 -- built from variables and application. The variables live in a separate
 -- syntax (TermV) so the core Term stays pure; nothing here touches the
@@ -148,3 +152,106 @@ theorem combinatory_completeness (x : Nat) (t : TermV)
   ⟨bracket x t, bracket_closed h, fun u => bracket_beta x t u⟩
 
 end TermV
+
+-- ## The bridge to the Term/RS layer (Stage 9)
+-- Stage 8's scoping found that this file imported nothing at all: `TermV`,
+-- `StepV` and `combinatory_completeness` had no connection to `Term`, `Step`
+-- or the `RS` layer. That made the program's headline POSITIVE calibration
+-- result live in a different universe from every one of its NEGATIVE results,
+-- which are all stated about `RS.SK` over `Term`. The gap was structural, not
+-- stylistic.
+--
+-- Two maps close it. `ofTerm` embeds `Term` into `TermV`; `toTerm` projects
+-- back, sending variables to junk — harmless, because `toTerm` is proved
+-- to invert `ofTerm` exactly (`toTerm_ofTerm`, `ofTerm_injective`) and because the step
+-- transfer below needs no closedness hypothesis at all.
+
+/-- Terms embed into terms-with-variables. -/
+def ofTerm : Term → TermV
+  | .S => .S
+  | .K => .K
+  | .app a b => .app (ofTerm a) (ofTerm b)
+
+/-- ...and project back. Variables have no `Term` counterpart, so they go to
+junk; `ofTerm_injective` shows this is invisible on the image of `ofTerm`,
+which is the only place the bridge uses it. -/
+def toTerm : TermV → Term
+  | .S => .S
+  | .K => .K
+  | .var _ => .S
+  | .app a b => .app (toTerm a) (toTerm b)
+
+@[simp] theorem toTerm_ofTerm (t : Term) : toTerm (ofTerm t) = t := by
+  induction t with
+  | S => rfl
+  | K => rfl
+  | app a b iha ihb => simp [ofTerm, toTerm, iha, ihb]
+
+theorem closedV_ofTerm (t : Term) : TermV.ClosedV (ofTerm t) := by
+  induction t with
+  | S => intro _; rfl
+  | K => intro _; rfl
+  | app a b iha ihb =>
+    intro y
+    simp [ofTerm, TermV.occurs, iha y, ihb y]
+
+/-- `toTerm` inverts `ofTerm` exactly, so no two `Term`s are conflated. This
+is all the faithfulness the bridge needs: everything transferred below starts
+from a `Term`.
+
+NOT claimed, deliberately: the stronger `ClosedV v → ofTerm (toTerm v) = v`
+(that `toTerm` is faithful on EVERY variable-free `TermV`, not just on the
+image of `ofTerm`). Its `var` case needs `(n == n) = true`, and every route to
+that fact in this toolchain — `beq_self_eq_true`, or `simp` finding it —
+drags in `Classical.choice`, which would be this tree's first use of it. The
+lemma is decorative (nothing depends on it), so the claim was weakened to what
+is needed rather than the axiom paid. See LAB_NOTEBOOK.md, Stage 9. -/
+theorem ofTerm_injective {a b : Term} (h : ofTerm a = ofTerm b) : a = b := by
+  have : toTerm (ofTerm a) = toTerm (ofTerm b) := by rw [h]
+  simpa using this
+
+-- ## Step transfer
+-- No closedness hypothesis is needed: `StepV`'s rules are exactly `Step`'s,
+-- `toTerm` is a homomorphism for application, and variables are inert on both
+-- sides. So every variable-level step projects to a genuine `Term` step.
+
+theorem step_toTerm {v w : TermV} (h : TermV.StepV v w) : toTerm v ⟶ toTerm w := by
+  induction h with
+  | K_red x y => exact Step.K_red (toTerm x) (toTerm y)
+  | S_red f g x => exact Step.S_red (toTerm f) (toTerm g) (toTerm x)
+  | appL _ ih => exact Step.appL ih
+  | appR _ ih => exact Step.appR ih
+
+theorem steps_toTerm {v w : TermV} (h : TermV.StepsV v w) : toTerm v ⟶* toTerm w := by
+  induction h with
+  | refl _ => exact Steps.refl _
+  | tail s _ ih => exact Steps.tail (step_toTerm s) ih
+
+-- ## Combinatory completeness, in the same language as the refutations
+-- This is the point of the bridge. `F` below is a genuine `Term`, and the
+-- reduction is genuine `Steps` — so for the first time the program's positive
+-- calibration result and its negative ones are stated about the same system.
+
+/-- **Combinatory completeness at the `Term` level.** For any single-variable
+`TermV` body there is an actual SK `Term` `F` such that applying it to any
+`Term` argument reduces to the body with that argument substituted. -/
+theorem combinatory_completeness_Term (x : Nat) (t : TermV)
+    (h : ∀ y, TermV.occurs y t = true → y = x) :
+    ∃ F : Term, ∀ u : Term,
+      Term.app F u ⟶* toTerm (TermV.subst x (ofTerm u) t) := by
+  refine ⟨toTerm (TermV.bracket x t), fun u => ?_⟩
+  have hstep : TermV.StepsV
+      (TermV.app (TermV.bracket x t) (ofTerm u))
+      (TermV.subst x (ofTerm u) t) :=
+    TermV.bracket_beta x t (ofTerm u)
+  have := steps_toTerm hstep
+  simpa [toTerm] using this
+
+-- (The `RS`-language restatement lives in `Universality/Calibration.lean`,
+-- where it can sit beside the refutations it is meant to be comparable with —
+-- this file deliberately stops at `Term`/`Step` so it need not import the
+-- conservation-law layer.)
+
+-- Sanity: the identity body `var 0` yields a combinator behaving as I.
+#guard toTerm (TermV.bracket 0 (.var 0)) = app2 Term.S Term.K Term.K
+#guard toTerm (TermV.bracket 0 (.var 0)) = I
