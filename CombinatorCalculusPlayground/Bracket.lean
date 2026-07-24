@@ -236,7 +236,7 @@ theorem steps_toTerm {v w : TermV} (h : TermV.StepsV v w) : toTerm v ⟶* toTerm
 `TermV` body there is an actual SK `Term` `F` such that applying it to any
 `Term` argument reduces to the body with that argument substituted. -/
 theorem combinatory_completeness_Term (x : Nat) (t : TermV)
-    (h : ∀ y, TermV.occurs y t = true → y = x) :
+    (_h : ∀ y, TermV.occurs y t = true → y = x) :
     ∃ F : Term, ∀ u : Term,
       Term.app F u ⟶* toTerm (TermV.subst x (ofTerm u) t) := by
   refine ⟨toTerm (TermV.bracket x t), fun u => ?_⟩
@@ -315,7 +315,7 @@ theorem normalForm_bracket (x : Nat) (t : TermV) :
     by_cases hy : y = x
     · simp only [TermV.bracket, hy, if_pos]
       exact normalForm_app_S_two normalForm_K normalForm_K
-    · simp only [TermV.bracket, hy, if_neg]
+    · simp only [TermV.bracket, hy]
       exact normalForm_app_K normalForm_S
   | app a b iha ihb =>
     exact normalForm_app_S_two iha ihb
@@ -323,3 +323,86 @@ theorem normalForm_bracket (x : Nat) (t : TermV) :
 -- Concretely: the combinator for the identity body is `I`, and it is normal.
 theorem normalForm_I : NormalForm I := normalForm_app_S_two normalForm_K normalForm_K
 #guard toTerm (TermV.bracket 0 (.var 0)) = I
+
+-- ## Piece (ii): two-variable abstraction (Stage 12)
+-- Stage 10 found that iterating `bracket` needs substitution to commute with
+-- bracketing, and that it only does so UP TO REDUCTION. Two design choices cut
+-- that down to one manageable lemma.
+--
+-- FIRST: n-variable abstraction is not needed. A driver takes a fixpoint's
+-- self-reference and a state, and its data can be TUPLED, so two nested
+-- abstractions suffice — `bracket self (bracket state body)`. Two is exactly
+-- the case the commutation lemma handles in one application, with no iteration.
+--
+-- SECOND: the substituted argument is always ENCODED DATA, i.e. in the image of
+-- `ofTerm`. Stating the lemmas for `ofTerm p` rather than for an abstract
+-- `ClosedV u` removes the `var` case entirely — which also dodges the
+-- `Classical.choice` trap Stage 9 hit, since that trap lives precisely in
+-- deriving a contradiction from `ClosedV (var n)`.
+
+/-- Substituting into encoded data does nothing: it has no variables. -/
+theorem subst_ofTerm (x : Nat) (v : TermV) (p : Term) :
+    TermV.subst x v (ofTerm p) = ofTerm p := by
+  induction p with
+  | S => rfl
+  | K => rfl
+  | app a b iha ihb => simp [ofTerm, TermV.subst, iha, ihb]
+
+/-- **The commutation lemma, in applied form.** Substituting encoded data for
+`x` inside `[y]t` and then applying to `v` gives the same result as doing both
+substitutions directly. This is what makes nested abstraction work: the two
+combinators are NOT equal, but applied to any argument they reach the same
+term, and applied is the only way they are ever used. -/
+theorem bracket_subst_applied {x y : Nat} (hxy : x ≠ y) (p : Term) (t v : TermV) :
+    TermV.StepsV
+      (TermV.app (TermV.subst x (ofTerm p) (TermV.bracket y t)) v)
+      (TermV.subst y v (TermV.subst x (ofTerm p) t)) := by
+  induction t with
+  | S =>
+    -- [y]S = K S, substitution inert, (K S) v → S
+    exact TermV.StepsV.tail (TermV.StepV.K_red .S v) (TermV.StepsV.refl _)
+  | K =>
+    exact TermV.StepsV.tail (TermV.StepV.K_red .K v) (TermV.StepsV.refl _)
+  | var z =>
+    by_cases hzy : z = y
+    · -- [y](var y) = S K K, which is closed; (S K K) v →* v, and both
+      -- substitutions leave `var y` as `v` since y ≠ x.
+      subst hzy
+      have hzx : z ≠ x := fun h => hxy h.symm
+      simp only [TermV.bracket, TermV.subst, hzx, ite_false, ite_true]
+      exact TermV.StepsV.tail (TermV.StepV.S_red .K .K v)
+        (TermV.StepsV.tail (TermV.StepV.K_red v (.app .K v)) (TermV.StepsV.refl v))
+    · -- [y](var z) = K (var z); the K-redex fires and both sides agree
+      by_cases hzx : z = x
+      · subst hzx
+        simp only [TermV.bracket, TermV.subst, hzy, ite_false, ite_true,
+          subst_ofTerm]
+        exact TermV.StepsV.tail (TermV.StepV.K_red (ofTerm p) v) (TermV.StepsV.refl _)
+      · simp only [TermV.bracket, TermV.subst, hzy, hzx, ite_false]
+        exact TermV.StepsV.tail (TermV.StepV.K_red (.var z) v) (TermV.StepsV.refl _)
+  | app a b iha ihb =>
+    -- [y](a b) = S ([y]a) ([y]b); the S-redex fires and the two IHs finish
+    exact TermV.StepsV.tail (TermV.StepV.S_red _ _ v) (TermV.StepsV.congApp iha ihb)
+
+/-- Two-variable abstraction: `[x][y]t`. -/
+def abs2 (x y : Nat) (t : TermV) : TermV := TermV.bracket x (TermV.bracket y t)
+
+/-- **Two-variable combinatory completeness.** `[x][y]t` applied to encoded
+data and then to any argument performs both substitutions. This is the form
+piece (v)'s driver needs: `x` is the fixpoint's self-reference, `y` the state. -/
+theorem abs2_beta {x y : Nat} (hxy : x ≠ y) (p : Term) (t v : TermV) :
+    TermV.StepsV
+      (TermV.app (TermV.app (abs2 x y t) (ofTerm p)) v)
+      (TermV.subst y v (TermV.subst x (ofTerm p) t)) :=
+  TermV.StepsV.trans
+    (TermV.StepsV.congL (TermV.bracket_beta x (TermV.bracket y t) (ofTerm p)))
+    (bracket_subst_applied hxy p t v)
+
+/-- The two-variable combinator is closed data too, hence a normal form —
+so it is safe to duplicate, per Stage 11. -/
+theorem normalForm_abs2 (x y : Nat) (t : TermV) :
+    NormalForm (toTerm (abs2 x y t)) :=
+  normalForm_bracket x (TermV.bracket y t)
+
+-- Sanity: [x][y] y is the "return the second argument" combinator, and it does.
+#guard toTerm (abs2 0 1 (.var 1)) = toTerm (TermV.bracket 0 (TermV.app2 .S .K .K))
