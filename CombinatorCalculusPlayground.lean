@@ -15,3 +15,4 @@ import CombinatorCalculusPlayground.Census.Completeness
 import CombinatorCalculusPlayground.Reachability
 import CombinatorCalculusPlayground.Invariants
 import CombinatorCalculusPlayground.Decidability
+import CombinatorCalculusPlayground.AdequacyProbe
