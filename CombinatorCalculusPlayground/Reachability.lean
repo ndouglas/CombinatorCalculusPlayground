@@ -13,6 +13,7 @@
 -- ran out before the closure saturated and is NEVER evidence.
 import CombinatorCalculusPlayground.Confluence
 import CombinatorCalculusPlayground.Census.Enumerate
+import CombinatorCalculusPlayground.Universality.Taxonomy
 
 open Term
 
@@ -389,3 +390,59 @@ example :
 -- reproving `sTermsTable` against a structurally-recursive characterization,
 -- not just induction on `KFree`. See task-5-report.md for the attempt log;
 -- queued for CONJECTURES.md (Task 8).
+
+-- ## Convertibility narrows to its true open core
+-- Trichotomy: both normalize → decidable by normal-form comparison;
+-- exactly one normalizes → NOT convertible; both diverge → the open core.
+-- Probe before proving: normalizing pairs' joinability matches nf-equality.
+#guard (match normalize 100 (app3 S S S S), normalize 100 (app (app S S) (app S S)) with
+        | some (n1, _), some (n2, _) => n1 == n2
+        | _, _ => false)
+
+/-- Common reduct. With Church–Rosser this IS convertibility. -/
+def Joinable (t u : Term) : Prop := ∃ w, (t ⟶* w) ∧ (u ⟶* w)
+
+-- Joinability IS convertibility: forward is Church–Rosser (a zig-zag walk
+-- rejoins), backward stitches the two reduction arms into a single zig-zag.
+theorem conv_iff_joinable {t u : Term} : RS.SK.Conv t u ↔ Joinable t u := by
+  constructor
+  · intro h
+    obtain ⟨w, hw1, hw2⟩ := RS.SK_churchRosser h
+    exact ⟨w, RS.SK_steps_iff.mp hw1, RS.SK_steps_iff.mp hw2⟩
+  · rintro ⟨w, hw1, hw2⟩
+    exact RS.Conv.trans
+      (RS.Conv.of_steps (RS.SK_steps_iff.mpr hw1))
+      (RS.Conv.of_steps (RS.SK_steps_iff.mpr hw2)).symm
+
+-- If t and u are joinable and t normalizes to n, then u also reaches n.
+-- (Contrapositive — the trichotomy's third leg: if exactly one of t, u
+-- normalizes, they are NOT Joinable, hence not convertible.)
+theorem joinable_normalizes {t u : Term} (h : Joinable t u)
+    (hn : ∃ n, (t ⟶* n) ∧ NormalForm n) :
+    ∃ n, (u ⟶* n) ∧ NormalForm n := by
+  obtain ⟨w, hw1, hw2⟩ := h
+  obtain ⟨n, hn1, hn2⟩ := hn
+  -- t reaches both w and n; confluence joins them at v; n normal ⇒ v = n,
+  -- so w ⟶* n, so u ⟶* n.
+  obtain ⟨v, hv1, hv2⟩ := confluence hw1 hn1
+  have hvn : v = n := hn2.steps_eq hv2
+  subst hvn
+  exact ⟨v, Steps.trans hw2 hv1, hn2⟩
+
+-- For terms that DO reach normal forms, joinability is decided by comparing
+-- those normal forms — the decidable half of the trichotomy.
+theorem joinable_iff_nf_eq {t u nt nu : Term}
+    (ht : t ⟶* nt) (hnt : NormalForm nt)
+    (hu : u ⟶* nu) (hnu : NormalForm nu) :
+    Joinable t u ↔ nt = nu := by
+  constructor
+  · rintro ⟨w, hw1, hw2⟩
+    -- nt and w join (confluence from t); nt normal ⇒ w ⟶* nt.
+    obtain ⟨v, hv1, hv2⟩ := confluence ht hw1
+    have hvnt : v = nt := hnt.steps_eq hv1
+    subst hvnt
+    -- so u ⟶* w ⟶* nt and u ⟶* nu, both normal: nf_unique gives nt = nu.
+    exact nf_unique (Steps.trans hw2 hv2) hu hnt hnu
+  · intro heq
+    subst heq
+    exact ⟨nt, ht, hu⟩
