@@ -515,8 +515,8 @@ def c2 : Term :=
 #guard render c1 = "S S S (S S) S S"
 #guard render c2 = "S (S S) S S S S"
 
--- ## Recorded outcome (exploration fuel: 120; achieved without reduction —
--- guard compile time stayed well under budget, see task report)
+-- ## Recorded outcome (exploration fuel: 120; fuel was not reduced below
+-- 120; guard compile time stayed under budget)
 --
 -- Four directions hunted: self-embedding for c1, self-embedding for c2,
 -- and both cross-embeddings (c1-into-c2's-trace, c2-into-c1's-trace).
@@ -537,6 +537,8 @@ def c2 : Term :=
 -- OUTCOME A (cross-direction c1-into-c2's-trace): found at step k = 1.
 -- The exact, strongest form of the finding:
 #guard stepOnce c2 = some c1
+-- The same fact at KERNEL level (the #guard above is evaluator-level):
+example : stepOnce c2 = some c1 := rfl
 #guard isSubterm c1 ((trace 1 c2).getLastD c2) = true
 
 -- OUTCOME B (the other three directions, fuel F = 120): honest negatives.

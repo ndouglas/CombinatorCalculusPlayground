@@ -616,20 +616,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   without the artifact saying what it actually found.
 - Task 1 (`isSubterm`, the four-direction embedding hunt): three of the
   four directions returned honest negatives at fuel 120 (no self-embedding
-  for either candidate, no cross-embedding from c1's trace into c2). The
+  for either candidate, c2 nowhere in c1's trace). The
   fourth returned something nobody had predicted: `stepOnce c2 = some
   c1`, confirmed by kernel-checked `rfl` and hand-traced independently by
   review before the guard was trusted. The two "independent" C1
   candidates from the original census turn out to be one leftmost-outermost
   step apart on a single trajectory — C1 effectively collapses to one
-  candidate. This is the fourth time in the program that a process
-  outside the prover's happy path has caught or discovered something —
-  the first three (enumerated in the SLICE 1 entry above) were all review-shaped
-  catches of overclaims; this one is different in kind: an EXPLORATION
-  PROBE discovering a fact nobody had hypothesized, while the thing the
-  hunt was actually looking for (a loop) simply wasn't there. Counted
-  plainly because it's a different mechanism than the first three, not
-  a bigger or smaller one.
+  candidate. Prior entries record several review-shaped catches of
+  overclaims and one ideation-shake discovery; this is the first time an
+  EMPIRICAL EXPLORATION PROBE discovered a fact nobody had hypothesized —
+  while the thing it hunted (a loop) simply wasn't there. No ordinal
+  claimed; the ledger's earlier events are enumerable by the reader.
 - Task 2 (plateau-nesting probe, C6): the probe tested the census's own
   n≥10 "+1 plateau" reading against n=7..9 data and returned a clean
   honest negative — no subterm nesting, no rider-append match in either

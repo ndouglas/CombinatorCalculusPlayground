@@ -104,7 +104,8 @@ review). C1 effectively collapses to a single candidate: any future
 divergence proof for one transfers immediately to the other, since their
 trajectories coincide from that point on. This is a discovery about
 adjacency, not about divergence — it does not by itself show a loop or
-show non-termination.
+show non-termination; no divergence proof was attempted this slice —
+deliberately; the loop route needs C5.
 
 **Slice 3 strategy note:** neither candidate self-embeds (nor
 cross-embeds, beyond the one-step relation just noted) within 120
@@ -202,7 +203,10 @@ Two observations from the fuel=200, n=1..12 run:
    `(S S), S, S, S, S`.) Sample size is only 2 terms, so this is a weak
    signal, not yet checked against the fuller n=8 exhausted set (41 terms;
    this census run does not print more than the first exhausted size's
-   candidates, capped at 10 — see `Main.lean`'s `censusLine`).
+   candidates, capped at 10 — see `Main.lean`'s `censusLine`). (Slice 3
+   later showed these two "samples" are adjacent points on ONE
+   trajectory — `stepOnce c2 = some c1` — so this is effectively a
+   sample of one.)
 
 2. **`maxFinalLeaves` plateaus once n ≥ 10 (fuel fixed at 200).** The largest
    final size any fuel-exhausted trajectory reaches, per n:
