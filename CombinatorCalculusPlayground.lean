@@ -11,5 +11,6 @@ import CombinatorCalculusPlayground.Universality.Taxonomy
 import CombinatorCalculusPlayground.Universality.Calibration
 import CombinatorCalculusPlayground.Census.Eval
 import CombinatorCalculusPlayground.Census.Enumerate
+import CombinatorCalculusPlayground.Census.Completeness
 import CombinatorCalculusPlayground.Reachability
 import CombinatorCalculusPlayground.Invariants

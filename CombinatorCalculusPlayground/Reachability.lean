@@ -13,6 +13,7 @@
 -- means fuel ran out before the closure saturated and is NEVER evidence.
 import CombinatorCalculusPlayground.Confluence
 import CombinatorCalculusPlayground.Census.Enumerate
+import CombinatorCalculusPlayground.Census.Completeness
 import CombinatorCalculusPlayground.Universality.Taxonomy
 import CombinatorCalculusPlayground.Isometric
 
@@ -514,6 +515,13 @@ def c2 : Term :=
 -- Pin the renderings against the ledger's candidate strings:
 #guard render c1 = "S S S (S S) S S"
 #guard render c2 = "S (S S) S S S S"
+-- Slice 5 tie-in: both candidates sit exactly one leaf ABOVE the range
+-- `no_small_divergence` (Census/Completeness.lean) now settles, which is
+-- why 6 was the right place to stop. If C1's existence half ever closes on
+-- either of these, `seven_is_the_floor` makes 7 the proved minimum.
+#guard (enumAt 7).contains c1
+#guard (enumAt 7).contains c2
+#guard !((List.range 7).any (fun n => (enumAt n).contains c1))
 
 -- ## Recorded outcome (exploration fuel: 120; fuel was not reduced below
 -- 120; guard compile time stayed under budget)
