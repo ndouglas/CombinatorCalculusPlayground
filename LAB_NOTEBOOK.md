@@ -1245,3 +1245,47 @@ what automation could and couldn't do. This file is a first-class deliverable
   commutation-up-to-reduction lemma, (iii)–(v) must be built under the
   normal-forms-only discipline; (2) C4's syntactic residue; (3) transcription
   (C1(a), C5); (4) C6, still not promoted.
+
+## 2026-07-24 — Stage 11: checking a constraint before building on it
+
+- Direct application of the posture named at the end of Stage 10: trust the
+  risk flags, distrust the difficulty ratings. Stage 10 handed down a design
+  constraint — duplication must only ever hit normal forms — and the obvious
+  next flag is whether that constraint can be met at all. If it cannot,
+  pieces (ii)–(v) are wasted work, and finding out costs an hour now versus a
+  rewrite later. Same shape as Stage 10's own reasoning, one level up.
+- The reasoning that made it cheap: the first thing any machine duplicates is
+  its own CODE, through the self-application inside a fixpoint. All of this
+  program's code comes from `bracket`. So the question reduces to "are bracket
+  outputs normal?" — and inspecting the four cases of `bracket` answers it
+  immediately: it only ever emits `K` with ONE argument and `S` with TWO, and
+  neither is a redex. `normalForm_bracket` compiled first try.
+- That is a genuinely reassuring result and it was invisible before the Stage 9
+  bridge existed, because the statement is about `Term`-level normal forms and
+  `bracket` lives in `TermV`. Worth noting: the bridge paid off one stage after
+  it was built, on a question nobody had in mind when building it.
+- Four shape lemmas fell out (`normalForm_S`/`_K`, `normalForm_app_K`,
+  `normalForm_app_S_one`/`_two`). These are the kind of small reusable facts
+  piece (v) will need constantly, so they are cheap infrastructure acquired as
+  a side effect rather than as a project.
+- Also upgraded Stage 10's diagnosis from an observation to a theorem:
+  `step_app_K_pair` shows the half-consumed shape over a NORMAL payload has
+  exactly one successor. Stage 10 had `sync_step`, a single instance. The
+  general form is what actually licenses the design constraint.
+- **The honest half: the constraint is only HALF satisfiable so far.** Code is
+  normal, so fixpoint self-application is safe. But a fixpoint's reduct
+  `f (x x f)` hands the step function a pending recursive call, which is not
+  normal, and if the driver duplicates that then drift is back. So piece (v)
+  needs a strict discipline — force before duplicating. Recorded as the
+  sharpest known requirement on the remaining work rather than waved at.
+- Pattern check, since Stage 10 named one: this is the FIRST stage in four
+  where the output was positive rather than a negative about the plan. It was
+  found by the same move that produced the three negatives — ask what the plan
+  assumes, then check the cheapest assumption first. The move is not
+  pessimistic; it is just ordering. Stages 7, 9 and 10 happened to find breaks;
+  this one found a foundation.
+- Ranking: (1) criterion (a) — (i) done, (vi) prototyped, code-duplication
+  safety proved, and the live requirement is now a strict-evaluation discipline
+  on piece (v)'s driver; the next buildable item is (ii), which needs the
+  commutation-up-to-reduction lemma; (2) C4's syntactic residue; (3)
+  transcription (C1(a), C5); (4) C6, still not promoted.

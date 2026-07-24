@@ -1384,3 +1384,32 @@ machine it tracks gets built. Done, and it failed.
   It is mechanical only CONDITIONAL on the piece (v) design obeying the
   normal-forms-only discipline. That coupling between (v) and (vi) did not
   appear in Stage 8's decomposition and is the main thing this stage adds.
+
+### Stage 11: Stage 10's constraint is satisfiable for code
+
+Stage 10 ended with a design constraint (duplication must only hit normal
+forms) and Stage 10's own methodological note said to trust risk flags over
+difficulty ratings. The flag here: is that constraint satisfiable at all? If
+not, pieces (ii)–(v) are wasted.
+
+- **Half the answer is YES, and proved.** `normalForm_bracket` (Bracket.lean):
+  every bracket-abstraction output is a normal form, because `bracket` only
+  ever emits `K` applied to ONE argument and `S` applied to TWO, neither of
+  which is a redex. Since all of this program's code comes from `bracket`, a
+  machine's code is safe to duplicate — and the self-application inside any
+  fixpoint combinator duplicates exactly that. **Stage 10's failure cannot
+  touch code, only data.** Four reusable shape lemmas come with it
+  (`normalForm_S`/`_K`, `normalForm_app_K`, `normalForm_app_S_one`/`_two`),
+  which piece (v) will need regardless.
+- **The diagnosis is now a theorem, not an observation.** `step_app_K_pair`
+  (`AdequacyProbe.lean`): over a NORMAL payload the half-consumed shape has
+  exactly ONE successor. Stage 10 checked this on a single instance; this is
+  the general form, and it is the precise sense in which the constraint fixes
+  the failure.
+- **The other half is NOT settled, and this is the live risk.** A fixpoint's
+  reduct `f (x x f)` hands the step function a PENDING RECURSIVE CALL, which
+  is not normal. If the driver duplicates that argument, drift returns. Piece
+  (v) therefore needs a strict discipline — force the recursive call before
+  duplicating it. That is an obligation on how the driver is written, not a
+  consequence of anything proved here, and it is now the sharpest known
+  requirement on criterion (a)'s remaining work.
