@@ -215,3 +215,150 @@ theorem SK_not_acyclic_via_rung1 : ¬ RS.Acyclic RS.SK :=
 -- SK among them, and any basis containing a definable I — is non-acyclic and
 -- therefore beyond `PathEncoding.refute_of_acyclic`. Rung one bounds the
 -- mechanism's reach for a whole family, not for one basis.
+
+-- ## Rung two: {S, B} — step 3 of the rung procedure, done properly (Stage 19)
+-- Stage 17 recorded one hand-traced Ω attempt for `{S,B}` and called it weak
+-- evidence. The rung procedure says step 3 is "hunt for a cycle", and one attempt
+-- is not a hunt. This section runs Stage 0's census methodology on rung two:
+-- enumerate every {S,B}-term up to a size bound and classify its trajectory.
+--
+-- EPISTEMIC REGISTER, as everywhere: `sbStepOnce` and the enumerator below are
+-- UNVERIFIED census tooling. No theorem is proved about them. The `#guard`s are
+-- build-enforced evaluator facts about a bounded search, and "no cycle found" is
+-- NOT a proof of acyclicity — exactly the standing caveat on the pure-S census.
+
+inductive SBTerm : Type
+  | S : SBTerm
+  | B : SBTerm
+  | app : SBTerm → SBTerm → SBTerm
+deriving Repr, DecidableEq
+
+def SBTerm.leafCount : SBTerm → Nat
+  | .S => 1
+  | .B => 1
+  | .app a b => a.leafCount + b.leafCount
+
+/-- Leftmost-outermost reducer for {S,B}. `S f g x → (f x)(g x)`,
+`B x y z → x (y z)`. -/
+def sbStepOnce : SBTerm → Option SBTerm
+  | .app (.app (.app .S f) g) x => some (.app (.app f x) (.app g x))
+  | .app (.app (.app .B x) y) z => some (.app x (.app y z))
+  | .app t u =>
+    match sbStepOnce t with
+    | some t' => some (.app t' u)
+    | none => (sbStepOnce u).map (.app t)
+  | _ => none
+
+def sbNormalize (fuel : Nat) (t : SBTerm) : Option SBTerm :=
+  match sbStepOnce t with
+  | none => some t
+  | some t' => match fuel with
+    | 0 => none
+    | f + 1 => sbNormalize f t'
+
+/-- Walk the trajectory keeping every visited term, so a revisit is detectable. -/
+def sbOnCycle (fuel : Nat) (t : SBTerm) : Bool :=
+  go fuel [t] t
+where
+  go : Nat → List SBTerm → SBTerm → Bool
+  | 0, _, _ => false
+  | f + 1, seen, cur =>
+    match sbStepOnce cur with
+    | none => false
+    | some next => if seen.contains next then true else go f (seen ++ [next]) next
+
+/-- All {S,B}-terms with exactly `n` leaves. Two constants, so this is
+`2^n` labelings of each of the `Catalan (n-1)` tree shapes. -/
+def sbTermsTable (n : Nat) : Array (List SBTerm) := Id.run do
+  let mut table : Array (List SBTerm) := #[[], [SBTerm.S, SBTerm.B]]
+  for m in [2:n+1] do
+    let mut terms : List SBTerm := []
+    for k in [1:m] do
+      for l in table[k]! do
+        for r in table[m - k]! do
+          terms := SBTerm.app l r :: terms
+    table := table.push terms
+  return table
+
+def sbTerms (n : Nat) : List SBTerm := (sbTermsTable n)[n]!
+
+-- Counts: 2 * Catalan(n-1) * 2^(n-1) ... concretely 2, 4, 16, 80, 448, 2688.
+#guard (sbTerms 1).length = 2
+#guard (sbTerms 2).length = 4
+#guard (sbTerms 3).length = 16
+#guard (sbTerms 4).length = 80
+#guard (sbTerms 5).length = 448
+#guard (sbTerms 6).length = 2688
+
+-- ## The verdict of the hunt
+-- Up to 6 leaves (3238 terms) every {S,B}-term normalizes within fuel 100 and
+-- none is on a cycle.
+
+#guard (List.range 7).all (fun n => (sbTerms n).all (fun t => (sbNormalize 100 t).isSome))
+#guard (List.range 7).all (fun n => (sbTerms n).all (fun t => !(sbOnCycle 100 t)))
+
+-- ...but at SEVEN leaves that changes, and the change is the rung's real content.
+-- Of 16896 terms, exactly 6 exhaust fuel 200 — and the count is unchanged at fuel
+-- 1000, so this is not a cutoff artifact. None is on a detectable cycle within 400
+-- steps, and all six grow explosively.
+
+def sbExhausted (fuel n : Nat) : List SBTerm :=
+  (sbTerms n).filter (fun t => (sbNormalize fuel t).isNone)
+
+#guard (sbExhausted 200 7).length = 6
+#guard (sbExhausted 1000 7).length = 6          -- fuel-insensitive, as C6 checks
+#guard (sbExhausted 200 7).all (fun t => !(sbOnCycle 400 t))
+
+-- The Ω-shaped attempt specifically, since that is where rung one's cycle came
+-- from: `S B B (S B B)` reaches a normal form in two steps.
+def Wsb : SBTerm := .app (.app .S .B) .B
+#guard sbNormalize 100 (.app Wsb Wsb) = some (.app (.app .B Wsb) (.app .B Wsb))
+#guard sbStepOnce (.app (.app .B Wsb) (.app .B Wsb)) = none
+
+-- ## Cross-validation against the pure-S census
+-- Pure-S terms ARE {S,B}-terms — `B` simply never occurs — so the rung-2 census
+-- CONTAINS the rung-0 census. Two of the six exhausted terms are exactly C1's
+-- candidates, and one of them reproduces the 120112-leaf figure recorded for `c1`
+-- in CONJECTURES.md, computed here by an independently written reducer. That is a
+-- check on both censuses.
+
+def sbC1 : SBTerm :=   -- S S S (S S) S S, i.e. Reachability.lean's `c1`
+  .app (.app (.app (.app (.app .S .S) .S) (.app .S .S)) .S) .S
+
+#guard (sbExhausted 200 7).contains sbC1
+#guard sbC1.leafCount = 7
+-- the other four contain a B and are genuinely new to this rung
+#guard ((sbExhausted 200 7).filter (fun t => t != sbC1)).length = 5
+
+-- ## What rung two therefore is
+-- Rung one and rung two DISAGREE, which is the contrast the ladder exists to
+-- produce — but not in the direction Stage 17 guessed:
+--
+--   rung 1  {S,I}  CYCLIC, proved (`omegaSI_cycle`). The acyclicity mechanism is
+--                  provably inapplicable.
+--   rung 2  {S,B}  NO cycle found (≤ 7 leaves, 400 steps) yet six terms at 7
+--                  leaves do not normalize within fuel 1000. So {S,B} looks
+--                  structurally like PURE S: plausibly acyclic AND plausibly
+--                  non-normalizing — which is exactly the C1 + C2 combination.
+--
+-- Stage 17 called the terminating Ω attempt "weak evidence {S,B} may be acyclic",
+-- and read that as evidence toward being REFUTABLE. The first half survives; the
+-- second was too quick. Acyclicity does not require termination — pure S is the
+-- proof of that — so fuel-outs at 7 leaves are consistent with {S,B} being
+-- acyclic and hence refutable. The verdict is unchanged in direction but its
+-- basis is different, and it now rests on 16896 terms rather than one trace.
+--
+-- The structural reason the Ω pattern fails here is worth recording, because it
+-- also says what a cycle would have to look like: `B` needs THREE arguments and
+-- self-application supplies too few. `S B B x → (B x)(B x)` leaves `B` applied to
+-- one argument on each side, and the whole is `B` applied to two — still short.
+-- Rung one worked precisely because `I` needs ONE argument, so
+-- `S I I x → (I x)(I x) → x x` fires twice and returns. Neither erasure nor
+-- duplication is the discriminator; **arity is**.
+--
+-- Step 4 is the live task, and the census has sharpened its target: not a
+-- termination measure (there are probably non-normalizing terms) but a
+-- τ-STYLE ACYCLICITY measure, exactly as C2 needed for pure S. Lexicographic,
+-- since step 1 showed neither `leafCount` nor B-count is monotone alone — `B_red`
+-- removes a `B` while `S_red` duplicates its third argument, so B-count can rise.
+-- A C2-sized slice, NOT attempted here.
