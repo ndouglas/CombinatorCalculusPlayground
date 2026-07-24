@@ -11,6 +11,7 @@
 -- this taxonomy exists to draw.
 import CombinatorCalculusPlayground.Universality.Defs
 import CombinatorCalculusPlayground.Iota
+import CombinatorCalculusPlayground.Isometric
 
 open Term
 
@@ -107,3 +108,52 @@ example : RS.PureS.step
 
 -- Sanity: the inclusion composes (here with the identity simulation on SK).
 example : Simulation RS.PureS RS.SK := pureS_in_SK.comp (Simulation.id RS.SK)
+
+-- ## The prize-adjacent refutation
+-- SCOPE, stated before the theorem so nobody quotes it without this:
+-- what follows refutes STEP-FAITHFUL hosting of SK inside pure S, under
+-- this taxonomy's pinned Simulation class — the same class the iota
+-- refutation used. It does NOT resolve the Wolfram prize question, whose
+-- informal notion of universality admits broader encodings. What it
+-- establishes precisely: if S alone is universal, its encoding must do
+-- non-step-faithful work. The mechanism is the same as iota's, with
+-- acyclicity (no_pure_S_cycle) playing the role strict growth played
+-- there: SK's explicit Ω ↔ M cycle cannot be carried by an injective
+-- encoding into a cycle-free system.
+theorem Steps.head_of_ne : ∀ {t u : Term}, (t ⟶* u) → t ≠ u →
+    ∃ w, (t ⟶ w) ∧ (w ⟶* u) := by
+  intro t u h hne
+  cases h with
+  | refl => exact absurd rfl hne
+  | tail s rest => exact ⟨_, s, rest⟩
+
+theorem no_sim_SK_pureS : ¬ Nonempty (Simulation RS.SK RS.PureS) := by
+  rintro ⟨Sim⟩
+  -- carry the SK cycle across: enc Ω and enc M are mutually reachable
+  -- subtype elements of the K-free carrier.
+  have h1 : RS.PureS.Steps (Sim.enc omegaSK) (Sim.enc Mcycle) :=
+    Sim.fwd_steps (RS.SK_steps_iff.mpr omega_to_M)
+  have h2 : RS.PureS.Steps (Sim.enc Mcycle) (Sim.enc omegaSK) :=
+    Sim.fwd_steps (RS.SK_steps_iff.mpr M_to_omega)
+  -- translate to Term-level Steps on the underlying (K-free!) values
+  have hv1 : (Sim.enc omegaSK).val ⟶* (Sim.enc Mcycle).val :=
+    RS.PureS_steps_iff.mp h1
+  have hv2 : (Sim.enc Mcycle).val ⟶* (Sim.enc omegaSK).val :=
+    RS.PureS_steps_iff.mp h2
+  -- distinct encodings (enc is injective; Ω ≠ M), hence distinct values
+  have hne : (Sim.enc omegaSK).val ≠ (Sim.enc Mcycle).val := by
+    intro hval
+    exact omega_ne_M (Sim.enc_injective (Subtype.ext hval))
+  -- a genuine first step exists, and the rest closes the loop: a cycle.
+  obtain ⟨w, hstep, hrest⟩ := Steps.head_of_ne hv1 hne
+  exact no_pure_S_cycle (Sim.enc omegaSK).property
+    ⟨w, hstep, Steps.trans hrest hv2⟩
+
+theorem pureS_not_universalReach_for_SK : ¬ UniversalReach RS.SK RS.PureS :=
+  no_sim_SK_pureS
+
+theorem pureS_not_universalNorm_for_SK : ¬ UniversalNorm RS.SK RS.PureS :=
+  fun ⟨Sim, _⟩ => no_sim_SK_pureS ⟨Sim⟩
+
+theorem pureS_not_universalConv_for_SK : ¬ UniversalConv RS.SK RS.PureS :=
+  fun ⟨Sim, _⟩ => no_sim_SK_pureS ⟨Sim⟩
