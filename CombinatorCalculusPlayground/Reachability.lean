@@ -78,3 +78,40 @@ def succs : Term → List Term
 -- probe just confirms the new succs enumeration cooperates with them.
 #guard (List.range 5).all fun n => (sTerms n).all fun t =>
   ((succs t).filter (fun w => leafCount w ≤ 4)).all fun w => kFree w
+
+-- ## succs is exactly the step relation
+theorem rootRed_sound : ∀ {t w : Term}, w ∈ rootRed t → t ⟶ w := by
+  intro t w h
+  unfold rootRed at h
+  split at h
+  · simp at h; subst h; exact Step.K_red ..
+  · simp at h; subst h; exact Step.S_red ..
+  · simp at h
+
+theorem succs_sound : ∀ {t w : Term}, w ∈ succs t → t ⟶ w := by
+  intro t
+  induction t with
+  | S => intro w h; simp [succs] at h
+  | K => intro w h; simp [succs] at h
+  | app a b iha ihb =>
+    intro w h
+    simp [succs] at h
+    rcases h with hroot | ⟨t', ht', rfl⟩ | ⟨u', hu', rfl⟩
+    · exact rootRed_sound (by simpa using hroot)
+    · exact Step.appL (iha ht')
+    · exact Step.appR (ihb hu')
+
+theorem succs_complete : ∀ {t w : Term}, t ⟶ w → w ∈ succs t := by
+  intro t w h
+  induction h with
+  | K_red x y =>
+    simp [succs, rootRed, app2]
+  | S_red f g x =>
+    simp [succs, rootRed, app3]
+  | @appL t t' u s ih =>
+    simp only [succs]
+    exact List.mem_append.mpr (Or.inl (List.mem_append.mpr
+      (Or.inr (List.mem_map.mpr ⟨t', ih, rfl⟩))))
+  | @appR t u u' s ih =>
+    simp only [succs]
+    exact List.mem_append.mpr (Or.inr (List.mem_map.mpr ⟨u', ih, rfl⟩))
