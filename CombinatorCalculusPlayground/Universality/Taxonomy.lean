@@ -201,6 +201,16 @@ theorem RS.Acyclic.of_strict_measure {B : RS} (mu : B.Carrier → Nat)
   have h2 : mu b' ≤ mu b := RS.mono_of_strict_measure mu hmono hback
   omega
 
+/-- **Cycles propagate along path encodings.** The contrapositive of
+`refute_of_acyclic`, and it is what makes the relaxation ladder a HIERARCHY
+rather than a flat set of independent rungs: once one basis is known cyclic,
+every system it path-encodes into is cyclic too, so the acyclicity mechanism is
+dead for all of them at once. -/
+theorem not_acyclic_of_pathEncoding {A B : RS} (P : PathEncoding A B)
+    {a a' : A.Carrier} (h1 : A.Steps a a') (h2 : A.Steps a' a) (hne : a ≠ a') :
+    ¬ RS.Acyclic B :=
+  fun hAcyc => PathEncoding.refute_of_acyclic hAcyc h1 h2 hne ⟨P⟩
+
 -- ## Claim asymmetry: positive and negative claims want OPPOSITE classes
 -- Recorded because it corrects a plausible-sounding plan. `PathEncoding` is
 -- strictly weaker than `Simulation` (`pathEncoding_strictly_weaker`,

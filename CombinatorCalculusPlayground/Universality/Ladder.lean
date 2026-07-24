@@ -20,6 +20,7 @@
 -- So **the acyclicity boundary sits exactly at the first rung of the ladder**,
 -- and the program's negative tooling reaches no further than {S}.
 import CombinatorCalculusPlayground.Universality.Taxonomy
+import CombinatorCalculusPlayground.Confluence
 
 -- ## The basis {S, I}, with I primitive
 -- Note this is NOT `Term`'s `I = S K K`. Here `I` is a combinator in its own
@@ -137,3 +138,80 @@ theorem SI_no_decreasing_measure :
 -- that `{S,B}` may be acyclic and therefore refutable by the existing mechanism
 -- — the opposite verdict from rung one, and the reason rung two is worth doing
 -- next.
+
+-- ## The ladder is a HIERARCHY, not a flat set of rungs (Stage 18)
+-- Rung one was recorded as one basis. It is more than that: cycles propagate
+-- along path encodings (`not_acyclic_of_pathEncoding`, Taxonomy.lean), so every
+-- system that path-encodes {S,I} inherits the cycle and is therefore beyond the
+-- acyclicity mechanism too. Rung one is an UPWARD-CLOSED family, not a point.
+--
+-- The concrete witness is the top of the ladder: {S,I} path-encodes into SK by
+-- sending the primitive `I` to `S K K`. That re-derives SK's non-acyclicity from
+-- rung one, by a route independent of the Ω ↔ M cycle in Calibration.lean — which
+-- is a consistency check on the generic theorem as much as a result.
+
+/-- Send `S` to `S` and the PRIMITIVE `I` to `S K K`. -/
+def siToTerm : SITerm → Term
+  | .S => Term.S
+  | .I => I
+  | .app a b => Term.app (siToTerm a) (siToTerm b)
+
+/-- Nothing in the image is `K` — there is no `K` in the source basis. Needed for
+injectivity, since `I`'s image contains `K`s. -/
+theorem siToTerm_ne_K : ∀ (t : SITerm), siToTerm t ≠ Term.K
+  | .S => by simp [siToTerm]
+  | .I => by simp [siToTerm, I, app2]
+  | .app _ _ => by simp [siToTerm]
+
+theorem siToTerm_inj : ∀ {t u : SITerm}, siToTerm t = siToTerm u → t = u
+  | .S, .S, _ => rfl
+  | .I, .I, _ => rfl
+  | .S, .I, h => by simp [siToTerm, I, app2] at h
+  | .I, .S, h => by simp [siToTerm, I, app2] at h
+  | .S, .app _ _, h => by simp [siToTerm] at h
+  | .app _ _, .S, h => by simp [siToTerm] at h
+  | .I, .app a b, h => by
+    -- `S K K = (siToTerm a) (siToTerm b)` would force `siToTerm b = K`
+    simp only [siToTerm, I, app2, Term.app.injEq] at h
+    exact absurd h.2.symm (siToTerm_ne_K b)
+  | .app a b, .I, h => by
+    simp only [siToTerm, I, app2, Term.app.injEq] at h
+    exact absurd h.2 (siToTerm_ne_K b)
+  | .app a b, .app c d, h => by
+    simp only [siToTerm, Term.app.injEq] at h
+    rw [siToTerm_inj h.1, siToTerm_inj h.2]
+
+/-- Each {S,I} step becomes an SK reduction: `S_red` maps to `S_red` in one step,
+and `I_red` to `I_reduces` in two. -/
+theorem siToTerm_step : ∀ {t u : SITerm}, SIStep t u → siToTerm t ⟶* siToTerm u := by
+  intro t u h
+  induction h with
+  | S_red f g x => exact Steps.single (Step.S_red _ _ _)
+  | I_red x => exact I_reduces (siToTerm x)
+  | appL _ ih => exact Steps.congL ih
+  | appR _ ih => exact Steps.congR ih
+
+theorem siToTerm_steps : ∀ {t u : SITerm}, RS.SI.Steps t u →
+    RS.SK.Steps (siToTerm t) (siToTerm u) := by
+  intro t u h
+  exact h.rec (fun _ => RS.Steps.refl _)
+    (fun s _ ih => RS.Steps.trans (RS.SK_steps_iff.mpr (siToTerm_step s)) ih)
+
+/-- {S,I} path-encodes into SK. -/
+def siInSK : PathEncoding RS.SI RS.SK where
+  enc := siToTerm
+  inj := siToTerm_inj
+  path := siToTerm_steps
+
+/-- **SK's non-acyclicity, re-derived from rung one.** Independent of the Ω ↔ M
+cycle used in Calibration.lean: this route goes through the {S,I} cycle and the
+generic propagation theorem. -/
+theorem SK_not_acyclic_via_rung1 : ¬ RS.Acyclic RS.SK :=
+  not_acyclic_of_pathEncoding siInSK
+    (RS.Steps.single omegaSI_step1) omegaSI_back
+    (by decide : omegaSI ≠ omegaSI_mid1)
+
+-- So the rung-one verdict is upward-closed: ANY system that path-encodes {S,I} —
+-- SK among them, and any basis containing a definable I — is non-acyclic and
+-- therefore beyond `PathEncoding.refute_of_acyclic`. Rung one bounds the
+-- mechanism's reach for a whole family, not for one basis.
