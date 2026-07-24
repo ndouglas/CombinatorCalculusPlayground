@@ -1289,3 +1289,49 @@ what automation could and couldn't do. This file is a first-class deliverable
   on piece (v)'s driver; the next buildable item is (ii), which needs the
   commutation-up-to-reduction lemma; (2) C4's syntactic residue; (3)
   transcription (C1(a), C5); (4) C6, still not promoted.
+
+## 2026-07-24 — Stage 12: piece (ii), shrunk by two design choices
+
+- Piece (ii) was rated "one iteration lemma" in Stage 8, corrected in Stage 10
+  to "needs commutation up to reduction". Both were wrong about the shape of
+  the work. What it actually needed was two decisions, after which one lemma
+  did the job:
+- **Decision 1: don't build n-variable abstraction.** A driver needs a
+  fixpoint self-reference and a state — two variables — and any further
+  arguments can be tupled into the state. Two nested abstractions is exactly
+  the case the commutation lemma handles in ONE application, with no
+  iteration and no induction over a variable list. The general n-variable
+  development would have been several times the work for something nothing
+  needs. Recorded as a YAGNI call in the same spirit as the file's existing one.
+- **Decision 2: state the lemmas for encoded data, not for abstract closed
+  terms.** The argument being substituted is always in the image of `ofTerm`,
+  so `subst_ofTerm` and `bracket_subst_applied` quantify over `ofTerm p`. This
+  deletes the `var` case from both proofs — and the `var` case is precisely
+  where Stage 9's `Classical.choice` trap lives (deriving a contradiction from
+  `ClosedV (var n)` needs `(n == n) = true`). So the Stage 9 leak, which cost
+  four failed attempts and a weakened claim, ended up steering a design two
+  stages later toward a cleaner formulation. Worth noting: the leak was not
+  just an obstacle, it was information about which shapes to avoid.
+- The lemma itself went in without drama once framed that way — four cases,
+  each a couple of lines, and the `app` case is just S_red plus `congApp` on
+  the two IHs. `abs2_beta` is then `congL` of `bracket_beta` composed with it.
+- Lean friction, minor but repeated: `simp only [..., h]` where `h : ¬ (z = y)`
+  rewrites the CONDITION to `False` but does not reduce `if False then a else b`.
+  Needs `ite_false`/`ite_true` alongside. Cost two iterations and produced a
+  crop of unused-simp-argument warnings while I found the minimal set; cleared
+  them all, build is warning-free again.
+- Small honest finding from clearing those warnings: the `unused variable h`
+  lint on `combinatory_completeness_Term` is telling the truth. Its
+  single-variable hypothesis is VESTIGIAL — the `Term`-level statement does not
+  assert closedness, and `toTerm` erases variables anyway, so the theorem holds
+  for any body. Renamed to `_h` rather than dropped, to keep parity with the
+  `TermV` version where the hypothesis genuinely is needed for `ClosedV`.
+  Flagged in the ledger rather than silently kept, since a vestigial hypothesis
+  makes a theorem look narrower than it is.
+- Where criterion (a) stands: (i) and (ii) done, (vi) prototyped with its
+  constraint half-discharged, (iii)–(v) remaining under the
+  force-before-duplicate discipline. The residual risk is unchanged and
+  specific — a fixpoint's reduct hands the step function a pending recursive
+  call, which is not normal. That is the next thing worth prototyping, and by
+  the Stage 10/11 pattern it should be prototyped before (iii)–(v) get built,
+  not after.

@@ -1413,3 +1413,36 @@ not, pieces (ii)–(v) are wasted.
   duplicating it. That is an obligation on how the driver is written, not a
   consequence of anything proved here, and it is now the sharpest known
   requirement on criterion (a)'s remaining work.
+
+### Stage 12: piece (ii) — two-variable abstraction
+
+- **The commutation lemma, and why one suffices.** Stage 10 found that
+  iterating `bracket` needs substitution to commute with bracketing, which
+  holds only UP TO REDUCTION. Two design choices reduce that to a single
+  lemma: (1) n-variable abstraction is not needed, because a driver takes a
+  fixpoint self-reference and a state and its data can be TUPLED, so two
+  nested abstractions suffice — and two is exactly the case the lemma handles
+  in one application; (2) the substituted argument is always encoded DATA
+  (image of `ofTerm`), which removes the `var` case.
+- **`bracket_subst_applied`** (Bracket.lean): substituting encoded data into
+  `[y]t` and applying gives the same result as both substitutions directly.
+  The two combinators are not equal; applied to any argument they reach the
+  same term, and applied is the only way they are ever used.
+- **`abs2` / `abs2_beta` / `normalForm_abs2`**: two-variable abstraction, its
+  beta law, and the fact that its combinator is a normal form — hence safe to
+  duplicate per Stage 11. All `[propext]`.
+- **The Stage 9 leak paid a dividend.** Choosing `ofTerm p` over an abstract
+  `ClosedV u` was motivated by Stage 9's `Classical.choice` trap, which lives
+  exactly in deriving a contradiction from `ClosedV (var n)`. Avoiding that
+  shape produced a cleaner lemma than the general one would have been.
+- **Vestigial hypothesis flagged:** `combinatory_completeness_Term`'s
+  single-variable condition is unused — the `Term`-level statement does not
+  assert closedness, and `toTerm` erases variables regardless. Renamed `_h`
+  rather than dropped, for parity with the `TermV` version where it IS needed.
+
+**Criterion (a) status after Stage 12.** Pieces (i) and (ii) done; (vi)
+prototyped with its design constraint known and half-discharged (code is
+normal, `normalForm_bracket`); (iii)–(v) remain, under the
+force-before-duplicate discipline. The residual risk is unchanged and specific:
+a fixpoint's reduct hands the step function a pending recursive call, which is
+not normal.
