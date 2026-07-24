@@ -192,3 +192,66 @@ example : ¬ Nonempty (Simulation RS.SK RS.Iota) :=
   Simulation.refute_of_acyclic RS.Iota_acyclic
     (RS.SK_steps_iff.mpr omega_to_M) (RS.SK_steps_iff.mpr M_to_omega)
     omega_ne_M
+
+-- ## Slice 4: the same refutations at their true strength
+-- The mechanism needs only injectivity + path-preservation
+-- (`PathEncoding`), never `bwd` and never step-count faithfulness. So the
+-- two refutations hold against a class much larger than `Simulation`:
+-- ANY injective encoding of SK that maps reduction paths to reduction
+-- paths is impossible into either host. These are the widened headline
+-- results; the `Simulation`-level theorems above are now corollaries of
+-- them (`Simulation.toPathEncoding`).
+
+theorem no_pathEncoding_SK_pureS : ¬ Nonempty (PathEncoding RS.SK RS.PureS) :=
+  PathEncoding.refute_of_acyclic RS.PureS_acyclic
+    (RS.SK_steps_iff.mpr omega_to_M) (RS.SK_steps_iff.mpr M_to_omega)
+    omega_ne_M
+
+theorem no_pathEncoding_SK_iota : ¬ Nonempty (PathEncoding RS.SK RS.Iota) :=
+  PathEncoding.refute_of_acyclic RS.Iota_acyclic
+    (RS.SK_steps_iff.mpr omega_to_M) (RS.SK_steps_iff.mpr M_to_omega)
+    omega_ne_M
+
+-- ## The widening has teeth: PathEncoding is STRICTLY weaker
+-- Required check, not decoration. If every `PathEncoding` extended to a
+-- `Simulation`, the two theorems above would be a renaming of the old ones
+-- and the widened claim would be empty. They do not. Witness: a two-point
+-- system with NO rewrites admits an injective path-preserving encoding
+-- onto SK's Ω/M cycle — `path` is free because the source has no nontrivial
+-- paths to preserve — while no `Simulation` can use that same encoder,
+-- since `bwd` would have to reflect the host's genuine Ω ⟶* M path back
+-- into a source path, forcing `true = false`. That gap is exactly the
+-- `bwd` field the refutation never uses.
+
+/-- Two points, no rewrites. -/
+@[reducible] def RS.Discrete2 : RS := ⟨Bool, fun _ _ => False⟩
+
+theorem RS.Discrete2_steps_eq {a b : Bool} (h : RS.Discrete2.Steps a b) :
+    a = b :=
+  -- Raw recursor: `cases`/`induction` hit the same mkElimApp motive error
+  -- on RS.Steps at a concrete instance as `iota_steps_le` above.
+  h.rec (fun _ => rfl) (fun s _ _ => s.elim)
+
+/-- Injective, path-preserving, and lands on a genuine host cycle. -/
+def omegaM_pathEncoding : PathEncoding RS.Discrete2 RS.SK where
+  enc := fun b => match b with | true => omegaSK | false => Mcycle
+  inj := by
+    intro a a' h
+    cases a with
+    | true  => cases a' with
+      | true  => rfl
+      | false => exact absurd h omega_ne_M
+    | false => cases a' with
+      | true  => exact absurd h.symm omega_ne_M
+      | false => rfl
+  path := fun h => by
+    rw [RS.Discrete2_steps_eq h]
+    exact RS.Steps.refl _
+
+theorem pathEncoding_strictly_weaker :
+    ¬ ∃ S : Simulation RS.Discrete2 RS.SK,
+        S.enc = omegaM_pathEncoding.enc := by
+  rintro ⟨S, hS⟩
+  have hpath : RS.SK.Steps (S.enc true) (S.enc false) := by
+    rw [hS]; exact RS.SK_steps_iff.mpr omega_to_M
+  exact absurd (RS.Discrete2_steps_eq (S.bwd hpath)) (by decide)

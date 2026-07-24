@@ -104,13 +104,20 @@ theorem Simulation.toUniversalConv {R B : RS} (S : Simulation R B)
 
 -- ## One refutation mechanism, stated once
 -- Both hosting refutations (iota, Stage 4; pure S, Slice 2) are instances
--- of a single fact: an injective step-faithful simulation cannot carry a
+-- of a single fact: an injective PATH-PRESERVING encoding cannot carry a
 -- two-point reduction cycle into an acyclic host. Strict growth (iota)
 -- and τ-termination (pure S) were just two CAUSES of acyclicity. Stating
 -- the mechanism generically makes every future refutation a one-liner:
 -- prove your host Acyclic, exhibit any source cycle, done. (The original
 -- refutations remain the citable artifacts; this consolidates, it does
 -- not deprecate.)
+--
+-- SLICE 4 CORRECTION: this mechanism was previously stated for
+-- `Simulation` and described as refuting "step-faithful" hosting. That
+-- under-claimed it. The proof below uses only `PathEncoding`'s two
+-- fields, so it is stated at that level now, with the `Simulation` form
+-- kept as a corollary (same name, same statement — nothing downstream
+-- changes). Neither `bwd` nor any step-count condition is involved.
 
 /-- No state begins a loop: a step out never comes back. -/
 def RS.Acyclic (B : RS) : Prop :=
@@ -125,13 +132,23 @@ theorem RS.Steps.head_of_ne {B : RS} {b b' : B.Carrier}
   | refl => exact absurd rfl hne
   | tail s rest => exact ⟨_, s, rest⟩
 
-theorem Simulation.refute_of_acyclic {A B : RS} (hB : RS.Acyclic B)
+/-- The mechanism at its true strength: injectivity plus path-preservation
+are all it needs. A source cycle between two DISTINCT points cannot be
+carried into an acyclic host by any such encoding. -/
+theorem PathEncoding.refute_of_acyclic {A B : RS} (hB : RS.Acyclic B)
     {a a' : A.Carrier} (h1 : A.Steps a a') (h2 : A.Steps a' a)
-    (hne : a ≠ a') : ¬ Nonempty (Simulation A B) := by
-  rintro ⟨Sim⟩
-  have e1 : B.Steps (Sim.enc a) (Sim.enc a') := Sim.fwd_steps h1
-  have e2 : B.Steps (Sim.enc a') (Sim.enc a) := Sim.fwd_steps h2
-  have hne' : Sim.enc a ≠ Sim.enc a' :=
-    fun h => hne (Sim.enc_injective h)
+    (hne : a ≠ a') : ¬ Nonempty (PathEncoding A B) := by
+  rintro ⟨P⟩
+  have e1 : B.Steps (P.enc a) (P.enc a') := P.path h1
+  have e2 : B.Steps (P.enc a') (P.enc a) := P.path h2
+  have hne' : P.enc a ≠ P.enc a' := fun h => hne (P.inj h)
   obtain ⟨w, hstep, hrest⟩ := RS.Steps.head_of_ne e1 hne'
   exact hB hstep (RS.Steps.trans hrest e2)
+
+/-- The `Simulation` form, unchanged in statement, now a corollary of the
+weaker hypothesis. Every existing citation of this name keeps working. -/
+theorem Simulation.refute_of_acyclic {A B : RS} (hB : RS.Acyclic B)
+    {a a' : A.Carrier} (h1 : A.Steps a a') (h2 : A.Steps a' a)
+    (hne : a ≠ a') : ¬ Nonempty (Simulation A B) :=
+  fun ⟨Sim⟩ =>
+    PathEncoding.refute_of_acyclic hB h1 h2 hne ⟨Sim.toPathEncoding⟩

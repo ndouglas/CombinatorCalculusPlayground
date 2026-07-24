@@ -57,6 +57,36 @@ theorem fwd_steps (S : Simulation A B) {a a' : A.Carrier}
 
 end Simulation
 
+-- ## The weak hypothesis: what the refutations actually need
+-- Slice 4 audit finding. `Simulation.refute_of_acyclic` (Taxonomy.lean)
+-- consumes exactly two consequences of the five-field `Simulation`:
+-- injectivity of `enc` (via `dec_enc`) and path-preservation (via `fwd`,
+-- which was ALREADY many-step — see `fwd`'s type above). It never touches
+-- `bwd`, and it never uses step-count faithfulness. Naming that weaker
+-- hypothesis widens every refutation built on it: what gets ruled out is
+-- not merely step-faithful hosting, but ANY injective path-preserving
+-- encoding. `PathEncoding` is proved STRICTLY weaker than `Simulation`
+-- in Calibration.lean (`pathEncoding_strictly_weaker`), so the widening
+-- is real rather than a renaming.
+
+/-- An injective map carrying source paths to host paths — and nothing
+else. No decoder, no backward reflection (`bwd`), no step-count
+faithfulness: `path` grants the host arbitrarily many steps per source
+path, exactly as `Simulation.fwd` already did per source step. -/
+structure PathEncoding (A B : RS) where
+  enc : A.Carrier → B.Carrier
+  inj : ∀ {a a' : A.Carrier}, enc a = enc a' → a = a'
+  path : ∀ {a a' : A.Carrier}, A.Steps a a' → B.Steps (enc a) (enc a')
+
+/-- Every simulation is in particular a path encoding. This projection is
+what lets the generic refutation, stated for the weaker class, still apply
+to `Simulation` — so no existing result loses strength. -/
+def Simulation.toPathEncoding {A B : RS} (S : Simulation A B) :
+    PathEncoding A B where
+  enc := S.enc
+  inj := S.enc_injective
+  path := S.fwd_steps
+
 -- ## The three observation modes
 -- Same triple shape, different question asked of the host system.
 
