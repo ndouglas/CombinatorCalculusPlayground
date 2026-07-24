@@ -700,3 +700,107 @@ what automation could and couldn't do. This file is a first-class deliverable
   in Slice 1; (4) the pigeonhole queue — `sTerms`-completeness, still
   blocking `no_small_cycle`'s general kernel form and the abstract
   `Decidable (t ⟶* u)` instance, unchanged priority since Slice 1.
+
+## 2026-07-24 — Stage 5, Slice 4: audit, widen, repair (nothing resolved)
+
+- Where this slice came from: an ideonomy pass aimed at the PROGRAM rather
+  than at the mathematics. The tuple was negation + combination over a
+  chart, with animacy/size/materiality as the dimension prompts, and the
+  three prompts turned out to read the project unusually well. Animacy
+  named the epistemic register as a life-ladder (settled theorems vs.
+  quasi-alive build-time guards vs. alive census observations vs. external
+  citations) and made visible that the entire SETTLED block is negative or
+  structural — one acyclicity theorem and four things resting on it, with
+  nothing positive about pure S settled at all. Size showed every alive row
+  resting on a sample of one to six (C3.1 is literally a sample of one
+  after Slice 3 collapsed the two candidates). Materiality was the
+  uncomfortable one: "runtime-prohibitive" appears as the reason for
+  not-knowing in three separate places, so wall-clock — down to a
+  block-buffering accident that ate a whole 10-minute run in Slice 0-era
+  tooling — has decided more of this project's open/closed boundary than
+  any mathematical obstruction has.
+- The operative finding was a negation over the census's definitional
+  properties: **every conjecture that became a theorem did so by escaping
+  one of them, and everything still open is still trapped inside at least
+  one.** C2 escaped leftmost-outermost AND bounded size; τ escaped
+  fuel-boundedness; `refute_of_acyclic` escaped per-system-ness. C1 is
+  trapped inside three at once (one strategy, one fuel, one trajectory).
+  That gave a ranked worklist directly, and it matched Slice 3's own
+  next-target ranking on item (1), so the two agreed independently.
+- Task 1 (the under-claim). Reading `Simulation.refute_of_acyclic` against
+  its own proof showed it consumes only `enc_injective` and `fwd_steps` —
+  `bwd` is untouched, and `fwd` was ALREADY many-step (`A.step a a' →
+  B.Steps (enc a) (enc a')`), so "step-faithful" had never been the right
+  word for the hypothesis in the first place. Verified by grep before
+  believing it: the only consumers of `Simulation.bwd` anywhere in the tree
+  are `conv_reflect` and `comp`. Extracted `PathEncoding`, restated the
+  mechanism there, kept `Simulation.refute_of_acyclic` as a
+  name-and-statement-preserving corollary so no citation broke.
+- The part that mattered methodologically: a widening like this is worth
+  nothing if the wider class is secretly the same class, and asserting
+  otherwise would have been exactly the sort of overclaim this notebook
+  keeps catching. So the widening carries a proof obligation —
+  `pathEncoding_strictly_weaker` exhibits a step-free two-point system
+  mapped onto SK's Ω/M cycle whose encoder extends to no `Simulation`,
+  because `bwd` would reflect a real host path into a source that has
+  none. `Simulation.toPathEncoding` is therefore not surjective. Written
+  as a theorem, not a remark.
+- Task 2 (C1, non-size measures). Term.lean's measures section says in so
+  many words that "leaf count is the only size measure we need" — true of
+  size, and precisely why every C1 attempt had been a size argument. Four
+  other measures along the trajectory produced one regularity strong
+  enough to prove outright: from step 8 the head FREEZES to `S A ·` for a
+  fixed 9-leaf normal form, and `S A B` with A normal provably admits only
+  steps inside B, under every strategy. `frozen_normalizes_iff` relocates
+  C1 exactly onto the payload. All six theorems axiom-free.
+- Two negatives from that task earned their place. `isoRedexCount` is 0
+  from step 6 on, so τ — the machinery that RESOLVED C2 — governs nothing
+  on the C1 trajectory; that answers "why not just reuse τ?" by
+  measurement instead of by hand-waving. And the recurrence hunt was re-run
+  at the frozen granularity, where Slice 3's could not have succeeded:
+  Slice 3 looked for `c1` (spine 5) recurring, but after step 8 every
+  reduct has spine 2, so `c1` cannot reappear at all. Twenty fresh starting
+  points, twenty negatives.
+- Honest register on Task 2: the relocated payload has 15 leaves against
+  `c1`'s 7. The target got BIGGER. Recorded in the theorem's own doc
+  comment, in CONJECTURES.md, and in the commit message, because a reader
+  skimming "C1 relocated onto a payload" could easily take it for progress
+  toward a divergence proof, and it is not one.
+- Task 3 (C6 fuel test) is where materiality bit again, in exactly the way
+  the review predicted. `lake exe ccp 10 800` — this time line-buffered
+  through `stdbuf -oL`, so the old buffering trap could not repeat, and it
+  didn't — reached n=8 in ~9 minutes and stalled on n=9. Diagnosis: at fuel
+  800 the extremal trajectories reach ~2.3e9 and ~2.7e9 LOGICAL leaves.
+  Terms are shared DAGs in memory so they fit comfortably; `classify`
+  computing `leafCount` over them is what costs. The fix was to stop
+  measuring the thing C6 never needed — `exhaustedCount` uses only
+  `(normalize fuel t).isNone` — after which n=10 at both fuel values
+  finished quickly. Result: exhausted counts identical at fuel 200 and 800
+  for n = 7..10 (2, 41, 276, 1484), so C6's table survives a 4× fuel test
+  with not one of 6,853 terms changing verdict. Bonus: the n=9 and n=10
+  rows had been cited from this notebook without recomputation since Slice
+  3, and both reproduced exactly — that caveat is discharged.
+- Task 4 (the ledger). The review noticed the status vocabulary had no
+  demotion state: C3.2's own Slice 3 probe had come back against it, yet it
+  sat at plain "open", indistinguishable from C5 which has never been
+  tested at all. Added `probed` and `weakened`, with an explicit note that
+  neither carries proof content — they track the state of the evidence, not
+  of the logic. C3 is now weakened on both halves (C3.1 picked up a second
+  dent this slice: spine-length 5 is a property of the STARTING term only
+  and does not survive its own trajectory). C1 and C6 are probed.
+- Score for the slice: two strengthenings, one structural reduction, one
+  ledger repair, four honest negatives, zero conjectures resolved. C1, C3,
+  C4, C5, C6 all still open. The one thing this slice did NOT do that it
+  should be judged against: it never attempted C5, which remains the
+  single highest-leverage unformalized item, since the loop route to C1
+  needs it even if a loop witness ever turns up.
+- Next-target ranking, revised: (1) C5 formalization (λI conservation) —
+  now unambiguously first, since Slice 4 exhausted the cheap structural
+  probes on C1 and the frozen-head result sharpens what a divergence
+  argument would have to do without changing the fact that C5 gates the
+  loop route; (2) construct-don't-search for C1 — the one census property
+  the review named that this slice did NOT negate, and the only remaining
+  route that doesn't wait on C5: design a pure-S term together with an
+  invariant forcing a redex, rather than hunting for one and hoping a
+  certificate exists; (3) the diverging-pairs core (`Joinable`, Slice 1);
+  (4) the pigeonhole queue (`sTerms`-completeness), unchanged.

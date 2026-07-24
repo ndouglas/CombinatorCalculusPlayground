@@ -1,7 +1,28 @@
 # Conjectures
 
-Census-generated claims, each with a status:
-**open** / **proved** (link the theorem) / **refuted** (link the counterexample).
+Census-generated claims, each with a status drawn from the vocabulary
+below. Slice 4 added **probed** and **weakened**: the original three
+labels could not distinguish a conjecture nothing had ever tested from one
+whose own targeted probe had come back against it, and C3 had been sitting
+in the latter position while labelled like the former.
+
+- **open** — stated; no targeted test has been run beyond the census
+  observation that generated it.
+- **probed** — a targeted test was run and came back CONSISTENT with the
+  conjecture. Still logically open; the label records that it has survived
+  something.
+- **weakened** — a targeted test came back AGAINST the conjecture, or
+  against the specific reading that motivated it, without refuting it.
+  Still logically open; the label records that the evidence now leans the
+  other way. A weakened conjecture should not be quoted as support for
+  anything.
+- **proved** (link the theorem) — kernel-checked.
+- **refuted** (link the counterexample) — kernel-checked.
+
+Note on what these labels are NOT: none of **open**/**probed**/**weakened**
+carries any proof content. Only **proved** and **refuted** do. The three
+soft labels track the state of the *evidence*, so that later readers can
+tell tested-and-survived from tested-and-dented from untested.
 Census methodology: leftmost-outermost reduction (`stepOnce`), which is the
 normalizing strategy; "exhausted" verdicts are fuel-outs, NOT divergence proofs.
 As of Stage 1, SK reduction is proven confluent (`confluence`,
@@ -59,6 +80,22 @@ C3 at n=7..9, registers C5 (conservation) and C6 (divergence density),
 and consolidates both existing universality refutations behind one
 axiom-free mechanism (`Simulation.refute_of_acyclic`). See the Stage 5,
 Slice 3 section below.
+As of Stage 5 Slice 4, an audit-and-widen slice, resolving nothing but
+strengthening two things and repairing one. (1) Both universality
+refutations were UNDER-claimed: the mechanism needs only injectivity and
+path-preservation, never `bwd` and never step-count faithfulness, so it is
+now stated for `PathEncoding` (`no_pathEncoding_SK_pureS`,
+`no_pathEncoding_SK_iota`), with `Simulation.refute_of_acyclic` kept
+unchanged as a corollary and the widening proved non-vacuous
+(`pathEncoding_strictly_weaker`). The prize-adjacent claim sharpens to: if
+S alone is universal, its encoding must be non-injective or must fail to
+preserve reduction paths. (2) The C1 trajectory has a proved FROZEN HEAD —
+`S A B` with `A` normal admits only steps inside `B`, so C1 relocates onto
+a payload (`frozen_normalizes_iff`, `Invariants.lean`, axiom-free) that is
+BIGGER than `c1`; structure gained, search space not. (3) C6 survived a
+4× fuel test unchanged, and the ledger gained `probed`/`weakened` status
+labels. C1, C3, C4, C5, C6 all remain open. See the Stage 5, Slice 4
+section below.
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
@@ -74,8 +111,22 @@ no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
   to reach the file before it was killed). Reducing fuel to 200 (above) is
   what actually completed n=10 (and beyond). See LAB_NOTEBOOK.md for the
   runtime/tooling story.
+- `ccp 10 800` (Slice 4) — fuel-sensitivity test for C6. Line-buffered via
+  `stdbuf -oL` so the buffering trap above could not repeat; it did not.
+  Reached n=1..8 in ~9 minutes and was abandoned mid-n=9: at fuel 800 the
+  extremal trajectories hit ~2.3e9 (n=7) and ~2.7e9 (n=8) logical leaves,
+  and `classify` computes `leafCount` on them. Replaced by a targeted
+  `exhaustedCount` probe that skips `maxFinalLeaves` entirely and reached
+  n=10 at both fuel values — see the C6 entry for the result and the
+  reproduction snippet.
 
-## C1: Smallest non-normalizing pure-S term — status: open
+## C1: Smallest non-normalizing pure-S term — status: probed (open)
+Probed and CONSISTENT: fuel-insensitivity now checked at a second fuel
+value (800, Slice 4 — the n=7 exhausted count is still exactly 2), and the
+trajectory's structure is now partly proved rather than observed (the
+frozen head, below). Nothing has come back against C1. It remains open:
+every probe is still fuel-bounded, and no divergence proof exists.
+
 Census (fuel N=200) finds all S-terms with ≤6 leaves normalize; at 7 leaves,
 2 of 132 terms exhaust fuel. Candidates (rendered, standard combinator
 notation, left-associative application):
@@ -106,6 +157,42 @@ trajectories coincide from that point on. This is a discovery about
 adjacency, not about divergence — it does not by itself show a loop or
 show non-termination; no divergence proof was attempted this slice —
 deliberately; the loop route needs C5.
+
+**Slice 4 discovery — the frozen head (PROVED, and it does not close
+C1):** from step 8 onward every reduct of `c1` has the form `S A B` for one
+FIXED 9-leaf normal form `A = S (S S) (S (S (S S) S) S)`
+(`frozenArg`, `Invariants.lean`), and the shell is provably inert: a term
+`S A B` with `A` normal admits ONLY steps inside `B` — neither head rule
+can fire (spine length 2 < the 3 an S-redex needs, and the head is `S` not
+`K`) and `S A` is itself stuck (`step_frozen`, `steps_frozen`). Hence
+`frozen_normalizes_iff`: for normal `A`, `S A B` normalizes iff `B` does.
+All of these are AXIOM-FREE and hold for every term under EVERY strategy,
+not just leftmost-outermost.
+
+What this buys and what it does not. C1 for `c1` is now exactly the
+question "does this 15-leaf term normalize?" — the payload
+`S (S (S S) S) S (S (S S) (S (S (S S) S) S))`. That is BIGGER than `c1`'s
+7 leaves, so the relocation is a gain in structure, not a smaller search
+space, and it is not progress toward a divergence proof by itself. What it
+does give: the first proved (as opposed to observed) invariant of this
+trajectory, and a general shell-stripping lemma for any future pure-S
+divergence argument.
+
+**Slice 4 negative — τ has nothing to act on here.** `isoRedexCount`
+(size-preserving S-redexes, the exact fragment `tau` governs in
+`Isometric.lean`) is 0 from step 6 onward on this trajectory. So the
+machinery that RESOLVED C2 is inapplicable to C1 by measurement, not by
+guesswork — a concrete answer to the obvious "why not just reuse τ?".
+
+**Slice 4 negative — no recurrence at the frozen granularity.** Slice 3
+hunted for `c1` itself recurring inside its own trajectory. That hunt
+could not have succeeded once the head freezes: `c1` has spine length 5
+and every reduct from step 8 on has spine length 2, so `c1` cannot appear
+as a later reduct at all. Re-run at the right granularity — does any
+frozen reduct recur as a subterm of a later one, from 20 starting points —
+all 20 negative (`Invariants.lean`). The loop route still has no witness in
+the explored prefix, now checked at a granularity where one could have
+existed.
 
 **Slice 3 strategy note:** neither candidate self-embeds (nor
 cross-embeds, beyond the one-step relation just noted) within 120
@@ -193,7 +280,24 @@ lemma for the `for`-loop first. Registered as a blocked chain, queued
 alongside the reachability pigeonhole item (see the Stage 5, Slice 1
 section) — not claimed as a theorem. C2 in full remains open.
 
-## C3: Growth-pattern regularities observed — status: open
+## C3: Growth-pattern regularities observed — status: WEAKENED (both parts)
+Re-labelled in Slice 4. Both halves of C3 have now been probed and both
+probes came back against them; the entry had nonetheless been sitting at
+plain "open", indistinguishable from C5 which has never been tested at
+all. Neither is refuted — these are observations whose motivating reading
+lost support, not false claims.
+
+- **C3.1 (head shape) — weakened by sample collapse, twice over.** Slice 3
+  showed the two n=7 "samples" are adjacent points on ONE trajectory
+  (`stepOnce c2 = some c1`), making this a sample of one. Slice 4 adds a
+  second dent: `spineLength 5` is a property of the STARTING term only and
+  does not survive its own trajectory — spine length locks at 2 from step 8
+  onward (`Invariants.lean`). Whatever "head applied to 5 arguments" is
+  tracking, it is not a persistent feature of divergent behavior.
+- **C3.2 (maxFinalLeaves plateau) — weakened** by Slice 3's plateau-nesting
+  probe: every structural check at n=7..9 came back false and the deltas
+  explode instead of staying near +1. See the probe write-up below.
+
 Two observations from the fuel=200, n=1..12 run:
 
 1. **Head shape of the smallest exhausted terms.** Both n=7 candidates are a
@@ -311,7 +415,10 @@ finite alphabets are universal by Cocke–Minsky 1964, an EXTERNAL fact
 cited, not machine-checked. All three Universal* definitions
 (`UniversalReach`/`UniversalNorm`/`UniversalConv`) quantify over the
 pinned `Simulation` class — uniform encoder, decoder-inversion,
-step-faithful `fwd`/`bwd` — never over bare encoding functions. The
+`fwd`/`bwd` (note: `fwd` was always MANY-step, `A.step a a' → B.Steps
+(enc a) (enc a')`, so "step-faithful" was never quite the right word for
+it; Slice 4 replaced that wording throughout) — never over bare encoding
+functions. The
 bare-function variant is machine-checked to be trivial
 (`bareEncNorm_trivial`, Universality/Defs.lean): a classical oracle
 encoder witnesses it for ANY source system (given the host has one
@@ -379,13 +486,17 @@ see the Stage 5, Slice 2 section below): `no_sim_SK_pureS`
 (`Universality/Calibration.lean`) refutes `UniversalReach RS.SK
 RS.PureS`, with `pureS_not_universalNorm_for_SK` and
 `pureS_not_universalConv_for_SK` as immediate named corollaries (all
-three quantify over `Simulation`). SCOPE, restated from the Slice 2
-section: this refutes STEP-FAITHFUL hosting under the pinned
-`Simulation` class only — it does NOT resolve the Wolfram prize
-question, whose informal universality admits broader, non-step-faithful
-encodings. Against the table's own reference, `RS.Tag`, this cell
-remains open — the same acyclicity mechanism would refute Tag→PureS for
-any tag system with a genuine reduction cycle, not formalized here.
+three quantify over `Simulation`). SCOPE — **widened in Slice 4, see the
+Slice 4 section**: the refutation does not actually need step-faithfulness
+or `bwd`. What is ruled out is any INJECTIVE, PATH-PRESERVING encoding
+(`no_pathEncoding_SK_pureS`), a strictly larger class than `Simulation`.
+It still does NOT resolve the Wolfram prize question — an informal
+universal encoding could be non-injective (merging states) or
+non-path-preserving — but those are now the only two escape hatches left,
+rather than the vaguer "non-step-faithful". Against the table's own
+reference, `RS.Tag`, this cell remains open — the same acyclicity
+mechanism would refute Tag→PureS for any tag system with a genuine
+reduction cycle, not formalized here.
 
 ### Stage 4 calibration results
 
@@ -451,16 +562,62 @@ every infinite pure-S trajectory has unbounded size — bounded size plus
 revisit. Blocked on the same finiteness lemma as the pigeonhole queue
 (`sTerms`-completeness chain); registered, not claimed.
 
-## C6: Divergence density grows with size — status: open
+## C6: Divergence density grows with size — status: probed (open)
+
+**Slice 4 fuel-sensitivity test — the table is NOT an artifact of fuel
+200.** This was the cheapest open item on the board and the most exposed:
+every row was measured at a single fuel value, so the whole table could
+have been reporting "how many terms need more than 200 steps" rather than
+anything about divergence. Re-measured at fuel **800** (a 4× increase), the
+exhausted counts are *identical*:
+
+| n  | exhausted @ fuel 200 | exhausted @ fuel 800 |
+|----|----------------------|----------------------|
+| 7  | 2                    | 2                    |
+| 8  | 41                   | 41                   |
+| 9  | 276                  | 276                  |
+| 10 | 1484                 | 1484                 |
+
+Not one term of the 6,853 at n = 7..10 moved from "exhausted" to
+"terminating" between fuel 200 and fuel 800. That is real support for the
+conjecture: the fraction is measuring a stable property of the terms, and
+the fuel-200 rows below can be read as divergence density rather than as a
+cutoff artifact. It remains support, not proof — every one of these is
+still a fuel-out, and fuel-insensitivity at 4× says nothing about
+unbounded fuel. This test also independently REPRODUCED both counts the
+table below had been citing from LAB_NOTEBOOK.md without recomputation
+(276 at n=9, 1484 at n=10); the caveat attached to those two rows is
+discharged.
+
+Reproduce (cheaper than the full census — it skips the `leafCount` of the
+final term, which is what makes `classify` expensive at high fuel):
+
+```lean
+def exhaustedCount (fuel n : Nat) : Nat :=
+  (sTerms n).foldl
+    (fun acc t => if (normalize fuel t).isNone then acc + 1 else acc) 0
+#eval exhaustedCount 800 9    -- 276,  same as fuel 200
+#eval exhaustedCount 800 10   -- 1484, same as fuel 200
+```
+
+RUNTIME NOTE, since it shaped what got measured: the full
+`lake exe ccp 10 800` was started first and abandoned after ~9 minutes,
+having completed only n=1..8 — at fuel 800 the extremal trajectories reach
+logical sizes of ~2.3e9 leaves (n=7) and ~2.7e9 leaves (n=8), and
+`classify` computes `leafCount` on those. Terms are shared DAGs in memory,
+so they FIT; counting their leaves is what costs. Dropping `maxFinalLeaves`
+from the measurement is what made n=9 reachable at all.
+
 Fraction of pure-S terms at exactly n leaves that exhaust fuel 200
 (leftmost-outermost; fuel-outs are NOT divergence proofs — this is a
 density of *fuel-exhaustion*, a proxy observable). Exhausted counts for
 n=7,8,11,12 and totals for n=7,8,9,10,11,12 are as already recorded in
-this file / LAB_NOTEBOOK.md; the n=9 and n=10 exhausted counts below are
-pulled from LAB_NOTEBOOK.md's census-headline entry (`276 at n=9, 1484 at
-n=10`, fuel 200) rather than recomputed — re-running the n=10 census
-(4862 terms) is exactly the "runtime-prohibitive, stays fuel-bounded-census
-from the original runs" case the brief flags, so it was not repeated.
+this file / LAB_NOTEBOOK.md. The n=9 and n=10 exhausted counts were
+originally pulled from LAB_NOTEBOOK.md's census-headline entry rather than
+recomputed; **Slice 4's `exhaustedCount` probe recomputed both (276, 1484)
+and they agree**, so that caveat no longer applies to those two rows. The
+n=11 and n=12 rows remain as-recorded — 16,796 and 58,786 terms, still the
+"runtime-prohibitive" case, and untested for fuel-sensitivity.
 Per-n totals are the Catalan numbers (binary trees with n leaves = C_(n-1);
 documented at `Census/Enumerate.lean`'s `sTermsTable` comment) and were
 cross-checked cheaply via `#eval (sTerms n).length` (no fuel/reduction
@@ -478,10 +635,16 @@ involved, so this is not the disallowed recomputation):
 Conjecture: the fraction is monotone non-decreasing in n and → 1. All six
 rows above are monotone increasing, consistent with the conjecture, but
 six points is a short run — nowhere near n large enough to see whether
-growth keeps accelerating, levels off short of 1, or (per the C3 addendum
-above) enters some different regime once the n≥10 `maxFinalLeaves`
-plateau mechanism is at play. (Cheap to extend: rerun `lake exe ccp` at
-higher fuel to test fuel-sensitivity of the table; not done this slice.)
+growth keeps accelerating, levels off short of 1, or enters some different
+regime at larger n. (The C3 addendum used to be cited here as a reason to
+expect a regime change at n≥10, on the strength of the `maxFinalLeaves`
+plateau; C3.2 is now **weakened**, so that expectation has lost its
+support and should not be leaned on either way.)
+
+The fuel-sensitivity worry that stood over this table is now DISCHARGED
+for n = 7..10 — see the fuel-800 comparison at the top of this entry.
+What remains genuinely untested: n = 11, 12 at a second fuel value, and
+any n beyond 12 at all.
 
 Reproduce the total-count cross-check with:
 
@@ -490,9 +653,10 @@ Reproduce the total-count cross-check with:
 #eval (sTerms 10).length  -- 4862
 ```
 
-(the exhausted counts themselves come from the `lake exe ccp 12 200` run
+(the n=11 and n=12 exhausted counts come from the `lake exe ccp 12 200` run
 already on record — see the "Runs behind this file" note above and
-LAB_NOTEBOOK.md's census-headline entry — not from a scratch re-run.)
+LAB_NOTEBOOK.md's census-headline entry — not from a scratch re-run. The
+n=7..10 counts were recomputed in Slice 4 at two fuel values.)
 
 ### Stage 5, Slice 1: bounded reachability
 
@@ -571,11 +735,17 @@ pigeonhole/`Decidable` item.
   its encoding must do non-step-faithful work.** The taxonomy has
   located the prize question in the gap between the pinned class and
   the informal one — which is exactly the definitional territory the
-  program was built to map.
+  program was built to map. (SUPERSEDED IN SLICE 4, and in the
+  strengthening direction: the refutation never needed step-faithfulness.
+  The correct reading of the italicized sentence is now **if S alone is
+  universal, its encoding must be non-injective or must fail to preserve
+  reduction paths.** See the Slice 4 section.)
 - **The refutation mechanism, unified:** iota fell to strict growth
   (Stage 4); pure S falls to acyclicity (this slice). Both are instances
   of one pattern — a system whose reduction order admits no return trips
-  cannot host a cyclic source under injective step-faithful encoding.
+  cannot host a cyclic source under injective path-preserving encoding
+  (Slice 4 corrected "step-faithful" to "path-preserving" here — the
+  weaker and accurate hypothesis).
   C4's strictly-size-increasing class is one cause of no-return; τ-style
   termination of the isometric fragment is another. (C4's statement is
   unchanged; this remark widens the observed pattern, not the
@@ -604,8 +774,10 @@ this slice except the additions below):
 - C6 registered (divergence density, 1.5% at n=7 rising monotonically to
   49.9% at n=12, six points, fuel-bounded — see the C6 entry above).
 - **Consolidation theorem:** `Simulation.refute_of_acyclic`
-  (`Universality/Taxonomy.lean`) — an injective step-faithful simulation
-  cannot carry a two-point cycle into an acyclic host. `RS.PureS_acyclic`
+  (`Universality/Taxonomy.lean`) — an injective path-preserving encoding
+  cannot carry a two-point cycle into an acyclic host (stated for
+  `Simulation` in this slice; Slice 4 restated it at its true strength for
+  `PathEncoding` and kept this name as a corollary). `RS.PureS_acyclic`
   and `RS.Iota_acyclic` (`Universality/Calibration.lean`) instantiate it;
   both existing refutations (`no_sim_SK_pureS`, `no_sim_SK_iota`) are
   recovered as one-line `example`s, originals unchanged. Axioms:
@@ -623,6 +795,78 @@ this slice except the additions below):
 (embedding hunt, plateau-nesting probe, C6, the consolidation theorem,
 C5-plus-corollary) were scoped from the start to produce reconnaissance
 data and one structural theorem, not to close C1, C3, or C6 — and none
-of them did. C1 and C3 remain open, C6 is open from first registration;
+of them did. C1 and C3 remain open, C6 is open from first registration
+(status labels as of Slice 3; Slice 4 re-labelled C1 and C6 **probed** and
+C3 **weakened** — all still logically open, see the vocabulary at the top);
 the one THEOREM this slice adds (`Simulation.refute_of_acyclic`) is a
 consolidation of already-proved results, not a new resolution.
+
+### Stage 5, Slice 4: widening, fuel-testing, ledger repair
+
+Driven by an ideonomic review of the program's own method rather than by
+new census data. The review's operative finding: **every conjecture that
+became a theorem did so by escaping one of the census's definitional
+properties** (C2 escaped leftmost-outermost AND bounded size; τ escaped
+fuel-boundedness; `refute_of_acyclic` escaped per-system-ness), and
+everything still open is still trapped inside at least one. This slice
+negates three more of those properties and repairs the ledger's status
+vocabulary.
+
+- **The refutations were under-claimed; widened to `PathEncoding`.** An
+  audit of `Simulation.refute_of_acyclic` found it consumes only two
+  consequences of the five-field `Simulation`: injectivity of `enc` (via
+  `dec_enc`) and path-preservation (via `fwd`, which was ALREADY many-step).
+  It never touches `bwd`, and no step-count condition is involved anywhere
+  in the proof. `PathEncoding` (`Universality/Defs.lean`) names that weaker
+  hypothesis; `PathEncoding.refute_of_acyclic` carries the mechanism;
+  `Simulation.refute_of_acyclic` survives unchanged in name and statement
+  as a corollary via `Simulation.toPathEncoding`, so nothing downstream
+  moved. The widened headline results are `no_pathEncoding_SK_pureS` and
+  `no_pathEncoding_SK_iota`. **Revised prize-adjacent claim: if S alone is
+  universal, its encoding must be non-injective or must fail to preserve
+  reduction paths** — two named escape hatches in place of the vaguer
+  "non-step-faithful work". The widening is proved non-vacuous rather than
+  asserted: `pathEncoding_strictly_weaker` exhibits a `PathEncoding` (a
+  two-point step-free system mapped onto SK's Ω/M cycle) whose encoder
+  extends to no `Simulation`, since `bwd` would reflect a genuine host path
+  back into a source that has none. `Simulation.toPathEncoding` is
+  therefore not surjective. Axioms: mechanism and strictness witness are
+  AXIOM-FREE; the two instances carry the inherited `[propext, Quot.sound]`.
+- **The frozen head (C1, PROVED structure — C1 itself still open).** See the
+  C1 entry for the full statement. Negating "leafCount is the only measure"
+  (Term.lean's own words) and mining the trajectory under spine length,
+  depth, redex count and isometric-redex count found one regularity strong
+  enough to prove for all terms and all strategies: `S A B` with `A` normal
+  admits only steps inside `B`, so `frozen_normalizes_iff` relocates C1
+  exactly onto the payload. Six axiom-free theorems (`Invariants.lean`).
+  Two useful negatives came with it: τ governs nothing on this trajectory
+  (`isoRedexCount = 0` from step 6), which explains by measurement why the
+  C2 machinery does not transfer; and no frozen reduct recurs as a subterm
+  of a later one from any of 20 starting points, so the loop route still has
+  no witness — now checked at a granularity where one could have existed
+  (Slice 3's hunt for `c1`, spine 5, could not have found one after the head
+  freezes to spine 2).
+- **C6 fuel-tested, and it PASSED.** The density table was the cheapest open
+  item on the board and the most exposed: measured at one fuel value only,
+  it could have been reporting "needs more than 200 steps" rather than
+  anything about divergence. At fuel 800 the exhausted counts for n = 7..10
+  are identical to fuel 200 (2, 41, 276, 1484) — not one of 6,853 terms
+  changed verdict under a 4× fuel increase. C6 moves to **probed**. Two
+  side benefits: the n=9 and n=10 rows, previously cited from
+  LAB_NOTEBOOK.md without recomputation, are now independently reproduced;
+  and the cheap `exhaustedCount` probe (which skips `maxFinalLeaves`, the
+  actual cost centre at high fuel) is recorded for reuse. n=11 and n=12
+  remain untested for fuel-sensitivity.
+- **The ledger gained a demotion state.** `open` / `probed` / `weakened`
+  now separate untested from tested-and-survived from tested-and-dented
+  (vocabulary at the top of this file). C3 was the motivating case: its own
+  Slice 3 probe had come back against it while it stayed filed as plain
+  "open", indistinguishable from C5 which has never been tested at all.
+  Both halves of C3 are now **weakened**; C1 and C6 are **probed**.
+
+**What did NOT happen:** C1, C3, C4, C5 and C6 all remain open. No
+conjecture was resolved this slice. The theorems added are a
+strengthening of existing refutations (`PathEncoding`) and a structural
+reduction of C1 (`frozen_normalizes_iff`) that makes the target term
+BIGGER, not smaller — 15 leaves against `c1`'s 7. Registered plainly so
+the slice is not read as progress toward a divergence proof.
