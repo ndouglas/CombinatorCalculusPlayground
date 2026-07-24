@@ -34,3 +34,67 @@ def tau : Term → Nat
 #guard tau (app3 S S S S) = 15
 -- ...and its reduct (S S)(S S) weighs 9: the promised drop of exactly 6.
 #guard tau (app (app S S) (app S S)) = 9
+
+-- ## The decrease lemma
+theorem tau_pos : ∀ (t : Term), 1 ≤ tau t := by
+  intro t
+  induction t with
+  | S => simp [tau]
+  | K => simp [tau]
+  | app a b iha ihb => simp [tau]; omega
+
+-- In a K-free term, one leaf means THE atom.
+theorem KFree.leafCount_eq_one {x : Term} (hk : KFree x)
+    (h : leafCount x = 1) : x = Term.S := by
+  cases hk with
+  | S => rfl
+  | app hl hr =>
+    -- an application has ≥ 2 leaves: contradiction
+    rename_i l r
+    have h1 := leafCount_pos l
+    have h2 := leafCount_pos r
+    simp [leafCount] at h
+    omega
+
+-- The heart of the slice: a size-preserving K-free step strictly drops τ.
+-- (Size preservation forces the S-redex's third argument to be atomic —
+-- Stage 2's arithmetic — and then the drop at the redex is exactly 6,
+-- carried through congruence by τ's positive coefficients.)
+theorem tau_lt_of_isometric_step : ∀ {t u : Term}, KFree t → (t ⟶ u) →
+    leafCount t = leafCount u → tau u < tau t := by
+  intro t u hk h
+  induction h with
+  | K_red x y =>
+    -- K-free t cannot contain the firing K: the Stage 2 vacuity pattern.
+    intro _
+    cases hk with | app hl _ =>
+    cases hl with | app hK _ =>
+    cases hK
+  | S_red f g x =>
+    intro hsize
+    -- Size equality forces leafCount x = 1, hence x = S.
+    have hkx : KFree x := by
+      cases hk with | app _ hx => exact hx
+    have hx1 : leafCount x = 1 := by
+      simp [leafCount, app3] at hsize
+      omega
+    have hxS : x = Term.S := hkx.leafCount_eq_one hx1
+    subst hxS
+    -- τ(S f g S) = 4τf + 2τg + 9  >  4τf + 2τg + 3 = τ((f S)(g S))
+    simp [tau, app3]
+    omega
+  | appL s ih =>
+    intro hsize
+    cases hk with | app hl hr =>
+    -- whole-size equality gives subterm-size equality by plain arithmetic
+    simp [leafCount] at hsize
+    have := ih hl (by omega)
+    simp [tau]
+    omega
+  | appR s ih =>
+    intro hsize
+    cases hk with | app hl hr =>
+    simp [leafCount] at hsize
+    have := ih hr (by omega)
+    simp [tau]
+    omega
