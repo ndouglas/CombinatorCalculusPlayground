@@ -87,14 +87,14 @@ theorem tau_lt_of_isometric_step : ∀ {t u : Term}, KFree t → (t ⟶ u) →
     intro hsize
     cases hk with | app hl hr =>
     -- whole-size equality gives subterm-size equality by plain arithmetic
-    simp [leafCount] at hsize
+    simp only [leafCount] at hsize
     have := ih hl (by omega)
-    simp [tau]
+    simp only [tau]
     omega
   | appR s ih =>
     intro hsize
     cases hk with | app hl hr =>
-    simp [leafCount] at hsize
+    simp only [leafCount] at hsize
     have := ih hr (by omega)
-    simp [tau]
+    simp only [tau]
     omega
