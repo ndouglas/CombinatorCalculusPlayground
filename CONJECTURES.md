@@ -1348,3 +1348,39 @@ structural finding.
   and the bridge only ever transfers FROM `Term`s, so the claim was reduced to
   `ofTerm_injective`. Recorded at the lemma and in the notebook; the whole
   bridge reports `[propext]` or less.
+
+### Stage 10: piece (vi) prototyped — it fails, and the failure is useful
+
+Stage 8 called the stutter-or-advance obligation "mechanical" and flagged
+piece (vi) as the one that could fail IN KIND, to be prototyped before the
+machine it tracks gets built. Done, and it failed.
+
+- **Scoping correction to piece (ii).** It is not "one iteration lemma".
+  Iterating `bracket` needs substitution to commute with bracketing, and that
+  holds only UP TO REDUCTION: `subst x u (bracket y (var x))` is `K u` while
+  `bracket y (subst x u (var x))` is `bracket y u` — reduction-equivalent, not
+  equal. Since (ii) is investment (vi) could invalidate, (vi) was done first.
+- **`naiveAbs_not_stuttering`** (`AdequacyProbe.lean`) — machine-checked: the
+  obvious structural abstraction over a genuinely nondeterministic test
+  machine does NOT satisfy `RS.bwd_of_abstraction`'s hypothesis. There is a
+  step out of an abstracted state whose target abstracts to `none`.
+- **Cause.** `S f g x → (f x)(g x)` duplicates `x`; the copies then reduce
+  independently; an abstraction that reads a duplicated subterm syntactically
+  must handle them drifting apart, and the drifted state space is
+  combinatorial in the live redexes inside the duplicated part. So piece (vi)
+  is not "check each rule" — the naive abstraction is simply wrong.
+- **The design constraint this buys, which is the point of prototyping.**
+  Either define the abstraction up to `Joinable` (correct, but drags SK
+  confluence through every case), or — better — **constrain the encoding so
+  duplication only ever hits NORMAL FORMS.** If `x` is normal when `S f g x`
+  fires, the copies cannot drift and desynchronisation is impossible by
+  construction. That is a restriction on how piece (v)'s tag-step driver must
+  be written: every argument it duplicates must already be in normal form at
+  the moment of duplication. Achievable — encoded words and symbols are data,
+  and data can be kept normal — but it constrains the machine's construction
+  and cannot be patched in afterwards. `sync_step` confirms the diagnosis: the
+  same shape over a normal payload advances exactly as required.
+- **Revised difficulty for criterion (a).** Stage 8 rated (vi) mechanical.
+  It is mechanical only CONDITIONAL on the piece (v) design obeying the
+  normal-forms-only discipline. That coupling between (v) and (vi) did not
+  appear in Stage 8's decomposition and is the main thing this stage adds.

@@ -1185,3 +1185,63 @@ what automation could and couldn't do. This file is a first-class deliverable
   (ii) multi-variable bracket abstraction, then (vi) as the prototype-first
   risk before the bulk of (iii)–(v); (2) C4's syntactic residue; (3)
   transcription (C1(a), C5); (4) C6, still not promoted.
+
+## 2026-07-24 — Stage 10: the prototype failed, which is why it was a prototype
+
+- Two ordering decisions, both against my own written list and both for the
+  same reason. Piece (ii) was next; I skipped it. First because it is
+  mis-scoped — Stage 8 called it "one iteration lemma" and it is not, since
+  iterating `bracket` needs substitution to commute with bracketing and that
+  holds only up to reduction (`subst x u (bracket y (var x))` is `K u`;
+  `bracket y (subst x u (var x))` is `bracket y u`; reduction-equivalent, not
+  equal, so the induction does not close syntactically). Second because (ii)
+  is investment and (vi) was flagged as the piece that could invalidate it.
+  The list said (ii) then (vi); the list's own justification said prototype
+  first. Followed the justification.
+- The prototype: `Itower n = I (I (... S))`, a countdown where one source step
+  costs two host steps. Chosen because it is the smallest encoding that is a
+  genuine multi-step machine rather than an inclusion, and because it has real
+  nondeterminism — `Itower 3` has three redexes, so reduction can go
+  outside-in, inside-out, or interleaved. `pureS_in_SK` had neither property,
+  which is exactly why the Stage 8 non-vacuity check could not have caught
+  this.
+- It failed, and the failure is clean enough to state as a theorem:
+  `naiveAbs_not_stuttering`. The obvious structural abstraction — count
+  pending I-layers, recognise intact `I u` and half-consumed `(K u)(K u)` —
+  admits a step out of an abstracted state whose target abstracts to `none`.
+  Concretely `(K (I S))(K (I S)) → (K ((K S)(K S)))(K (I S))`: one step inside
+  the LEFT copy only, and the two copies no longer match.
+- Cause, and it is not incidental to this test machine: `S f g x → (f x)(g x)`
+  duplicates `x`, so the copies reduce independently. Any abstraction reading
+  a duplicated subterm syntactically has to cope with drift, and the drifted
+  state space is combinatorial in the live redexes inside the duplicated part.
+  This is the failure-in-kind Stage 8 was worried about, found where Stage 8
+  predicted it would be.
+- **The payoff, which is why this was worth doing before piece (v).** There
+  are two fixes and the second is a design constraint, not a proof technique:
+  constrain the encoding so duplication only ever hits NORMAL FORMS. If `x` is
+  normal when `S f g x` fires, neither copy can step, so drift is impossible
+  by construction and the syntactic abstraction is fine. `sync_step` checks
+  this: the same shape over a normal payload advances 1 → 0 exactly as
+  required. So piece (v)'s driver must duplicate only already-normal arguments
+  — achievable, since encoded words and symbols are data and data can be kept
+  normal, but it constrains how the machine is built and cannot be retrofitted.
+- Revised difficulty, and the honest correction to Stage 8: (vi) is mechanical
+  only CONDITIONAL on (v) obeying that discipline. Stage 8's decomposition
+  listed (i)–(vi) as independent pieces; (v) and (vi) are coupled, and the
+  coupling runs from the later piece back to the earlier one. That is the kind
+  of thing that would have been discovered halfway through building (v), at
+  which point (v) would have needed rewriting.
+- Cheap methodological note: this is the third stage in a row where the useful
+  output was a NEGATIVE about the program's own plan — Stage 7 corrected a
+  recommendation, Stage 9 weakened a claim rather than paying an axiom, Stage
+  10 falsified a difficulty estimate. All three were cheap, and all three would
+  have been expensive to discover later. The pattern is worth naming: the
+  program's plans have been consistently over-optimistic about mechanical
+  pieces and consistently right about which piece is risky. Trusting the risk
+  flags and distrusting the difficulty ratings looks like the correct posture.
+- Ranking, unchanged in order but with (v) and (vi) now coupled: (1) criterion
+  (a) — (i) done, (vi) prototyped and its constraint known, (ii) needs a
+  commutation-up-to-reduction lemma, (iii)–(v) must be built under the
+  normal-forms-only discipline; (2) C4's syntactic residue; (3) transcription
+  (C1(a), C5); (4) C6, still not promoted.
