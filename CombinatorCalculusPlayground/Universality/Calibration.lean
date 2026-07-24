@@ -97,5 +97,13 @@ def pureS_in_SK : Simulation RS.PureS RS.SK where
   bwd := fun {a a'} h =>
     RS.PureS_steps_iff.mpr (RS.SK_steps_iff.mp h)
 
--- Sanity: transporting along the inclusion composes with itself.
-example : Simulation RS.PureS RS.SK := pureS_in_SK
+-- The inclusion is NONTRIVIAL because PureS has real dynamics — here is a
+-- machine-checked step witness (S S S S → (S S)(S S), both sides K-free):
+example : RS.PureS.step
+    ⟨app3 S S S S, KFree.app (KFree.app (KFree.app KFree.S KFree.S) KFree.S) KFree.S⟩
+    ⟨Term.app (Term.app S S) (Term.app S S),
+     KFree.app (KFree.app KFree.S KFree.S) (KFree.app KFree.S KFree.S)⟩ :=
+  Step.S_red S S S
+
+-- Sanity: the inclusion composes (here with the identity simulation on SK).
+example : Simulation RS.PureS RS.SK := pureS_in_SK.comp (Simulation.id RS.SK)
