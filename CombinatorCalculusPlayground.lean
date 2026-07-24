@@ -9,6 +9,7 @@ import CombinatorCalculusPlayground.Iota
 import CombinatorCalculusPlayground.Universality.Defs
 import CombinatorCalculusPlayground.Universality.Taxonomy
 import CombinatorCalculusPlayground.Universality.Calibration
+import CombinatorCalculusPlayground.Universality.OneRule
 import CombinatorCalculusPlayground.Census.Eval
 import CombinatorCalculusPlayground.Census.Enumerate
 import CombinatorCalculusPlayground.Census.Completeness
