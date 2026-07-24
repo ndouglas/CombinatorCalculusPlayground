@@ -50,6 +50,15 @@ precisely-scoped, prize-adjacent refutation, `no_sim_SK_pureS`
 (`Universality/Calibration.lean`): pure S cannot host SK under the
 pinned `Simulation` class. See the Stage 5, Slice 2 section below for
 the full mechanism and its scope.
+As of Stage 5 Slice 3, a reconnaissance pass — by design, and stated
+plainly here: it was built to produce maps, not resolutions, and no
+conjecture status changes as a result of it — finds that the two C1
+candidates are one leftmost-outermost step apart on a single trajectory,
+records an honest negative on the census's own plateau-nesting reading of
+C3 at n=7..9, registers C5 (conservation) and C6 (divergence density),
+and consolidates both existing universality refutations behind one
+axiom-free mechanism (`Simulation.refute_of_acyclic`). See the Stage 5,
+Slice 3 section below.
 
 Runs behind this file (all `lake exe ccp <maxLeaves> <fuel>`, pure-S terms only,
 no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
@@ -87,6 +96,27 @@ explodes from 120112 leaves (fuel 200) to 25740409924 leaves (fuel 1000), a
 with genuine unbounded/explosive growth along the trajectory, not with a
 near-normal-form plateau that a little more fuel would resolve — but it
 remains fuel-exhaustion, not a divergence proof.
+
+**Slice 3 discovery:** the two candidates are not independent — `c2`
+reduces to `c1` in exactly one leftmost-outermost step (`stepOnce c2 =
+some c1`, kernel-checked `rfl`, `Reachability.lean`; hand-traced by
+review). C1 effectively collapses to a single candidate: any future
+divergence proof for one transfers immediately to the other, since their
+trajectories coincide from that point on. This is a discovery about
+adjacency, not about divergence — it does not by itself show a loop or
+show non-termination.
+
+**Slice 3 strategy note:** neither candidate self-embeds (nor
+cross-embeds, beyond the one-step relation just noted) within 120
+leftmost-outermost steps (`isSubterm` guards, `Reachability.lean` —
+fuel-bounded census data, three honest negatives). The loop route to C1
+therefore has no cheap witness in the explored prefix; the two live
+routes are (a) a leftmost-outermost reduction invariant (a decidable
+predicate preserved by `stepOnce`, implying reducibility — none known
+yet; candidate features should be mined from trajectory data), and (b) a
+loop witness deeper in the trajectory or under a different strategy,
+combined with C5 (registered below) to upgrade a self-embedding into an
+actual divergence proof.
 
 ## C2: No proper cycles in pure-S reduction — status: PROVED
 
@@ -396,6 +426,27 @@ construction and the argument does NOT apply to it; C2's cycle question
 needed the separate τ-measure route — resolved by `no_pure_S_cycle`
 (Stage 5, Slice 2).)
 
+(C5 was reserved and had not yet been registered — closed below, Stage 5
+Slice 3, per the reviewer note on Task 2.)
+
+## C5: Conservation for pure S (WN ⇒ SN) — status: open
+In erasure-free calculi, weak normalization implies strong normalization
+(the λI conservation theorem — Church 1941 territory; Barendregt §9.5 has
+the modern treatment). Pure S is erasure-free (Stage 2), so conservation
+SHOULD hold — but it is not formalized here, and nothing in this tree
+depends on it yet. WHY IT MATTERS: it is the missing link of the loop
+route to C1 — a self-embedding t →⁺ C[t] yields an infinite reduction;
+conservation would upgrade that to "no normal form." Without it, a loop
+proves only the existence of one infinite trajectory. Registered as a
+future-slice target; classical proof routes exist (external), none
+machine-checked here.
+
+**Corollary registered alongside (statement ready, dependency noted):**
+every infinite pure-S trajectory has unbounded size — bounded size plus
+`no_pure_S_cycle` plus the finiteness of each size class would force a
+revisit. Blocked on the same finiteness lemma as the pigeonhole queue
+(`sTerms`-completeness chain); registered, not claimed.
+
 ## C6: Divergence density grows with size — status: open
 Fraction of pure-S terms at exactly n leaves that exhaust fuel 200
 (leftmost-outermost; fuel-outs are NOT divergence proofs — this is a
@@ -525,3 +576,49 @@ pigeonhole/`Decidable` item.
   termination of the isometric fragment is another. (C4's statement is
   unchanged; this remark widens the observed pattern, not the
   conjecture.)
+
+### Stage 5, Slice 3: the invariant observatory
+
+Reconnaissance slice — by design it produced maps and one consolidation
+theorem, and resolved nothing (as planned; no conjecture status changes
+this slice except the additions below):
+- **Self-embedding hunt on the C1 candidates:** no self-embedding or
+  cross-embedding loop witness within 120 leftmost-outermost steps
+  (`isSubterm` guards, `Reachability.lean`) — three honest negatives.
+  The one positive result found instead was a discovery, not a loop: `c2`
+  reduces to `c1` in exactly one leftmost-outermost step (`stepOnce c2 =
+  some c1`, kernel-checked), collapsing the two candidates onto a single
+  trajectory. See the C1 entry above for the strategy note this drives.
+- **C3 plateau-nesting probe:** NOT corroborated at n=7..9 — all
+  structural checks (subterm nesting in either direction, both
+  skip-a-step and rider-append shapes, recurrence of `c1`/`c2` as
+  subterms) came back false, and the final-leaf-count deltas explode
+  (+270251, then +2458750) rather than staying small. The n=7 argmax IS
+  `c1` exactly, but that coincidence does not propagate to n=8 or n=9.
+  n=10..12 remains agnostic (argmaxes not recomputed, runtime cost). See
+  the C3 entry above for the full data.
+- C6 registered (divergence density, 1.5% at n=7 rising monotonically to
+  49.9% at n=12, six points, fuel-bounded — see the C6 entry above).
+- **Consolidation theorem:** `Simulation.refute_of_acyclic`
+  (`Universality/Taxonomy.lean`) — an injective step-faithful simulation
+  cannot carry a two-point cycle into an acyclic host. `RS.PureS_acyclic`
+  and `RS.Iota_acyclic` (`Universality/Calibration.lean`) instantiate it;
+  both existing refutations (`no_sim_SK_pureS`, `no_sim_SK_iota`) are
+  recovered as one-line `example`s, originals unchanged. Axioms:
+  `Simulation.refute_of_acyclic` is AXIOM-FREE (the generic mechanism
+  depends on nothing beyond the `Simulation`/`RS.Acyclic` definitions);
+  the two instances, `RS.PureS_acyclic` and `RS.Iota_acyclic`, each carry
+  `[propext, Quot.sound]` (inherited from `no_pure_S_cycle`/`iota_step_lt`
+  respectively, not new to this consolidation).
+- C5 (conservation, WN ⇒ SN for pure S) and the unbounded-trajectory
+  corollary registered with dependencies (see the C5 entry above) —
+  neither is formalized; both are future-slice targets the loop route to
+  C1 will need.
+
+**Maps, not resolutions:** this slice's five probes/registrations
+(embedding hunt, plateau-nesting probe, C6, the consolidation theorem,
+C5-plus-corollary) were scoped from the start to produce reconnaissance
+data and one structural theorem, not to close C1, C3, or C6 — and none
+of them did. C1 and C3 remain open, C6 is open from first registration;
+the one THEOREM this slice adds (`Simulation.refute_of_acyclic`) is a
+consolidation of already-proved results, not a new resolution.

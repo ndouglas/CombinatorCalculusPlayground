@@ -595,3 +595,110 @@ what automation could and couldn't do. This file is a first-class deliverable
   finite-pigeonhole saturation argument for the abstract `Decidable (t
   ⟶* u)` instance, and the `sTerms`-completeness chain blocking
   `no_small_cycle`'s general kernel form.
+
+## 2026-07-24 — Stage 5, Slice 3: the invariant observatory (reconnaissance)
+
+- Where this slice came from: two ideonomy passes, not one. The first —
+  a notation lens run over C1's candidate strings — asked what a change
+  of representation could surface that the census's rendered output
+  couldn't; it produced the loop-route framing (self-embedding as the
+  standard rewriting-theory non-termination witness) and named the slots
+  a real divergence proof would need (a self-embedding witness, plus the
+  conservation theorem to upgrade it to non-termination). The second — a
+  timeline-crossing pass over the taxonomy's own history — noticed that
+  Stage 4's iota refutation and Slice 2's pure-S refutation, written
+  months apart against different mechanisms, were secretly the same
+  argument wearing two causes (strict growth, τ-termination); that
+  crossing produced this slice's one consolidation theorem. Both passes
+  are exploratory by construction, so the slice was scoped up front as
+  reconnaissance — maps, not resolutions — and every task brief carried
+  an explicit both-outcome template so no probe could pass silently
+  without the artifact saying what it actually found.
+- Task 1 (`isSubterm`, the four-direction embedding hunt): three of the
+  four directions returned honest negatives at fuel 120 (no self-embedding
+  for either candidate, no cross-embedding from c1's trace into c2). The
+  fourth returned something nobody had predicted: `stepOnce c2 = some
+  c1`, confirmed by kernel-checked `rfl` and hand-traced independently by
+  review before the guard was trusted. The two "independent" C1
+  candidates from the original census turn out to be one leftmost-outermost
+  step apart on a single trajectory — C1 effectively collapses to one
+  candidate. This is the fourth time in the program that a process
+  outside the prover's happy path has caught or discovered something —
+  the first three (per the Slice 2 entry) were all review-shaped
+  catches of overclaims; this one is different in kind: an EXPLORATION
+  PROBE discovering a fact nobody had hypothesized, while the thing the
+  hunt was actually looking for (a loop) simply wasn't there. Counted
+  plainly because it's a different mechanism than the first three, not
+  a bigger or smaller one.
+- Task 2 (plateau-nesting probe, C6): the probe tested the census's own
+  n≥10 "+1 plateau" reading against n=7..9 data and returned a clean
+  honest negative — no subterm nesting, no rider-append match in either
+  direction, and leaf-count deltas that explode (×3, then ×7) rather than
+  staying small. This is the SECOND controller-authored hypothesis to
+  die under direct census contact in this program (counted plainly,
+  without claiming to have re-litigated the first one here) — the
+  plateau-nesting reading was a real, reasonable extrapolation from six
+  data points, and testing it against three more killed it cleanly rather
+  than confirming it. The one surviving positive fact, `m7 == c1` exactly,
+  did not propagate to n=8 or n=9. C6 (divergence density) was registered
+  as a separate, still-open finding from the same task: 1.5% at n=7 rising
+  monotonically to 49.9% at n=12 — six points, consistent with the
+  monotone-to-1 conjecture but nowhere near enough to distinguish
+  "accelerating" from "leveling off" from "regime change at the plateau
+  threshold."
+- Task 3 (`Simulation.refute_of_acyclic`): the opposite experience from
+  Tasks 1-2 — no exploration needed, the candidates worked essentially
+  as given. The generic theorem is AXIOM-FREE (`#print axioms` against
+  the built tree), which is worth stating plainly: the mechanism itself
+  (an injective step-faithful simulation can't carry a cycle into an
+  acyclic host) is pure logic over the `Simulation`/`RS.Acyclic`
+  definitions, with no dependency on `no_pure_S_cycle`'s or
+  `iota_step_lt`'s machinery until the two concrete instances
+  (`RS.PureS_acyclic`, `RS.Iota_acyclic`) invoke them — and those two
+  instances carry exactly the `[propext, Quot.sound]` trail their
+  underlying theorems already carried, nothing new. Both existing
+  refutations (`no_sim_SK_iota`, `no_sim_SK_pureS`) recover as one-line
+  `example`s through the generic mechanism; the originals are untouched
+  — this consolidates, it does not deprecate.
+- Task 4 (this entry; C5, the unbounded-trajectory corollary, the C1
+  strategy note, the Slice 3 section): registered C5 (WN ⇒ SN
+  conservation for pure S — external, erasure-free calculi territory,
+  not formalized here) and its corollary (unbounded trajectory size),
+  both explicitly blocked/dependent rather than claimed. Closed the
+  numbering gap between C4 and C6 that Task 2's reviewer had flagged.
+  The C1 strategy note now states, precisely: the loop route has no
+  cheap witness in the fuel-120 explored prefix (three honest negatives),
+  and the invariant route (a decidable reduction-preserved predicate,
+  none known yet) is the other live option — with C5 as the piece that
+  would turn a future loop witness into an actual divergence proof rather
+  than just one infinite trajectory.
+- Expectation-setting, checked against what actually happened: the slice
+  was billed up front as maps, not resolutions, and it held — C1 remains
+  open (a discovery about adjacency, not a resolution: one-step relation
+  is not a loop, and a loop would not by itself be divergence), C3 remains
+  open (an honest negative on one reading of the plateau, not a refutation
+  of C3 itself, which was never that specific claim), C6 opened and stays
+  open. The one THEOREM to land, `Simulation.refute_of_acyclic`, is a
+  consolidation of two already-proved refutations, not a new resolution
+  of anything previously open. Nothing here was stretched past its
+  epistemic level: kernel-pinned facts (`stepOnce c2 = some c1`, the two
+  acyclic instances, the axiom-free generic theorem) are stated as such;
+  fuel-bounded census data (the embedding hunt's three negatives, the
+  plateau-nesting probe, C6's table) is labeled fuel-bounded throughout;
+  C5 and the corollary are registered-open, not claimed.
+- Axiom audits, `#print axioms` against the built tree (all scratch,
+  since removed): `Simulation.refute_of_acyclic` → no axioms;
+  `RS.PureS_acyclic` → `[propext, Quot.sound]`; `RS.Iota_acyclic` →
+  `[propext, Quot.sound]` (both inherited from `no_pure_S_cycle`/
+  `iota_step_lt`+`iota_steps_le`, nothing new this slice).
+- Next-target ranking, as it now stands: (1) the C1 invariant route — a
+  decidable leftmost-outermost-preserved predicate mined from trajectory
+  data, since the loop route just came up empty within fuel 120 and needs
+  C5 anyway even if it succeeds later; (2) C5 formalization itself (the
+  λI conservation theorem) — external routes exist, genuinely
+  cross-cutting value since it also unblocks the unbounded-trajectory
+  corollary; (3) the diverging-pairs core — convertibility between two
+  non-normalizing S-terms, the open frontier `Joinable` narrowed to back
+  in Slice 1; (4) the pigeonhole queue — `sTerms`-completeness, still
+  blocking `no_small_cycle`'s general kernel form and the abstract
+  `Decidable (t ⟶* u)` instance, unchanged priority since Slice 1.
