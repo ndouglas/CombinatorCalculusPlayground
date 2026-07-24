@@ -12,3 +12,4 @@ import CombinatorCalculusPlayground.Universality.Calibration
 import CombinatorCalculusPlayground.Census.Eval
 import CombinatorCalculusPlayground.Census.Enumerate
 import CombinatorCalculusPlayground.Reachability
+import CombinatorCalculusPlayground.Invariants
