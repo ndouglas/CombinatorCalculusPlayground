@@ -15,6 +15,7 @@
 -- GENUINE NONDETERMINISM: `Itower 3` has three redexes, so reduction can
 -- proceed outside-in, inside-out, or interleaved.
 import CombinatorCalculusPlayground.Universality.Defs
+import CombinatorCalculusPlayground.Bracket
 
 open Term
 
@@ -121,3 +122,27 @@ def sync : Term := Term.app (Term.app K S) (Term.app K S)
 -- ADVANCES the count 1 → 0 exactly as stutter-or-advance requires:
 theorem sync_step : sync ⟶ S := Step.K_red S (Term.app K S)
 #guard naiveAbs S = some 0
+
+-- ## Stage 11: the diagnosis, as a theorem
+-- Stage 10 observed that a NORMAL payload cannot desynchronise, and checked it
+-- on one instance (`sync_step`). Here it is in general: over a normal payload
+-- the half-consumed shape has EXACTLY ONE successor, so there is nothing for
+-- an abstraction to lose track of. This is the precise sense in which the
+-- design constraint fixes the failure.
+
+theorem step_app_K_pair {X u : Term} (hX : NormalForm X)
+    (h : Term.app (Term.app Term.K X) (Term.app Term.K X) ⟶ u) : u = X := by
+  cases h with
+  | K_red _ _ => rfl
+  | appL hl => exact absurd ⟨_, hl⟩ (normalForm_app_K hX)
+  | appR hr => exact absurd ⟨_, hr⟩ (normalForm_app_K hX)
+
+-- Where the residual risk now sits, stated because it is NOT covered above.
+-- `normalForm_bracket` (Bracket.lean) settles that a machine's CODE is normal,
+-- so the self-application inside a fixpoint duplicates a normal term and is
+-- safe. What it does not settle: a fixpoint's reduct `f (x x f)` hands `f` a
+-- PENDING RECURSIVE CALL, which is not normal. If the step function duplicates
+-- that argument, drift is possible again. So piece (v) needs a strict
+-- discipline — force the recursive call before any duplication of it — and that
+-- is an obligation on the driver's construction, not a consequence of anything
+-- proved here.

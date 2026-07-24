@@ -255,3 +255,71 @@ theorem combinatory_completeness_Term (x : Nat) (t : TermV)
 -- Sanity: the identity body `var 0` yields a combinator behaving as I.
 #guard toTerm (TermV.bracket 0 (.var 0)) = app2 Term.S Term.K Term.K
 #guard toTerm (TermV.bracket 0 (.var 0)) = I
+
+-- ## Is the Stage 10 constraint satisfiable? (Stage 11)
+-- Stage 10's prototype showed the adequacy abstraction breaks when reduction
+-- desynchronises two copies that `S` duplicated, and that the fix is a design
+-- constraint: **duplication must only ever hit normal forms.** Before building
+-- pieces (ii)–(v) on top of that constraint, the obvious question is whether it
+-- is satisfiable at all — and the first thing a machine duplicates is its own
+-- CODE, via the self-application inside any fixpoint combinator.
+--
+-- All this program's code comes from `bracket`. So: are bracket outputs normal
+-- forms? They are, and it is not an accident — bracket abstraction only ever
+-- emits `K` applied to ONE argument and `S` applied to TWO, and neither is a
+-- redex. Three small lemmas about those shapes, then the result.
+
+theorem normalForm_S : NormalForm Term.S := by rintro ⟨u, h⟩; cases h
+
+theorem normalForm_K : NormalForm Term.K := by rintro ⟨u, h⟩; cases h
+
+/-- `K` applied to one argument is stuck: a K-redex needs two. -/
+theorem normalForm_app_K {X : Term} (hX : NormalForm X) :
+    NormalForm (Term.app Term.K X) := by
+  rintro ⟨u, h⟩
+  cases h with
+  | appL hl => cases hl
+  | appR hr => exact hX ⟨_, hr⟩
+
+/-- `S` applied to one argument is stuck: an S-redex needs three. -/
+theorem normalForm_app_S_one {A : Term} (hA : NormalForm A) :
+    NormalForm (Term.app Term.S A) := by
+  rintro ⟨u, h⟩
+  cases h with
+  | appL hl => cases hl
+  | appR hr => exact hA ⟨_, hr⟩
+
+/-- `S` applied to two arguments is stuck too — still one short of a redex.
+This is the shape bracket abstraction emits for every application node. -/
+theorem normalForm_app_S_two {A B : Term} (hA : NormalForm A) (hB : NormalForm B) :
+    NormalForm (Term.app (Term.app Term.S A) B) := by
+  rintro ⟨u, h⟩
+  cases h with
+  | appL hl => exact absurd ⟨_, hl⟩ (normalForm_app_S_one hA)
+  | appR hr => exact hB ⟨_, hr⟩
+
+/-- **Bracket abstraction emits only normal forms.** Every combinator this
+program builds by abstraction is therefore safe to duplicate: the Stage 10
+desynchronisation failure cannot touch code, only data.
+
+This is the first half of the answer to "is the Stage 10 constraint
+satisfiable?". The second half — that the DATA a driver duplicates is normal
+at the moment of duplication — is not a theorem about `bracket` and remains an
+obligation on piece (v)'s design. -/
+theorem normalForm_bracket (x : Nat) (t : TermV) :
+    NormalForm (toTerm (TermV.bracket x t)) := by
+  induction t with
+  | S => exact normalForm_app_K normalForm_S
+  | K => exact normalForm_app_K normalForm_K
+  | var y =>
+    by_cases hy : y = x
+    · simp only [TermV.bracket, hy, if_pos]
+      exact normalForm_app_S_two normalForm_K normalForm_K
+    · simp only [TermV.bracket, hy, if_neg]
+      exact normalForm_app_K normalForm_S
+  | app a b iha ihb =>
+    exact normalForm_app_S_two iha ihb
+
+-- Concretely: the combinator for the identity body is `I`, and it is normal.
+theorem normalForm_I : NormalForm I := normalForm_app_S_two normalForm_K normalForm_K
+#guard toTerm (TermV.bracket 0 (.var 0)) = I
