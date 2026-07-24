@@ -1779,3 +1779,31 @@ correction is a theorem rather than a note.
   without noticing. What Stage 21 adds is that the caveat now has a witness rather
   than being theoretical. Pure S itself is unaffected: C2 proved acyclicity by a
   measure, not by the census.
+
+### Stage 22: rung two re-hunted, strategy-independently
+
+Stage 21 showed a leftmost-outermost hunt is blind to exactly the phenomenon rung
+one exhibits, so more LO data was the wrong thing to want. Acyclicity is a property
+of the **relation**, so the search has to range over all one-step successors — the
+shape `Reachability.lean` already uses for pure S.
+
+- **The tooling** (`siSuccs`, `sbSuccs`, `closureG`, `onCycleAny`,
+  `Universality/Ladder.lean`; unverified census tooling, as `onCycle?` is).
+  `some true` = a return path was found. `some false` = the closure SATURATED, so no
+  cycle through `t` stays within the size cap. `none` = fuel out, no verdict.
+- **Validated before use**, which is the lesson Stage 21 taught at some cost:
+  `onCycleAny … omegaSI = some true` — it finds the kernel-proved cycle that the
+  leftmost-outermost detector provably misses. Plus two true negatives so it is not
+  crying wolf.
+- **Rung two's evidence, upgraded.** Guarded: every `{S,B}`-term up to **7 leaves**
+  gets a verdict and none is on a cycle within a 30-leaf cap, **under any
+  strategy**. Measured: n=8 at cap 30 (109824 terms, 0 cycles, all verdicted, ~15 s);
+  n=7 at cap 60 and cap 120 (identical verdicts). So the result is **cap-insensitive
+  across a 4× range** and nothing ran out of fuel at any size up to 8.
+- **Honest scope, a real limit.** `some false` means no cycle whose terms *all* stay
+  within the cap. A cycle that swells past the cap and returns is not excluded — and
+  since `{S,B}`'s `leafCount` is non-monotone in both directions
+  (`no_monotone_counting_measure`), such a cycle is not obviously impossible. The cap
+  matters here in a way it would not for pure S, where monotonicity confines every
+  path. This is the first place in the program where the *absence* of a monotone
+  quantity degrades the census as well as the proof.

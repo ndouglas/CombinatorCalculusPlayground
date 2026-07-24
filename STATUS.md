@@ -157,17 +157,20 @@ against in Stage 16.
 |---|---|---|
 | 0 | `{S}` | **acyclic** (`no_pure_S_cycle`); hence refuted as a host of SK |
 | 1 | `{S,I}` | **cyclic** (`omegaSI_cycle`). NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) — so the mechanism is not merely unhelpful here, it is provably inapplicable |
-| 2 | `{S,B}` | **open; both measure routes closed AND the census evidence is weaker than it looks.** Hunt reaches n=9 (732160 terms, 0 cycles) with the Floyd detector — but **leftmost-outermost only**, and rung one is a witness that LO hunts miss real cycles. `no_monotone_counting_measure`: no counting measure is monotone either way, so C2's squeeze has no starting point and a lexicographic order no first component. Decreasing measures ruled out by the fuel-outs |
+| 2 | `{S,B}` | **open, but the evidence is now strategy-independent.** `onCycleAny` (all successors, bounded closure): every term up to **8 leaves** gets a verdict and none is on a cycle within a 30-leaf cap — cap-insensitive to 120 at n=7. Both measure routes closed (`no_monotone_counting_measure`; decreasing measures ruled out by the fuel-outs). Remaining gap: a cycle swelling past the cap and returning |
 | 3 | `{S,C}` | open, same shape as rung 2 |
 | top | `{S,K}` | **cyclic** — by the Ω ↔ M cycle, and independently by inheritance from rung one (`SK_not_acyclic_via_rung1`) |
 
-**A standing caveat on all census evidence here.** Every cycle hunt in this
-program is **leftmost-outermost only**. Stage 0 flagged that for pure S; Stage 21
+**A standing caveat on census evidence here.** Cycle hunts based on a single
+reduction strategy are **leftmost-outermost only**. Stage 0 flagged that for pure S; Stage 21
 gave it a concrete witness — rung one's cycle is *kernel-proved to exist* and
 leftmost-outermost reduction provably never returns to it (`omegaSI` grows
 6,8,7,10,9,8,12,… forever). So "no cycle found" at any rung bounds LO cycles only,
 never the reduction relation. Pure S is unaffected because C2 *proved* acyclicity by
-a measure, not by the census.
+a measure, not by the census. **Stage 22 replaced the rung-two hunt with a
+strategy-independent one** (`onCycleAny`, all one-step successors, validated by
+finding rung one's cycle) — so rung two's evidence is no longer subject to this
+caveat, only to a size cap.
 
 **The rungs are not independent — the ladder is a hierarchy.** Cycles propagate
 along path encodings (`not_acyclic_of_pathEncoding`, axiom-free), so a cyclic

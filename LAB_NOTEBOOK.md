@@ -1778,3 +1778,40 @@ what automation could and couldn't do. This file is a first-class deliverable
   one's cycle hides and the tooling now runs fast enough to afford it; (2) the
   joinability-insensitive abstraction lifter for Tag → SK; (3) rung three {S,C};
   (4) transcription; (5) C6, declined a ninth time.
+
+## 2026-07-24 — Stage 22: the right search, and validation before use
+
+- Stage 21's ranking said "re-run the hunt under a non-leftmost-outermost strategy".
+  On reflection that was still the wrong framing — swapping one strategy for another
+  would have inherited the same class of blindness. Acyclicity is a property of the
+  RELATION, so the search has to range over ALL one-step successors. The project
+  already had that shape for pure S in Reachability.lean (`succs` + bounded closure +
+  `onCycle?`), so this was reuse rather than invention.
+- **Validated it before running it**, which is the direct consequence of Stage 21
+  and the first time I have done this in the right order. `onCycleAny` finds
+  `omegaSI`'s cycle — the kernel-proved one the LO detector provably misses. Two true
+  negatives alongside so it is not just answering `some true` to everything. That took
+  five minutes and it is the difference between data and noise.
+- The result is a genuine upgrade, not just more of the same: every {S,B}-term up to
+  8 leaves gets a VERDICT (nothing ran out of fuel) and none is on a cycle within a
+  30-leaf cap, under any strategy. And it is cap-insensitive — n=7 gives identical
+  verdicts at caps 30, 60 and 120. Fast, too: n=8 in about fifteen seconds where
+  Stage 20's quadratic LO detector had been abandoned after ten minutes.
+- **The limit is now in a different place, and that is the interesting part.** The
+  remaining gap is the size cap: a cycle that swells past 120 leaves and returns is
+  not excluded. For pure S that gap would not exist, because leafCount monotonicity
+  confines every path inside a finite universe — which is exactly what makes
+  Reachability.lean's bounded closure a genuine decision procedure there. {S,B} has
+  no monotone quantity (Stage 20's theorem), so the same construction only gives a
+  cap-relative verdict. **The absence of a monotone quantity degrades the census, not
+  just the proof.** I had been treating Stage 20's negative as a fact about proof
+  strategies; it is also a fact about how far searching can get.
+- That connection is worth keeping because it says something about the ladder as a
+  whole: rungs where a monotone quantity exists admit both proofs and decision
+  procedures; rungs where none exists admit neither, and the census degrades in
+  exactly the same way the proof does. Rung zero has one, rung two provably does not.
+- Ranking: (1) test the cap limit directly — hunt for {S,B} cycles that EXCEED the
+  cap by searching from larger seed terms, since that is the only remaining hole and
+  the tooling is fast enough; (2) the joinability-insensitive abstraction lifter for
+  Tag → SK; (3) rung three {S,C}, where the same tooling transfers immediately;
+  (4) transcription (C1(a), C5); (5) C6, declined a tenth time.
