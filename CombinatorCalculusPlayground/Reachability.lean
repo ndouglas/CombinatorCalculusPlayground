@@ -115,3 +115,152 @@ theorem succs_complete : ∀ {t w : Term}, t ⟶ w → w ∈ succs t := by
   | @appR t u u' s ih =>
     simp only [succs]
     exact List.mem_append.mpr (Or.inr (List.mem_map.mpr ⟨u', ih, rfl⟩))
+
+-- ## The saturating bounded closure
+-- Grow the reachable set one frontier at a time, keeping only terms
+-- within the size bound. `some acc` means the frontier came back empty —
+-- the set is SATURATED (closed under bounded steps); `none` means fuel
+-- ran out first, which verdicts NOTHING.
+def closureStep (bound : Nat) (acc : List Term) : List Term :=
+  (acc.flatMap succs).filter (fun w => leafCount w ≤ bound && !acc.contains w)
+
+def boundedClosure (bound : Nat) : Nat → List Term → Option (List Term)
+  | 0, acc => if (closureStep bound acc).isEmpty then some acc else none
+  | f + 1, acc =>
+    let next := closureStep bound acc
+    if next.isEmpty then some acc
+    else boundedClosure bound f (acc ++ next.eraseDups)
+
+/-- Certified-when-`some` reachability check: is u reachable from t?
+`none` = fuel exhausted (no verdict). Sound and complete for K-free t
+via `reachable?_correct`. -/
+def reachable? (t u : Term) (fuel : Nat) : Option Bool :=
+  (boundedClosure (leafCount u) fuel [t]).map (fun acc => acc.contains u)
+
+-- S S S S → (S S)(S S): reachable, and the closure saturates fast.
+#guard reachable? (app3 S S S S) (app (app S S) (app S S)) 50 = some true
+-- Not reachable the other way (sizes equal, but no backward step).
+#guard reachable? (app (app S S) (app S S)) (app3 S S S S) 50 = some false
+-- Self-reachability (zero steps).
+#guard reachable? (app S S) (app S S) 10 = some true
+-- Size forbids: a 4-leaf term cannot reach a 3-leaf one; the closure over
+-- bound 3 saturates instantly and answers false.
+#guard reachable? (app3 S S S S) (app S (app S S)) 10 = some false
+-- Fuel 0 on a non-saturated instance is an honest none: S S S S has a
+-- bounded successor ((S S)(S S)), so the frontier is non-empty and fuel
+-- 0 cannot saturate — the very same instance verdicts `some true` once it
+-- is given a single round of fuel (the first guard above).
+#guard reachable? (app3 S S S S) (app (app S S) (app S S)) 0 = none
+
+-- Membership in a closure step: it came from somewhere in acc.
+theorem mem_closureStep {bound : Nat} {acc : List Term} {w : Term}
+    (h : w ∈ closureStep bound acc) :
+    (∃ v ∈ acc, w ∈ succs v) ∧ leafCount w ≤ bound ∧ w ∉ acc := by
+  simp only [closureStep, List.mem_filter, List.mem_flatMap, Bool.and_eq_true,
+    Bool.not_eq_true', List.contains_eq_mem, decide_eq_false_iff_not,
+    decide_eq_true_eq] at h
+  exact ⟨h.1, h.2.1, h.2.2⟩
+
+-- `eraseDups` only drops duplicates, so membership in it implies membership
+-- in the original. (Core 4.28 has no `mem_eraseDups`; length recursion supplies
+-- it — `eraseDups_cons` peels one head, filtering the tail, which shrinks.)
+theorem mem_of_mem_eraseDups :
+    ∀ {l : List Term} {a : Term}, a ∈ l.eraseDups → a ∈ l
+  | [], a, h => by simp at h
+  | x :: xs, a, h => by
+    rw [List.eraseDups_cons] at h
+    rcases List.mem_cons.mp h with rfl | h
+    · exact List.mem_cons_self
+    · exact List.mem_cons_of_mem _
+        ((List.mem_filter.mp (mem_of_mem_eraseDups h)).1)
+  termination_by l => l.length
+  decreasing_by
+    simp_wf
+    calc (xs.filter _).length ≤ xs.length := List.length_filter_le _ _
+      _ < (x :: xs).length := by simp
+
+-- Everything the closure collects is genuinely reachable from something
+-- in the start set.
+theorem boundedClosure_sound {bound fuel : Nat} {start acc : List Term} {t : Term}
+    (hstart : ∀ w ∈ start, t ⟶* w)
+    (h : boundedClosure bound fuel start = some acc) :
+    ∀ w ∈ acc, t ⟶* w := by
+  induction fuel generalizing start with
+  | zero =>
+    unfold boundedClosure at h
+    split at h
+    · injection h with h; subst h; exact hstart
+    · exact absurd h (by simp)
+  | succ f ih =>
+    unfold boundedClosure at h
+    simp only at h
+    split at h
+    · injection h with h; subst h; exact hstart
+    · refine ih (start := start ++ (closureStep bound start).eraseDups) ?_ h
+      intro w hw
+      rw [List.mem_append] at hw
+      rcases hw with hw | hw
+      · exact hstart w hw
+      · obtain ⟨⟨v, hv, hws⟩, _, _⟩ := mem_closureStep (mem_of_mem_eraseDups hw)
+        exact (hstart v hv).trans (Steps.tail (succs_sound hws) (Steps.refl _))
+
+-- The start set survives into the result.
+theorem boundedClosure_subset {bound fuel : Nat} {start acc : List Term}
+    (h : boundedClosure bound fuel start = some acc) :
+    ∀ w ∈ start, w ∈ acc := by
+  induction fuel generalizing start with
+  | zero =>
+    unfold boundedClosure at h
+    split at h
+    · injection h with h; subst h; exact fun w hw => hw
+    · exact absurd h (by simp)
+  | succ f ih =>
+    unfold boundedClosure at h
+    simp only at h
+    split at h
+    · injection h with h; subst h; exact fun w hw => hw
+    · intro w hw
+      exact ih h w (List.mem_append.mpr (Or.inl hw))
+
+-- `some` really means saturated: bounded successors of members are members.
+theorem boundedClosure_saturated {bound fuel : Nat} {start acc : List Term}
+    (h : boundedClosure bound fuel start = some acc) :
+    ∀ w ∈ acc, ∀ v ∈ succs w, leafCount v ≤ bound → v ∈ acc := by
+  induction fuel generalizing start with
+  | zero =>
+    unfold boundedClosure at h
+    split at h
+    · rename_i hemp
+      injection h with h; subst h
+      intro w hw v hv hle
+      by_cases hvin : v ∈ start
+      · exact hvin
+      · exfalso
+        have : v ∈ closureStep bound start := by
+          simp only [closureStep, List.mem_filter, List.mem_flatMap, Bool.and_eq_true,
+            Bool.not_eq_true', List.contains_eq_mem, decide_eq_false_iff_not,
+            decide_eq_true_eq]
+          exact ⟨⟨w, hw, hv⟩, hle, hvin⟩
+        rw [List.isEmpty_iff] at hemp
+        rw [hemp] at this
+        exact List.not_mem_nil this
+    · exact absurd h (by simp)
+  | succ f ih =>
+    unfold boundedClosure at h
+    simp only at h
+    split at h
+    · rename_i hemp
+      injection h with h; subst h
+      intro w hw v hv hle
+      by_cases hvin : v ∈ start
+      · exact hvin
+      · exfalso
+        have : v ∈ closureStep bound start := by
+          simp only [closureStep, List.mem_filter, List.mem_flatMap, Bool.and_eq_true,
+            Bool.not_eq_true', List.contains_eq_mem, decide_eq_false_iff_not,
+            decide_eq_true_eq]
+          exact ⟨⟨w, hw, hv⟩, hle, hvin⟩
+        rw [List.isEmpty_iff] at hemp
+        rw [hemp] at this
+        exact List.not_mem_nil this
+    · exact ih h
