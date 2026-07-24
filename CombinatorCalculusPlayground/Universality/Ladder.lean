@@ -586,3 +586,92 @@ def siTrace : Nat → SITerm → List SITerm
 -- than it looks, for the reason above.
 
 #guard (List.range 8).all (fun n => (sbTerms n).all (fun t => sbCycle? 500 200 t != some true))
+
+-- ## Stage 22: a STRATEGY-INDEPENDENT cycle hunt
+-- Stage 21 showed the leftmost-outermost hunt is blind to exactly the phenomenon
+-- rung one exhibits, so more leftmost-outermost data was the wrong thing to want.
+-- The acyclicity question is about the RELATION, so the search has to be over ALL
+-- one-step successors. That is the shape Reachability.lean already uses for pure S
+-- (`succs` + `boundedClosure` + `onCycle?`); this is the same construction, generic
+-- over the term type so it can be validated on {S,I}.
+
+/-- Every one-step successor: the head redex if there is one, plus every step
+available in either subterm. Not one strategy's choice — all of them. -/
+def siSuccs : SITerm → List SITerm
+  | .app a b =>
+      (match (SITerm.app a b) with
+       | .app (.app (.app .S f) g) x => [SITerm.app (.app f x) (.app g x)]
+       | .app .I x => [x]
+       | _ => [])
+      ++ (siSuccs a).map (fun a' => SITerm.app a' b)
+      ++ (siSuccs b).map (fun b' => SITerm.app a b')
+  | _ => []
+
+def sbSuccs : SBTerm → List SBTerm
+  | .app a b =>
+      (match (SBTerm.app a b) with
+       | .app (.app (.app .S f) g) x => [SBTerm.app (.app f x) (.app g x)]
+       | .app (.app (.app .B x) y) z => [SBTerm.app x (.app y z)]
+       | _ => [])
+      ++ (sbSuccs a).map (fun a' => SBTerm.app a' b)
+      ++ (sbSuccs b).map (fun b' => SBTerm.app a b')
+  | _ => []
+
+def closureStepG {α : Type} [BEq α] (size : α → Nat) (succs : α → List α)
+    (cap : Nat) (acc : List α) : List α :=
+  (acc.flatMap succs).filter (fun w => size w ≤ cap && !acc.contains w)
+
+def closureG {α : Type} [BEq α] (size : α → Nat) (succs : α → List α) (cap : Nat) :
+    Nat → List α → Option (List α)
+  | 0, acc => if (closureStepG size succs cap acc).isEmpty then some acc else none
+  | f + 1, acc =>
+    let nxt := closureStepG size succs cap acc
+    if nxt.isEmpty then some acc else closureG size succs cap f (acc ++ nxt.eraseDups)
+
+/-- Is `t` on a cycle, under ANY strategy? Explore everything reachable from `t`'s
+successors while staying within the size cap; if `t` reappears, it is on a cycle.
+
+`some true` — `t` is on a cycle. A real verdict: an actual return path was found.
+`some false` — the closure SATURATED, so no cycle through `t` exists whose terms all
+stay within the cap. A verdict relative to the cap, not absolutely.
+`none` — fuel ran out; no verdict. Same epistemic shape as `onCycle?` in
+Reachability.lean, and unverified census tooling exactly as that is. -/
+def onCycleAny {α : Type} [BEq α] (size : α → Nat) (succs : α → List α)
+    (cap fuel : Nat) (t : α) : Option Bool :=
+  (closureG size succs cap fuel (succs t)).map (fun acc => acc.contains t)
+
+-- ## Validation: it finds what the leftmost-outermost detector could not
+-- This is the check Stage 21 taught me to run first. `omegaSI` is kernel-proved to
+-- be on a cycle and the LO detector provably misses it; this detector finds it.
+#guard onCycleAny SITerm.leafCount siSuccs 20 50 omegaSI = some true
+-- ...and does not cry wolf: `S I I` is a normal form, and rung two's Ω attempt
+-- genuinely is not on a cycle.
+#guard onCycleAny SITerm.leafCount siSuccs 20 50 Wsi = some false
+#guard onCycleAny SBTerm.leafCount sbSuccs 20 50 (.app Wsb Wsb) = some false
+
+-- ## Rung two, re-hunted at the right strength
+-- Every {S,B}-term up to 7 leaves gets a VERDICT (no fuel-outs), and none is on a
+-- cycle staying within 30 leaves — under ANY strategy, not just leftmost-outermost.
+#guard (List.range 8).all (fun n =>
+  (sbTerms n).all (fun t => onCycleAny SBTerm.leafCount sbSuccs 30 100 t = some false))
+
+-- Measured runs, recorded rather than guarded (build time):
+--
+--   n = 8, cap 30,  fuel 100: 109824 terms, 0 cycles, ALL verdicted.   (~15 s)
+--   n = 7, cap 60,  fuel 200:  16896 terms, 0 cycles, ALL verdicted.
+--   n = 7, cap 120, fuel 400:  16896 terms, 0 cycles, ALL verdicted.
+--
+-- So the verdict is CAP-INSENSITIVE at n = 7 across a 4x range of caps, and every
+-- term at every size up to 8 leaves saturated rather than running out of fuel.
+--
+-- HONEST SCOPE, and it is a real limit: `some false` means no cycle through `t`
+-- whose terms ALL stay within the cap. A cycle that swells past 30 (or 120) leaves
+-- and returns is not excluded. Since {S,B}'s `leafCount` is non-monotone in both
+-- directions (`no_monotone_counting_measure`), such a cycle is not obviously
+-- impossible — which is exactly why the cap matters here and would not for pure S,
+-- where monotonicity confines every path.
+--
+-- Even so, this is a genuine strengthening over Stages 19-21: those ruled out
+-- leftmost-outermost cycles only, and Stage 21 showed that class of evidence misses
+-- real cycles. This rules out ALL strategies within a size bound, and the bound has
+-- been tested for sensitivity.
