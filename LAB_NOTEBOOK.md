@@ -1537,3 +1537,56 @@ what automation could and couldn't do. This file is a first-class deliverable
   instance, Goal 3 closed, Goal 4 ongoing-by-design. One substantive item left
   (Tag → SK adequacy) and it is research-blocked. The C-list is exhausted apart
   from C6, which three consecutive reviews have declined to promote.
+
+## 2026-07-24 — Stage 17: the ladder was in the spec the whole time
+
+- The fifth ideonomy pass asked how many things were left. The answer was one
+  research problem and no portfolio — which is why the previous three reviews had
+  felt thin: with cardinality one at the top there is no ranking problem, only a
+  do-or-don't decision. The substitution test on cardinality ("what would the
+  swarm form be?") is what found the ladder, and the ladder was not my invention:
+  it is the second component of the spec's Stage 5, one paragraph below the north
+  star I closed in Stage 6.
+- Fifth time going to the source document beat the accreted summary — and the
+  first time it produced a whole workstream rather than a correction. Worth
+  separating those two outcomes in the record, because they call for different
+  habits: corrections argue for re-reading before claiming, a missed workstream
+  argues for re-reading before PLANNING.
+- **Rung choice was deliberate and not by ease.** {S,I} is where the program's
+  only negative mechanism dies. Every refutation in the tree — pure S, ι, C4 at
+  every arity — routes through `RS.Acyclic.of_strict_measure`. If {S,I} has a
+  cycle then that hypothesis is unsatisfiable there, so the rung tests the main
+  tool at its boundary instead of applying it again. Testing a tool where it
+  should fail is more informative than another success.
+- It has a cycle: `(S I I)(S I I)` in three steps, `I` primitive. Axiom-free, and
+  it went in without friction. Then two strictly stronger statements: NO monotone
+  measure exists in either direction. That is worth the extra two theorems —
+  "there is no such measure" is a very different claim from "we did not find one",
+  and the second is what a reader would otherwise assume.
+- **The finding I did not expect**, and it corrects something the ledger has
+  implicitly allowed since Stage 2: erasure-freeness is NOT what keeps pure S
+  acyclic. {S,I} erases nothing either — neither rule discards an argument — and
+  it cycles. The Stage 2 conservation laws (K-freeness closed under reduction, no
+  erasure) sit right next to C2's acyclicity in the ledger, and it would be easy
+  to read the first as explaining the second. It does not. Whatever τ measures is
+  specific to S-only reduction.
+- Scoped rungs two and three rather than attempting them, and got one real data
+  point for free: the obvious Ω attempt for {S,B} TERMINATES, because `B` with
+  fewer than three arguments is stuck, so `S B B (SBB)` reduces to a normal form.
+  That is weak evidence {S,B} may be acyclic and therefore refutable by the
+  EXISTING mechanism — the opposite verdict from rung one. If that holds, rungs
+  one and two disagree, which is exactly the kind of contrast that "narrows where
+  universality is lost".
+- Arithmetic recorded for both: {S,B} and {S,C} pair a strictly decreasing rule
+  (−1) with S's (+|x|−1 ≥ 0), so leafCount is non-monotone in both directions and
+  a combined τ-style measure is needed. That is a C2-sized slice each, and now the
+  next slice knows the shape before starting — which is the thing my difficulty
+  estimates have most consistently failed at.
+- Lean friction, one repeat: `induction` on `RS.Steps` at a concrete instance hits
+  the mkElimApp motive error for the third time in this tree. Raw recursor as
+  before. Worth noting it is now a known local idiom rather than a surprise —
+  `iota_steps_le`, `RS.Discrete2_steps_eq`, and now `SI_no_decreasing_measure`.
+- Ranking: (1) **rung two, {S,B}** — has a plausible verdict (acyclic) and would
+  make the ladder's first contrast; (2) rung three, {S,C}; (3) Tag → SK, still
+  research-blocked and still the only other irreversible item; (4) transcription
+  (C1(a), C5); (5) C6, declined a fifth time.

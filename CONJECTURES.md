@@ -1614,3 +1614,41 @@ library problem), transcription work, and C6. The tax has been paid and the
 resulting lemmas are in the tree. Revisit only if a future target is blocked
 specifically by absent library algebra. Recorded here so that "we never decided"
 stops being the state.
+
+### Stage 17: the relaxation ladder opened — rung one, {S,I}
+
+The fifth review asked a cardinality question — how many things are left? — and
+the answer was "one research problem, no portfolio". The substitution test on
+that ("what would the swarm form be?") turned up a workstream sitting in the
+spec's own Stage 5, one paragraph below the north star, unmentioned in sixteen
+stages and five reviews:
+
+> "Bracketing program (the relaxation ladder): classify universality of bases
+> between {S} and {S,K} — e.g., {S,I}, {S,B}, {S,C} — each rung a publishable
+> partial result that narrows where universality is lost."
+
+- **Rung one is `{S,I}`, and it is where the program's only negative mechanism
+  dies.** `omegaSI_cycle` (`Universality/Ladder.lean`, axiom-free): `(S I I)(S I I)`
+  cycles in three steps. Hence `SI_not_acyclic`, and — stronger —
+  `SI_no_strict_measure` / `SI_no_decreasing_measure`: NO monotone measure exists
+  in either direction. Not "none found": none exists.
+- **The boundary is sharp, and that is the rung's content.** Pure S is acyclic
+  (`no_pure_S_cycle`, C2, via τ, all terms and all strategies). Adding `I` —
+  which erases nothing and duplicates nothing — destroys it. So:
+  - **erasure-freeness is not what keeps pure S acyclic.** `{S,I}` is erasure-free
+    too. Whatever τ measures is specific to S-only reduction, not a consequence
+    of non-erasure. This corrects a natural reading of the Stage 2 conservation
+    laws that the ledger has never explicitly ruled out.
+  - **the acyclicity boundary is exactly rung one.** The program's whole negative
+    apparatus — `no_pathEncoding_SK_pureS`, `no_pathEncoding_SK_iota`, C4 at every
+    arity — covers `{S}`, ι, and every one-combinator one-rule system, and reaches
+    no further. Higher rungs need positive constructions or new mechanisms.
+- **Rungs two and three scoped, not attempted.** `{S,B}` and `{S,C}` each pair a
+  strictly leaf-count-DECREASING rule (−1) with S's rule (+|x|−1 ≥ 0), so
+  `leafCount` is non-monotone in both directions and a combined τ-style measure
+  would be needed — the shape of work that took a full slice for C2. One concrete
+  data point recorded: the obvious Ω attempt for `{S,B}` **terminates**
+  (`S B B (SBB)` reduces to a normal form, since `B` with fewer than three
+  arguments is stuck), which is weak evidence `{S,B}` may be acyclic and therefore
+  refutable by the *existing* mechanism — the opposite verdict from rung one, and
+  the reason rung two is the next thing worth doing.

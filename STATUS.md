@@ -134,6 +134,31 @@ hour.
 
 ---
 
+## The relaxation ladder (spec Stage 5, second component)
+
+The spec's Stage 5 has **two** components. The north star — reachability
+decidability — is Goal 3 above and is closed. The other is the *bracketing
+program*: "classify universality of bases between {S} and {S,K} — e.g., {S,I},
+{S,B}, {S,C} — each rung a publishable partial result that narrows where
+universality is lost." Sixteen stages engaged only with the first; the ladder was
+opened in Stage 17.
+
+| rung | basis | status |
+|---|---|---|
+| 0 | `{S}` | acyclic (`no_pure_S_cycle`); refuted as a host of SK |
+| 1 | `{S,I}` | **has a cycle** (`omegaSI_cycle`); NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) |
+| 2 | `{S,B}` | open. `leafCount` non-monotone both ways; needs a τ-style combined measure. The obvious Ω attempt terminates — weak evidence it may be acyclic |
+| 3 | `{S,C}` | open, same shape as rung 2 |
+| top | `{S,K}` | classically universal; has the Ω ↔ M cycle |
+
+**What rung 1 establishes.** The program's entire negative apparatus routes
+through one mechanism, `RS.Acyclic.of_strict_measure` — and that mechanism
+**stops dead at the first rung**. It covers `{S}`, first-order ι, and every
+one-combinator one-rule system (C4); it provably cannot touch `{S,I}`. Also:
+erasure-freeness is *not* what keeps pure S acyclic, since `{S,I}` erases nothing
+either and still cycles. Higher rungs need positive constructions or new
+mechanisms.
+
 ## The open item
 
 **Does SK certifiably host a known-universal system?** Concretely: is there a
