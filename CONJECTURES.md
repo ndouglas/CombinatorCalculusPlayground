@@ -1718,3 +1718,36 @@ methodology on rung two. Tooling (`sbStepOnce`, `sbTerms`, `sbOnCycle`,
   ACYCLICITY measure, lexicographic (neither `leafCount` nor B-count is monotone
   alone — `B_red` removes a `B` while `S_red` duplicates its third argument). A
   C2-sized slice, not attempted.
+
+### Stage 20: rung two step 4 — both obvious routes closed
+
+Stage 19 specified step 4's target as "a τ-style acyclicity measure,
+lexicographic". Working the arithmetic showed that specification is wrong, and the
+correction is a theorem rather than a note.
+
+- **How C2 actually worked, restated because it is the thing that fails to port.**
+  C2 did not exhibit a decreasing measure — pure S is not terminating. It ran a
+  SQUEEZE: (a) `leafCount` is monotone on pure S, so a cycle must be
+  leafCount-CONSTANT; (b) size-preserving K-free steps are exactly S-redexes with
+  atomic third argument; (c) τ strictly drops on those. **Step (a) is
+  load-bearing** — with no monotone quantity there is no squeeze, and (b) has
+  nothing to characterise.
+- **`no_monotone_counting_measure`** (`Universality/Ladder.lean`): for any weights
+  `a, b` with `0 < a ∨ 0 < b`, the quantity `a·#S + b·#B` **both rises and falls**
+  along `{S,B}` reduction. So no counting measure is monotone in either direction,
+  and Stage 19's "lexicographic" is ruled out by the same fact — a lexicographic
+  order needs its first component monotone, and none is. Supporting: `SBStep` as a
+  relation, `countS`/`countB` with `count_add`, four rule-level arithmetic lemmas,
+  and four witness terms (one per direction of each count).
+- **The other route is closed independently.** A globally decreasing Nat-measure
+  would force termination, and the Stage 19 census found 7-leaf terms that do not
+  normalize at fuel 1000.
+- **So rung two is open, with the remaining possibilities named:** a non-counting
+  STRUCTURAL measure (τ was positional, not a count — `τ(app a b) = 2τ(a) + τ(b)`
+  weights by position); an interpretation argument; or the census is simply wrong
+  about there being no cycle. **That last deserves real weight** — the hunt reached
+  7 leaves and 400 steps, which is small, and rung one's cycle lives at 6 leaves.
+  Recorded as open, not as nearly-done.
+- **Runtime datapoint:** extending the hunt to 8 leaves (109824 terms) was
+  abandoned after 10 minutes. The bottleneck is `sbOnCycle`'s seen-list, which is
+  quadratic per term; a faster detector would be needed to go further.

@@ -1687,3 +1687,50 @@ what automation could and couldn't do. This file is a first-class deliverable
   already succeeded once; (2) the joinability-insensitive abstraction lifter for
   Tag → SK; (3) rung three {S,C}, which the same census tooling extends to almost
   for free; (4) transcription; (5) C6, declined a seventh time.
+
+## 2026-07-24 — Stage 20: my own step-4 specification was wrong
+
+- Stage 19 ended by sharpening step 4's target to "a τ-style acyclicity measure,
+  lexicographic". One stage later that specification is disproved. This is the
+  second consecutive stage where the previous stage's forward-looking claim did not
+  survive contact, and both times the claim was mine and made confidently.
+- The arithmetic is short enough that I should have done it before specifying.
+  Under `S_red` the third argument is DUPLICATED, so any count of anything present
+  in that argument can rise; under `B_red` a `B` is consumed and nothing is
+  duplicated, so B-count falls. Those two facts alone make every counting measure
+  non-monotone. `no_monotone_counting_measure` proves it for all weights `a, b` at
+  once, and the proof is entirely witness selection — four concrete terms, chosen
+  by which of `a`, `b` is positive.
+- **Why this matters more than a corrected note:** C2's argument is a SQUEEZE, not
+  a decreasing measure, and I had been carrying it forward as though the hard part
+  were "find the τ analogue". The hard part is step (a) — having a monotone
+  quantity at all so that a cycle is forced to be constant on it. Pure S has one
+  for free (leafCount, by non-erasure). {S,B} has none. Naming the load-bearing
+  step of a past success turned out to be what identified why it does not transfer.
+- Also killed "lexicographic" specifically, which I had offered as the fix in Stage
+  19: a lexicographic order needs its first component monotone. There is no
+  monotone first component. So the fix was ruled out by the same theorem that
+  ruled out the original.
+- What is left is honestly named rather than optimistically scoped: a non-counting
+  STRUCTURAL measure (τ weights by POSITION — `2τ(a) + τ(b)` — which is not a
+  count, and that distinction is the live hint), an interpretation argument, or the
+  census is wrong about there being no cycle. I gave that last option real weight
+  in the write-up, because the hunt reached 7 leaves and rung one's cycle lives at
+  6. Two consecutive over-confident forward claims is enough reason to stop rating
+  "nearly done".
+- Runtime: the 8-leaf hunt (109824 terms) died at 10 minutes. Diagnosed rather than
+  just reported — `sbOnCycle` keeps a seen-LIST and calls `contains`, so it is
+  quadratic per term. Same class of problem as the Stage 6 census, where dropping
+  the measurement C6 did not need made n=10 reachable. A faster detector is a
+  cheap unblock if the hunt is worth extending.
+- Estimate tally, updated: five under-estimates, one over-estimate, and now two
+  wrong forward SPECIFICATIONS (Stage 19's lexicographic target, Stage 17's
+  "refutable" inference). The pattern has shifted — I am no longer mostly
+  mis-rating difficulty, I am mis-specifying the next step. The fix is the same
+  one that worked for representations: do the cheap arithmetic before naming the
+  target.
+- Ranking: (1) a faster cycle detector, then extend the rung-two hunt — cheap, and
+  it tests the possibility I am now giving real weight; (2) the
+  joinability-insensitive abstraction lifter for Tag → SK; (3) rung three {S,C},
+  which the census tooling extends to nearly for free; (4) transcription; (5) C6,
+  declined an eighth time.
