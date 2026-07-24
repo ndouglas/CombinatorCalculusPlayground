@@ -110,6 +110,31 @@ example : RS.PureS.step
 -- Sanity: the inclusion composes (here with the identity simulation on SK).
 example : Simulation RS.PureS RS.SK := pureS_in_SK.comp (Simulation.id RS.SK)
 
+-- ## The adequacy interface, exercised on a real inhabitant
+-- `Simulation.ofAbstraction` (Defs.lean) reduces `bwd` to a stuttering
+-- abstraction function. Non-vacuity check: rebuild `pureS_in_SK` through it.
+-- Here the abstraction is the K-freeness decoder and NO step ever stutters —
+-- every SK step out of a K-free term advances the source by exactly one
+-- PureS step, by Stage 2's `KFree.of_step`. A real machine encoding will
+-- stutter on most steps and advance on few; this checks the interface, not
+-- the interesting case.
+example : Simulation RS.PureS RS.SK :=
+  Simulation.ofAbstraction
+    (enc := fun a => a.val)
+    (abs := fun t => if h : KFree t then some ⟨t, h⟩ else none)
+    (habs := fun a => by cases a with | mk t ht => simp [ht])
+    (hstep := by
+      intro b b' a hstep habs
+      -- `abs b = some a` forces b to be K-free with a = ⟨b, _⟩
+      by_cases hkb : KFree b
+      · simp only [hkb, dif_pos] at habs
+        have ha : a = ⟨b, hkb⟩ := (Option.some.inj habs).symm
+        subst ha
+        have hkb' : KFree b' := hkb.of_step hstep
+        exact Or.inr ⟨⟨b', hkb'⟩, hstep, by simp [hkb']⟩
+      · simp [hkb] at habs)
+    (fwd := fun {a a'} s => RS.Steps.tail s (RS.Steps.refl _))
+
 -- ## The prize-adjacent refutation
 -- SCOPE, stated before the theorem so nobody quotes it without this:
 -- what follows refutes STEP-FAITHFUL hosting of SK inside pure S, under

@@ -87,6 +87,72 @@ def Simulation.toPathEncoding {A B : RS} (S : Simulation A B) :
   inj := S.enc_injective
   path := S.fwd_steps
 
+-- ## Adequacy: `bwd` from a stuttering abstraction function
+-- `bwd` is the field that blocks spec Goal 2 criterion (a), and Stage 7
+-- proved it load-bearing rather than incidental (a positive certification
+-- must be made in the demanding class, so it cannot be dropped). The classic
+-- way to discharge it is not to reason about paths between image points
+-- directly, but to give an ABSTRACTION FUNCTION defined on ALL host states
+-- such that every host step either stutters — leaving the abstraction
+-- unchanged — or advances it by exactly one source step. Then any host path
+-- projects onto a source path, and `bwd` follows.
+--
+-- WHAT THIS DOES AND DOES NOT DO: it does not make `bwd` easy. It makes it
+-- STANDARD. The obligation becomes per-machine and mechanical (define the
+-- abstraction, check each reduction rule stutters or advances) instead of
+-- open-ended (characterise every path between encoded states). That is a
+-- real change in kind, and it is the whole of this module's contribution to
+-- criterion (a) — the encoding itself is still unbuilt.
+
+/-- Every host path from an abstracted state lands on an abstracted state,
+reachable in the source. The engine of `bwd_of_abstraction`; stated with
+variable endpoints so `induction` applies. -/
+theorem RS.abstraction_tracks {A B : RS}
+    (abs : B.Carrier → Option A.Carrier)
+    (hstep : ∀ {b b' : B.Carrier} {a : A.Carrier}, B.step b b' →
+      abs b = some a →
+      abs b' = some a ∨ ∃ a', A.step a a' ∧ abs b' = some a')
+    {b b' : B.Carrier} (h : B.Steps b b') :
+    ∀ a, abs b = some a → ∃ a₂, A.Steps a a₂ ∧ abs b' = some a₂ := by
+  induction h with
+  | refl _ => intro a ha; exact ⟨a, RS.Steps.refl _, ha⟩
+  | @tail b w b' s _ ih =>
+    intro a ha
+    rcases hstep s ha with hstut | ⟨a₁, hadv, hw⟩
+    · exact ih a hstut
+    · obtain ⟨a₂, hpath, hb'⟩ := ih a₁ hw
+      exact ⟨a₂, RS.Steps.tail hadv hpath, hb'⟩
+
+/-- **Adequacy.** A stuttering abstraction function delivers `bwd`. -/
+theorem RS.bwd_of_abstraction {A B : RS}
+    (enc : A.Carrier → B.Carrier) (abs : B.Carrier → Option A.Carrier)
+    (habs : ∀ a, abs (enc a) = some a)
+    (hstep : ∀ {b b' : B.Carrier} {a : A.Carrier}, B.step b b' →
+      abs b = some a →
+      abs b' = some a ∨ ∃ a', A.step a a' ∧ abs b' = some a')
+    {a a' : A.Carrier} (h : B.Steps (enc a) (enc a')) : A.Steps a a' := by
+  obtain ⟨a₂, hpath, hend⟩ := RS.abstraction_tracks abs hstep h a (habs a)
+  rw [habs a'] at hend
+  exact (Option.some.inj hend) ▸ hpath
+
+/-- Build a `Simulation` from an encoder, a stuttering abstraction function
+that inverts it, and `fwd`. The abstraction doubles as the decoder, so
+`dec_enc` and `bwd` are both discharged by the adequacy argument and the
+only remaining obligation is `fwd`. -/
+def Simulation.ofAbstraction {A B : RS}
+    (enc : A.Carrier → B.Carrier) (abs : B.Carrier → Option A.Carrier)
+    (habs : ∀ a, abs (enc a) = some a)
+    (hstep : ∀ {b b' : B.Carrier} {a : A.Carrier}, B.step b b' →
+      abs b = some a →
+      abs b' = some a ∨ ∃ a', A.step a a' ∧ abs b' = some a')
+    (fwd : ∀ {a a' : A.Carrier}, A.step a a' → B.Steps (enc a) (enc a')) :
+    Simulation A B where
+  enc := enc
+  dec := abs
+  dec_enc := habs
+  fwd := fwd
+  bwd := RS.bwd_of_abstraction enc abs habs hstep
+
 -- ## The three observation modes
 -- Same triple shape, different question asked of the host system.
 
