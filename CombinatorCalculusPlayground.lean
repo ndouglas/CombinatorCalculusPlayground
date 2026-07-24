@@ -14,3 +14,4 @@ import CombinatorCalculusPlayground.Census.Enumerate
 import CombinatorCalculusPlayground.Census.Completeness
 import CombinatorCalculusPlayground.Reachability
 import CombinatorCalculusPlayground.Invariants
+import CombinatorCalculusPlayground.Decidability
