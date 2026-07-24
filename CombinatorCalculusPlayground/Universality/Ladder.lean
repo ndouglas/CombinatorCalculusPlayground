@@ -362,3 +362,142 @@ def sbC1 : SBTerm :=   -- S S S (S S) S S, i.e. Reachability.lean's `c1`
 -- since step 1 showed neither `leafCount` nor B-count is monotone alone — `B_red`
 -- removes a `B` while `S_red` duplicates its third argument, so B-count can rise.
 -- A C2-sized slice, NOT attempted here.
+
+-- ## Rung two, step 4: why the C2 strategy cannot be ported (Stage 20)
+-- Stage 19 specified step 4's target as "a τ-style acyclicity measure,
+-- lexicographic". Working the arithmetic shows that specification is WRONG, and
+-- wrong for a reason worth proving rather than asserting.
+--
+-- Recall how C2 actually settled pure-S acyclicity. It did NOT exhibit a globally
+-- decreasing measure — pure S is not terminating. It ran a SQUEEZE:
+--   (a) leafCount is monotone (non-decreasing) on pure S, so any cycle must be
+--       leafCount-CONSTANT at every step;
+--   (b) size-preserving K-free steps are exactly S-redexes with atomic third
+--       argument;
+--   (c) τ strictly drops on those, so no cycle.
+-- Step (a) is load-bearing: without a monotone quantity there is no squeeze and
+-- (b) has nothing to characterise.
+--
+-- On {S,B} there is no such quantity, and not merely for `leafCount`: NO counting
+-- measure works, in either direction. Proved below.
+
+/-- The step relation, needed for theorems (`sbStepOnce` above is executable
+census tooling). -/
+inductive SBStep : SBTerm → SBTerm → Prop
+  | S_red (f g x : SBTerm) :
+      SBStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | B_red (x y z : SBTerm) :
+      SBStep (.app (.app (.app .B x) y) z) (.app x (.app y z))
+  | appL {t t' u : SBTerm} : SBStep t t' → SBStep (.app t u) (.app t' u)
+  | appR {t u u' : SBTerm} : SBStep u u' → SBStep (.app t u) (.app t u')
+
+def SBTerm.countS : SBTerm → Nat
+  | .S => 1
+  | .B => 0
+  | .app a b => a.countS + b.countS
+
+def SBTerm.countB : SBTerm → Nat
+  | .S => 0
+  | .B => 1
+  | .app a b => a.countB + b.countB
+
+theorem SBTerm.count_add (t : SBTerm) : t.countS + t.countB = t.leafCount := by
+  induction t with
+  | S => rfl
+  | B => rfl
+  | app a b iha ihb => simp only [countS, countB, leafCount]; omega
+
+-- ## The rule-level arithmetic
+-- `S_red` consumes one `S` and DUPLICATES its third argument; `B_red` consumes one
+-- `B` and duplicates nothing. So each count moves differently under each rule, and
+-- neither moves consistently.
+
+theorem countB_S_red (f g x : SBTerm) :
+    (SBTerm.app (.app f x) (.app g x)).countB
+      = (SBTerm.app (.app (.app .S f) g) x).countB + x.countB := by
+  simp only [SBTerm.countB]; omega
+
+theorem countB_B_red (x y z : SBTerm) :
+    (SBTerm.app x (.app y z)).countB + 1
+      = (SBTerm.app (.app (.app .B x) y) z).countB := by
+  simp only [SBTerm.countB]; omega
+
+theorem countS_S_red (f g x : SBTerm) :
+    (SBTerm.app (.app f x) (.app g x)).countS + 1
+      = (SBTerm.app (.app (.app .S f) g) x).countS + x.countS := by
+  simp only [SBTerm.countS]; omega
+
+theorem countS_B_red (x y z : SBTerm) :
+    (SBTerm.app x (.app y z)).countS
+      = (SBTerm.app (.app (.app .B x) y) z).countS := by
+  simp only [SBTerm.countS]; omega
+
+-- ## Four witnesses, one per direction of each count
+
+/-- `S S S (S S)` — an S-redex whose third argument is compound: S-count RISES. -/
+def wGrowS : SBTerm := .app (.app (.app .S .S) .S) (.app .S .S)
+/-- `S S S (B B)` — third argument is all `B`: B-count RISES, S-count FALLS. -/
+def wBArg : SBTerm := .app (.app (.app .S .S) .S) (.app .B .B)
+/-- `B S S S` — a B-redex: B-count FALLS, S-count is unchanged. -/
+def wBred : SBTerm := .app (.app (.app .B .S) .S) .S
+
+theorem step_wGrowS : SBStep wGrowS (.app (.app .S (.app .S .S)) (.app .S (.app .S .S))) :=
+  SBStep.S_red .S .S (.app .S .S)
+theorem step_wBArg : SBStep wBArg (.app (.app .S (.app .B .B)) (.app .S (.app .B .B))) :=
+  SBStep.S_red .S .S (.app .B .B)
+theorem step_wBred : SBStep wBred (.app .S (.app .S .S)) :=
+  SBStep.B_red .S .S .S
+
+-- S-count rises 5 -> 6; B-count rises 2 -> 4; B-count falls 1 -> 0; S-count falls 3 -> 2.
+#guard wGrowS.countS = 5 ∧ (SBTerm.app (.app .S (.app .S .S)) (.app .S (.app .S .S))).countS = 6
+#guard wBArg.countB = 2 ∧ (SBTerm.app (.app .S (.app .B .B)) (.app .S (.app .B .B))).countB = 4
+#guard wBArg.countS = 3 ∧ (SBTerm.app (.app .S (.app .B .B)) (.app .S (.app .B .B))).countS = 2
+#guard wBred.countB = 1 ∧ (SBTerm.app .S (.app .S .S)).countB = 0
+
+/-- **No counting measure is monotone on {S,B}, in either direction.** For any
+non-trivial weights `a, b`, the quantity `a·#S + b·#B` both rises and falls along
+{S,B} reduction. Hence C2's squeeze has no starting point here: there is no
+monotone quantity for a cycle to be constant on.
+
+Witness selection, which is the whole proof: a RISE comes from `wGrowS` when
+`a > 0` (5a → 6a) and from `wBArg` when `a = 0` (2b → 4b); a FALL comes from
+`wBred` when `b > 0` (3a+b → 3a) and from `wBArg` when `b = 0` (3a → 2a). -/
+theorem no_monotone_counting_measure (a b : Nat) (hab : 0 < a ∨ 0 < b) :
+    (∃ t u, SBStep t u ∧ a * u.countS + b * u.countB < a * t.countS + b * t.countB) ∧
+    (∃ t u, SBStep t u ∧ a * t.countS + b * t.countB < a * u.countS + b * u.countB) := by
+  constructor
+  · -- a FALL exists
+    rcases Nat.eq_zero_or_pos b with hb | hb
+    · refine ⟨wBArg, _, step_wBArg, ?_⟩
+      simp only [wBArg, SBTerm.countS, SBTerm.countB]
+      rcases hab with ha | hb' <;> omega
+    · refine ⟨wBred, _, step_wBred, ?_⟩
+      simp only [wBred, SBTerm.countS, SBTerm.countB]
+      omega
+  · -- a RISE exists
+    rcases Nat.eq_zero_or_pos a with ha | ha
+    · refine ⟨wBArg, _, step_wBArg, ?_⟩
+      simp only [wBArg, SBTerm.countS, SBTerm.countB]
+      rcases hab with ha' | hb <;> omega
+    · refine ⟨wGrowS, _, step_wGrowS, ?_⟩
+      simp only [wGrowS, SBTerm.countS, SBTerm.countB]
+      omega
+
+-- ## What that leaves, stated plainly
+-- Rung two's acyclicity is OPEN, and the route Stage 19 named is closed:
+--
+--   * C2's squeeze needs a monotone quantity. `no_monotone_counting_measure`
+--     shows no counting measure is monotone on {S,B}, so step (a) of that
+--     argument has no starting point. Stage 19's "lexicographic measure" is ruled
+--     out for the same reason — a lexicographic order needs its FIRST component
+--     monotone, and none is.
+--   * a globally DECREASING measure is ruled out independently: the census found
+--     terms at 7 leaves that do not normalize at fuel 1000, and a decreasing
+--     Nat-measure would force termination.
+--
+-- So {S,B} acyclicity needs either a non-counting structural measure (τ's
+-- ancestor was positional, not a count — τ(app a b) = 2τ(a) + τ(b) weights by
+-- POSITION), or an interpretation argument, or the census is simply wrong about
+-- there being no cycle. That last possibility deserves real weight: the hunt
+-- reached 7 leaves and 400 steps, which is small, and rung one's cycle lives at
+-- 6 leaves. Recorded as open rather than as "nearly done".
