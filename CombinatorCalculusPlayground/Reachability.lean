@@ -14,6 +14,7 @@
 import CombinatorCalculusPlayground.Confluence
 import CombinatorCalculusPlayground.Census.Enumerate
 import CombinatorCalculusPlayground.Universality.Taxonomy
+import CombinatorCalculusPlayground.Isometric
 
 open Term
 
@@ -451,3 +452,23 @@ theorem joinable_iff_nf_eq {t u nt nu : Term}
   · intro heq
     subst heq
     exact ⟨nt, ht, hu⟩
+
+-- ## Slice 2 CENSUS-FIRST PROBES (the STOP gate for Isometric.lean)
+-- The τ-decrease claim, checked empirically over every pure-S term with
+-- ≤ 6 leaves BEFORE any proof effort. If EITHER probe fails: STOP, do
+-- not adjust anything, report the failing term — the slice's arithmetic
+-- would be wrong.
+
+-- Probe A: on every SIZE-PRESERVING successor step, τ strictly drops.
+#guard (List.range 7).all fun n => (sTerms n).all fun t =>
+  (succs t).all fun v =>
+    leafCount v != leafCount t || decide (tau v < tau t)
+
+-- Probe B: the drop at a root isometric redex is exactly 6 — spot-check
+-- the arithmetic's exactness on every size-4 S-term that IS a root
+-- isometric redex (third argument atomic).
+#guard (sTerms 4).all fun t =>
+  match t with
+  | .app (.app (.app .S _) _) .S =>
+    (succs t).any fun v => leafCount v == leafCount t && tau t - tau v == 6
+  | _ => true

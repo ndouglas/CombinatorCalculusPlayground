@@ -3,6 +3,7 @@ import CombinatorCalculusPlayground.Step
 import CombinatorCalculusPlayground.Confluence
 import CombinatorCalculusPlayground.Bracket
 import CombinatorCalculusPlayground.SFragment
+import CombinatorCalculusPlayground.Isometric
 import CombinatorCalculusPlayground.RS
 import CombinatorCalculusPlayground.Iota
 import CombinatorCalculusPlayground.Universality.Defs
