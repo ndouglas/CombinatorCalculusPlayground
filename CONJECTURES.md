@@ -1552,3 +1552,65 @@ the Stage 2 conservation laws. External and unformalized: C1(a), C5, probably
 C2's priority. Open and genuinely unsettled: **C6** (ours, low materiality),
 **spec Goal 2 criterion (a)** (blocked on the adequacy abstraction — see Stages
 10–13), and the Wolfram prize question itself.
+
+### Stage 16: criterion (a) resolved — as written it is unsatisfiable in scope
+
+The ambiguity flagged in the fourth review is resolved, and the resolution is
+sharper than the review's own framing. The review called it "letter vs spirit";
+the spec's wording NAMES its targets, and one of them is refuted here.
+
+**The spec, verbatim:** "a correct definition must (a) certify known-universal
+systems **including one-combinator bases**, (b) not be auto-killed for S by
+Waldmann's decidability alone, and (c) identify precisely which definitions
+leave the prize question open."
+
+- **The one-combinator clause is REFUTED in first-order scope.** That is
+  `no_pathEncoding_SK_iota`, and generally C4 at every arity
+  (`no_pathEncoding_SK_poly`). No first-order one-combinator basis meeting C4's
+  growth condition can host SK. So criterion (a) **as written cannot be
+  satisfied by this program**, and the reason was already in the spec's own
+  Background: Barker's ι universality is a λ-level, erasing phenomenon, out of
+  first-order scope. Stage 4 registered that as a spec deviation; what nobody
+  had done is connect it to criterion (a)'s satisfiability. **This is a finding
+  about the criterion, not a failure against it.**
+- **The general clause is now DISCHARGED** — `universalReach_extend` /
+  `tagInExtend` (`Universality/TagEmbed.lean`): a tag system is
+  `Simulation`-simulated by a tag system over a larger alphabet, and m = 2 tag
+  systems over finite alphabets are universal (Cocke–Minsky 1964 — EXTERNAL,
+  cited). Two things this does that `pureS_in_SK` could not: the source is
+  KNOWN-UNIVERSAL (pure S is not), and `bwd` is earned rather than free
+  (`pureS_in_SK`'s encoder is an inclusion). It is also the first
+  non-degenerate use of Stage 8's `Simulation.ofAbstraction`.
+- **What remains open, stated without hedging:** that **SK** certifiably hosts a
+  known-universal system — Tag → SK — is open and research-blocked on the
+  adequacy abstraction (Stages 10–13). That is the interesting instance and
+  nothing here touches it.
+- **Criterion (b)** was discharged in Stage 3 (the definitions are pinned over
+  `Simulation`, and `bareEncNorm_trivial` shows why the unpinned variant
+  measures nothing). **Criterion (c)** — identify precisely which definitions
+  leave the prize question open — is discharged by the definitions ledger plus
+  Stage 4's `PathEncoding` scoping: the prize question survives exactly in the
+  gap between injective path-preserving encodings and the informal notion.
+
+**Restated criterion (a′), the satisfiable form, for the record:** *the
+definitions must certify at least one known-universal system via an actual
+`Simulation` inhabitant.* Under (a′), criterion (a) is **DISCHARGED**. Under the
+spec's literal (a), it is unsatisfiable in first-order scope for the reason
+above. Both statements are recorded so neither can be quoted alone.
+
+### The Mathlib decision, made once and recorded (Stage 16)
+
+The spec lists zero-dependency as a non-goal with an explicit escape hatch, and
+the hatch has never been considered. The tax is now countable: four
+`Classical.choice` traps (all originating in core's `BEq`/`LawfulBEq` instance
+layer, not in the proofs), two Mathlib tactics hand-replaced (`by_contra`,
+`interval_cases`), one direction of `eraseDups` membership, two list-filter
+length lemmas, and a seven-lemma `sumTo` battery standing in for
+`Finset`/`BigOperators`.
+
+**Decision: keep zero dependencies.** Nothing currently open is blocked on
+Mathlib — the remaining items are Tag → SK adequacy (a research problem, not a
+library problem), transcription work, and C6. The tax has been paid and the
+resulting lemmas are in the tree. Revisit only if a future target is blocked
+specifically by absent library algebra. Recorded here so that "we never decided"
+stops being the state.

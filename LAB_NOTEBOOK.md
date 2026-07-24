@@ -1481,3 +1481,59 @@ what automation could and couldn't do. This file is a first-class deliverable
   cause is the same in both directions: I was estimating from the first
   representation that came to mind rather than from the problem. Worth carrying
   forward as "estimate after choosing the representation, not before".
+
+## 2026-07-24 — Stage 16: reading the spec's actual words, and writing up
+
+- Three items this stage, all from a fourth ideonomy pass whose matrix put
+  "write the program up" as the highest-weight row — an action that had never
+  appeared on any of my rankings, because I had been ranking conjectures, then
+  pieces, and never deliverables.
+- **The criterion (a) resolution, which came out sharper than the review that
+  prompted it.** The review framed it as a letter-vs-spirit ambiguity: the
+  criterion says "certify known-universal systems" without naming a host, so a
+  cheap reading was available. Reading the spec's actual sentence killed that
+  framing and produced a better one. It says "certify known-universal systems
+  INCLUDING ONE-COMBINATOR BASES" — it names its targets, and one of those
+  targets is something this program REFUTED. C4 at every arity says no
+  first-order one-combinator one-rule system meeting the growth condition can
+  host SK. So criterion (a) as written is unsatisfiable in first-order scope, and
+  the reason was sitting in the spec's own Background section the whole time
+  (Barker's ι universality is λ-level and erasing). Stage 4 had registered the
+  deviation; nobody had connected it to whether the criterion could be met.
+- That is a better outcome than the cheap reading would have been, and it is
+  worth noting why: the review's framing was built from the LEDGER'S PARAPHRASE
+  of the criterion, not from the criterion. Fourth time now that going back to
+  the source document beat reasoning from the accreted summary.
+- **The general clause discharged**, with the cheapest honest instance: a tag
+  system embeds in a tag system over `Option Sym`. Both sides are m = 2 tag
+  systems, hence known-universal externally. Two properties `pureS_in_SK` did
+  not have — the source is known-universal, and `bwd` is EARNED rather than free,
+  since the encoder is not an inclusion. And it is the first non-degenerate use
+  of Stage 8's `Simulation.ofAbstraction`: Stage 8's own use was the
+  `pureS_in_SK` rebuild, where nothing stutters because the encoder is the
+  identity on carriers. Eight stages later the machinery had a real customer.
+- Scoped hard in the file, because the overclaim was available and attractive:
+  this says NOTHING about SK. It shows the positive side is not vacuous when the
+  source must be known-universal. Tag → SK stays research-blocked.
+- Lean friction, one item: `List.drop_cons_eq_cons_drop_of_pos` does not exist,
+  and is not needed — taking the source step in `stepRel`'s own canonical form
+  (`w.drop m ++ rule a`, with `w = x :: t` left intact) means the `drop` never
+  has to be decomposed. I had reached for the decomposition automatically. Same
+  failure shape as Stage 15's list-vs-function representation choice.
+- **STATUS.md**, the write-up. The ledger and this notebook are both
+  chronological and together run to several thousand lines, so neither answers
+  "what is settled?" — a reader would have to reconstruct it from sixteen stage
+  sections. STATUS.md answers it by spec goal, with theorem names, and I checked
+  all thirty cited names resolve against the tree before committing. README now
+  points at it.
+- **The Mathlib decision, made once.** The spec lists zero-dependency as a
+  non-goal with an escape hatch, and the hatch had never been considered in
+  sixteen stages. Tax counted: four `Classical.choice` traps, two Mathlib tactics
+  replaced, one `eraseDups` direction, two list-filter lemmas, a seven-lemma
+  `sumTo` battery. Decision: KEEP zero dependencies — nothing open is blocked on
+  Mathlib, since the remaining items are a research problem, transcription, and
+  C6. Recorded so "we never decided" stops being the state.
+- Where the program is: Goal 1 done, Goal 2 built-and-calibrated with one open
+  instance, Goal 3 closed, Goal 4 ongoing-by-design. One substantive item left
+  (Tag → SK adequacy) and it is research-blocked. The C-list is exhausted apart
+  from C6, which three consecutive reviews have declined to promote.
