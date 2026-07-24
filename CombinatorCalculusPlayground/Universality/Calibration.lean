@@ -10,6 +10,7 @@
 -- invisible to first-order reachability — exactly the kind of boundary
 -- this taxonomy exists to draw.
 import CombinatorCalculusPlayground.Universality.Defs
+import CombinatorCalculusPlayground.Universality.Taxonomy
 import CombinatorCalculusPlayground.Iota
 import CombinatorCalculusPlayground.Isometric
 
@@ -157,3 +158,37 @@ theorem pureS_not_universalNorm_for_SK : ¬ UniversalNorm RS.SK RS.PureS :=
 
 theorem pureS_not_universalConv_for_SK : ¬ UniversalConv RS.SK RS.PureS :=
   fun ⟨Sim, _⟩ => no_sim_SK_pureS ⟨Sim⟩
+
+-- ## The two known acyclic hosts, as instances of RS.Acyclic
+-- Strict growth (iota) and τ-termination (pure S) were just two CAUSES of
+-- the same property. Naming it lets the generic mechanism refute both.
+theorem RS.PureS_acyclic : RS.Acyclic RS.PureS := by
+  intro b b' hstep hback
+  -- a PureS step is a Term step on K-free values; the return path
+  -- converts via the agreement lemma; no_pure_S_cycle finishes.
+  exact no_pure_S_cycle b.property
+    ⟨b'.val, hstep, RS.PureS_steps_iff.mp hback⟩
+
+theorem RS.Iota_acyclic : RS.Acyclic RS.Iota := by
+  intro b b' hstep hback
+  -- strict growth forward, monotone return: |b| < |b'| ≤ |b|.
+  have hlt := iota_step_lt hstep
+  rcases iota_steps_le hback with heq | hlt2
+  · exact absurd (heq ▸ hlt) (Nat.lt_irrefl _)
+  · exact absurd (Nat.lt_trans hlt hlt2) (Nat.lt_irrefl _)
+
+-- ## Subsumption: both refutations recovered as one-liners
+-- Stage 4's iota refutation and Slice 2's pure-S refutation both fall out
+-- of the generic mechanism, feeding it the acyclic-host instance and SK's
+-- explicit Ω ↔ M cycle. The original theorems (`no_sim_SK_iota`,
+-- `no_sim_SK_pureS`) remain untouched as the citable artifacts; these
+-- demonstrations pin the consolidation.
+example : ¬ Nonempty (Simulation RS.SK RS.PureS) :=
+  Simulation.refute_of_acyclic RS.PureS_acyclic
+    (RS.SK_steps_iff.mpr omega_to_M) (RS.SK_steps_iff.mpr M_to_omega)
+    omega_ne_M
+
+example : ¬ Nonempty (Simulation RS.SK RS.Iota) :=
+  Simulation.refute_of_acyclic RS.Iota_acyclic
+    (RS.SK_steps_iff.mpr omega_to_M) (RS.SK_steps_iff.mpr M_to_omega)
+    omega_ne_M

@@ -101,3 +101,37 @@ end Simulation
 theorem Simulation.toUniversalConv {R B : RS} (S : Simulation R B)
     (hcr : B.ChurchRosser) (hic : S.ImageClosed) : UniversalConv R B :=
   ⟨S, S.preservesConv hcr hic⟩
+
+-- ## One refutation mechanism, stated once
+-- Both hosting refutations (iota, Stage 4; pure S, Slice 2) are instances
+-- of a single fact: an injective step-faithful simulation cannot carry a
+-- two-point reduction cycle into an acyclic host. Strict growth (iota)
+-- and τ-termination (pure S) were just two CAUSES of acyclicity. Stating
+-- the mechanism generically makes every future refutation a one-liner:
+-- prove your host Acyclic, exhibit any source cycle, done. (The original
+-- refutations remain the citable artifacts; this consolidates, it does
+-- not deprecate.)
+
+/-- No state begins a loop: a step out never comes back. -/
+def RS.Acyclic (B : RS) : Prop :=
+  ∀ {b b' : B.Carrier}, B.step b b' → B.Steps b' b → False
+
+-- Peel a genuine first step off a nonempty path (generic twin of the
+-- Term-level `Steps.head_of_ne` in Calibration.lean).
+theorem RS.Steps.head_of_ne {B : RS} {b b' : B.Carrier}
+    (h : B.Steps b b') (hne : b ≠ b') :
+    ∃ w, B.step b w ∧ B.Steps w b' := by
+  cases h with
+  | refl => exact absurd rfl hne
+  | tail s rest => exact ⟨_, s, rest⟩
+
+theorem Simulation.refute_of_acyclic {A B : RS} (hB : RS.Acyclic B)
+    {a a' : A.Carrier} (h1 : A.Steps a a') (h2 : A.Steps a' a)
+    (hne : a ≠ a') : ¬ Nonempty (Simulation A B) := by
+  rintro ⟨Sim⟩
+  have e1 : B.Steps (Sim.enc a) (Sim.enc a') := Sim.fwd_steps h1
+  have e2 : B.Steps (Sim.enc a') (Sim.enc a) := Sim.fwd_steps h2
+  have hne' : Sim.enc a ≠ Sim.enc a' :=
+    fun h => hne (Sim.enc_injective h)
+  obtain ⟨w, hstep, hrest⟩ := RS.Steps.head_of_ne e1 hne'
+  exact hB hstep (RS.Steps.trans hrest e2)
