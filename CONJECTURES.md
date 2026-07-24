@@ -195,6 +195,79 @@ Two observations from the fuel=200, n=1..12 run:
    this is an observation about the fuel=200 cutoff, not a claim about
    unbounded fuel behavior, and it is not yet explained by any proved lemma.
 
+**Slice 3 probe (fuel-bounded census data, fuel 200, n = 7..9):** the
+max-final-size terms at consecutive sizes are **NOT** structurally
+nested — no nesting relation was observed. The three argmax terms
+(each found by scanning `sTerms n` and keeping the term whose 200-step
+`trace` ends at the largest `leafCount`) are:
+
+```
+n=7: S S S (S S) S S              (final leafCount 120112)
+n=8: S S S (S (S S S)) S          (final leafCount 390363)
+n=9: S (S S) S (S (S S S) S)      (final leafCount 2849113)
+```
+
+The n=7 argmax is exactly `c1` (`Reachability.lean`'s named C1 candidate,
+confirmed by `==`, not just matching render strings) — the smallest
+fuel-exhausted term is also the term whose trajectory grows biggest by
+step 200, at this size. But that is where the relation stops: `isSubterm`
+(from Task 1) finds the n=7 argmax is NOT a subterm of the n=8 argmax,
+and the n=8 argmax is NOT a subterm of the n=9 argmax (both directions
+checked; also checked and false: the n=7 argmax is not a subterm of the
+n=9 argmax either, ruling out a relation that skips a step). Neither
+`app argmax(n) S` nor `app S argmax(n)` (the two "rider" shapes) equals
+argmax(n+1) at either transition. A broader sweep also came back empty:
+neither C1 candidate (`c1` nor `c2`) occurs as a subterm anywhere inside
+the n=8 or n=9 argmax terms. So **(a)** argmax(n+1) is structurally
+unrelated to argmax(n) at n = 7..9 — no app-with-rider shape, no subterm
+nesting in either direction, and no recurrence of the C1 candidates
+themselves inside the later argmaxes.
+
+**(b)** the final-leaf-count deltas between consecutive n are emphatically
+NOT small/constant here: +270251 (n=7→8) and +2458750 (n=8→9) — roughly
+3x and then 7x multiplicative jumps, the opposite of the n=10..12 "+1"
+pattern. This means the "+1" plateau behavior documented above is NOT
+yet present at n = 7..9: whatever mechanism makes the n≥10 argmaxes
+converge onto (what looks like) a single shared extremal trajectory has
+not kicked in by n=9 — each of n=7, 8, 9 still finds a genuinely
+different, unrelated extremal term, with final size still exploding
+between them. The n=10..12 plateau reading — "a single extremal
+trajectory family with rider leaves" — is **not corroborated** by this
+probe; if anything it is weak evidence that the plateau is a threshold
+phenomenon starting somewhere between n=9 and n=10, not a pattern visible
+across the whole n≥7 range. The n=10..12 argmax terms themselves were not
+recomputed (runtime cost, per the brief) so the actual n=9→10 transition
+(nested or not) remains unobserved — this probe only establishes that
+n=7,8,9 do not already exhibit it.
+
+Reproduce with (argmax scan, repeated for `sTerms 7/8/9`; `getLastD t`
+used in place of `getLast!` since `Term` has no `Inhabited` instance):
+
+```lean
+#eval (sTerms 9).foldl (fun (best : Term × Nat) t =>
+  let fl := leafCount ((trace 200 t).getLastD t)
+  if fl > best.2 then (t, fl) else best) (Term.S, 0)
+```
+
+and the relation checks:
+
+```lean
+#eval m7 == c1                  -- true
+#eval isSubterm m7 m8           -- false
+#eval isSubterm m8 m9           -- false
+#eval isSubterm m7 m9           -- false
+#eval m8 == Term.app m7 S       -- false
+#eval m8 == Term.app S m7       -- false
+#eval m9 == Term.app m8 S       -- false
+#eval m9 == Term.app S m8       -- false
+#eval isSubterm c1 m8 -- false; #eval isSubterm c2 m8 -- false
+#eval isSubterm c1 m9 -- false; #eval isSubterm c2 m9 -- false
+```
+
+(where `m7`, `m8`, `m9` are the three argmax terms rendered above, built
+the same way `c1`/`c2` are — `Term.app` nestings matching the rendered
+strings.)
+
 ## Definitions ledger (Stage 3)
 
 Universality is relative to a reference system R and an observation mode
@@ -322,6 +395,49 @@ steps exist at the minimal instantiation, so this class excludes S by
 construction and the argument does NOT apply to it; C2's cycle question
 needed the separate τ-measure route — resolved by `no_pure_S_cycle`
 (Stage 5, Slice 2).)
+
+## C6: Divergence density grows with size — status: open
+Fraction of pure-S terms at exactly n leaves that exhaust fuel 200
+(leftmost-outermost; fuel-outs are NOT divergence proofs — this is a
+density of *fuel-exhaustion*, a proxy observable). Exhausted counts for
+n=7,8,11,12 and totals for n=7,8,9,10,11,12 are as already recorded in
+this file / LAB_NOTEBOOK.md; the n=9 and n=10 exhausted counts below are
+pulled from LAB_NOTEBOOK.md's census-headline entry (`276 at n=9, 1484 at
+n=10`, fuel 200) rather than recomputed — re-running the n=10 census
+(4862 terms) is exactly the "runtime-prohibitive, stays fuel-bounded-census
+from the original runs" case the brief flags, so it was not repeated.
+Per-n totals are the Catalan numbers (binary trees with n leaves = C_(n-1);
+documented at `Census/Enumerate.lean`'s `sTermsTable` comment) and were
+cross-checked cheaply via `#eval (sTerms n).length` (no fuel/reduction
+involved, so this is not the disallowed recomputation):
+
+| n  | exhausted / total | fraction |
+|----|--------------------|----------|
+| 7  | 2 / 132            | 1.5%     |
+| 8  | 41 / 429           | 9.6%     |
+| 9  | 276 / 1430         | 19.3%    |
+| 10 | 1484 / 4862        | 30.5%    |
+| 11 | 6842 / 16796       | 40.7%    |
+| 12 | 29337 / 58786      | 49.9%    |
+
+Conjecture: the fraction is monotone non-decreasing in n and → 1. All six
+rows above are monotone increasing, consistent with the conjecture, but
+six points is a short run — nowhere near n large enough to see whether
+growth keeps accelerating, levels off short of 1, or (per the C3 addendum
+above) enters some different regime once the n≥10 `maxFinalLeaves`
+plateau mechanism is at play. (Cheap to extend: rerun `lake exe ccp` at
+higher fuel to test fuel-sensitivity of the table; not done this slice.)
+
+Reproduce the total-count cross-check with:
+
+```lean
+#eval (sTerms 9).length   -- 1430
+#eval (sTerms 10).length  -- 4862
+```
+
+(the exhausted counts themselves come from the `lake exe ccp 12 200` run
+already on record — see the "Runs behind this file" note above and
+LAB_NOTEBOOK.md's census-headline entry — not from a scratch re-run.)
 
 ### Stage 5, Slice 1: bounded reachability
 
