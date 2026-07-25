@@ -2590,3 +2590,51 @@ what automation could and couldn't do. This file is a first-class deliverable
   the term `P` reduces to, and closing it would complete an induction on term size rather than
   leaving a size condition to check. That is the better of the two routes because its remaining gap
   is combinatorial rather than about growth; (2) C6, declined a thirtieth time.
+
+## 2026-07-25 — Stage 43: the hour, and what it cost not to have spent it
+
+- Nathan asked whether the frustration in these entries was the problem being hard or the approach
+  being wrong. Reviewing it properly: the approach was wrong, in one specific way. Every stage's
+  ranking came from the previous stage's proof structure, so the selection of what to work on was a
+  closed loop with no external check. C1(a) had the best local gradient — clean theorem, clean next
+  question, every time — and I followed the gradient for ten stages into a census artifact that my
+  own STATUS.md describes as low-materiality with prior art "discoverable in an hour". Stage 39
+  caught me conflating tractability with importance at the object level; I was doing the same thing
+  one level up, to my own ranking, and did not notice.
+- The hour took about ten minutes. Endrullis and Zantema state the ground-loop theorem as a known
+  fact in the second example of their paper, citing Waldmann 2000. Stages 37–42 re-derived it and
+  stopped one size condition short.
+- And then the same paper handed over the tool. Their Theorem 4 — non-termination iff a recurrence
+  set exists — plus a five-state tree automaton for the S-rule. **C1(a) is now proved here.** The
+  entry that has said `external` since Stage 0 says `PROVED`.
+- The one engineering decision worth recording: I determinized their automaton by hand before
+  formalizing. Their version is nondeterministic, so the interpretation of a term is a SET of
+  states, and the quasi-model condition is a set inclusion — which in a zero-dependency development
+  means building list-based set machinery, distributivity of the transition over unions, and
+  monotonicity lemmas for all of it. Determinizing costs exactly one state (six instead of five)
+  and deletes all of that: the interpretation is a function, the order is on six elements, and every
+  side condition is `cases <;> decide`. It built on the first attempt. Sixteen lines of
+  paper-arithmetic beforehand replaced what I estimate was a day of list lemmas.
+- Second decision: I did not take the paper's route for "every accepted term has a redex". They
+  build a product automaton and check language inclusion. But reaching the accepting state forces a
+  left spine of at least three, and this tree already proves that a K-free term with spine ≥ 3
+  cannot be normal (`SNF.spineLength_le`, Stage 2). Reading the shape off the transition table was
+  three small lemmas. Reusing what is already proved beat importing the general construction, which
+  is the same lesson C5 taught at Stage 31.
+- The cross-check matters to me and I made it a guard rather than a remark. The certificate is a
+  claim about an automaton; the census evaluator is separate code. Running the witness shows leaf
+  count climbing 12 → 776 in forty steps. If those two mechanisms disagreed, one would be wrong,
+  and I would rather the build say so than a comment claim it.
+- Honest limits. The certificate is not tight — twelve leaves against C1(b)'s proved floor of seven
+  — and the automaton rejects `c1` and `c2`, so the two census candidates are still individually
+  open. And the prize question is untouched by all of this: divergence is not universality.
+- Process change, and this one is the actual deliverable of the day: the end-of-stage ranking gets
+  checked against STATUS.md and the spec, not against the last proof. The four goals are the
+  external check that ideonomy used to provide and that I stopped applying.
+- Ranking, now from the spec rather than from the last proof: (1) **ladder rungs 2 and 3** — spec
+  Stage 5's second component, "each rung a publishable partial result". The tool is the one this
+  stage just built. My notebook's moral was "counts see size, positional measures see structure",
+  and I proved no monotone counting measure exists for {S,B} and closed the τ route; the missing
+  third category is FINITE-STATE invariants, and Geser–Hofbauer–Waldmann–Zantema (Inf. Comput. 2007)
+  is the termination-direction literature for exactly that. (2) Goal 2's `Simulation` gap, left
+  legible on purpose in `Calibration.lean`. (3) C6, declined a thirty-first time.

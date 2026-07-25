@@ -2391,3 +2391,45 @@ a one-step predecessor, and pure-S steps never shrink — and it makes an **indu
 available: chasing the requirement's *shape* rather than its size yields, at the path's start, a
 self-embedding of a term strictly smaller than `t`. Two of that route's three start-cases work out;
 the third (the requirement hiding inside `x`) does not yet.
+
+### Stage 43: the literature hour — and C1(a) PROVED
+
+The hour that STATUS.md said was owed since Stage 7 finally happened, and it paid in both
+directions.
+
+**The bad direction.** Endrullis & Zantema, *Non-termination using Regular Languages* (IWT 2014),
+Example 2: *"For the S-rule it is known that there are no reductions `t →* C[t]` for ground terms
+`t`, see [15]"* — [15] = Waldmann, *The Combinator S*, Inf. Comput. 159 (2000). **Stages 37–42
+were re-deriving Waldmann's ground-loop theorem**, and reached one size condition short of it.
+What survives: `Subterm`, `Step.subterm_split'`, `step_growth_eq`, `selfEmbed_imp_halfShape` —
+reusable machinery. And one live pointer: the same Example 2 notes the **open-term** version,
+`t →* C[tσ]`, is **open**. Everything in this development is ground.
+
+**The good direction — C1(a) is now a theorem.** The same paper hands over the technique.
+
+*Method (their Theorem 4).* A system is non-terminating **iff** there is a non-empty **recurrence
+set**: every member has a redex, and every member steps to a member. No infinite object required —
+the *set* is the certificate, and for the S-rule it can be taken **regular**.
+
+Their automaton (Example 7) is nondeterministic with five states. Determinizing by hand gives six
+reachable state sets (`Dst`). That trade — one extra state — removes all the infrastructure:
+
+| | |
+|---|---|
+| `dstep_rule` | the quasi-model condition for the S-rule — the whole mathematical content, 216 cases by `decide` |
+| `st_le_of_step` | closure under rewriting (their Thm 17). No `KFree` hypothesis needed: a `K` forces `bot`, and `bot` is below everything |
+| `has_redex_of_s34` | every accepted term has a redex. They use a product-automaton inclusion; here the transition table gives it directly — the accepting state forces left spine ≥ 3, and a K-free term with spine ≥ 3 cannot be normal |
+| `infiniteRed_of_s34` | iterate the certified evaluator; closure means it never runs out |
+| **`c1a`** | **C1(a).** C5 supplies the last step — for pure S, "admits an infinite reduction" ⟹ "has no normal form" is *not* automatic; it **is** conservation |
+
+**Witness:** `S S S (S S S) (S S S (S S S))` — twelve leaves, K-free.
+
+Cross-checked against the census evaluator (a separate mechanism): leaf count climbs monotonically
+**12 → 776** over 40 steps and never normalises. Guarded, not remarked.
+
+**Not tight, and recorded as such.** C1(b) proves the true divergence floor is **seven** leaves,
+and the automaton rejects both seven-leaf candidates — so `c1` and `c2` remain individually open.
+Twelve is this certificate's floor, five above the real one.
+
+**The ledger is now:** C1(a) proved, C1(b) proved, C2 proved, C3 retired, C4 proved, C5 proved,
+C6 open and low-materiality. No entry is `external` any more.
