@@ -107,3 +107,61 @@ example : unaryTagInSK.enc [(), (), ()] = Itower 3 := rfl
 -- per source step, and reuse the countdown's adequacy template — with the driver's extra work being the
 -- symbol dispatch, which Stage 50 already measured as compatible with the K-normal-form abstraction, and
 -- the rule append, which is untested.
+
+-- ## Stage 60: the rule append is not a component
+-- Stage 59 ranked "test the rule append" first, calling it the last unmeasured piece of a driver. The
+-- measurement says it is not a piece at all — in the right encoding it is a CONSTANT.
+--
+-- Encode a word as its right fold: `[x₁…xₙ]` is `λc.λn. c x₁ (c x₂ (… (c xₙ n)))`. Then appending at the
+-- END is substituting for `n`, which is a fixed wrapper:
+--
+--     APPEND = λL.λy.λc.λn. L c (c y n)
+--
+-- No recursion, no traversal, no dependence on the list. Deletion at the FRONT is equally cheap for a fold,
+-- which is why this encoding suits tag systems: they consume at one end and produce at the other.
+
+/-- `APPEND = λL.λy.λc.λn. L c (c y n)`, compiled by bracket abstraction. -/
+def bodyAppend : TermV :=
+  TermV.app2 (.var 3) (.var 1) (TermV.app2 (.var 1) (.var 2) (.var 0))
+
+def APPEND : Term :=
+  toTerm (TermV.bracket 3 (TermV.bracket 2 (TermV.bracket 1 (TermV.bracket 0 bodyAppend))))
+
+/-- The empty word, and the one- and two-symbol words, as folds. -/
+def ENCNIL : Term := toTerm (TermV.bracket 1 (TermV.bracket 0 (.var 0)))
+
+def ENCONE (y : TermV) : Term :=
+  toTerm (TermV.bracket 1 (TermV.bracket 0 (TermV.app2 (.var 1) y (.var 0))))
+
+def ENCTWO (y z : TermV) : Term :=
+  toTerm (TermV.bracket 1 (TermV.bracket 0
+    (TermV.app2 (.var 1) y (TermV.app2 (.var 1) z (.var 0)))))
+
+private def nfOf (t : Term) : Option Term := (normalize 20000 t).map (·.1)
+private def ap4 (f a b c d : Term) : Term := Term.app (Term.app (Term.app (Term.app f a) b) c) d
+
+-- **`APPEND` is a constant.** 414 leaves from the NAIVE bracket algorithm (no occurs check — an optimised
+-- abstraction would be far smaller), and the same 414 whatever it is applied to.
+#guard leafCount APPEND = 414
+#guard leafCount ENCNIL = 8
+
+-- Appending agrees with direct encoding, checked against two different observers `(c, n)` so the test is
+-- not passing by collapse: `(K, S)` keeps only the head, `(I, K)` keeps the structure.
+#guard nfOf (ap4 APPEND ENCNIL S K S) = nfOf (Term.app (Term.app (ENCONE .S) K) S)
+#guard nfOf (ap4 APPEND ENCNIL S (app2 S K K) K)
+  = nfOf (Term.app (Term.app (ENCONE .S) (app2 S K K)) K)
+#guard nfOf (ap4 APPEND (ENCONE .S) K K S) = nfOf (Term.app (Term.app (ENCTWO .S .K) K) S)
+#guard nfOf (ap4 APPEND (ENCONE .S) K (app2 S K K) K)
+  = nfOf (Term.app (Term.app (ENCTWO .S .K) (app2 S K K)) K)
+
+-- ## What that does to the remaining work
+-- Stage 59's premise was wrong, and in the useful direction. The append is not the last unmeasured
+-- component; it is not a component. With a fold encoding both of a tag step's halves — take from the front,
+-- add at the back — are fixed combinators, so a driver needs no recursion for its LIST operations at all.
+--
+-- What a driver does still need recursion for is SELF-REPRODUCTION: `enc w` must reduce to `enc w'`, and the
+-- encoding contains the driver, so the driver must rebuild itself. That is self-application, and it is
+-- exactly what Stages 50–52 isolated and could not settle without building the thing.
+--
+-- So piece (v) has one unresolved ingredient rather than three, and it is the one already named. Symbol
+-- dispatch: measured compatible (Stage 50). Rule append: constant, shown here. Self-reproduction: open.
