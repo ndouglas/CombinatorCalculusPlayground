@@ -2588,3 +2588,38 @@ Two narrowings recorded but **not** proved: `Itower n`'s only redexes are its `I
 so the square's right side is constrained; and an S-step in a doomed subterm cannot move the
 K-normal form at all, while K-reduction never duplicates, so a live S-redex has exactly one
 downstream image.
+
+### Stage 48: adequacy CLEARED — a `Simulation` of a multi-step machine inside SK
+
+The blocker Stage 8 flagged as *the piece that could fail in kind rather than in volume* is closed.
+
+| | |
+|---|---|
+| `sk_local_square` | an S-step and a K-step out of the same term close up |
+| `sk_square` | ...lifted to whole K-reductions |
+| `itower_sStep` | an S-step out of the encoding advances it by **exactly one** |
+| `naiveAbs_Itower` | `dec_enc` |
+| `countdown_hstep` | **`hstep`, complete**, by `Step.kOrS` |
+| **`countdownInSK`** | **`Simulation RS.Countdown RS.SK`** |
+
+Both weakenings in the square turned out to be **forced**, and by different cases: *zero* S-steps on
+the K-side when the S-redex sits in the argument a `K` discards, and *two* K-steps on the S-side when
+the S-step duplicated a K-redex. Stage 47 was right that the equation is unavailable; the square
+replaced it.
+
+The S-step case closes because an S-step out of `Itower n` is completely determined — its only
+redexes are the `I` layers, and firing one leaves `(K u)(K u)`, which K-collapses to `u`. So the
+square's S-side output is `Itower n` itself (stutter) or one layer further along (advance).
+
+**The full arc:** Stage 10 found the failure (duplicated arguments drift). Stage 13 refuted the first
+two fixes — *constrain the encoding* is impossible, since transient duplicates are unavoidable in SK,
+and *abstract up to joinability* is too coarse (`joinable_abs_not_functional`). Stage 45 found the
+third: read the **K-normal form**, so drift is *invisible* rather than prevented or tolerated. Stage
+46 made that denote. Stages 47–48 proved it.
+
+`sk_local_square` and `sk_square` need **no axioms at all**.
+
+**The limit, stated plainly.** The countdown is **not** universal, so this discharges the *mechanism*
+criterion (a) was blocked on — not criterion (a). A tag-step driver, spec piece (v), is still
+unwritten. What changed is that its hardest obligation is now a solved problem with a worked example
+rather than a research risk.

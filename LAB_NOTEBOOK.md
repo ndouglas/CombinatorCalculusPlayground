@@ -2794,3 +2794,40 @@ what automation could and couldn't do. This file is a first-class deliverable
   narrowings identified (doomed-position S-steps cannot move the K-normal form; K-reduction never
   duplicates, so a live S-redex has exactly one downstream image). (2) piece (v). (3) rungs 2/3 via
   match-bounds. (4) C6, declined a thirty-fifth time.
+
+## 2026-07-25 — Stage 48: the square, and a forty-stage arc closing
+
+- The commutation square went in essentially as designed. I worked the cases out on paper first —
+  disjoint redexes, S-redex inside the kept argument, S-redex inside the discarded argument, K-redex
+  inside each of the S-redex's three arguments — checked that each closed, and only then wrote Lean.
+  It built after two fixes, both about `cases` rather than about mathematics.
+- The two fixes are the same lesson twice. `cases` on an indexed hypothesis will not name a field that
+  the indices already determine (the S-redex's third argument is the ambient `u`, so `| S_red f g` not
+  `| S_red f g x`), and it WILL generate impossible alternatives that unification cannot kill on its
+  own (`SStep Term.K _` has no constructor but Lean still asks for the branch, discharged by `cases`).
+  That is the third and fourth appearance of this family in the session. I now know the shape well
+  enough that it cost minutes rather than attempts.
+- What pleases me about the result is that both weakenings in the square are FORCED, and for
+  different reasons that I would not have predicted from the same place. The K-side sometimes needs
+  ZERO S-steps, because the S-redex may sit in exactly the argument a `K` throws away. The S-side
+  sometimes needs TWO K-steps, because the S-step duplicated its third argument and a K-redex inside
+  it got copied. Stage 47's refutation told me the equation was wrong; it did not tell me the shape,
+  and the shape has content.
+- `sk_local_square` and `sk_square` need no axioms at all — not even `propext`. Pure structural
+  induction on two relations.
+- **The arc is worth stating because it took forty stages.** Stage 8 identified `bwd` as the piece
+  that could fail in kind. Stage 10 found the failure. Stage 11 half-fixed it and Stage 13 refuted the
+  fix, leaving two dead routes and a third named in a comment. Thirty-two stages later Stage 45 tried
+  the third route, Stage 46 made it well defined, Stage 47 refuted the cheap version of the last step,
+  and Stage 48 proved the real one. The thing that unblocked it was not cleverness — it was reading
+  my own probe files properly and noticing that the untried route was one line.
+- **The limit, which I want on the record next to the result.** The countdown is not universal. This
+  discharges the mechanism criterion (a) was blocked on; it does not discharge criterion (a). Piece
+  (v), a tag-step driver, is still unwritten, and it is a substantial construction. What changed is
+  that its hardest obligation is a solved problem with a worked example rather than a research risk —
+  which is a real change, and less than "Goal 2 is done".
+- Ranking, against the spec: (1) **piece (v)** — the tag-step driver, now that adequacy has a
+  template. This is construction work rather than research: encode words, write the step driver, and
+  discharge `fwd`; `bwd` follows the countdown's pattern with `Itower` replaced by the word encoding,
+  provided the driver keeps its data K-normal. (2) rungs 2/3 via match-bounds, still a deliberate
+  multi-stage project. (3) C6, declined a thirty-sixth time.
