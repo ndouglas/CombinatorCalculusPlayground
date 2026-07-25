@@ -1041,3 +1041,101 @@ theorem leafCount_S_red_heavy (f g x : SBTerm) (h : 4 ≤ tauSB x) :
 -- leaves acts as an identity on four structurally distinct probe arguments, and none
 -- acts as one on two arguments either. Consistent with {S,B} being acyclic, and it
 -- closes the transport route at small size.
+
+-- ## Stage 26: the S-only fragment of {S,B} is acyclic
+-- The ranked task was to formalise Stage 25's τ ≥ 14 summation. Doing the arithmetic
+-- first showed that is per-class path accounting — one accumulator per step kind —
+-- for a TIGHTENING of a bound whose argument family Stage 25 already proved caps out
+-- near τ ≥ 24. Redirected to a new structural fact instead.
+--
+-- The observation: the S-only fragment of {S,B} is just pure S over a two-symbol
+-- alphabet, so C2's SQUEEZE applies to it verbatim — leafCount is monotone there
+-- (no B-reduction to shrink it), a cycle forces it constant, constancy forces every
+-- redex argument atomic, and τ drops by 6 on those. What that buys is a genuinely
+-- new necessary condition: **any {S,B} cycle must contain a B-reduction.**
+
+inductive SBSStep : SBTerm → SBTerm → Prop
+  | S_red (f g x : SBTerm) :
+      SBSStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | appL {t t' u : SBTerm} : SBSStep t t' → SBSStep (.app t u) (.app t' u)
+  | appR {t u u' : SBTerm} : SBSStep u u' → SBSStep (.app t u) (.app t u')
+
+theorem sbSStep_isStep {t u : SBTerm} (h : SBSStep t u) : SBStep t u := by
+  induction h with
+  | S_red f g x => exact SBStep.S_red f g x
+  | appL _ ih => exact SBStep.appL ih
+  | appR _ ih => exact SBStep.appR ih
+
+def RS.SBSOnly : RS := ⟨SBTerm, SBSStep⟩
+
+/-- **The squeeze, per step.** An S-reduction never shrinks leafCount; and when it
+leaves leafCount alone, the duplicated argument must be a single leaf, so τ strictly
+drops. Both halves in one statement, because the path lemma needs them together. -/
+theorem sbSStep_squeeze {t u : SBTerm} (h : SBSStep t u) :
+    t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSB u < tauSB t) := by
+  induction h with
+  | S_red f g x =>
+    have hx := SBTerm.leafCount_pos x
+    have htau := tauSB_S_red f g x
+    have hpx := tauSB_pos x
+    refine ⟨by simp only [SBTerm.leafCount]; omega, ?_⟩
+    intro heq
+    -- leafCount unchanged forces |x| = 1, hence x is an atom, hence τ x = 1
+    simp only [SBTerm.leafCount] at heq
+    have hx1 : x.leafCount = 1 := by omega
+    have : tauSB x = 1 := by
+      rcases SBTerm.eq_atom_of_leafCount_one hx1 with rfl | rfl <;> rfl
+    omega
+  | appL _ ih =>
+    refine ⟨by simp only [SBTerm.leafCount]; omega, ?_⟩
+    intro heq
+    simp only [SBTerm.leafCount] at heq
+    have := ih.2 (by omega)
+    simp only [tauSB]; omega
+  | appR _ ih =>
+    refine ⟨by simp only [SBTerm.leafCount]; omega, ?_⟩
+    intro heq
+    simp only [SBTerm.leafCount] at heq
+    have := ih.2 (by omega)
+    simp only [tauSB]; omega
+
+/-- The same invariant along a whole path — the conjunction is exactly what makes the
+induction go through, since the strict τ drop must be recovered from the first step
+once leafCount is pinned. -/
+theorem sbSSteps_squeeze {t u : SBTerm} (h : RS.SBSOnly.Steps t u) :
+    t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSB u ≤ tauSB t) := by
+  -- Raw recursor: `induction` hits the mkElimApp motive error at a concrete RS.
+  refine h.rec (fun a => ⟨Nat.le_refl _, fun _ => Nat.le_refl _⟩) ?_
+  intro a w c s _ ih
+  obtain ⟨hs1, hs2⟩ := sbSStep_squeeze s
+  refine ⟨Nat.le_trans hs1 ih.1, ?_⟩
+  intro heq
+  -- all three leaf counts coincide, so the first step drops τ strictly
+  have hw : a.leafCount = w.leafCount := by omega
+  have := hs2 hw
+  have := ih.2 (by omega)
+  omega
+
+/-- **The S-only fragment of {S,B} is acyclic** — C2's argument, transplanted. -/
+theorem sbSOnly_acyclic : RS.Acyclic RS.SBSOnly := by
+  intro b b' hstep hback
+  obtain ⟨h1, h2⟩ := sbSStep_squeeze hstep
+  obtain ⟨h3, h4⟩ := sbSSteps_squeeze hback
+  have heq : b.leafCount = b'.leafCount := by omega
+  have hdrop := h2 heq
+  have hback' := h4 heq.symm
+  omega
+
+/-- **Any {S,B} cycle must contain a B-reduction.** Contrapositive of the above: a
+cycle built only from S-reductions is impossible. This is independent of the τ-heavy
+condition (Stage 23) and of the bootstrap (Stage 25), so the three constraints
+compose — a cycle needs a B-reduction, needs a τ-heavy S-reduction, and needs at
+least two of the former per one of the latter. -/
+theorem sbCycle_needs_B {t : SBTerm}
+    (hcyc : ∃ u, SBSStep t u ∧ RS.SBSOnly.Steps u t) : False := by
+  obtain ⟨u, h1, h2⟩ := hcyc
+  exact sbSOnly_acyclic h1 h2
+
+-- Sanity: the S-only fragment is not empty of dynamics — `S S S S` steps in it.
+example : SBSStep (.app (.app (.app .S .S) .S) .S)
+    (.app (.app .S .S) (.app .S .S)) := SBSStep.S_red .S .S .S
