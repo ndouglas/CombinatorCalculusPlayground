@@ -1276,3 +1276,123 @@ theorem scCycle_needs_C {t : SCTerm}
 -- exploration — abandoning branches that can no longer reach a qualifying redex — which
 -- is a different algorithm from `onCycleAny`. Recorded so the condition is not credited
 -- with a search speedup it does not provide.
+
+-- ## Stage 28: the composed condition, now a theorem
+-- The ranked task was pruning-during-exploration. Checked first, and it is not
+-- available: sound pruning needs a LOCALIZABLE certificate that the seed is
+-- unreachable from a given state, and every constraint rung two has is a GLOBAL sum
+-- over a cycle. Global sums do not localize into per-state tests.
+--
+-- But working that out showed the composed condition's key half admits Stage 26's
+-- pattern. Stage 27 stated it as arithmetic: "some S-reduction on a cycle must
+-- duplicate an argument containing a B". Contrapositively — if no S-reduction
+-- duplicates a B, then #B never rises, and it strictly falls on every B-reduction, so
+-- a cycle can contain no B-reduction, and what is left is the S-only fragment, already
+-- proved acyclic. That is a THREE-LEVEL squeeze: #B, then leafCount, then τ.
+
+inductive SBNoBDupStep : SBTerm → SBTerm → Prop
+  | S_red (f g x : SBTerm) (h : x.countB = 0) :
+      SBNoBDupStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | B_red (x y z : SBTerm) :
+      SBNoBDupStep (.app (.app (.app .B x) y) z) (.app x (.app y z))
+  | appL {t t' u : SBTerm} : SBNoBDupStep t t' → SBNoBDupStep (.app t u) (.app t' u)
+  | appR {t u u' : SBTerm} : SBNoBDupStep u u' → SBNoBDupStep (.app t u) (.app t u')
+
+theorem sbNoBDupStep_isStep {t u : SBTerm} (h : SBNoBDupStep t u) : SBStep t u := by
+  induction h with
+  | S_red f g x _ => exact SBStep.S_red f g x
+  | B_red x y z => exact SBStep.B_red x y z
+  | appL _ ih => exact SBStep.appL ih
+  | appR _ ih => exact SBStep.appR ih
+
+def RS.SBNoBDup : RS := ⟨SBTerm, SBNoBDupStep⟩
+
+/-- The three-level invariant, per step. `#B` never rises; when it holds still,
+`leafCount` never falls; and when that holds still too, τ strictly drops. Each level
+is what pins the next, which is why they must travel together. -/
+theorem sbNoBDup_squeeze {t u : SBTerm} (h : SBNoBDupStep t u) :
+    u.countB ≤ t.countB ∧ (u.countB = t.countB →
+      t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSB u < tauSB t)) := by
+  induction h with
+  | S_red f g x hx =>
+    have hpx := SBTerm.leafCount_pos x
+    have htau := tauSB_S_red f g x
+    refine ⟨by simp only [SBTerm.countB]; omega, fun _ => ⟨?_, ?_⟩⟩
+    · simp only [SBTerm.leafCount]; omega
+    · intro heq
+      simp only [SBTerm.leafCount] at heq
+      have hx1 : x.leafCount = 1 := by omega
+      have : tauSB x = 1 := by
+        rcases SBTerm.eq_atom_of_leafCount_one hx1 with rfl | rfl
+        · rfl
+        · simp only [SBTerm.countB] at hx; omega
+      omega
+  | B_red x y z =>
+    -- #B strictly falls, so the rest of the invariant is vacuous here
+    refine ⟨by simp only [SBTerm.countB]; omega, fun heq => ?_⟩
+    simp only [SBTerm.countB] at heq
+    omega
+  | appL _ ih =>
+    refine ⟨by simp only [SBTerm.countB]; omega, fun heq => ?_⟩
+    simp only [SBTerm.countB] at heq
+    obtain ⟨hb, himp⟩ := ih
+    obtain ⟨hl, ht⟩ := himp (by omega)
+    refine ⟨by simp only [SBTerm.leafCount]; omega, ?_⟩
+    intro hleq
+    simp only [SBTerm.leafCount] at hleq
+    have := ht (by omega)
+    simp only [tauSB]; omega
+  | appR _ ih =>
+    refine ⟨by simp only [SBTerm.countB]; omega, fun heq => ?_⟩
+    simp only [SBTerm.countB] at heq
+    obtain ⟨hb, himp⟩ := ih
+    obtain ⟨hl, ht⟩ := himp (by omega)
+    refine ⟨by simp only [SBTerm.leafCount]; omega, ?_⟩
+    intro hleq
+    simp only [SBTerm.leafCount] at hleq
+    have := ht (by omega)
+    simp only [tauSB]; omega
+
+theorem sbNoBDup_path {t u : SBTerm} (h : RS.SBNoBDup.Steps t u) :
+    u.countB ≤ t.countB ∧ (u.countB = t.countB →
+      t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSB u ≤ tauSB t)) := by
+  refine h.rec (fun a => ⟨Nat.le_refl _, fun _ => ⟨Nat.le_refl _, fun _ => Nat.le_refl _⟩⟩) ?_
+  intro a w c s _ ih
+  obtain ⟨hs1, hs2⟩ := sbNoBDup_squeeze s
+  obtain ⟨hi1, hi2⟩ := ih
+  refine ⟨Nat.le_trans hi1 hs1, fun heq => ?_⟩
+  -- #B pinned across the whole path pins it across the first step too
+  obtain ⟨hsl, hst⟩ := hs2 (by omega)
+  obtain ⟨hil, hit⟩ := hi2 (by omega)
+  refine ⟨Nat.le_trans hsl hil, fun hleq => ?_⟩
+  have := hst (by omega)
+  have := hit (by omega)
+  omega
+
+/-- **The no-B-duplication fragment of {S,B} is acyclic.** -/
+theorem sbNoBDup_acyclic : RS.Acyclic RS.SBNoBDup := by
+  intro b b' hstep hback
+  obtain ⟨h1, h2⟩ := sbNoBDup_squeeze hstep
+  obtain ⟨h3, h4⟩ := sbNoBDup_path hback
+  have hbeq : b'.countB = b.countB := by omega
+  obtain ⟨hl1, ht1⟩ := h2 hbeq
+  obtain ⟨hl2, ht2⟩ := h4 (by omega)
+  have hleq : b.leafCount = b'.leafCount := by omega
+  have := ht1 hleq
+  have := ht2 (by omega)
+  omega
+
+/-- **Stage 27's composed condition, now proved rather than derived informally.** Any
+`{S,B}` cycle must contain an S-reduction whose duplicated argument CONTAINS A `B`.
+Together with `sbCycle_needs_heavy_S` and `leafCount_ge_three_of_heavy`, a cycle needs
+an S-reduction on a ≥3-leaf argument and an S-reduction on a B-containing argument. -/
+theorem sbCycle_needs_B_duplication {t : SBTerm}
+    (hcyc : ∃ u, SBNoBDupStep t u ∧ RS.SBNoBDup.Steps u t) : False := by
+  obtain ⟨u, h1, h2⟩ := hcyc
+  exact sbNoBDup_acyclic h1 h2
+
+-- Note the fragment is strictly bigger than the S-only one: it contains every
+-- B-reduction as well, so `sbNoBDup_acyclic` subsumes `sbSOnly_acyclic` and the
+-- Stage 26 result is now a corollary rather than an independent fact.
+example : SBNoBDupStep (.app (.app (.app .B .S) .S) .S) (.app .S (.app .S .S)) :=
+  SBNoBDupStep.B_red .S .S .S
