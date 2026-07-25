@@ -2328,3 +2328,36 @@ what automation could and couldn't do. This file is a first-class deliverable
   it suffices to show every reduct of that term is reducible. That is a positive, decidable-
   per-term condition, which is a better target than either the invariant (Stage 32) or the
   raw size claim (Stage 33); (2) C6, declined a twenty-third time.
+
+## 2026-07-25 — Stage 36: four stages of reformulating one problem
+
+- Ranked task was C1(a) via "every reduct is reducible", which Stage 35 had called a better
+  target than the invariant or the size claim. Checked it first — ninth stage running — and
+  the claim was wrong in a way worth making permanent.
+- All three are equivalent, and so is the invariant form. The sharpest bit: if every reduct of
+  `t` is reducible, then `fun u => t ⟶* u` IS a reducibility invariant, with `stepOnce` as its
+  successor function. So the invariant route (Slices 3, 4, Stage 32) and the positive route
+  (Stage 35) were never different problems. Nor was the size route (Stage 33), by Stage 35's
+  equivalence.
+- **So Stages 32, 33 and 35 each swapped C1(a) for a provably equivalent statement and I read
+  each swap as progress.** Each felt like progress for a real reason — the size criterion did
+  match the census's currency, the positive form is decidable per term — but matching the
+  evidence better is not the same as being closer to a proof. I want that distinction on
+  record because it is the subtlest error this project has produced. It is not an overclaim, a
+  mis-estimate, or an untransferred caveat. It is mistaking a change of coordinates for
+  motion.
+- Made it a theorem rather than a note. `c1a_formulations` proves the four-way equivalence
+  constructively, which means the cycle cannot repeat: any further reformulation along these
+  lines is provably a restatement. Closing C1(a) needs a new fact about pure-S reduction — a
+  SOURCE, not another bridge. The tree now has every bridge and no source.
+- Also wrote down, in the same place, what the program has actually contributed to C1(a):
+  C1(b) proved, C5 proved, the frozen head proved, this equivalence, and three honest
+  negatives. That matters because "the reformulations were not progress" could be misread as
+  "nothing was achieved", and the two are quite different. The bridges are real theorems; they
+  just are not the thing.
+- Ranking, and I want to be careful here rather than name another reformulation:
+  (1) **a source, not a bridge** — the only untried route with genuinely new content is
+  constructing a term with a self-embedding by design rather than searching for one, which
+  pass 2 registered as "construct-don't-search" and which no stage has attempted. It is the
+  one item on the board that could produce an infinite reduction rather than relate the ways
+  of describing one; (2) C6, declined a twenty-fourth time.

@@ -2157,3 +2157,29 @@ directly**, and the argument is five lines of English.
   quantifier over a fixed term's successors is decidable; one over all reducts is not.
   Stage 34's removal was right to preserve the tree's choice-freeness and wrong about the
   obstruction.
+
+### Stage 36: the reformulations of C1(a) are all the same problem
+
+- **`c1a_formulations`** (`Conservation.lean`, constructive): four statements proved
+  equivalent —
+  1. `t` has no normal form (the conjecture as stated);
+  2. every reduct of `t` is reducible (Stage 35's "better target");
+  3. there is a reducibility invariant with an explicit successor function (the route hunted
+     in Slices 3, 4 and Stage 32);
+  4. `t`'s reducts have unbounded size (Stage 33's criterion).
+- **What that says about the last four stages.** Stages 32, 33 and 35 each replaced C1(a)'s
+  statement with a provably equivalent one, and each time I read the replacement as progress.
+  It was not. `(2) → (3)` is the sharpest illustration: `fun u => t ⟶* u` is *itself* an
+  invariant whenever every reduct is reducible, so the invariant route and the positive route
+  were never different problems.
+- **Consequently the cycle cannot repeat.** Any further reformulation along these lines is a
+  restatement. **Closing C1(a) requires a new fact about pure-S reduction** — something that
+  produces, for one concrete term, an infinite reduction, an unbounded family of reducts, or a
+  preserved reducibility predicate. The tree now supplies every *bridge* between those and
+  none of the *sources*.
+- **What the program has contributed to C1(a)**, recorded so the above is not mistaken for the
+  whole story: C1(b) proved (nothing below 7 leaves diverges); C5 proved (an infinite
+  reduction suffices); the frozen head proved (`c1`'s trajectory is `S A B` with `A` a fixed
+  normal form, reducing the question to the payload); this equivalence, so the target is
+  unambiguous; and three honest negatives — no self-embedding for `c1` within 120 steps, none
+  for the literature's 14-leaf term within 40, and no I-like combinator in `{S,B}`.
