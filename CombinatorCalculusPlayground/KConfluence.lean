@@ -233,3 +233,59 @@ example : IsKNF (app2 Term.K Term.S Term.S) Term.S :=
 /-- The countdown encoding is already K-normal, so its abstraction reads it unchanged — the
 `habs` side of Stage 45's mechanism, now at the level of the relation. -/
 theorem isKNF_self {t : Term} (h : KNormalForm t) : IsKNF t t := ⟨KSteps.refl t, h⟩
+
+-- ## The other half of `Step`
+-- The abstraction must react differently to the two kinds of host step: a K-step is invisible to it
+-- (`IsKNF.of_kstep`) while an S-step is what advances the encoded machine. So the split has to be
+-- exhaustive, and that is a theorem rather than an observation.
+
+/-- S-reduction: the `S` rule and congruence. -/
+inductive SStep : Term → Term → Prop
+  | S_red (f g x : Term) : SStep (app3 S f g x) (app (app f x) (app g x))
+  | appL {t t' u : Term} : SStep t t' → SStep (app t u) (app t' u)
+  | appR {t u u' : Term} : SStep u u' → SStep (app t u) (app t u')
+
+theorem SStep.toStep : ∀ {t u : Term}, SStep t u → t ⟶ u := by
+  intro t u h
+  induction h with
+  | S_red f g x => exact Step.S_red f g x
+  | appL _ ih => exact Step.appL ih
+  | appR _ ih => exact Step.appR ih
+
+/-- **Every SK step is a K-step or an S-step.** -/
+theorem Step.kOrS : ∀ {t u : Term}, (t ⟶ u) → KStep t u ∨ SStep t u := by
+  intro t u h
+  induction h with
+  | K_red x y => exact Or.inl (KStep.K_red x y)
+  | S_red f g x => exact Or.inr (SStep.S_red f g x)
+  | appL _ ih => exact ih.imp KStep.appL SStep.appL
+  | appR _ ih => exact ih.imp KStep.appR SStep.appR
+
+-- ## What the S-step case cannot be
+-- The tempting one-layer commutation statement is
+--
+--     SStep b b' → SStep (kdev b) (kdev b') ∨ kdev b = kdev b'
+--
+-- and it is FALSE. The reason is worth recording, because it is the shape of the real obligation.
+-- When the fired redex is `S K g x`, its reduct `(K x)(g x)` is ITSELF a K-redex, so `kdev` fires
+-- that too and lands a step further along than one S-step from `kdev b` can reach. Concretely with
+-- `g = x = S`:
+
+theorem sStep_SKSS : SStep (app3 S K S S) (app (app K S) (app S S)) := SStep.S_red K S S
+
+#guard kdev (app3 S K S S) = app3 S K S S          -- not a K-redex, so kdev leaves it alone
+#guard kdev (app (app K S) (app S S)) = S         -- ...but its S-reduct IS one, and collapses
+
+/-- So `kdev b` and `kdev b'` are neither equal nor one S-step apart: the reduct's K-collapse gets
+there first. The correct statement interposes K-reduction AFTER the S-step, which is why the
+remaining obligation is a commutation square and not an equation. -/
+theorem naive_kdev_commutation_fails :
+    kdev (app3 S K S S) ≠ kdev (app (app K S) (app S S))
+      ∧ ¬ SStep (kdev (app3 S K S S)) (kdev (app (app K S) (app S S))) := by
+  refine ⟨by decide, ?_⟩
+  intro h
+  -- `kdev` has left both sides where the guards above put them, so this asks for
+  -- `SStep (S K S S) S`, and an S-reduct is always an application
+  simp only [show kdev (app3 S K S S) = app3 S K S S from by decide,
+    show kdev (app (app K S) (app S S)) = S from by decide] at h
+  cases h
