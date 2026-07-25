@@ -2912,3 +2912,25 @@ The chain now reads:
 
 The last item is the only gap, it is **infrastructure rather than research**, and `skTerms`
 (`AdequacyProbe.lean`) is already the uncertified version of exactly it.
+
+### Stage 57: a certified finite universe of SK terms
+
+Stage 56 left route two's chain needing exactly this. The reachable set of the countdown's encoding is known
+finite (`itower_reduct_bound`, `3·2^m − 2`), but *finite* only becomes *decidable* against a certified
+enumeration of the bounded universe — and this tree's universe, `smallTerms`, is K-free because `enumAt` is.
+
+| | |
+|---|---|
+| `skEnum` / `skEnumAt` | SK terms with exactly `n` leaves, budget-indexed for structural recursion |
+| `skEnum_sound` | nothing spurious |
+| `skEnum_complete` | every SK term appears at its own leaf count — **no `KFree` hypothesis**, the whole difference from `enum_complete` |
+| `mem_skEnumAt_iff` | the characterisation |
+| `skSmallTerms`, `mem_skSmallTerms`, `skSmallTerms_sound` | the finite universe up to a size bound |
+
+This is `Completeness.lean`'s enumerator with **one line changed** — the leaf case lists `K` as well as `S` —
+and the K-freeness clause dropped from soundness. Everything else is the same argument, which is the point:
+**the restriction was never structural, only inherited from what the census needed.** Goal 3's decidability
+layer can now be widened past pure S whenever something wants it.
+
+Counts guarded: `Catalan(n−1) · 2^n` = 2, 4, 16, 80, 448, 2688. And the reason the file exists is guarded
+too — `I = S K K` has three leaves, sits in `skEnumAt 3`, and does **not** sit in `enumAt 3`.

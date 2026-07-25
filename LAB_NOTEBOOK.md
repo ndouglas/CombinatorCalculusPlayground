@@ -3106,3 +3106,30 @@ what automation could and couldn't do. This file is a first-class deliverable
   and completeness lemmas `enumAt` has, which would close the chain to route two's `hstep` and, incidentally,
   widen Goal 3's decidability layer beyond pure S. Engineering, but it unblocks a proof. (2) piece (v) with
   route two, once the chain closes. (3) rungs 2/3 via match-bounds. (4) C6, declined a forty-fourth time.
+
+## 2026-07-25 — Stage 57: one line, and fifty stages of restriction lifted
+
+- The K-inclusive enumeration was, as predicted, engineering. It is `Completeness.lean` with the leaf case
+  changed from `[S]` to `[S, K]` and the `KFree` conjunct deleted from soundness. Both proofs went through
+  unchanged otherwise, including the budget-indexing trick and Slice 2's care about explicit witnesses.
+- That the diff is one line is the finding. `enumAt`'s K-freeness has been load-bearing since Stage 6 and
+  I had come to think of it as intrinsic — Goal 3's decidability, C1(b)'s floor, C5's pigeonhole all run on
+  it, and they all genuinely need pure S. But the enumerator itself never needed the restriction; it
+  inherited it from what the census happened to want. Fifty stages of treating an accident as a constraint.
+- I only found out because route two's chain reached back through decidability to enumeration, which is the
+  second time this session a long chain has ended somewhere I assumed was bedrock. The first was Stage 54,
+  where the obstruction turned out to be my own Stage 8 interface. Both were early definitions, adequate for
+  every case that came up, silently narrower than needed — and in both cases the tell was visible in the
+  original file and I had never had a reason to look.
+- What that suggests as a habit, and I want to state it as more than an observation: when a chain of
+  reductions bottoms out at an old definition, check whether the definition's restriction is load-bearing or
+  inherited before treating it as a wall. Twice now the answer was "inherited" and the fix was small.
+- Where the chain stands: route two's `hstep` ⟸ `hleast` ⟸ decidable reachability from `Itower m` ⟸
+  bounded enumeration (now certified) plus the size bound (Stage 56). Both ingredients exist. What remains is
+  to assemble them into the decision procedure and the `hleast` extraction, which is the deficit-style
+  argument `boundedClosure_isSome` already does for the K-free case — and which will need the same widening,
+  since it too is built on `smallTerms`.
+- Ranking, as obligations: (1) **widen the closure-saturation argument to `skSmallTerms`** — `deficit`,
+  `deficit_lt` and `boundedClosure_isSome` are the pieces, all of them K-free only for the same inherited
+  reason. That yields decidable reachability from `Itower m` and closes route two's chain to `hstep`.
+  (2) piece (v) with route two. (3) rungs 2/3 via match-bounds. (4) C6, declined a forty-fifth time.
