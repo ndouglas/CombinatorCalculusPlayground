@@ -195,6 +195,54 @@ theorem RS.bwd_of_abstraction_rel {A B : RS}
   obtain ⟨a₂, hpath, hend⟩ := RS.abstraction_tracks_rel absR hstep h a (habs a)
   exact (hfun hend) ▸ hpath
 
+-- ## Stage 54: advance by a PATH, not a single step
+-- Both forms above make `hstep` advance the source by at most ONE step per host step. That is an
+-- unnecessary restriction, and it is exactly what breaks the trajectory relation on the countdown: a
+-- host K-step can DISCARD a pending computation and land two source states further along at once, and
+-- the single-step form has no way to say so. The tracking proof never needed the restriction — it
+-- composes paths either way — so the fix is to compose with `trans` instead of `tail`.
+
+/-- **Adequacy tracking, with multi-step advance.** -/
+theorem RS.abstraction_tracks_path {A B : RS}
+    (absR : B.Carrier → A.Carrier → Prop)
+    (hstep : ∀ {b b' : B.Carrier} {a : A.Carrier}, B.step b b' → absR b a →
+      absR b' a ∨ ∃ a', A.Steps a a' ∧ absR b' a')
+    {b b' : B.Carrier} (h : B.Steps b b') :
+    ∀ a, absR b a → ∃ a₂, A.Steps a a₂ ∧ absR b' a₂ := by
+  induction h with
+  | refl _ => intro a ha; exact ⟨a, RS.Steps.refl _, ha⟩
+  | @tail b w b' s _ ih =>
+    intro a ha
+    rcases hstep s ha with hstut | ⟨a₁, hadv, hw⟩
+    · exact ih a hstut
+    · obtain ⟨a₂, hpath, hb'⟩ := ih a₁ hw
+      exact ⟨a₂, RS.Steps.trans hadv hpath, hb'⟩
+
+/-- **Adequacy from a relational abstraction that may advance by a path.** Strictly more permissive
+than `RS.bwd_of_abstraction_rel`, and the version an encoding whose host steps can skip source states
+actually needs. -/
+theorem RS.bwd_of_abstraction_path {A B : RS}
+    (enc : A.Carrier → B.Carrier) (absR : B.Carrier → A.Carrier → Prop)
+    (habs : ∀ a, absR (enc a) a)
+    (hfun : ∀ {a a' : A.Carrier}, absR (enc a) a' → a = a')
+    (hstep : ∀ {b b' : B.Carrier} {a : A.Carrier}, B.step b b' → absR b a →
+      absR b' a ∨ ∃ a', A.Steps a a' ∧ absR b' a')
+    {a a' : A.Carrier} (h : B.Steps (enc a) (enc a')) : A.Steps a a' := by
+  obtain ⟨a₂, hpath, hend⟩ := RS.abstraction_tracks_path absR hstep h a (habs a)
+  exact (hfun hend) ▸ hpath
+
+/-- The single-step form is the special case, so nothing is lost by generalising. -/
+theorem RS.bwd_of_abstraction_path_generalises {A B : RS}
+    (enc : A.Carrier → B.Carrier) (absR : B.Carrier → A.Carrier → Prop)
+    (habs : ∀ a, absR (enc a) a)
+    (hfun : ∀ {a a' : A.Carrier}, absR (enc a) a' → a = a')
+    (hstep : ∀ {b b' : B.Carrier} {a : A.Carrier}, B.step b b' → absR b a →
+      absR b' a ∨ ∃ a', A.step a a' ∧ absR b' a')
+    {a a' : A.Carrier} (h : B.Steps (enc a) (enc a')) : A.Steps a a' :=
+  RS.bwd_of_abstraction_path enc absR habs hfun
+    (fun hs ha => (hstep hs ha).imp id
+      (fun ⟨a', hadv, hb⟩ => ⟨a', RS.Steps.single hadv, hb⟩)) h
+
 /-- Stage 8's function version is the special case `absR b a := (abs b = some a)`, so
 nothing is lost by working relationally. -/
 theorem RS.bwd_of_abstraction_rel_generalises {A B : RS}

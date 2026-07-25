@@ -477,3 +477,36 @@ theorem onSegment_functional {a a' : Nat} (h : onSeg (Itower a) a') : a = a' := 
 example : onSeg (Itower 4) 4 := onSegment_enc 4
 example {a : Nat} (h : onSeg (Itower a) 3) : a = 3 := onSegment_functional h
 #guard leafCount (Itower 4) = 13
+
+-- ## Stage 54: route two's `hstep` fails for one step and passes for a path
+-- Measured before attempting the proof, which was the right order: over the 183 terms reachable from
+-- `Itower 3`, single-step `hstep` fails on **36** of them. Stable at closure bounds 26, 30 and 36 with
+-- identical saturated closures, so it is not a bound artefact.
+--
+-- The diagnosis is one example. `K (S K K S) (K (S K K (S K K S)))` sits on segment 3, and it is itself
+-- a K-redex whose contraction is `S K K S = I S = Itower 1`. One host step, two source states — segment
+-- 2 skipped entirely. Nothing to do with the spacing I hypothesised in Stage 53; the cause is that a
+-- K-step can DISCARD a pending computation and arrive early.
+--
+-- Relaxing `hstep` to advance by a source PATH takes the failures from 36 to **0**. So the trajectory
+-- relation was never the problem — `RS.bwd_of_abstraction_rel`'s single-step restriction was, and
+-- `RS.bwd_of_abstraction_path` (Defs.lean) removes it. The tracking proof never needed it.
+--
+-- Note the symmetry with route one, which is the interesting part. The K rule's erasure is what makes
+-- the K-normal-form abstraction well behaved — drift inside discarded arguments becomes invisible — and
+-- it is the very same erasure that makes the trajectory relation skip states. One mechanism, helping one
+-- abstraction and hurting the other.
+
+/-- Route two's remaining obligation, in the form the generalised interface asks for. Measured clean over
+the closure of `Itower 3`; not proved, and the measurement is one machine at one size. -/
+def OnSegmentHStepPath (A : RS) (enc : A.Carrier → Term) : Prop :=
+  ∀ {b b' : Term} {w : A.Carrier}, (b ⟶ b') → OnSegment enc b w →
+    OnSegment enc b' w ∨ ∃ w', A.Steps w w' ∧ OnSegment enc b' w'
+
+-- The witness that made the single-step form fail, kept as a guard so the next attempt does not
+-- rediscover it: a K-redex on segment three whose contraction is the encoding of state one.
+def skipWitness : Term := app2 K (Itower 1) (Term.app K (Itower 2))
+
+#guard leafCount skipWitness = 13
+#guard stepOnce skipWitness = some (Itower 1)
+#guard Itower 1 = Term.app I S
