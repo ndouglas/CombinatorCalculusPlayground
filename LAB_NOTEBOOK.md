@@ -2684,3 +2684,44 @@ what automation could and couldn't do. This file is a first-class deliverable
   `universalReach_extend`). It is bounded work on the spec's declared centre, which is more than can
   be said for a match-bounds framework. (2) rungs 2/3 via match-bounds, as a deliberate multi-stage
   project rather than a hoped-for corollary. (3) C6, declined a thirty-second time.
+
+## 2026-07-25 — Stage 45: the untried route was the cheap one
+
+- Ranking against the spec sent me to Goal 2, the declared "intellectual center", where the blocker
+  has been adequacy since Stage 8. Reading my own probe files properly was most of the work: Stage 10
+  found drift, Stage 11 half-fixed it, Stage 13 refuted the fix and named three routes, two dead. The
+  third — "read only the live spine, ignore subterms destined for a K-discard" — had sat untouched
+  for thirty-two stages with no one noticing it was a one-line idea.
+- It is one line. Contract the K-redexes before reading. A doomed copy collapses regardless of what
+  it drifted into, so drift stops being a problem to solve and becomes a thing you cannot see. Stage
+  10 tried to PREVENT drift and Stage 13 showed you cannot; route 1 tried to TOLERATE it and it went
+  too coarse. Making it invisible is a third relation to the problem and it did not occur to me for
+  thirty-two stages.
+- What I did right, and it is the habit that has paid every time this week: I tested before building.
+  Fifteen minutes of `#eval` established that the abstraction fixes the probe's own failure case,
+  still inverts the encoder, and satisfies stutter-or-advance over every SK term up to seven leaves.
+  Had I gone straight to proofs I would have discovered the same thing three stages later or, worse,
+  proved something about a mechanism that did not work.
+- I also tested the obligation where it actually lives. `RS.bwd_of_abstraction` quantifies over EVERY
+  pair of host terms, not the reachable ones, and it would have been easy to test the reachable
+  closure, get a clean result, and report it as though it meant the obligation held. The reachable
+  closure of the countdown is 183 terms; the real test space at seven leaves is 16896. Same class of
+  error as the size-capped searches in Stage 41 — the finding is about the domain you quantified over.
+- What I got wrong: three attempts at certifying the K-normaliser, all lost to the equation lemmas
+  that Lean generates for overlapping patterns. I stopped and shipped it as census tooling, which is
+  the project's existing convention for unverified code and cost nothing, since the finding is
+  empirical anyway. The honest note is that the first attempt was not a proof attempt at all — I
+  wrote a `have ... |> fun _ => by` construction that was nonsense, which is what flailing looks like
+  when I have not thought about the induction. The second and third were real attempts.
+- I ran a negative control on the guards before claiming them, because the build finished in 1.1
+  seconds and that felt too fast for a check over 3238 terms. Inserting a guard that must fail made
+  the build fail, so they bite. Thirty seconds to convert a suspicion into a fact.
+- **Where Goal 2 stands.** The gap is unchanged in shape — no `Simulation` from a universal source
+  into SK — but its hardest obligation went from "two dead routes" to "one mechanism that works on
+  every case tested". That is the difference between blocked and unfinished.
+- Ranking, against the spec: (1) prove stutter-or-advance for `absK` on the countdown, which turns
+  the empirical finding into the first `Simulation` into `RS.SK` with a genuinely multi-step encoding.
+  The crux is one question — how does an S-step interact with K-normalisation — and it needs
+  confluence of K-reduction, which is a small self-contained lemma this tree does not yet have.
+  (2) piece (v), the tag-step driver, once the mechanism is certified rather than measured.
+  (3) rungs 2/3 via match-bounds. (4) C6, declined a thirty-third time.

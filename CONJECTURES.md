@@ -2479,3 +2479,41 @@ transferred so cleanly. The termination direction (Geser–Hofbauer–Waldmann�
 match-bounds) draws well-foundedness from a **height annotation** bounded over the reachable set:
 a different mechanism, and a much larger build. Rungs 2/3 need the second, and it is not a
 corollary of the first.
+
+### Stage 45: the adequacy blocker has a mechanism (Goal 2)
+
+Goal 2's remaining gap is a `Simulation` from a known-universal machine into SK, and its hard
+obligation is `bwd`. Stage 13 left it with two routes dead and a third named but untried:
+
+| route | status |
+|---|---|
+| abstraction up to `Joinable` | too **coarse** — `RS.joinable_abs_not_functional` |
+| constrain the encoding so duplication only hits normal forms | refuted by Stage 13: transient duplicates are unavoidable in SK, and occurrence-counting does not help |
+| *"read only the live spine, ignore subterms destined for a K-discard"* | **untried** |
+
+The third has a small mechanism. A doomed subterm is doomed because some `K` will discard it — so
+**contract the K-redexes first and read the result.** A doomed copy `(K a) u` collapses to `a` no
+matter what `u` drifted into, so drift becomes **invisible** rather than prevented or tolerated.
+`leafCount` is enough fuel, since each K-contraction discards both the `K` and an argument.
+
+```
+naiveAbs desync' = none      -- Stage 10's failure: drift lost the count
+absK     desync' = some 0    -- restored
+absK (Itower n)  = some n    -- still inverts the encoder, which is habs
+stutter-or-advance: 0 failures over EVERY SK term up to 7 leaves (20386 terms, K included)
+non-vacuous:       absK is defined on 813 of the 16896 seven-leaf terms
+```
+
+The test enumerates **all** SK terms rather than the reachable ones, because
+`RS.bwd_of_abstraction` quantifies `hstep` over every pair of host terms.
+
+`kStepOnce`/`kNorm`/`absK` ship as **unverified census tooling** and say so. Three attempts at
+certifying soundness and the `leafCount` bound ran into the overlapping-pattern equation lemmas and
+were abandoned per the three-attempt rule. Guards verified to bite by negative control.
+
+**Not settled, and both are real.** *The general proof:* a K-step leaves the K-normal form alone
+(modulo confluence of K-reduction, unproved here), but an S-step creates and destroys K-redexes, so
+`absK` tracking one is exactly what needs an argument — agreement over 20386 terms is evidence, not
+a theorem. *The source system:* the countdown is a genuine multi-step machine but is not universal,
+so piece (v), the tag-step driver, is still unwritten. What changed is that its hardest obligation
+now has a mechanism instead of two dead ends.
