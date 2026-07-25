@@ -2846,3 +2846,33 @@ trajectory relation skip states. One mechanism, helping one abstraction and hurt
 
 Route two's obligation is now stated in the form the generalised interface asks for
 (`OnSegmentHStepPath`), measured clean over one machine at one size, and unproved.
+
+### Stage 55: route two reduces to one fact — strong normalisation of the encoding
+
+Attempting `OnSegmentHStepPath` turned out not to need a case analysis on the step at all.
+
+| | |
+|---|---|
+| `countdown_steps_of_le` | `m ≤ w` gives a source path |
+| `onSegmentHStepPath_of_least` | given a **least** segment index, `hstep` is four lines |
+
+The stutter case is *subsumed* rather than handled: if the least index happens to be `w`, the "advance" is
+the empty path. The proof also never uses the **"not yet past `w`"** clause of its hypothesis — only the
+reachability half — which says that clause earns its keep in `hfun` and nowhere else.
+
+**What `hleast` needs.** Extracting a least element of `{m | Itower m ⟶* b}` needs that predicate to be
+**decidable**. The set is non-empty (it contains `w`) and bounded, so decidability is the only missing
+ingredient — and this development refuses `Classical.choice`.
+
+Reachability from `Itower m` is decidable if its reachable set is finite, which follows from strong
+normalisation (finitely branching + terminating ⟹ finite reachable set). So route two reduces to:
+
+> **`Itower m` is strongly normalising.**
+
+And that is not available here. C5 (`conservation`) gives WN ⇒ SN — but only for **K-free** terms, and
+`Itower` is built from `I = S K K`. With `K` in play the implication is false in general: `K S omegaSK` has
+a normal form *and* an infinite reduction. **So the one theorem in this tree that would supply SN is blocked
+from reaching the countdown's own encoding** — by exactly the erasure Stage 54 showed cuts both ways.
+
+That is a sharper statement of where piece (v) stands than "route two looks promising": it is reduced to a
+single standard fact about one family of terms.

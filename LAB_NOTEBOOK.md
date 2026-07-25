@@ -3042,3 +3042,35 @@ what automation could and couldn't do. This file is a first-class deliverable
   proof needs the source-order lemmas from Stage 53 plus a case analysis on whether the step crosses a
   segment boundary. (2) piece (v) with route two. (3) rungs 2/3 via match-bounds. (4) C6, declined a
   forty-second time.
+
+## 2026-07-25 — Stage 55: the proof was four lines and the hypothesis was the whole problem
+
+- I expected `hstep` for the trajectory relation to be a case analysis: does the step cross a segment
+  boundary or not. It is not. Take the LEAST source state whose encoding reaches `b'`, and everything
+  follows — the advance is a path to that state, and if it happens to be `w` the path is empty, so the
+  stutter case never needs mentioning. Four lines.
+- Two things fell out that I would not have seen by proving it the hard way. The proof never touches the
+  "not yet past `w`" clause of its hypothesis, only the reachability half — so that clause exists purely
+  for `hfun`, which is a clean division of labour I had not noticed. And the entire difficulty relocated
+  into one hypothesis, `hleast`.
+- `hleast` needs decidability, because a least element of a non-empty bounded set of naturals is only
+  extractable constructively when membership is decidable, and this tree refuses `Classical.choice`. That
+  chases back to: `Itower m`'s reachable set must be finite, i.e. `Itower m` must be strongly normalising.
+- **And the tree cannot supply that, for a reason I find genuinely satisfying to have found.** C5 is exactly
+  the theorem that turns "has a normal form" into "strongly normalising" — and C5 requires K-freeness.
+  `Itower` is built from `I = S K K`. So my own conservation theorem is blocked from reaching my own
+  encoding, and the blocker is the `K` rule's erasure: with `K` present, WN does not imply SN at all
+  (`K S omegaSK` normalises and also diverges). That is the third stage running in which the K rule's
+  erasure is the pivot — it made route one's abstraction work, made route two skip states, and now blocks
+  the theorem route two needs.
+- I could have reached for `Classical.choice` here and had the whole thing in twenty minutes. I would rather
+  report a reduction than break a property the project has held for fifty-five stages, and the reduction is
+  more informative anyway: "route two needs SN of `I^m S`" is a sentence someone can act on.
+- A correction to my own record: I wrote "both theorems axiom-free" in the commit message before reading the
+  audit, and they are `[propext, Quot.sound]`. Amended. I have been running the audit after composing the
+  message, which is the wrong order and has now bitten once.
+- Ranking, as obligations: (1) **prove `Itower m` is strongly normalising** — plausibly by a measure that
+  accounts for the duplication `I t ⟶ (K t)(K t)` honestly, since leaf count grows there; the natural
+  attempt is a measure on the number of `I` layers times something, and it is a self-contained termination
+  problem. That completes route two's adequacy for the countdown and gives the second independent proof.
+  (2) piece (v) with route two. (3) rungs 2/3 via match-bounds. (4) C6, declined a forty-third time.
