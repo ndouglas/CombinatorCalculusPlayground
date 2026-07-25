@@ -2146,3 +2146,42 @@ what automation could and couldn't do. This file is a first-class deliverable
   (2) C6, declined an eighteenth time. The ladder has converged: both rungs have three
   constraints, the shared machinery is factored, and further narrowing needs a genuinely
   new idea rather than another fragment — the same place criterion (a) reached in Stage 29.
+
+## 2026-07-24 — Stage 31: the "external" label was hiding a five-line proof
+
+- Ranked task was transcription: import C1(a) and C5. Checked feasibility first, seventh
+  stage running, and C5 turned out not to be transcription at all. The tree can prove it.
+- The argument assembled itself once I listed what was available. Confluence (Stage 1) plus
+  a NORMAL target forces every term on an infinite sequence to reach that normal form.
+  Monotonicity (Stage 2) then caps their sizes. `enum_complete` (Stage 6) makes the capped
+  universe a finite LIST. Pigeonhole gives a repeat. C2 forbids repeats. Five ingredients,
+  four of them already proved for other reasons, and the fifth a standard combinatorial
+  lemma.
+- **What strikes me is that every ingredient was built for something else.** Confluence was
+  Stage 1's own goal; monotonicity was Stage 2's conservation-laws slice; `enum_complete`
+  was built to unblock C1's minimality half in Slice 5 and reused for Goal 3's decidability;
+  C2 was Slice 2's resolved conjecture. None was aimed at C5. The theorem was latent in the
+  tree for roughly twenty-five stages.
+- Fifth Classical.choice near-miss and the same trap as Stage 9. The natural pigeonhole uses
+  `List.erase`, and both core erase lemmas report choice, because synthesising `LawfulBEq`
+  from `DecidableEq` routes through it. I bisected rather than guessed — two three-line
+  test theorems — then rebuilt on `List.filter` with `decide`, which never touches `BEq`.
+  Also stated the pigeonhole NEGATIVELY, which keeps it constructive: the conservation
+  proof wants a contradiction, not an existential, so `¬ (∀ i j, i < j → f i ≠ f j)` is
+  exactly the right shape and needs no classical step.
+- Lean note: `set ... with` is Mathlib, not core. Inlined the predicate.
+- **The ledger lesson, which I think is the more important half.** The `external` status
+  was added in Stage 6 to stop untested claims sitting as "open", and it worked — it caught
+  C1 after nine stages. But C5 shows it can be wrong in the OTHER direction: a claim marked
+  external because a famous theorem covers it, when a cheaper route existed inside the
+  development. Marking something external closed my inquiry into whether the tree could
+  prove it. So: an `external` label should record where a claim is KNOWN, not settle
+  whether this development can prove it. I have updated the ledger's wording accordingly.
+- Consequence for C1(a): its loop route has been waiting on C5 since Slice 3. It is no
+  longer waiting. `no_normalForm_of_infiniteRed` means an infinite reduction sequence now
+  suffices for non-normalization, with no external dependency.
+- Ranking: (1) **C1(a) via an explicit infinite reduction** — build the sequence for `c1`
+  directly. The frozen head (Slice 4) says the trajectory is `S A B` with `A` a fixed normal
+  form forever, and `frozen_normalizes_iff` reduces the question to the payload; combined
+  with C5 the target is now a Nat-indexed sequence rather than a self-embedding witness,
+  which is a different and possibly easier object; (2) C6, declined a nineteenth time.

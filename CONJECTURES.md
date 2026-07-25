@@ -777,7 +777,14 @@ needed the separate τ-measure route — resolved by `no_pure_S_cycle`
 (C5 was reserved and had not yet been registered — closed below, Stage 5
 Slice 3, per the reviewer note on Task 2.)
 
-## C5: Conservation for pure S (WN ⇒ SN) — status: external (open here)
+## C5: Conservation for pure S (WN ⇒ SN) — **PROVED** (Stage 31)
+`conservation` (`Conservation.lean`): a K-free term that reaches a normal form admits no
+infinite reduction. **Not an import.** Proved from Stage 1 confluence, Stage 2
+monotonicity, Stage 6 `enum_complete`, a constructive pigeonhole, and C2's
+`no_pure_S_cycle`. Axioms `[propext, Quot.sound]`. See the Stage 31 section for why the
+"external" label was wrong.
+
+Historical status line follows.
 - Materiality: **LOW as leverage, MEDIUM as a deliverable.** Its stated
   purpose was to upgrade a C1 loop witness into a divergence proof — and C1(a)
   is now external, so that purpose is gone. What remains is its value as a
@@ -2021,3 +2028,36 @@ building, and it yields one construction and one obstruction.
   so it subsumes `scSOnly_acyclic`.
 - Both rungs now have the same three constraints, and both have their S-only result
   subsumed by their no-X-duplication result.
+
+### Stage 31: C5 proved — the "external" label was wrong
+
+C5 had been labelled **external** since Stage 5 Slice 3, on the reasoning that it is the
+λI conservation theorem (Church 1941; Barendregt §9.5) and that formalizing it means
+importing classical λI machinery. Stage 30 ranked it as *transcription* on that basis.
+Checking before building showed the label was wrong: **for pure S this tree can prove it
+directly**, and the argument is five lines of English.
+
+- **The proof** (`conservation`, `Conservation.lean`). Suppose `t` reaches a normal form
+  `n` and also admits an infinite reduction. Then: **confluence** (Stage 1) makes every
+  `tᵢ` reach `n`, since `n` is normal; **monotonicity** (Stage 2) bounds
+  `leafCount tᵢ ≤ leafCount n`; **`enum_complete`** (Stage 6) puts every `tᵢ` in one
+  *finite* list; **pigeonhole** forces `tᵢ = tⱼ` for some `i < j`; and
+  **`no_pure_S_cycle`** (C2) forbids that. Every ingredient was already here — only the
+  pigeonhole was missing.
+- **`no_normalForm_of_infiniteRed`**: the contrapositive. **Exhibiting an infinite
+  reduction sequence is now sufficient to prove non-normalization for pure S**, with no
+  external dependency. That is exactly what C1(a)'s loop route was waiting on, and it is
+  no longer waiting.
+- **Fifth `Classical.choice` near-miss, same trap as Stage 9.** The natural proof uses
+  `List.erase`, and *both* `List.length_erase_of_mem` and `List.mem_erase_of_ne` report
+  `Classical.choice` — synthesising `LawfulBEq` from `DecidableEq` goes through it.
+  Found by bisection, then rebuilt on `List.filter` with `decide`, which avoids `BEq`
+  entirely, plus one length lemma of our own (`length_filter_lt`). The pigeonhole is also
+  stated **negatively** (`not_injective_into_list`) so no classical step is needed to
+  produce an existential.
+- **What this changes about the ledger's discipline.** The `external` status was added in
+  Stage 6 precisely to stop untested claims sitting as "open". It worked — but C5 shows
+  the label can be wrong in the *other* direction: a claim marked external because a
+  famous theorem covers it, when a cheaper route existed inside the development. **An
+  `external` label should record where the claim is known, not close the question of
+  whether this tree can prove it.**

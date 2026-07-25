@@ -124,7 +124,7 @@ plainly: *"if Stage 5 never terminates, the notebook is the result."*
 | C2 | no proper cycles in pure-S reduction | **PROVED** `no_pure_S_cycle` (probably external too) |
 | C3 | growth-pattern regularities | **RETIRED** as a census artifact |
 | C4 | no one-rule first-order basis hosts SK | **PROVED** `no_pathEncoding_SK_poly` |
-| C5 | conservation for pure S (WN ⇒ SN) | **external** (Church; Barendregt) |
+| C5 | conservation for pure S (WN ⇒ SN) | **PROVED** `conservation` — *not* an import; proved from Stages 1, 2, 6 and C2 |
 | C6 | divergence density → 1 | **probed**, open, low materiality |
 
 Every entry carries a **materiality** and a **prior-art** line in the ledger.
