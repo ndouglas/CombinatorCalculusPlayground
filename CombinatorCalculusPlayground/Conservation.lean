@@ -837,3 +837,209 @@ theorem selfEmbed_needs_two_steps {t u : Term} (hs : Subterm t u)
 -- One thing the failure does settle: the missing ingredient is not a measure. A measure falling
 -- on every pure-S step would prove strong normalization for pure S and so REFUTE C1(a), which
 -- the census evidence says is true. Whatever closes this is structural, as the base case is.
+
+-- ## Stage 39: the skeleton, and whether its residue is inhabited
+-- Stage 38 described the multi-step induction and its three residual shapes in prose. Prose is
+-- where claims go to hide, so the skeleton is a theorem here and the shapes are its conclusion.
+-- The organising fact is that a step rewrites ONE position, so a subterm of the result is
+-- classified by its position relative to that one: disjoint from it (then it survived from the
+-- source), above it (then it contains the reduct), or below it (then it sits inside the reduct).
+
+/-- `RootRedex r r'` — `r` rewrites to `r'` by firing a redex at `r`'s own root. This is `Step`
+minus the two congruence rules, and it is what a step's *witness* is: every step fires exactly
+one root redex, somewhere. -/
+inductive RootRedex : Term → Term → Prop
+  | kRed (x y : Term) : RootRedex (app2 Term.K x y) x
+  | sRed (f g x : Term) : RootRedex (app3 Term.S f g x) (app (app f x) (app g x))
+
+theorem RootRedex.step {r r' : Term} (h : RootRedex r r') : r ⟶ r' := by
+  cases h
+  · exact Step.K_red _ _
+  · exact Step.S_red _ _ _
+
+-- `cases` on an indexed hypothesis whose index IS one of the constructor's fields (as `r' = x` is
+-- for `kRed`) refuses to name that field, so downstream proofs get the shape as an equation pair
+-- instead. Same local idiom as the `mkElimApp` workaround elsewhere in the tree: when `cases`
+-- fights the indices, extract what you need as a plain disjunction of equations first.
+theorem RootRedex.shape {r r' : Term} (h : RootRedex r r') :
+    (∃ p q, r = app2 Term.K p q ∧ r' = p) ∨
+    (∃ f g x, r = app3 Term.S f g x ∧ r' = app (app f x) (app g x)) := by
+  cases h
+  · exact Or.inl ⟨_, _, rfl, rfl⟩
+  · exact Or.inr ⟨_, _, _, rfl, rfl⟩
+
+theorem KFree.of_subterm {s t : Term} (h : Subterm s t) : KFree t → KFree s := by
+  induction h with
+  | refl => exact id
+  | @left a b _ ih => intro hk; cases hk with | app hl _ => exact ih hl
+  | @right a b _ ih => intro hk; cases hk with | app _ hr => exact ih hr
+
+-- The three arguments of an S-redex are subterms of it. Needed to push "t occurs in f" back to
+-- "t occurs in v", which is what collapses the easy branches.
+theorem Subterm.app3_S_arg1 (f g x : Term) : Subterm f (app3 Term.S f g x) :=
+  Subterm.left (Subterm.left (Subterm.right (Subterm.refl f)))
+theorem Subterm.app3_S_arg2 (f g x : Term) : Subterm g (app3 Term.S f g x) :=
+  Subterm.left (Subterm.right (Subterm.refl g))
+theorem Subterm.app3_S_arg3 (f g x : Term) : Subterm x (app3 Term.S f g x) :=
+  Subterm.right (Subterm.refl x)
+
+/-- **The positional trichotomy.** A step `v ⟶ w` fires one root redex `r ⟶ r'` sitting inside
+`v`, and every subterm of `w` either already occurred in `v`, or contains the reduct, or is
+contained in it. The three disjuncts are the three positions available relative to a single
+rewritten site: disjoint, above, below. -/
+theorem Step.subterm_split : ∀ {v w : Term}, (v ⟶ w) →
+    ∃ r r', RootRedex r r' ∧ Subterm r v ∧ Subterm r' w ∧
+      ∀ s, Subterm s w → Subterm s v ∨ Subterm r' s ∨ Subterm s r' := by
+  intro v w h
+  induction h with
+  | K_red x y =>
+      exact ⟨app2 Term.K x y, x, RootRedex.kRed x y, Subterm.refl _, Subterm.refl _,
+        fun _ hs => Or.inr (Or.inr hs)⟩
+  | S_red f g x =>
+      exact ⟨app3 Term.S f g x, app (app f x) (app g x), RootRedex.sRed f g x,
+        Subterm.refl _, Subterm.refl _, fun _ hs => Or.inr (Or.inr hs)⟩
+  | @appL t t' u _ ih =>
+      obtain ⟨r, r', hred, hrv, hrw, hall⟩ := ih
+      refine ⟨r, r', hred, hrv.trans (Subterm.appL t u), hrw.trans (Subterm.appL t' u), ?_⟩
+      intro s hs
+      rcases hs.app_cases with heq | hl | hr
+      · exact Or.inr (Or.inl (heq ▸ hrw.trans (Subterm.appL t' u)))
+      · rcases hall s hl with h1 | h2 | h3
+        · exact Or.inl (h1.trans (Subterm.appL t u))
+        · exact Or.inr (Or.inl h2)
+        · exact Or.inr (Or.inr h3)
+      · exact Or.inl (hr.trans (Subterm.appR t u))
+  | @appR t u u' _ ih =>
+      obtain ⟨r, r', hred, hrv, hrw, hall⟩ := ih
+      refine ⟨r, r', hred, hrv.trans (Subterm.appR t u), hrw.trans (Subterm.appR t u'), ?_⟩
+      intro s hs
+      rcases hs.app_cases with heq | hl | hr
+      · exact Or.inr (Or.inl (heq ▸ hrw.trans (Subterm.appR t u')))
+      · exact Or.inl (hl.trans (Subterm.appL t u))
+      · rcases hall s hr with h1 | h2 | h3
+        · exact Or.inl (h1.trans (Subterm.appR t u))
+        · exact Or.inr (Or.inl h2)
+        · exact Or.inr (Or.inr h3)
+
+/-- What sits inside an S-reduct: the reduct itself, its two halves, or something already inside
+one of the redex's three arguments. -/
+theorem subterm_S_reduct_cases {f g x s : Term} (h : Subterm s (app (app f x) (app g x))) :
+    s = app (app f x) (app g x) ∨ s = app f x ∨ s = app g x
+      ∨ Subterm s f ∨ Subterm s g ∨ Subterm s x := by
+  rcases h.app_cases with heq | hl | hr
+  · exact Or.inl heq
+  · rcases hl.app_cases with heq | h1 | h2
+    · exact Or.inr (Or.inl heq)
+    · exact Or.inr (Or.inr (Or.inr (Or.inl h1)))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr h2))))
+  · rcases hr.app_cases with heq | h1 | h2
+    · exact Or.inr (Or.inr (Or.inl heq))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h1))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr h2))))
+
+/-- **The residue, exactly.** Suppose `t` occurs in `w` but not in `v`, where `v ⟶ w` and `v` is
+pure S. Then the step's redex is some `S f g x` inside `v`, and `t` is one of exactly three
+shapes: it contains the reduct, or it IS `f x`, or it IS `g x`.
+
+This is the whole obstruction to lifting Stage 38 to multi-step reduction. In a shortest
+self-embedding `t ⟶⁺ w` with last step `v ⟶ w`, the hypothesis `¬ Subterm t v` is free —
+`Subterm t v` would give a shorter self-embedding — so these three shapes are all that stand
+between the depth-one theorem and the general one. -/
+theorem selfEmbed_residual_shapes {t v w : Term} (hk : KFree v) (h : v ⟶ w)
+    (hs : Subterm t w) (hnv : ¬ Subterm t v) :
+    ∃ f g x, Subterm (app3 Term.S f g x) v ∧
+      (Subterm (app (app f x) (app g x)) t ∨ t = app f x ∨ t = app g x) := by
+  obtain ⟨r, r', hred, hrv, _, hall⟩ := h.subterm_split
+  rcases hred.shape with ⟨p, q, hr, _⟩ | ⟨f, g, x, hr, hr'⟩
+  · -- a K-redex inside a K-free term: invert KFree twice to expose `KFree Term.K`, which has no
+    -- constructor
+    subst hr
+    have hkr : KFree (app2 Term.K p q) := KFree.of_subterm hrv hk
+    cases hkr with
+    | app hl _ => cases hl with | app hkk _ => cases hkk
+  · subst hr
+    subst hr'
+    refine ⟨f, g, x, hrv, ?_⟩
+    rcases hall t hs with h1 | h2 | h3
+    · exact absurd h1 hnv
+    · exact Or.inl h2
+    · rcases subterm_S_reduct_cases h3 with e | e | e | e | e | e
+      · exact Or.inl (e ▸ Subterm.refl _)
+      · exact Or.inr (Or.inl e)
+      · exact Or.inr (Or.inr e)
+      · exact absurd (e.trans ((Subterm.app3_S_arg1 f g x).trans hrv)) hnv
+      · exact absurd (e.trans ((Subterm.app3_S_arg2 f g x).trans hrv)) hnv
+      · exact absurd (e.trans ((Subterm.app3_S_arg3 f g x).trans hrv)) hnv
+
+-- ## Is the residue inhabited? — measuring before attacking
+-- Stage 38 ranked "attack shapes B and C (`t = f x`, `t = g x`) — the constrained ones" first, on
+-- the reasoning that demanding the whole self-embedding term be a ONE-APPLICATION combination of
+-- pieces of the last redex is a strong structural constraint. That reasoning was right about the
+-- constraint and wrong about what to do with it, and the cheap measurement below says so.
+--
+-- The relevant question is not whether the full residual configuration occurs — it cannot, since
+-- it is a case analysis OF the self-embedding hypothesis, so an instance would BE a
+-- self-embedding and Stage 37 found none. The question is whether each shape's own structural
+-- demand is satisfiable at all among the reducts of a term. That is checkable, and the three
+-- shapes answer differently.
+
+/-- Shapes B and C: does some S-redex `S f g x` inside `v` have `t` as one of its reduct halves,
+`f x` or `g x`? Unverified census tooling. -/
+def hasHalfRedex (t : Term) : Term → Bool
+  | .app a b =>
+      (match t, a with
+       | .app tl tr, .app (.app .S f) g => (b == tr) && ((f == tl) || (g == tl))
+       | _, _ => false)
+      || hasHalfRedex t a || hasHalfRedex t b
+  | _ => false
+
+/-- Shape A: every subterm of `t` shaped like an S-reduct `f x (g x)`, mapped back to the redex
+`S f g x` it would have to come from. Shape A asks whether any of these occurs in `v`. -/
+def reductShapes : Term → List Term
+  | .app a b =>
+      (match a, b with
+       | .app f x, .app g x' => if x == x' then [app3 Term.S f g x] else []
+       | _, _ => [])
+      ++ reductShapes a ++ reductShapes b
+  | _ => []
+
+def halfShapeHit (bound fuel : Nat) (t : Term) : Bool :=
+  match boundedClosure bound fuel [t] with
+  | none => true   -- a fuel-exhausted closure counts as a hit, so no guard passes vacuously
+  | some cl => cl.any (fun v => hasHalfRedex t v)
+
+def reductShapeHit (bound fuel : Nat) (t : Term) : Bool :=
+  match boundedClosure bound fuel [t] with
+  | none => true
+  | some cl => cl.any (fun v => (reductShapes t).any (fun r => isSubterm r v))
+
+def closureUndecided (bound fuel : Nat) (t : Term) : Bool :=
+  (boundedClosure bound fuel [t]).isNone
+
+-- Every verdict below is a real saturated closure, not an exhausted one.
+#guard (List.range 8).all (fun n => (sTerms n).all (fun t => !(closureUndecided 24 120 t)))
+
+-- **Shapes B and C are empty.** No reduct of any pure-S term up to 7 leaves contains an S-redex
+-- one of whose reduct halves is the term itself. (Measured clean to 8 leaves as well; guarded at
+-- 7 for build cost.) The `t ⋬ v` side condition is not doing this work — the shapes are empty
+-- without it.
+#guard (List.range 8).all (fun n => (sTerms n).all (fun t => !(halfShapeHit 24 120 t)))
+
+-- **Shape A is not empty, and it grows.** Terms whose reducts host the redex of a reduct-shaped
+-- subterm: 1 at six leaves, 4 at seven, 19 at eight.
+#guard ((sTerms 6).filter (fun t => reductShapeHit 24 120 t)).length = 1
+#guard ((sTerms 7).filter (fun t => reductShapeHit 24 120 t)).length = 4
+
+-- ## What the measurement changes
+-- Stage 38's ranking is INVERTED. Shapes B and C are constrained past the point of usefulness:
+-- they are empty, so proving them impossible would narrow the residue from three shapes to one
+-- and would not touch the obstruction, because shape A is where the difficulty lives and shape A
+-- is growing. Attacking B and C first would have been careful work on the part of the problem
+-- that was already not the problem.
+--
+-- The honest standing of the loop route is therefore:
+--   * depth one: closed, for every SK term (`Step.not_sub_self`);
+--   * any depth: reduced to ONE shape by the trichotomy — a self-embedding's last step must put
+--     `t` strictly above the reduct it fires — with the other two shapes empty by measurement;
+--   * that one shape: open, inhabited, and growing with term size.
+-- Which is a genuinely better-characterised open problem than Stage 37 left, and still open.

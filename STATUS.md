@@ -137,9 +137,20 @@ proved constraints rather than search evidence alone:
 - `selfEmbed_leafCount_lt` — any self-embedding must **strictly grow**, since
   equal size would make it a cycle and C2 forbids that.
 
-So a self-embedding needs at least two steps and strict growth. Whether one
-exists is open; Stage 38 records exactly which three shapes the depth-one
-argument cannot rule out at greater depth.
+- `Step.subterm_split` — the **positional trichotomy**: a step fires one root
+  redex, so every subterm of the result either already occurred in the source,
+  or contains the reduct, or sits inside it.
+- `selfEmbed_residual_shapes` — the trichotomy applied: in a shortest
+  self-embedding, the last step's redex is some `S f g x` and the term is one
+  of three shapes — it contains the reduct, or it *is* `f x`, or it *is* `g x`.
+
+Measurement (Stage 39) then emptied two of the three: no reduct of any pure-S
+term up to 8 leaves hosts an S-redex one of whose reduct halves is the term
+itself. The surviving shape — the term sits strictly **above** the reduct it
+fires — is inhabited and grows with size (1 term at 6 leaves, 4 at 7, 19 at 8).
+
+So a self-embedding needs at least two steps, strict growth, and a last step
+that puts the term above its own redex. Whether one exists is open.
 
 Every entry carries a **materiality** and a **prior-art** line in the ledger.
 Those two fields were added in Stage 7 after nine stages went into C1, whose
