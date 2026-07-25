@@ -2396,3 +2396,42 @@ what automation could and couldn't do. This file is a first-class deliverable
   change C1(a)'s status, since it would close the loop route for good and force any future
   attempt onto unbounded growth without a witness. Genuinely open, and I have no candidate
   argument; (2) C6, declined a twenty-fifth time.
+
+## 2026-07-25 — Stage 38: "none is apparent" was wrong, at depth one
+
+- I ranked "prove self-embedding impossible" first while writing that I had no candidate
+  argument. Attempting it anyway found one immediately for the one-step case, which is a small
+  embarrassment worth recording: I had reached for measures, found the space closed (correctly —
+  a decreasing measure would refute C1(a)), and concluded *no obstruction is apparent* rather
+  than *no measure obstruction is apparent*. The structural argument was two lines of thought
+  away and I had not tried it because the previous eleven stages had all been measure work.
+  The lesson is the same one Stage 36 taught in a different costume: the technique I last used
+  is not the technique the problem wants.
+- The argument itself is short. The reduct of a redex never contains that redex — the reduct's
+  subterms are enumerable (`f x`, `g x`, the reduct, and subterms of the three arguments) and
+  every candidate forces `x = g x` or `f = S f g`, which no term satisfies. Congruence lifts it,
+  and the lifting works because subterm is transitive: `app f u` inside `f'` gives `f` inside
+  `f'`, which is the induction hypothesis. No arithmetic beyond "a proper subterm is smaller".
+- Two conveniences fell out. `selfEmbed_leafCount_lt` turns Stage 37's prose ("C2 forces the
+  context to be non-trivial") into a theorem, and `isSubterm_iff_Subterm` retro-fits kernel
+  meaning onto Slice 3's and Stage 37's Bool guards — they were always about a search routine
+  and are now about the relation.
+- Naming note: `Sub` is core Lean's subtraction class, so the relation is `Subterm`. The clash
+  surfaced as "`Sub` has already been declared", which failed the whole inductive and cascaded
+  into fifteen downstream errors — a reminder that a name collision in an `inductive` is not a
+  local problem.
+- **I want to be precise about what did not lift.** The multi-step induction has a clean shape:
+  split the occurrence of `t` by position relative to the last redex; off the redex you get a
+  shorter self-embedding and minimality closes it. Three residual shapes survive — `t` contains
+  the reduct, `t = f x`, `t = g x` — and none is contradictory on its face. Size cannot kill
+  them because self-embeddings are allowed to grow, and acyclicity cannot because those `t` need
+  not recur. So this is a base case with no inductive step, and I should not represent it as
+  nearly-done. Recording the three shapes is the useful output: anyone resuming knows what to
+  attack.
+- One thing the failure does settle, and it is worth stating positively: the missing ingredient
+  is **not** a measure. That is now an argument rather than an observation, since a measure
+  falling on every pure-S step would prove strong normalization and hence refute C1(a).
+- Ranking: (1) attack the three residual shapes — specifically `t = f x` and `t = g x`, which
+  are the constrained ones, since they say the whole self-embedding term is a *one-application*
+  combination of pieces of the last redex, and that is a strong structural demand that may well
+  be contradictory when combined with `t ⟶⁺ v`; (2) C6, declined a twenty-sixth time.

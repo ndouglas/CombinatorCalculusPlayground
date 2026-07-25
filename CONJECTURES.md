@@ -2212,3 +2212,45 @@ ALL STRATEGIES (bounded closure, cap 40, fuel 200), every term up to 6:     0
   is proved and none is apparent; C2 rules out only the trivial context. Proving impossibility
   would close the loop route for good; a witness at larger size would prove C1(a). The search
   cannot decide between them.
+
+### Stage 38: the one-step obstruction, proved
+
+Stage 37 ranked "prove self-embedding impossible in pure S" first and recorded that **no
+obstruction was proved and none was apparent.** One is apparent after all — at depth one.
+
+```
+Step.not_sub_self : (t ⟶ u) → ¬ Subterm t u
+```
+
+Every SK term, no size bound. This is a different KIND of statement from Stage 37's search:
+not "no witness below 8 leaves" but "no witness, ever, at depth one".
+
+- **It has to be structural.** A measure falling on every pure-S step would prove strong
+  normalization and hence *refute* C1(a). So no measure can close this.
+- **What works:** the reduct of a redex never contains that redex. `S f g x ⟶ f x (g x)`,
+  whose subterms are exactly `f x`, `g x`, the reduct, and the subterms of `f`, `g`, `x`. The
+  last group is too small to hold the redex. Each of the first three forces an equation no
+  term satisfies — `x = g x`, or `f = S f g` — since a term is never a proper subterm of
+  itself. Congruence lifts it to a redex anywhere, and **transitivity of the subterm relation**
+  is what makes the lifting work: if `app f u` sits inside `f'`, so does `f`, which is the
+  induction hypothesis.
+
+Also proved:
+
+| | |
+|---|---|
+| `selfEmbed_leafCount_lt` | any self-embedding must **strictly grow** — equal leaf counts force equality, hence a cycle, which C2 forbids. The kernel form of Stage 37's prose claim that `C` cannot be trivial. |
+| `selfEmbed_needs_two_steps` | the first step cannot be the whole path. |
+| `isSubterm_iff_Subterm` | the Bool census predicate agrees with the kernel relation, so Stage 37's guards and Slice 3's are about `Subterm`, not about a search routine. |
+
+**What does not lift, and exactly why.** The natural argument inducts on path length: given a
+shortest self-embedding `t ⟶⁺ w` with last step `v ⟶ w`, split `t`'s occurrence in `w` by its
+position relative to the redex. Off the redex, `t ⊴ v`, so `t ⟶⁺ v` is a shorter
+self-embedding and minimality closes it. The residual cases are where the occurrence meets the
+redex `S f g x`, and there `t` is one of: **a term containing the reduct `f x (g x)`**, **`f x`**,
+or **`g x`**. None is contradictory on its face — size does not kill them (a self-embedding is
+*allowed* to grow, which is what `selfEmbed_leafCount_lt` says) and neither does acyclicity
+(these `t` need not recur). So the depth-one proof is a genuine base case with no inductive step.
+
+Standing: the loop route now carries two proved constraints — **≥ 2 steps** and **strict
+growth** — where Stage 37 left it carrying only search evidence.
