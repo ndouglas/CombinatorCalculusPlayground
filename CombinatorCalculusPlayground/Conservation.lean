@@ -553,3 +553,57 @@ theorem c1a_formulations {t : Term} (hk : KFree t) :
 --   * honest negatives: no self-embedding for `c1` within 120 steps, none for the
 --     literature's 14-leaf term within 40, and no I-like combinator in {S,B} to transport
 --     rung one's cycle.
+
+-- ## Stage 37: construct-don't-search, attempted — the design space is empty at small size
+-- Stage 36 named the one remaining route with new content: build a self-embedding
+-- `t ⟶⁺ C[t]` by design rather than searching for one. Such a `t` would give an infinite
+-- reduction directly — `C[t] ⟶⁺ C[C[t]]` by congruence — and hence, via C5, no normal form,
+-- proving C1(a).
+--
+-- Note first that C2 forces any such `C` to be NON-TRIVIAL: `t ⟶⁺ t` is a cycle and pure S
+-- has none. So the target is strict self-embedding, and sizes must grow along it.
+--
+-- Attempting the construction meant first searching the design space systematically, which
+-- Slices 3 and 4 never did — they checked `c1` and `c2` only. Result: **nothing.**
+--
+--   leftmost-outermost, 60 steps, size cap 3000, every pure-S term up to 8 leaves:  0
+--   leftmost-outermost, 200 steps, size cap 20000, every term up to 8 leaves:       0
+--   ALL STRATEGIES (bounded closure, cap 40, fuel 200), every term up to 6 leaves:  0
+--
+-- The all-strategies row matters because of Stage 21: a leftmost-outermost hunt provably
+-- misses cycles that exist in the relation (rung one's `omegaSI` is the witness), so an
+-- LO-only negative would have been weak evidence. The closure search is strategy-independent.
+
+/-- Does `t` reappear as a subterm of one of its own leftmost-outermost reducts? Size-capped,
+so explosive terms are abandoned rather than pursued. Unverified census tooling. -/
+def selfEmbeds (cap steps : Nat) (t : Term) : Bool :=
+  let rec go : Nat → Term → Bool
+    | 0, _ => false
+    | f + 1, cur =>
+      match stepOnce cur with
+      | none => false
+      | some nxt =>
+        if cap < leafCount nxt then false
+        else if isSubterm t nxt then true
+        else go f nxt
+  go steps t
+
+-- Guarded at a size the build can afford; the deeper runs above are recorded, not guarded.
+#guard (List.range 7).all (fun n => (sTerms n).all (fun t => !(selfEmbeds 3000 60 t)))
+
+-- The two C1 candidates specifically, extending Slice 3's 120-step result to the size cap:
+#guard !(selfEmbeds 20000 200 c1)
+#guard !(selfEmbeds 20000 200 c2)
+
+-- ## What that leaves
+-- "Construct-don't-search" is now ATTEMPTED rather than merely registered, and the honest
+-- outcome is that the design space contains no self-embedding at any size the search reaches
+-- — under every strategy up to 6 leaves, and under leftmost-outermost up to 8.
+--
+-- That is a stronger negative than the ledger previously held (two terms, one strategy, 120
+-- steps), and it changes the standing of the route: not unexplored, but searched and empty
+-- where searchable. What is NOT known is whether a self-embedding is impossible in pure S. No
+-- obstruction is proved here, and none is apparent — C2 rules out the trivial context only.
+-- Establishing impossibility would be a genuine theorem and would close the loop route for
+-- good; finding a witness at larger size would prove C1(a). Both are open, and the search
+-- cannot decide between them.
