@@ -2111,3 +2111,28 @@ directly**, and the argument is five lines of English.
   predicate is needed; it is the quantity the census measured; and progress toward it is
   cumulative, unlike three slices of invariant hunting.
 - Remaining: a growth step. Open.
+
+### Stage 34: growth is necessary — and a classical result declined
+
+- **`normalizes_of_no_growth`** (`Conservation.lean`): a K-free term whose reducts never
+  grow must normalize. Strong induction on τ — each step on a size plateau strictly drops τ
+  (`tau_lt_of_isometric_step`), and a Nat cannot drop forever. **So growth is necessary for
+  non-termination in pure S.** The recursion is on `stepOnce`, not a classical case split
+  over `NormalForm`, which is what keeps it constructive: `stepOnce` is computable and
+  certified on both ends, so "normal or reducible" is *decided* rather than assumed.
+- **Together with Stage 33** this is most of the equivalence between *"no normal form"* and
+  *"unbounded reducts"* — the two currencies the census and the conjecture were using.
+- **A classical result built, measured, and declined.** The remaining direction (no normal
+  form ⇒ unbounded) is three short proofs away, but going from a **negative** hypothesis to
+  a **positive** conclusion needs `¬∀ → ∃`, which is not constructive. Written the obvious
+  way, all three reported `Classical.choice` — the sixth occurrence in this tree and **the
+  first that was intrinsic rather than an instance-layer accident**. Removed rather than
+  shipped: the tree has advertised no `Classical.choice` since Stage 0, the equivalence is a
+  nice-to-have, and the direction that is a *tool* was already choice-free.
+- **The constructive route is recorded rather than left as a gap.** Replace the negative
+  hypothesis with "every reduct is reducible"; build the trajectory from `stepOnce`
+  (computable, hence choice-free); prove `leafCount (f k) = leafCount t → tau (f k) + k ≤
+  tau t` by induction on `k`; instantiate at `k = tau t + 1`, where the bound is
+  contradictory. The refuted proposition is **decidable**, so monotonicity upgrades it to
+  strict growth with no classical step. The equivalence is constructively true; this
+  development just does not yet contain it.

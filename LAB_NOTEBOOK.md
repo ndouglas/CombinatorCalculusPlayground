@@ -2257,3 +2257,42 @@ what automation could and couldn't do. This file is a first-class deliverable
   reduct. The frozen head (Slice 4) may help here in a way it did not help the invariant:
   `frozen_normalizes_iff` reduces `c1` to its payload, and the payload's sizes are what grow;
   (2) C6, declined a twenty-first time.
+
+## 2026-07-24 — Stage 34: built a theorem, measured it, threw it away
+
+- Ranked task was the growth step. It split into two halves with very different characters,
+  and the interesting part of the stage is that I kept one and deleted the other.
+- The half I kept, `normalizes_of_no_growth`, is choice-free and says the essential thing:
+  a pure-S term whose reducts never grow must normalize, so **growth is necessary for
+  non-termination**. τ does all the work — each step on a size plateau strictly drops it,
+  and a Nat cannot drop forever. The only care needed was recursing on `stepOnce` instead of
+  case-splitting on `NormalForm`: `stepOnce` is computable and certified on both ends, so
+  "normal or reducible" is decided rather than assumed. That one choice of formulation is
+  what kept the proof constructive.
+- The half I deleted completed the equivalence — no normal form implies unbounded reducts.
+  It compiled. Then the axiom audit reported `Classical.choice` in all three theorems, and
+  the cause is intrinsic rather than accidental: the hypothesis is NEGATIVE (`¬ ∃ normal
+  form`) and the conclusion POSITIVE (`∃ arbitrarily large reduct`), so it needs
+  `¬∀ → ∃`. Five earlier `Classical.choice` encounters in this project were all
+  instance-layer accidents that a rewrite fixed. This was the first genuine one.
+- I removed it. The reasoning: the tree has advertised no `Classical.choice` since Stage 0,
+  in STATUS.md and README and every axiom audit; the equivalence is a nice-to-have rather
+  than a tool; and the direction that IS a tool was already choice-free. Shipping a
+  clearly-labelled classical theorem would have been defensible, but it would have cost a
+  property I have repeatedly claimed, for something nothing else depends on. Not worth it.
+- **What I did instead of leaving a gap: worked the constructive route out and wrote it
+  down.** Replace the negative hypothesis with the positive "every reduct is reducible";
+  build the trajectory from `stepOnce`, which is computable so no choice is needed; prove
+  `leafCount (f k) = leafCount t → tau (f k) + k ≤ tau t` by induction on k; instantiate at
+  `k = tau t + 1` where the bound is contradictory. The refuted proposition is DECIDABLE, so
+  monotonicity upgrades it to strict growth constructively. So the equivalence is
+  constructively true and the file now says how — which is a better artefact than either the
+  classical proof or an unexplained hole.
+- Worth noting how the two halves differ in what they need. Necessity of growth reasons
+  FORWARD from a term (constructive). Sufficiency of unbounded growth reasons forward from a
+  bound (constructive, Stage 33). Only the negative-to-positive direction needs classical
+  logic — and that is precisely the direction nothing uses.
+- Ranking: (1) the constructive equivalence, now fully specified — three steps, all
+  mechanical, no research content; (2) C6, declined a twenty-second time. Note C1(a) itself
+  is unchanged: it still needs a proof that some specific term's reducts are unbounded, and
+  Stages 33-34 have only made the target precise and shown it is the right target.
