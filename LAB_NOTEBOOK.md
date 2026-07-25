@@ -2296,3 +2296,35 @@ what automation could and couldn't do. This file is a first-class deliverable
   mechanical, no research content; (2) C6, declined a twenty-second time. Note C1(a) itself
   is unchanged: it still needs a proof that some specific term's reducts are unbounded, and
   Stages 33-34 have only made the target precise and shown it is the right target.
+
+## 2026-07-24 — Stage 35: the obstruction I declared intrinsic was not
+
+- Ranked task was building the constructive route Stage 34 had specified. It worked, and it
+  also corrected Stage 34's diagnosis, which is the part worth recording.
+- Stage 34 said the converse direction was intrinsically classical because it goes from a
+  negative hypothesis to a positive conclusion, needing `¬∀ → ∃`. That was too coarse. The
+  `by_cases` I had written was on `∃ u, t ⟶* u ∧ leafCount t < leafCount u` — a statement
+  about ALL reducts, and yes, undecidable. But the thing I actually needed was `∃ v, u ⟶ v`
+  for a FIXED `u`, and that is decided by `stepOnce`. Routing through "every reduct is
+  reducible" makes the whole chain constructive.
+- So the lesson is narrower and more useful than "negative-to-positive needs choice": it
+  depends on WHICH quantifier. A quantifier over one term's successors is decidable; one over
+  all reducts is not. I had lumped them together and generalised from the wrong one.
+- Stage 34's decision still looks right to me. Removing the classical proof preserved a
+  property I had claimed since Stage 0, and it cost one stage. Had I shipped it with a label,
+  the tree would now carry a `Classical.choice` dependency that this stage shows was never
+  necessary — and nobody would have gone back to remove it, because a labelled axiom looks
+  settled. **Declining to ship kept the question open, and the question had a good answer.**
+- The proof itself is pleasant. `iter` is the trajectory as a total function, stalling at a
+  normal form. `tau_budget` says: if the trajectory has not grown by step k, τ has paid k
+  units, because every plateau step strictly drops τ. Then the growth step is found by simply
+  LOOKING at index `tau t + 1`, where the budget is exhausted. No search, no case analysis —
+  an index computed from the measure.
+- Result: **for a K-free term, no normal form is the same thing as unbounded reducts.** That
+  closes the framing question Stages 32-35 have circled. The census's currency and the
+  conjecture's currency are the same currency, proved.
+- Ranking: (1) C1(a) itself — with the equivalence in hand, the remaining task is exactly
+  "exhibit a K-free term whose reducts are unbounded", and `unbounded_of_all_reducible` says
+  it suffices to show every reduct of that term is reducible. That is a positive, decidable-
+  per-term condition, which is a better target than either the invariant (Stage 32) or the
+  raw size claim (Stage 33); (2) C6, declined a twenty-third time.

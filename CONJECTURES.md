@@ -2136,3 +2136,24 @@ directly**, and the argument is five lines of English.
   contradictory. The refuted proposition is **decidable**, so monotonicity upgrades it to
   strict growth with no classical step. The equivalence is constructively true; this
   development just does not yet contain it.
+
+### Stage 35: the equivalence, constructively — and Stage 34's obstruction was avoidable
+
+- **`no_normalForm_iff_unbounded`** (`Conservation.lean`, `[propext, Quot.sound]`): for a
+  K-free term, **having no normal form is the same thing as having reducts of unbounded
+  size.** This settles the framing question Stages 32–34 circled — the census measured
+  sizes, the conjecture asked about normalization, and for pure S they are one question.
+- **Stage 34 called the negative-to-positive step intrinsic. It was not.** Stage 34's
+  `by_cases` was on `∃ u, t ⟶* u ∧ leafCount t < leafCount u` — a statement about *all*
+  reducts, genuinely undecidable. But `∃ v, u ⟶ v` for a **fixed** `u` is decided by
+  `stepOnce`. Routing through "every reduct is reducible"
+  (`all_reducible_of_no_normalForm`, which cases on the computable `stepOnce` rather than on
+  the proposition) needs no classical step anywhere.
+- **The machinery**: `iter` (the trajectory as a total function, stalling at a normal form),
+  `iter_reduct`, `iter_step`, then `tau_budget` — if the trajectory has not grown by step
+  `k`, τ has paid `k` units, since every plateau step drops τ. The growth step is then found
+  at index `tau t + 1`, where the budget is exhausted, and iterating gives unboundedness.
+- **The lesson, narrow and reusable:** *"this needs `¬∀ → ∃`"* depends on **which** `∀`. A
+  quantifier over a fixed term's successors is decidable; one over all reducts is not.
+  Stage 34's removal was right to preserve the tree's choice-freeness and wrong about the
+  obstruction.
