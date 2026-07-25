@@ -2329,3 +2329,39 @@ the single remaining route is the one with no known instance at any size searche
 *Seventh Classical.choice encounter*, two new variants, both from `omega`: case-splitting a
 **disjunctive hypothesis** costs the axiom, and so does a **disjunctive goal with a conjunction
 nested inside it**. Both fixed by splitting by hand and supplying witnesses as terms.
+
+### Stage 41: the ceiling raised, and two of three backward cases pinned
+
+**A correction first.** Stage 39's guards read stronger than they were. `closureStep` keeps only
+reducts with `leafCount ≤ bound`, so a size-capped closure **saturates having silently dropped
+everything larger**. "No `HalfShape` witness in the closure at cap 24" means "none among reducts
+reachable *through* terms of at most 24 leaves" — not "none at all". A witness needs `1 + |g|` more
+leaves than `t` has, so a low ceiling is exactly where one would hide.
+
+Raising the ceiling does not produce one:
+
+```
+strategy-independent, cap 40, every pure-S term up to 8 leaves:   0
+strategy-independent, cap 60, every pure-S term up to 7 leaves:   0
+leftmost-outermost, cap 4000, 300 steps, up to 8 leaves:          0
+```
+
+The LO trajectories really do run away — the largest reduct visited carries **3994 leaves** — so
+they cover a size range the closure search cannot, along one strategy instead of all.
+
+**Toward a proof.** Backward induction along the path is the right frame: every trichotomy case
+steps back exactly one reduction, the path is finite, and at its start the requirement must be a
+subterm of `t`, which size forbids (`S f g x` outweighs `t = f x` by `1 + |g|`). So it needs an
+invariant surviving every case, and `|requirement| > |t|` survives **three of four** sub-cases:
+
+| sub-case | status |
+|---|---|
+| inherited | invariant unchanged |
+| one half of a bigger redex | `app3_S_reduct_half_grows` — requirement grows by ≥ 2, and `app3_S_reduct_half_forces` pins the bigger redex: third argument is `x` itself, `(S f) g` is one of the first two |
+| produced by a **root** redex | `app3_S_as_root_reduct` — redex forced to `S (S f) b g` with `x = b g`, so the third argument strictly **shrinks** and the size is exactly `|t| + 2` |
+| produced by a step **inside** it | **OPEN.** `u = p x` with `p ⟶⁺ (S f) g`, or `u = ((S f) g) q` with `q ⟶⁺ x`. The invariant can fail here: pure-S reduction grows, so `p` may be far lighter than `(S f) g`, and nothing yet stops `|u|` dropping to `|t|` or below. |
+
+That last sub-case is the whole remaining gap. It is smaller than "prove `HalfShape` uninhabited"
+was — it asks only whether a term at or below `t`'s size can reduce, at its own root, into
+`S f g x`'s left spine. **Three controlled cases are not most of a proof**: the uncontrolled one is
+where reduction's growth lives, which is where every hard case in this development has lived.

@@ -2516,3 +2516,38 @@ what automation could and couldn't do. This file is a first-class deliverable
   children, so there is more structure here than in anything shape A offered. If it goes through,
   the loop route to C1(a) is dead outright and that is a publishable negative; (2) C6, declined a
   twenty-eighth time.
+
+## 2026-07-25 — Stage 41: the guard read stronger than it was
+
+- Before attempting the proof I re-read what the `HalfShape` measurement actually guarantees, and
+  found I had overstated it. `closureStep` filters reducts by `leafCount ≤ bound`, so a capped
+  closure reports SATURATION after silently discarding everything bigger. The cap-24 guard
+  therefore says "no witness among reducts reachable through terms of ≤ 24 leaves", and I had been
+  reading it as "no witness". That matters here more than it usually would, because a `HalfShape`
+  witness must be `1 + |g|` leaves heavier than `t` — the ceiling is precisely where one would sit.
+- Raising it: cap 40 to eight leaves, cap 60 to seven, and a leftmost-outermost probe running 300
+  steps under a 4000-leaf ceiling. All empty. The LO probe is worth keeping alongside the closure
+  because the trajectories genuinely explode — the largest reduct visited has 3994 leaves — so it
+  reaches a size range no closure search here can, at the cost of covering one strategy. The pair
+  of probes has complementary blind spots, which is the most I can get cheaply.
+- I should generalize the lesson rather than just fix the number. Every capped search in this tree
+  reports "clean" the same way, and "clean" always means "clean below the cap". Stage 21 taught the
+  strategy version of this (an LO hunt is blind to cycles that exist in the relation) and I
+  transferred that one. I did not transfer the size version, even though it is the same shape of
+  error. When a probe has a parameter, the finding is about the parameter.
+- On the proof: backward induction along the path is right, and it comes down to an invariant on
+  the requirement. `|requirement| > |t|` survives three of four sub-cases, and the two interesting
+  ones are pleasantly rigid — a reduct half FORCES the bigger redex's third argument to be `x`
+  itself and grows by two leaves, and a root redex FORCES the shape `S (S f) b g` with `x = b g`,
+  which shrinks the third argument. Both are the kind of tight forcing that usually means an
+  argument is close.
+- It is not close, and I want to say why rather than leave the impression. The fourth sub-case is a
+  step *inside* the requirement, and pure-S reduction grows, so the predecessor can be much lighter
+  than what it produces — exactly the mechanism the invariant needs to exclude and exactly the
+  mechanism C1(a) is about. Three controlled cases plus the hard one is not most of a proof; it is
+  the easy three quarters. Every hard case in this development has been the growth case, and I
+  should stop being surprised by that.
+- Ranking: (1) the fourth sub-case — can a term of at most `|t|` leaves reduce, at its own root,
+  into the left spine of `S f g x` where `t = f x`? It is a sharper question than any of the three
+  shapes were, and the forcing lemmas suggest the answer is no; I have no argument. (2) C6, declined
+  a twenty-ninth time.
