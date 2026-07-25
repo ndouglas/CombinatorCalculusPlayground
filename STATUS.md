@@ -159,8 +159,20 @@ The strengthened trichotomy `Step.subterm_split'` is what does it. A subterm of
 `w` above the redex is not merely "a term containing the reduct" — it is a
 **one-step reduct of a subterm of `v`**, so it self-embeds one step earlier, and
 walking backwards drops a rank built from leaf count and τ. So the inhabited
-shape is impossible and the loop route rests entirely on the shape measurement
-found empty.
+shape is impossible and the loop route rests entirely on `HalfShape`.
+
+`HalfShape` is measured empty (Stage 41 raised the ceiling): strategy-independent
+to 40 leaves out to eight-leaf terms, to 60 leaves out to seven, and along
+leftmost-outermost trajectories reaching ~4000 leaves. Note a size-capped closure
+saturates having *silently dropped* larger reducts, so the earlier cap-24 guard
+read stronger than it was.
+
+Toward a proof, `app3_S_subterm_step_cases` lists the three places `S f g x` can
+come from one step back, and two are pinned: one half of a bigger redex makes the
+requirement **grow by ≥ 2** (`app3_S_reduct_half_grows`), and a root redex is
+forced to `S (S f) b g` with `x = b g` (`app3_S_as_root_reduct`). The open
+sub-case is a step *inside* the requirement, where reduction's growth can drop
+the size below `|t|`.
 
 Every entry carries a **materiality** and a **prior-art** line in the ledger.
 Those two fields were added in Stage 7 after nine stages went into C1, whose

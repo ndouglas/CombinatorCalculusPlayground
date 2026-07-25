@@ -1233,3 +1233,120 @@ theorem halfShape_target_ne {t f g x : Term} (hsh : t = app f x ∨ t = app g x)
 -- S-redex in `v` has `t` as a reduct half, scanned over `t`'s bounded reduction closure. The
 -- guards above record it empty for every pure-S term up to 7 leaves (8 measured). After Stage 40
 -- that is no longer one of three routes to a self-embedding — it is the only one.
+
+-- ## Stage 41: how much the `HalfShape` measurement was worth, and what forces what
+-- First a correction to how Stage 39's guards read. `closureStep` keeps only reducts with
+-- `leafCount ≤ bound`, so a size-capped closure SATURATES having silently dropped everything
+-- larger. "No `HalfShape` witness in the closure at cap 24" therefore means "none among reducts
+-- reachable THROUGH terms of at most 24 leaves" — not "none at all". Since a witness needs
+-- `1 + |g|` more leaves than `t` has, a low ceiling is exactly where a witness would hide, and I
+-- reported that measurement as stronger than it was.
+--
+-- Raising the ceiling does not produce one.
+
+-- Strategy-independent, ceiling raised from 24 to 40, and out to eight leaves.
+#guard (List.range 9).all (fun n => (sTerms n).all (fun t =>
+  match boundedClosure 40 300 [t] with
+  | none => false          -- an undecided closure fails the guard rather than passing it
+  | some cl => !(cl.any (fun v => hasHalfRedex t v))))
+
+-- Ceiling 60, to seven leaves.
+#guard (List.range 8).all (fun n => (sTerms n).all (fun t =>
+  match boundedClosure 60 500 [t] with
+  | none => false
+  | some cl => !(cl.any (fun v => hasHalfRedex t v))))
+
+/-- The complementary probe: follow one trajectory as FAR as it goes rather than every trajectory
+a short way. Leftmost-outermost, checking each reduct for a `HalfShape` witness. -/
+def halfAlongLO (cap steps : Nat) (t : Term) : Bool :=
+  let rec go : Nat → Term → Bool
+    | 0, _ => false
+    | k + 1, cur =>
+      if hasHalfRedex t cur then true
+      else match stepOnce cur with
+        | none => false
+        | some nxt => if cap < leafCount nxt then false else go k nxt
+  go steps t
+
+-- 300 steps under a 4000-leaf ceiling, every pure-S term up to eight leaves. These trajectories
+-- really do run away — the largest reduct visited carries 3994 leaves — so this covers a size
+-- range the closure search cannot, along one strategy instead of all.
+#guard (List.range 9).all (fun n => (sTerms n).all (fun t => !(halfAlongLO 4000 300 t)))
+
+-- ## What forces what
+-- The route to a proof is backward induction along the path: if `S f g x` occurs in `v` and
+-- `v' ⟶ v`, ask where it came from. `Step.subterm_split'` gives three answers, and two of them are
+-- pinned down completely by the shape of `S f g x`.
+
+/-- If `S f g x` is one HALF of the reduct of a bigger S-redex, the bigger redex is forced: its
+third argument is `x` itself, and `(S f) g` is one of its first two arguments. -/
+theorem app3_S_reduct_half_forces {f g x f' g' x' : Term}
+    (h : app3 Term.S f g x = app f' x' ∨ app3 Term.S f g x = app g' x') :
+    x' = x ∧ (f' = app (app Term.S f) g ∨ g' = app (app Term.S f) g) := by
+  rcases h with heq | heq <;> simp only [app3, Term.app.injEq] at heq
+  · exact ⟨heq.2.symm, Or.inl heq.1.symm⟩
+  · exact ⟨heq.2.symm, Or.inr heq.1.symm⟩
+
+theorem leafCount_app2_S (f g : Term) :
+    leafCount (app (app Term.S f) g) = 1 + leafCount f + leafCount g := rfl
+
+/-- ...and so it carries at least two more leaves. Going backwards through this case makes the
+requirement strictly BIGGER, which is why it cannot be the whole story of a self-embedding. -/
+theorem app3_S_reduct_half_grows {f g x f' g' x' : Term}
+    (h : app3 Term.S f g x = app f' x' ∨ app3 Term.S f g x = app g' x') :
+    leafCount (app3 Term.S f g x) + 2 ≤ leafCount (app3 Term.S f' g' x') := by
+  obtain ⟨hx, hfg⟩ := app3_S_reduct_half_forces h
+  subst hx
+  rw [leafCount_app3_S, leafCount_app3_S]
+  have hf := leafCount_pos f
+  have hg := leafCount_pos g
+  have hf' := leafCount_pos f'
+  have hg' := leafCount_pos g'
+  rcases hfg with heq | heq <;> subst heq <;> rw [leafCount_app2_S] <;> omega
+
+/-- If `S f g x` is what a ROOT redex produces, the redex is forced to be `S (S f) b g` — and the
+third argument `x` must DECOMPOSE as `b g`. So this case cannot recur indefinitely either: it
+replaces the third argument by a strictly smaller one. -/
+theorem app3_S_as_root_reduct {a b c f g x : Term}
+    (h : app (app a c) (app b c) = app3 Term.S f g x) :
+    a = app Term.S f ∧ c = g ∧ x = app b g := by
+  simp only [app3, Term.app.injEq] at h
+  obtain ⟨⟨ha, hc⟩, hx⟩ := h
+  exact ⟨ha, hc, by rw [← hx, hc]⟩
+
+/-- The three places `S f g x` can come from, with the second and third refined by the two lemmas
+above. This is the case list a proof of `¬ HalfShape` has to discharge. -/
+theorem app3_S_subterm_step_cases {v' v f g x : Term} (h : v' ⟶ v)
+    (hs : Subterm (app3 Term.S f g x) v) :
+    Subterm (app3 Term.S f g x) v'
+      ∨ (∃ u, Subterm u v' ∧ (u ⟶ app3 Term.S f g x))
+      ∨ (∃ f' g', Subterm (app3 Term.S f' g' x) v'
+          ∧ (f' = app (app Term.S f) g ∨ g' = app (app Term.S f) g)) := by
+  rcases h.subterm_split' hs with h1 | h2 | ⟨f', g', x', hsub, hshape⟩
+  · exact Or.inl h1
+  · exact Or.inr (Or.inl h2)
+  · obtain ⟨hx, hfg⟩ := app3_S_reduct_half_forces hshape
+    exact Or.inr (Or.inr ⟨f', g', hx ▸ hsub, hfg⟩)
+
+-- ## The state of the proof attempt, honestly
+-- Backward induction along the path is the right frame: every case of the trichotomy steps back
+-- exactly one reduction, the path is finite, and at its start the requirement must be a subterm of
+-- `t` itself — which size forbids, since `S f g x` outweighs `t = f x` by `1 + |g|`. So the
+-- argument needs an invariant on the requirement that survives all three cases and contradicts
+-- "subterm of t". The natural one is `|requirement| > |t|`, and it survives three of four
+-- sub-cases:
+--
+--   * inherited — same requirement, invariant unchanged;
+--   * one half of a bigger redex — `app3_S_reduct_half_grows`, requirement grows by ≥ 2;
+--   * produced by a ROOT redex — `app3_S_as_root_reduct` forces the redex to `S (S f) b g` with
+--     `x = b g`, and `|S (S f) b g| = |t| + 2` exactly, so the invariant holds and the third
+--     argument strictly shrinks;
+--   * produced by a step INSIDE it — `u = p x` with `p ⟶ (S f) g`, or `u = ((S f) g) q` with
+--     `q ⟶ x`. HERE THE INVARIANT CAN FAIL: pure-S reduction grows, so `p` may be far lighter
+--     than `(S f) g`, and nothing yet stops `|u|` from dropping to `|t|` or below.
+--
+-- That last sub-case is the whole remaining gap, and it is a smaller gap than "prove `HalfShape`
+-- uninhabited" was: it asks only whether a term at or below `t`'s size can reduce, at its own
+-- root position, into `S f g x`'s left spine. I do not have that argument, and I am not going to
+-- claim the three controlled cases as most of a proof — the uncontrolled one is where reduction's
+-- growth lives, which is where every hard case in this development has lived.
