@@ -204,9 +204,17 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
     {S,B} is pure S over a two-symbol alphabet;
   - no I-like combinator up to 7 leaves, closing the transport route;
   - censused clean to 8 leaves under *any* strategy, cap-insensitive to 120.
-- **Rung 3 `{S,C}`** — the τ-light fragment is acyclic with a two-clause condition
-  (`scLight_acyclic`), and the structural finding that **τ separates B from C where no
-  counting measure can**, since both rules have identical `leafCount` deltas.
+
+  Composed, these give a **syntactic** necessary condition: a cycle requires an
+  S-reduction whose third argument has ≥ 3 leaves, and some S-reduction whose third
+  argument contains a `B`. (Measured: this does *not* prune a seed-filtered search —
+  99.6% of 8-leaf terms survive the filter — because it constrains a cycle's *steps*,
+  not a search's *seeds*.)
+- **Rung 3 `{S,C}`** — three results: the τ-light fragment is acyclic with a two-clause
+  condition (`scLight_acyclic`); the **S-only fragment is acyclic** (`scSOnly_acyclic`),
+  so any cycle must contain a **C-reduction** (`scCycle_needs_C`); and the structural
+  finding that **τ separates B from C where no counting measure can**, since both rules
+  have identical `leafCount` deltas. Censused clean to 6 leaves under any strategy.
 
 ### The rung procedure
 

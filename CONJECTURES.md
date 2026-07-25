@@ -1918,3 +1918,29 @@ arithmetic before committing.
   independently: a cycle needs a B-reduction (Stage 26), needs a τ-heavy S-reduction
   (Stage 23), and needs at least two of the former per one of the latter (Stage 25).
   That is a joint necessary condition, not three restatements.
+
+### Stage 27: rung three's S-only fragment, and an honest negative on pruning
+
+- **`scSOnly_acyclic` / `scCycle_needs_C`.** `C x y z → x z y` has `leafCount` delta −1
+  exactly like `B`, so C is `{S,C}`'s only shrinking rule and its S-only fragment again
+  has monotone `leafCount`. Stage 26's argument transplants verbatim, giving rung three
+  a **second** constraint: any `{S,C}` cycle must contain a C-reduction.
+- **Duplication flagged rather than hidden.** The two S-only fragments are the same
+  system — pure S over a two-symbol alphabet — so Stage 27 is a near-copy of Stage 26.
+  Abstracting it would need a term type parameterised by its atom set plus transport
+  lemmas: more work than the copy, and indirection for two instances. The judgment is
+  recorded in the file so a reader knows it was a choice.
+- **Rung two's constraints composed.** From `sbCycle_needs_B` a cycle has ≥ 1
+  B-reduction, and Stage 20's `#B` arithmetic equates that count with the sum over
+  S-reductions of `#B(third argument)`. So some S-reduction must duplicate an argument
+  **containing a `B`**; with the τ-heavy condition and `leafCount_ge_three_of_heavy`:
+  **a `{S,B}` cycle requires an S-reduction whose third argument has ≥ 3 leaves, and
+  some S-reduction whose third argument contains a `B`.** Syntactic and checkable,
+  unlike a τ threshold.
+- **And it does NOT prune a seed search — measured, not assumed.** Filtering `{S,B}`
+  seeds to those containing a `B` with ≥ 5 leaves leaves 434/448 at n=5 and
+  109395/109824 at n=8 (99.6%). The condition constrains the **steps** a cycle must
+  contain, not the **seeds** a search starts from. It could guide pruning *during*
+  closure exploration — a different algorithm from `onCycleAny` — but it buys nothing
+  for the hunt as written. Recorded so the condition is not credited with a speedup it
+  does not provide.

@@ -1989,3 +1989,42 @@ what automation could and couldn't do. This file is a first-class deliverable
   terms that can host both a B-reduction and a τ-heavy S-reduction; (3) the
   joinability-insensitive abstraction lifter for Tag → SK; (4) transcription (C1(a),
   C5); (5) C6, declined a fourteenth time.
+
+## 2026-07-24 — Stage 27: a second transplant, and a claim I checked before making
+
+- Ranked task was rung three's S-only fragment, predicted to work "by the identical
+  argument". Checked the arithmetic first: C's leafCount delta is −1, same as B, so C is
+  {S,C}'s only shrinking rule and the S-only fragment has monotone leafCount. Prediction
+  held, and the Stage 26 proof transplanted with only the names changed.
+- I duplicated rather than abstracted, and wrote down why. The two S-only fragments are
+  literally the same system — pure S over a two-symbol alphabet — so the honest
+  generalisation is a term type parameterised by its atom set, plus transport lemmas.
+  That is more code than the copy and adds indirection for exactly two instances. If a
+  fourth rung appears I would abstract; at two, copying is right. Recording the judgment
+  matters more than the judgment, since the next reader will notice the duplication and
+  should know it was chosen.
+- Rung three now has two constraints (τ-light fragment acyclic, and cycles need a
+  C-reduction) plus the structural finding about τ separating it from rung two. That is
+  a rung, by the spec's definition.
+- **The part I am most pleased about is a negative I nearly skipped.** Stage 26's
+  ranking said the composed condition on rung two "is now specific enough to guide a
+  targeted search". Before building that search I measured whether the condition
+  actually prunes. It does not: filtering seeds to terms containing a B with ≥ 5 leaves
+  keeps 99.6% of 8-leaf terms. The reason is structural, not a bad filter choice — the
+  condition constrains the STEPS a cycle contains, not the SEEDS a search starts from,
+  and almost any moderate term can in principle reach such a step.
+- That distinction is worth carrying: **a necessary condition on a path is not
+  automatically a filter on starting points.** I had conflated them in the Stage 26
+  ranking, and the conflation would have produced a "targeted" search identical in cost
+  to the untargeted one, which I would then have reported as a targeted search finding
+  nothing. The condition could drive pruning DURING exploration, which is a genuinely
+  different algorithm.
+- Score for the session's habit: three stages running where doing the cheap check first
+  changed what I built (25: the papers didn't apply; 26: the ranked task was tightening
+  a capped bound; 27: the composed condition doesn't prune). The habit is no longer
+  occasional.
+- Ranking: (1) pruning-during-exploration for rung two — the one use the composed
+  condition genuinely has, and a real change to `onCycleAny` rather than a filter on its
+  input; (2) the joinability-insensitive abstraction lifter for Tag → SK, still the only
+  route to Goal 2's open instance; (3) transcription (C1(a), C5); (4) C6, declined a
+  fifteenth time.
