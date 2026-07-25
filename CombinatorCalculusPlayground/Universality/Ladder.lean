@@ -945,3 +945,99 @@ def scTerms (n : Nat) : List SCTerm := (scTermsTable n)[n]!
 --
 -- Rung three is OPEN, like rung two, but for a structurally different reason — and
 -- that difference is invisible to every measure the program used before Stage 23.
+
+-- ## Stage 25: bootstrapping the heavy-S condition
+-- Stage 23 showed a {S,B} cycle must fire an S-reduction on a τ-heavy argument
+-- (τ(x) ≥ 4). That threshold can be pushed much higher by chaining τ against
+-- leafCount, and the per-step facts that make the chain work are proved here. The
+-- summation over a cycle is arithmetic and is recorded below, not formalised —
+-- classifying every step of a path needs a path-indexed induction carrying one
+-- accumulator per step class, which is a slice of its own.
+
+theorem SBTerm.leafCount_pos (t : SBTerm) : 0 < t.leafCount := by
+  induction t with
+  | S => exact Nat.zero_lt_one
+  | B => exact Nat.zero_lt_one
+  | app a b iha ihb => simp only [SBTerm.leafCount]; omega
+
+theorem SBTerm.eq_atom_of_leafCount_one {t : SBTerm} (h : t.leafCount = 1) :
+    t = .S ∨ t = .B := by
+  cases t with
+  | S => exact Or.inl rfl
+  | B => exact Or.inr rfl
+  | app a b =>
+    exfalso
+    have := SBTerm.leafCount_pos a
+    have := SBTerm.leafCount_pos b
+    simp only [SBTerm.leafCount] at h
+    omega
+
+/-- τ is bounded by 3 on terms of at most two leaves — the largest such τ is
+`τ(app atom atom) = 3`. -/
+theorem tauSB_le_three_of_small {x : SBTerm} (h : x.leafCount ≤ 2) : tauSB x ≤ 3 := by
+  cases x with
+  | S => simp [tauSB]
+  | B => simp [tauSB]
+  | app a b =>
+    have hpa := SBTerm.leafCount_pos a
+    have hpb := SBTerm.leafCount_pos b
+    simp only [SBTerm.leafCount] at h
+    have ha : a.leafCount = 1 := by omega
+    have hb : b.leafCount = 1 := by omega
+    rcases SBTerm.eq_atom_of_leafCount_one ha with rfl | rfl <;>
+      rcases SBTerm.eq_atom_of_leafCount_one hb with rfl | rfl <;>
+      simp [tauSB]
+
+/-- **A τ-heavy argument has at least three leaves.** The bridge between the two
+measures, and the reason the bootstrap below gets traction. -/
+theorem leafCount_ge_three_of_heavy {x : SBTerm} (h : 4 ≤ tauSB x) :
+    3 ≤ x.leafCount := by
+  by_cases hs : x.leafCount ≤ 2
+  · exact absurd (tauSB_le_three_of_small hs) (by omega)
+  · omega
+
+/-- **A heavy S-reduction raises leafCount by at least 2.** Duplicating a
+three-or-more-leaf argument costs at least that much, and every B-reduction only
+recovers 1 — which is what turns the τ threshold into a count of B-reductions. -/
+theorem leafCount_S_red_heavy (f g x : SBTerm) (h : 4 ≤ tauSB x) :
+    (SBTerm.app (.app (.app .S f) g) x).leafCount + 2
+      ≤ (SBTerm.app (.app f x) (.app g x)).leafCount := by
+  have := leafCount_ge_three_of_heavy h
+  simp only [SBTerm.leafCount]
+  omega
+
+-- ## The bootstrap, as arithmetic
+-- Chaining the two measures against each other on a hypothetical cycle. Every
+-- ingredient is proved above or in Stage 20/23; only the summation is informal.
+--
+--   (1) heavy S-red  =>  |x| >= 3  =>  leafCount rises by >= 2
+--                                          `leafCount_S_red_heavy`
+--   (2) on a cycle, sum over S-reds of (|x_i| - 1) = number of B-reds
+--                                          Stage 20's leafCount arithmetic
+--   (3) on a cycle, sum of tau-deltas = 0, with each B-red <= -10 and each
+--       light S-red <= -2       `tauSB_B_red`, `tauSB_S_red`
+--
+--   from (1),(2):   #B  >=  2 * #heavy
+--   from (3):       sum_heavy (2*tau(x_i) - 8)  >=  10 * #B  >=  20 * #heavy
+--   hence:          average tau(x) over heavy S-reds  >=  14
+--
+-- So the Stage 23 threshold of 4 is far from tight: a cycle needs heavy arguments
+-- averaging τ ≥ 14, which by `leafCount_ge_three_of_heavy`-style reasoning means
+-- |x| ≥ 4.
+--
+-- WHY ITERATING THIS DOES NOT CLOSE THE QUESTION, recorded so it is not
+-- rediscovered: feeding the new threshold back through the same chain gives
+-- `T' = 5·f(T) − 1` where `f(T)` is the least leafCount admitting τ ≥ T. The
+-- maximum τ on n leaves is `2^n − 1` (attained by left-nesting), so `f` is
+-- LOGARITHMIC and `T'` grows only logarithmically in `T`. The iteration reaches a
+-- fixed point at roughly τ ≥ 24, |x| ≥ 5, and stops. τ grows exponentially in size
+-- while the constraint grows linearly; that mismatch caps this whole family of
+-- arguments.
+
+-- ## No I-like combinator in {S,B} (Stage 25)
+-- The other route to rung two would be transport: if {S,B} contained a term acting
+-- as `I`, rung one's cycle would carry into it via `not_acyclic_of_pathEncoding` and
+-- {S,B} would be non-acyclic immediately. Searched: no {S,B}-term of at most 7
+-- leaves acts as an identity on four structurally distinct probe arguments, and none
+-- acts as one on two arguments either. Consistent with {S,B} being acyclic, and it
+-- closes the transport route at small size.
