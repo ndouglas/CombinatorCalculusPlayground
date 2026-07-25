@@ -2433,3 +2433,49 @@ Twelve is this certificate's floor, five above the real one.
 
 **The ledger is now:** C1(a) proved, C1(b) proved, C2 proved, C3 retired, C4 proved, C5 proved,
 C6 open and low-materiality. No entry is `external` any more.
+
+### Stage 44: the finite-state route to rung acyclicity — measured, then ruled out
+
+Stage 43 ranked rungs 2/3 first and named the missing tool: after counts (killed by
+`no_monotone_counting_measure`) and positional measures (τ, which rises on S with heavy arguments),
+the third category was to be **finite-state invariants** — what settled C1(a). I searched before
+building.
+
+**The search** (scratch tooling). Exhaustive over every automaton invariant with ≤ 3 states:
+`φ(leaf)` per combinator, `φ(app a b) = f(φ a, φ b)`, `f` **monotone** in each argument,
+`φ(reduct) ≤ φ(redex)` for all reachable argument states. Searching linear orders is free — an
+invariant non-increasing in a partial order is non-increasing in every linear extension.
+
+```
+{S,B} 3 states: 608 monotone non-increasing, 154 with a strictly dropping step
+{S,C} 3 states: 499                          121
+```
+
+The first run omitted monotonicity and reported hundreds that were not invariants at all — without
+it the rule inequality does not survive being placed in a context.
+
+They exist, and they are **not** all facts the tree already has. I guessed they would factor
+through "is B-free" and "spine capped at two"; only **58 of 154** do.
+
+**And it does not matter, because the ceiling is now a theorem.**
+
+| | |
+|---|---|
+| `RS.no_decreasing_measure_of_infinite` | a strictly-decreasing measure proves **termination**, so no system with an infinite reduction has one — and C1(a) supplies that for anything containing `S` |
+| `RS.no_return_of_strict_drop` | what a non-increasing measure *does* buy: nothing climbs back, so its strict steps cannot lie on a cycle |
+| `RS.const_on_cycle` | equivalently: constant on cycles |
+| `RS.PureS_hasInfinite` | C1(a) transported to the K-free subtype the ladder's refutations quantify over |
+| `no_decreasing_measure_pureS` | hence **C2's three-level squeeze was forced, not chosen** |
+
+A bounded invariant **partitions** the cycle space; it cannot **empty** it. Finite-state invariants
+can therefore add constraints of the same kind as `sbCycle_needs_heavy_S` indefinitely and never
+close a rung. Acyclicity must come from the unbounded well-founded level — and both candidates
+there are shut.
+
+**The ranking error.** I treated "tree automata" as one tool; the literature has two, doing
+opposite jobs. Endrullis–Zantema certify **non-**termination, where a bounded certificate is fine
+because one is *exhibiting* an infinite path rather than ruling one out — which is why Stage 43
+transferred so cleanly. The termination direction (Geser–Hofbauer–Waldmann–Zantema 2007;
+match-bounds) draws well-foundedness from a **height annotation** bounded over the reachable set:
+a different mechanism, and a much larger build. Rungs 2/3 need the second, and it is not a
+corollary of the first.

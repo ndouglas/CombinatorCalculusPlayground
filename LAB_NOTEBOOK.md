@@ -2638,3 +2638,49 @@ what automation could and couldn't do. This file is a first-class deliverable
   third category is FINITE-STATE invariants, and Geser–Hofbauer–Waldmann–Zantema (Inf. Comput. 2007)
   is the termination-direction literature for exactly that. (2) Goal 2's `Simulation` gap, left
   legible on purpose in `Calibration.lean`. (3) C6, declined a thirty-first time.
+
+## 2026-07-25 — Stage 44: the new process rule earns its keep immediately
+
+- Yesterday's process fix was to rank against the spec rather than against the last proof. Its first
+  output was rungs two and three, which is right. Its first lesson is that ranking correctly does
+  not make the plan correct: my stated tool for those rungs was wrong, and one search plus one
+  theorem showed it.
+- I said finite-state invariants were the missing third category after counts and positional
+  measures. So I searched for them exhaustively at up to three states before writing any Lean. They
+  exist in quantity — 154 for {S,B} with a strictly dropping step — and I was wrong that they would
+  all reduce to facts already here. Only 58 of the 154 factor through B-freeness and capped spine
+  length. There is real structure in the other 96.
+- Then I worked out what one would BUY, which is the step I should have done before the search and
+  certainly before the ranking. A non-increasing measure excludes its strictly-dropping steps from
+  cycles and nothing more. Emptying the cycle space would need every step to drop, and C1(a) now
+  makes that impossible for anything containing S. So the whole category is a constraint generator,
+  not a proof method, for this problem. Both facts are theorems now rather than remarks
+  (`RS.no_decreasing_measure_of_infinite`, `RS.no_return_of_strict_drop`), because I have learned
+  what happens when I leave that kind of claim in prose.
+- The satisfying by-product: `no_decreasing_measure_pureS` says C2's three-level squeeze was FORCED.
+  At the time it felt like an ingenious construction; it was the only available shape. That is worth
+  knowing about the other rungs before spending stages hoping for something simpler.
+- The underlying mistake was conflating two literatures under "tree automata". Endrullis–Zantema
+  prove NON-termination, and a bounded certificate is fine there precisely because you are
+  exhibiting an infinite path, not ruling one out — which is why it transferred so cleanly to C1(a)
+  and why I over-generalised from that success. Proving termination with automata is match-bounds:
+  well-foundedness comes from a height annotation being bounded over the reachable set. Different
+  mechanism, much bigger build. One tool solved C1(a) in an afternoon and I assumed its neighbour
+  would solve the rungs.
+- Lean caught something I want to record. I wrote `not_on_cycle_of_strict_step` with a hypothesis
+  `B.step b b'`, and the unused-variable warning showed the proof never touched it — the fact needs
+  only the measure drop. That is the "trivial witness" test from Stage 42 arriving as a compiler
+  warning instead of as self-review. I renamed it and dropped the hypothesis. Two of my last three
+  overclaims would have been caught by simply reading the warnings I was filtering out of the build
+  output; I should stop grepping them away.
+- **Where this leaves the rungs.** Both remain open, and now with a proved account of why: no single
+  measure can work, no bounded invariant can finish, and the two open routes are a genuine
+  match-bounds implementation or an unbounded well-founded measure nobody has found. That is a
+  better-characterised open problem than yesterday and I am not going to pretend it is closer.
+- Ranking, against the spec: (1) **Goal 2's `Simulation` gap** — the spec calls the taxonomy "the
+  intellectual center", the gap is documented on purpose in `Calibration.lean` (the positive side
+  certifies SK realising λ-style bodies, not SK hosting a known-universal MACHINE), and the
+  adequacy machinery for it already exists (`RS.bwd_of_abstraction_rel`, `Simulation.ofAbstraction`,
+  `universalReach_extend`). It is bounded work on the spec's declared centre, which is more than can
+  be said for a match-bounds framework. (2) rungs 2/3 via match-bounds, as a deliberate multi-stage
+  project rather than a hoped-for corollary. (3) C6, declined a thirty-second time.
