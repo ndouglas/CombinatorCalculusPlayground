@@ -11,6 +11,7 @@
 -- development can reason about, while the fuel-based `kNorm` census tooling is not certified.
 import CombinatorCalculusPlayground.KConfluence
 import CombinatorCalculusPlayground.AdequacyProbe
+import CombinatorCalculusPlayground.Universality.Calibration
 
 open Term
 
@@ -223,3 +224,59 @@ def knfAllEncodings (bound fuel : Nat) (t : Term) : Bool :=
 --     satisfies for a reason the countdown alone explains.
 --   * a driver could instead use a DIFFERENT abstraction. Nothing here says the K-normal-form one is
 --     the only option; it says what that one costs. `RS.bwd_of_abstraction_rel` takes any relation.
+
+-- ## Stage 50: prototyping the intermediate condition — dispatch passes, recursion does not
+-- Stage 49 established that the K-normal-form abstraction demands every reachable intermediate
+-- K-normalise to an encoding, and said to prototype that before writing a driver. Here is the
+-- prototype. The diagnostic is a RATIO: along one source step's trajectory the abstraction can
+-- tolerate at most TWO distinct K-normal forms — the before-state and the after-state — so a
+-- construct whose reachable set produces more than that per step cannot be tracked.
+
+/-- The K-normal form, via the unverified normaliser; and the set of them over a reachable set.
+Census tooling. -/
+def knfOf (t : Term) : Term := kNorm (leafCount t) t
+
+def knfCount (bound fuel : Nat) (t : Term) : Nat × Nat :=
+  match boundedClosure bound fuel [t] with
+  | none => (0, 0)
+  | some cl => (cl.length, (cl.map knfOf).eraseDups.length)
+
+-- Booleans, the usual way: `K` selects the first branch, `S K` the second.
+def tru : Term := K
+def fls : Term := app S K
+
+-- **Dispatch passes, and passes exactly.** `S K a b` has three reachable terms and precisely TWO
+-- K-normal forms: itself (the before-state) and `b` (the selected branch). The intermediate
+-- `(K b)(a b)` collapses onto `b`, and the doomed branch `a b` vanishes with it. That is the
+-- flip-once behaviour the abstraction wants, arising natively from the dispatch idiom.
+#guard knfCount 30 100 (app2 tru (app S S) (app K K)) = (2, 1)
+#guard knfCount 30 100 (app2 fls (app S S) (app K K)) = (3, 2)
+
+-- The countdown, for scale: 183 reachable terms collapse onto 4 K-normal forms — its 4 encodings.
+#guard knfCount 30 120 (Itower 3) = (183, 4)
+
+-- **Self-application does not.** `omegaSK = (S I I)(S I I)` is the tree's minimal recursive object.
+-- Its reachable set is SMALLER than the countdown's and its K-normal forms are four times as many,
+-- sprawling into nested `S K K (…)` shapes rather than collapsing.
+#guard knfCount 40 60 omegaSK = (107, 17)
+
+-- ## What the prototype settles
+-- The blocker for piece (v) is RECURSION, not dispatch — which corroborates with numbers what
+-- Stages 11 and 13 flagged in prose about the pending recursive call. Dispatch was the part I would
+-- have expected to fight, and it comes for free: selecting a branch is one S-step whose reduct is a
+-- K-redex, so it commits immediately and shows the abstraction exactly two states.
+--
+-- The honest limit of this measurement: `omegaSK` is not a driver and has no source machine, so
+-- seventeen K-normal forms is not a refutation. A real driver's seventeen could in principle all be
+-- encodings of reachable source states — the abstraction is allowed to stutter across many host terms.
+-- What the ratio shows is a TREND in the wrong direction: the countdown's set collapses as the closure
+-- grows, `omegaSK`'s does not.
+--
+-- So piece (v) has two routes and this stage says which is which:
+--   * keep the K-normal-form abstraction and find a recursion scheme whose intermediates collapse —
+--     the driver would have to commit each recursive unfolding through a K-discard, which is a real
+--     design constraint and not obviously achievable;
+--   * or use a different abstraction. Stage 49 already noted `RS.bwd_of_abstraction_rel` takes an
+--     arbitrary relation; the countdown's success does not oblige piece (v) to reuse its choice.
+-- Neither is attempted here. What is established is that the difficulty is localised to recursion,
+-- and that the dispatching half of a driver is compatible with the machinery already proved.
