@@ -1258,3 +1258,21 @@ theorem scCycle_needs_C {t : SCTerm}
 -- That is a syntactic, checkable condition on the redexes a cycle must contain — much
 -- more restrictive than a τ threshold, and it is what a targeted search should filter
 -- on. The summation in (iv) remains the unformalised step, as in Stage 25.
+
+-- ## Stage 27 addendum: the composed condition does NOT prune a seed search
+-- Measured before claiming otherwise. Filtering {S,B} seed terms to those containing a
+-- `B` and having at least 5 leaves — the obvious necessary conditions for hosting the
+-- required redexes — removes almost nothing:
+--
+--   n = 5:   448 terms ->   434 candidates
+--   n = 6:  2688       ->  2646
+--   n = 7: 16896       -> 16764
+--   n = 8: 109824      -> 109395   (99.6% survive)
+--
+-- The reason is structural rather than incidental: the composed condition constrains
+-- the STEPS a cycle must contain, not the SEED a search starts from, and nearly every
+-- term of moderate size can in principle reach such a step. So the condition does not
+-- guide a seed-filtered hunt. What it could guide is pruning DURING closure
+-- exploration — abandoning branches that can no longer reach a qualifying redex — which
+-- is a different algorithm from `onCycleAny`. Recorded so the condition is not credited
+-- with a search speedup it does not provide.
