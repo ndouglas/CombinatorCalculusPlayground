@@ -265,8 +265,19 @@ mechanisms.
 **Does SK certifiably host a known-universal system?** Concretely: is there a
 `Simulation (RS.Tag T) RS.SK`?
 
-This is the one substantive thing left, and it is **research-blocked**, not
-merely unbuilt. The obstruction is `bwd`, and it is load-bearing: a positive
+This is the one substantive thing left, and Stage 29 upgraded it from
+"research-blocked" to a **stated structural obstruction**: the two candidate
+abstractions fail for *opposite* reasons. The syntactic one is too **fine** — `S f g x`
+duplicates `x`, the copies drift, and it loses track (`naiveAbs_not_stuttering`). The
+joinability one is too **coarse** — it relates every trajectory state to every other, so
+it is never functional on `enc`'s image (`RS.joinable_abs_not_functional`), which is
+exactly the hypothesis the relational adequacy lemma needs. A workable abstraction must
+sit strictly between, and neither obvious construction does.
+
+Infrastructure in place for any future attempt: `RS.bwd_of_abstraction_rel` (adequacy
+from a *relational* abstraction, with Stage 8's function version as a special case).
+
+The older framing follows. The obstruction is `bwd`, and it is load-bearing: a positive
 certification must be made in the demanding class (Stage 7's asymmetry), so it
 cannot be weakened away. Stage 8 reduced `bwd` to supplying a stuttering
 abstraction, which makes the obligation standard rather than open-ended — but

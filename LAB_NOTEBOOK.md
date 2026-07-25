@@ -2068,3 +2068,45 @@ what automation could and couldn't do. This file is a first-class deliverable
   (2) transfer the three-level squeeze to rung three ({S,C}'s no-C-duplication fragment),
   which should work by the same pattern; (3) transcription (C1(a), C5); (4) C6, declined a
   sixteenth time.
+
+## 2026-07-24 — Stage 29: the deferred proposal, checked and refuted
+
+- The joinability-insensitive abstraction lifter had sat at or near the top of my ranking
+  since Stage 10 — nineteen stages — always as "the honest route to Goal 2's open
+  instance", always deferred as research-grade. This stage finally checked it, fifth
+  consecutive stage where checking came before building, and it does not work.
+- What I built first, because any version of the proposal needs it: the abstraction as a
+  RELATION rather than a function. `bwd_of_abstraction_rel`, with Stage 8's function
+  version recovered as the special case `absR b a := (abs b = some a)`. That
+  generalisation is correct, axiom-free, and genuinely required — a joinability-style
+  abstraction cannot be a computed function, since "decodes to" becomes a semantic
+  condition. So the infrastructure stands regardless.
+- The relaxation has a price I had not anticipated: the relation must be FUNCTIONAL ON
+  THE IMAGE of `enc`. With a function that was free (`abs (enc a) = some a` gives it
+  immediately). With a relation it is a real hypothesis. And it is precisely where
+  joinability dies.
+- **`Joinable · (enc ·)` relates an encoded state to every source state it came from.**
+  One line to prove: if `a` steps to `a'` then `enc a` reaches `enc a'`, so `enc a'` is
+  joinable with `enc a` — and trivially with itself. So it relates `enc a'` to two
+  distinct source states, and functionality fails as soon as the source has any
+  nontrivial step. The proposal fixes drift by being so coarse that it cannot tell
+  machine states apart at all.
+- **The shape of the whole obstruction, which is what I want on record.** The two
+  candidate abstractions fail in opposite directions. Syntactic is too FINE — copies
+  drift, it loses track. Joinability is too COARSE — it collapses the trajectory. A
+  workable abstraction sits strictly between and neither obvious construction is there.
+  That is a much better description of Goal 2's blocker than "research-blocked", which is
+  what I had been writing for ten stages without knowing which way it was blocked.
+- Worth noting what this cost and bought: one stage, four axiom-free theorems, and the
+  retirement of a proposal that had been consuming the top of my ranking for nineteen
+  stages without ever being examined. Deferring it was defensible each individual time —
+  it always looked expensive next to a cheap ladder rung — but nineteen consecutive
+  defers of the same item is a pattern, and the item turned out to be cheap to REFUTE
+  even though it would have been expensive to BUILD. Refuting is often the cheaper half
+  and I should test that first more often.
+- Ranking: (1) transfer the three-level squeeze to rung three's no-C-duplication
+  fragment — cheap, mechanical, and gives rung three parity with rung two;
+  (2) transcription (C1(a), C5), now the largest remaining item that is definitely
+  achievable; (3) C6, declined a seventeenth time. Note criterion (a) has left the
+  ranking: it is a stated obstruction now, not a task, and it should return only if
+  someone has a candidate abstraction that is neither syntactic nor joinability-based.

@@ -1967,3 +1967,34 @@ arithmetic before committing.
 - The fragment is strictly larger than the S-only one (it contains every B-reduction), so
   `sbNoBDup_acyclic` **subsumes** `sbSOnly_acyclic`, and Stage 26's result is now a
   corollary rather than an independent fact.
+
+### Stage 29: the Tag → SK blocker, restated as a structural obstruction
+
+The joinability-insensitive abstraction lifter had been the standing proposal for spec
+Goal 2's blocker since Stage 10, carried in the ranking as "route 1". Checked before
+building, and it yields one construction and one obstruction.
+
+- **The generalisation, which any future attempt needs** (`Universality/Defs.lean`, all
+  AXIOM-FREE): `RS.Joinable`; `RS.abstraction_tracks_rel` and
+  `RS.bwd_of_abstraction_rel` — adequacy with the abstraction as a **relation** rather
+  than a function; and `RS.bwd_of_abstraction_rel_generalises`, showing Stage 8's
+  function version is the special case `absR b a := (abs b = some a)`. Relaxing to a
+  relation is precisely what a joinability-style abstraction requires, since "decodes to"
+  becomes semantic rather than computed. **The price is a new hypothesis: the relation
+  must be functional on `enc`'s image.**
+- **The obstruction sits exactly at that price.**
+  `RS.joinable_abs_not_functional`: `Joinable · (enc ·)` relates an encoded state to
+  *every* source state it came from, so it is never functional on the image once the
+  source has a single nontrivial step. The proposal *does* fix drift — drifted copies
+  remain joinable in a confluent host — but by being far too coarse: everything on a
+  machine's trajectory is joinable with everything else, so joinability cannot tell
+  machine states apart at all.
+- **The resulting picture, which is the stage's content.** The two candidate routes to
+  `bwd` fail for **opposite** reasons:
+  - the **syntactic** abstraction is too **fine** — duplicated copies drift and it loses
+    track (Stages 10, 13);
+  - the **joinability** abstraction is too **coarse** — it collapses the trajectory.
+
+  A workable abstraction must sit strictly between, and neither obvious construction
+  does. Criterion (a) is therefore a **structural obstruction**, not unbuilt work — a
+  more honest and more useful description than ten stages of "research-blocked".
