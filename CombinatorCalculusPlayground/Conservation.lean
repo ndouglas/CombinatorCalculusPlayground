@@ -153,3 +153,86 @@ Recorded as the interface, not yet inhabited. -/
 theorem conservation_apply {t : Term} (hk : KFree t) (h : InfiniteRed t) :
     ∀ n, NormalForm n → ¬ (t ⟶* n) :=
   fun n hnf hsteps => no_normalForm_of_infiniteRed hk h ⟨n, hsteps, hnf⟩
+
+-- ## Stage 32: what C1(a) still needs, reduced to spine arithmetic
+-- C5 removed C1(a)'s external DEPENDENCY: `no_normalForm_of_infiniteRed` means an
+-- infinite reduction sequence now suffices for non-normalization. What remains is purely
+-- a REDUCIBILITY INVARIANT — a predicate `P` with `P c1` and `P t → ∃ u, t ⟶ u ∧ P u`,
+-- from which the sequence is built by recursion. This section proves the two facts any
+-- such invariant must be built from, and states precisely where they fall short.
+
+/-- **For a K-free term, head spine ≥ 3 is enough to be reducible.** The only leaf is `S`,
+so the head of any application chain is `S`, and three arguments fire it. This is the
+reducibility half of what an invariant needs. -/
+theorem reducible_of_head_spine : ∀ (t : Term), KFree t → 3 ≤ spineLength t → ∃ u, t ⟶ u := by
+  intro t
+  induction t with
+  | S => intro _ h; simp [spineLength] at h
+  | K => intro hk _; cases hk
+  | app a b iha _ =>
+    intro hk h
+    cases hk with
+    | app hka hkb =>
+      simp only [spineLength] at h
+      by_cases h3 : 3 ≤ spineLength a
+      · obtain ⟨u, hu⟩ := iha hka h3
+        exact ⟨_, Step.appL hu⟩
+      · have ha2 : spineLength a = 2 := by omega
+        cases a with
+        | S => simp [spineLength] at ha2
+        | K => cases hka
+        | app a1 z =>
+          simp only [spineLength] at ha2
+          cases a1 with
+          | S => simp [spineLength] at ha2
+          | K => cases hka with | app h1 _ => cases h1
+          | app w y =>
+            simp only [spineLength] at ha2
+            cases w with
+            | S => exact ⟨_, Step.S_red y z b⟩
+            | K =>
+              cases hka with
+              | app h1 _ => cases h1 with | app h2 _ => cases h2
+            | app p q => simp [spineLength] at ha2
+
+/-- **The spine arithmetic of an S-reduction.** Firing `S f g x` leaves a term of head
+spine `spineLength f + 2`. So the reduct is again a head redex exactly when
+`spineLength f ≥ 1` — and this is the preservation half of what an invariant needs. -/
+theorem spineLength_S_red (f g x : Term) :
+    spineLength (Term.app (.app f x) (.app g x)) = spineLength f + 2 := by
+  simp [spineLength]
+
+/-- The same redex fired one application deeper: head spine `spineLength f + 3`. In
+general, `k` extra applications give `spineLength f + 2 + k`, so for a redex nested under
+at least one extra argument the reduct always has spine ≥ 3. -/
+theorem spineLength_S_red_appL (f g x y : Term) :
+    spineLength (Term.app (.app (.app f x) (.app g x)) y) = spineLength f + 3 := by
+  simp [spineLength]
+
+-- ## Where this stops, stated precisely
+-- Put together: for a K-free term, spine ≥ 3 gives reducibility, and firing a head redex
+-- with `k` trailing arguments yields spine `spineLength f + 2 + k`. So:
+--
+--   * if `k ≥ 1` — the redex is nested under at least one further argument — the reduct
+--     has spine ≥ 3 and is reducible again, unconditionally;
+--   * if `k = 0` — the redex is the whole head — the reduct has spine
+--     `spineLength f + 2`, which is ≥ 3 only when `spineLength f ≥ 1`.
+--
+-- So a reducibility invariant needs a lower bound on the FIRST ARGUMENT's spine in the
+-- `k = 0` case, and nothing in this development bounds that below. Measured on `c1`: the
+-- payload's spine along the frozen part of the trajectory runs
+-- 3,4,4,3,3,4,4,3,5,6,6,5,5,8,8,7,9,10,10,9 — never below 3, so the invariant HOLDS
+-- empirically, but the `k = 0`, `spineLength f = 0` case does occur and is exactly the
+-- unproved step.
+--
+-- Two further negatives, both extending earlier hunts:
+--   * `c1` does not reappear as a subterm of any reduct within 120 steps (Slice 3), and
+--     no frozen reduct recurs within 20 starting points (Slice 4);
+--   * the classic 14-leaf literature candidate `S A A (S A A)` with `A = S S S` does not
+--     self-embed within 40 steps either, and its sizes grow steadily
+--     (14, 20, 26, 35, 44, 53, 65, ...). So the self-embedding route has no witness at
+--     the literature's own term, not just at ours.
+--
+-- C1(a) therefore stands as: dependency discharged (C5), reducibility criterion proved
+-- (spine ≥ 3), preservation arithmetic proved, and ONE arithmetic gap remaining — a lower
+-- bound on the first argument's spine when the redex sits at the head.
