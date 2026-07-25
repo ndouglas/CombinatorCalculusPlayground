@@ -2222,3 +2222,38 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) the `k = 0` spine bound — the single remaining gap for C1(a), and now a
   self-contained arithmetic question rather than an open-ended invariant hunt;
   (2) C6, declined a twentieth time.
+
+## 2026-07-24 — Stage 33: my own gap was an artefact
+
+- Ranked task was the `k = 0` spine bound, which Stage 32 had called "the single remaining
+  gap for C1(a)". Checked it before attacking it — eighth stage running, and the stage right
+  after I nearly broke the sorry-free streak by *not* checking — and the gap dissolved.
+- The error was mine and precise: `reducible_of_head_spine` says head spine ≥ 3 IMPLIES
+  reducible. It does not say the converse. A term like `(S x)(g x)` has head spine 2 and can
+  still reduce inside. So when I demanded head spine ≥ 3 be *preserved*, I was asking for
+  strictly more than reducibility, and the `k = 0` case was the cost of that surplus rather
+  than a fact about pure S. I had turned a sufficient condition into a required one without
+  noticing.
+- The replacement dropped out of C5's own proof. Inside `conservation` I had used: if `t`
+  reaches a normal form then confluence sends every reduct there too, and monotonicity caps
+  every reduct's size. Extracted, that is `leafCount_le_of_normalizes`, and its
+  contrapositive is a criterion needing no invariant at all — **unbounded reduct sizes imply
+  no normal form**.
+- **Why this matters more than the theorem count suggests: the goal and the evidence now
+  agree.** For thirty-odd stages the census measured SIZES — 120112 leaves at step 200,
+  25.7 billion at fuel 1000 — while the stated target was an INVARIANT, and no invariant was
+  ever observed. Those were different currencies. `bounded_of_normalizes` converts the
+  census's own numbers into the right currency: any bound on those sizes would have been a
+  normalization proof, so the explosion is evidence of exactly the right kind.
+- And the new target is cumulative in a way the old one was not. Every larger reduct found is
+  progress toward unboundedness. Slices 3, 4 and 32 all hunted invariants and produced
+  nothing that composed — three separate negatives. That asymmetry is worth remembering when
+  choosing between two formulations of the same open problem: prefer the one where partial
+  results accumulate.
+- Still open: the growth step — from any reduct, reach a strictly larger one. I want to be
+  clear that this is not obviously easier than the invariant, only better aimed. What has
+  improved is that partial progress now counts.
+- Ranking: (1) the growth step for `c1` — from any reduct of `c1`, reach a strictly larger
+  reduct. The frozen head (Slice 4) may help here in a way it did not help the invariant:
+  `frozen_normalizes_iff` reduces `c1` to its payload, and the payload's sizes are what grow;
+  (2) C6, declined a twenty-first time.

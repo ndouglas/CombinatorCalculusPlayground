@@ -245,10 +245,24 @@ arithmetic gap:
   leaf is `S`, so the head of any chain is `S`). The reducibility criterion.
 - `spineLength_S_red` — firing `S f g x` leaves head spine `spineLength f + 2`; with `k`
   trailing arguments, `spineLength f + 2 + k`. The preservation arithmetic.
-- **The gap:** if `k ≥ 1` the reduct is unconditionally reducible again; if `k = 0` it needs
-  `spineLength f ≥ 1`, and nothing bounds that below. On `c1` the payload spine never drops
-  below 3 across 20 measured steps, so the invariant holds empirically — but the `k = 0`,
-  `spineLength f = 0` case occurs, and that is the unproved step.
+- **Stage 33 correction — that gap was an artefact.** `reducible_of_head_spine` is
+  *sufficient* for reducibility but not *necessary*: a term of head spine 2 such as
+  `(S x)(g x)` can still reduce inside. So demanding head spine ≥ 3 as an **invariant**
+  asks for strictly more than reducibility needs, and the `k = 0` case was a consequence of
+  that over-strong demand rather than a real obstacle.
+- **The replacement needs no invariant.** `no_normalForm_of_unbounded`
+  (`Conservation.lean`): a K-free term whose reducts have **unbounded size** has no normal
+  form. Via `leafCount_le_of_normalizes` — confluence sends every reduct to the normal form
+  and monotonicity caps it. Contrapositive `bounded_of_normalizes`: a normalizing K-free
+  term has a size bound on its *whole reduction graph*, so **any bound on the census's
+  exploding sizes would have been a normalization proof**.
+- **Why this target is better matched.** It needs only a family of reducts, one above each
+  bound — no preserved predicate. It is what the census actually measured (`c1`: 120112
+  leaves by step 200, 25740409924 by fuel 1000), so evidence and goal finally agree. And it
+  is monotone in the evidence: every larger reduct found is progress, whereas invariant
+  hunting produced nothing cumulative across Slices 3, 4 and 32.
+- **What is still missing:** a proof of unboundedness, which needs a growth step — from any
+  reduct, reach a strictly larger one. Open.
 - Self-embedding remains witness-free, now including **the literature's own term**: the
   classic 14-leaf `S A A (S A A)` with `A = S S S` does not self-embed within 40 steps
   (sizes 14, 20, 26, 35, 44, 53, 65, …).
@@ -2080,3 +2094,20 @@ directly**, and the argument is five lines of English.
   famous theorem covers it, when a cheaper route existed inside the development. **An
   `external` label should record where the claim is known, not close the question of
   whether this tree can prove it.**
+
+### Stage 33: C1(a)'s target replaced — the size criterion
+
+- **Stage 32's gap was an artefact of an over-strong demand.** `reducible_of_head_spine` is
+  sufficient but not necessary for reducibility (head spine 2 can still reduce inside), so
+  requiring it as a preserved invariant asked for more than the problem needs.
+- **`no_normalForm_of_unbounded`**: a K-free term with reducts of unbounded size has no
+  normal form. Proof: `leafCount_le_of_normalizes` — confluence sends every reduct to the
+  normal form, monotonicity caps its size — so unbounded reducts contradict normalization.
+- **`bounded_of_normalizes`**: the contrapositive. A normalizing K-free term has a size
+  bound on its entire reduction graph. This changes how the census reads: the exploding
+  sizes are not merely suggestive, because **any bound on them would have been a
+  normalization proof**.
+- **The target is now better matched to the evidence** in three ways: no preserved
+  predicate is needed; it is the quantity the census measured; and progress toward it is
+  cumulative, unlike three slices of invariant hunting.
+- Remaining: a growth step. Open.
