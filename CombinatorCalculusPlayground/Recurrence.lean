@@ -30,6 +30,7 @@
 -- no sets, no finiteness infrastructure.
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Census.Enumerate
+import CombinatorCalculusPlayground.Universality.Taxonomy
 
 open Term
 
@@ -211,11 +212,11 @@ theorem st_sIter {t : Term} (h : st t = .s34) : ∀ n, st (sIter t n) = .s34 := 
           rw [hso]
           exact st_s34_of_step ih (stepOnce_sound hso)
 
-/-- **The recurrence-set theorem, instantiated.** An accepted term admits an infinite
-reduction. -/
-theorem infiniteRed_of_s34 {t : Term} (h : st t = .s34) : InfiniteRed t := by
-  refine ⟨sIter t, rfl, ?_⟩
-  intro i
+/-- Each iterate really steps to the next: the set being closed means the evaluator never
+returns `none`. Stated separately from `InfiniteRed` because the K-free subtype needs the bare
+step, and rewriting under a dependent pair is not available. -/
+theorem sIter_step_of_s34 {t : Term} (h : st t = .s34) (i : Nat) :
+    sIter t i ⟶ sIter t (i + 1) := by
   obtain ⟨u, hu⟩ := has_redex_of_s34 (st_sIter h i)
   cases hso : stepOnce (sIter t i) with
   | none => exact absurd (stepOnce_isSome_of_step hu) (by rw [hso]; simp)
@@ -223,6 +224,11 @@ theorem infiniteRed_of_s34 {t : Term} (h : st t = .s34) : InfiniteRed t := by
       show sIter t i ⟶ (stepOnce (sIter t i)).getD (sIter t i)
       rw [hso]
       exact stepOnce_sound hso
+
+/-- **The recurrence-set theorem, instantiated.** An accepted term admits an infinite
+reduction. -/
+theorem infiniteRed_of_s34 {t : Term} (h : st t = .s34) : InfiniteRed t :=
+  ⟨sIter t, rfl, sIter_step_of_s34 h⟩
 
 -- ## The witness
 -- Endrullis–Zantema's Example 12 exhibits the accepted term `SSS(SSS) applied to itself`.
@@ -282,3 +288,39 @@ def accepted (t : Term) : Bool := st t == Dst.s34
 #guard (trace 40 ezWitness).length = 41
 #guard leafCount ((trace 40 ezWitness).getLastD ezWitness) = 776
 #guard ((trace 40 ezWitness).map leafCount).all (fun k => 12 ≤ k)
+
+-- ## What C1(a) rules out
+-- The certificate has a methodological dividend. Now that an infinite pure-S reduction is a
+-- theorem, `RS.no_decreasing_measure_of_infinite` says no single strictly-decreasing measure
+-- exists for pure S, or for anything containing it — which is every rung of the relaxation ladder.
+-- That retroactively explains C2: the three-level squeeze was not a stylistic preference, it was
+-- forced, and the same is true of any acyclicity proof for rungs two and three.
+
+theorem sIter_steps (t : Term) : ∀ n, t ⟶* sIter t n := by
+  intro n
+  induction n with
+  | zero => exact Steps.refl t
+  | succ n ih =>
+      cases hso : stepOnce (sIter t n) with
+      | none => show t ⟶* (stepOnce (sIter t n)).getD (sIter t n); rw [hso]; exact ih
+      | some w =>
+          show t ⟶* (stepOnce (sIter t n)).getD (sIter t n)
+          rw [hso]
+          exact ih.trans (Steps.single (stepOnce_sound hso))
+
+theorem RS.SK_hasInfinite : RS.SK.HasInfinite :=
+  let ⟨f, _, hf⟩ := ezWitness_infiniteRed
+  ⟨f, hf⟩
+
+/-- The same, inside the K-free subtype — the carrier the ladder's refutations quantify over. -/
+theorem RS.PureS_hasInfinite : RS.PureS.HasInfinite :=
+  let hk : KFree ezWitness := kFree_iff.mp (by decide)
+  ⟨fun i => ⟨sIter ezWitness i, hk.of_steps (sIter_steps ezWitness i)⟩,
+    fun i => sIter_step_of_s34 st_ezWitness i⟩
+
+/-- **No single decreasing measure can prove pure-S acyclicity.** So C2's three-level squeeze was
+forced, not chosen — and any acyclicity proof for a ladder rung faces the same constraint, since
+every rung contains `S`. -/
+theorem no_decreasing_measure_pureS (mu : RS.PureS.Carrier → Nat) :
+    ¬ (∀ {a b : RS.PureS.Carrier}, RS.PureS.step a b → mu b < mu a) :=
+  RS.no_decreasing_measure_of_infinite RS.PureS_hasInfinite mu

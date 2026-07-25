@@ -1418,3 +1418,42 @@ theorem scCycle_needs_C_duplication {t : SCTerm}
 
 -- As at rung two, this fragment strictly contains the S-only one (it admits every
 -- C-reduction), so `scNoCDup_acyclic` subsumes `scSOnly_acyclic`.
+
+-- ## Stage 44: the finite-state route, measured and ruled out for acyclicity
+-- Stage 43 ranked rungs two and three first and named the missing tool: after counts (killed by
+-- `no_monotone_counting_measure`) and positional measures (τ, which rises on S with heavy
+-- arguments), the third category was to be FINITE-STATE invariants — the kind that settled C1(a).
+-- Before building any, I searched for them.
+--
+-- **The search.** Exhaustively, over every automaton invariant with at most three states:
+-- `φ(leaf)` assigned per combinator, `φ(app a b) = f(φ a, φ b)`, requiring `f` MONOTONE in each
+-- argument (without which the rule inequality does not survive being placed in a context — the
+-- first run of this search omitted monotonicity and reported hundreds of invariants that were not
+-- ones) and `φ(reduct) ≤ φ(redex)` for every assignment of reachable states to the rule variables.
+-- Searching linear orders costs nothing: an invariant non-increasing in a partial order is
+-- non-increasing in every linear extension of it. Unverified scratch tooling, not in this tree.
+--
+--   {S,B}  3 states: 608 monotone non-increasing invariants, 154 with a strictly dropping step
+--   {S,B}  2 states:  10                                       2
+--   {S,C}  3 states: 499                                      121
+--   {S,C}  2 states:   8                                        2
+--
+-- They exist, and they are not all things this development already knows: I guessed they would all
+-- factor through "is B-free" and "spine length capped at two", and only 58 of the 154 do. There are
+-- genuinely finer finite-state invariants for rung two.
+--
+-- **And it does not matter, because of a ceiling that is now a theorem.** What a non-increasing
+-- measure yields is `RS.no_return_of_strict_drop`: its strictly-dropping steps cannot lie on a
+-- cycle. That PARTITIONS the cycle space. To EMPTY it, every step would have to drop strictly —
+-- and `RS.no_decreasing_measure_of_infinite` together with C1(a) says that is impossible for any
+-- system containing `S`, bounded range or not. So a finite-state invariant can add constraints of
+-- the same kind as `sbCycle_needs_heavy_S`, indefinitely many of them, and never close the rung.
+-- Acyclicity has to come from the unbounded well-founded level, and both candidates there are shut.
+--
+-- **The ranking error, recorded.** I treated "tree automata" as one tool. The literature has two,
+-- doing opposite jobs. Endrullis–Zantema certify NON-termination, where a bounded certificate is
+-- fine precisely because one is exhibiting an infinite path rather than ruling one out — that is
+-- why Stage 43 transferred so cleanly. The termination direction (Geser–Hofbauer–Waldmann–Zantema
+-- 2007; match-bounds) gets its well-foundedness from a HEIGHT ANNOTATION being bounded over the
+-- reachable set, which is a different mechanism and a much larger build than reusing Stage 43's
+-- certificate. Rungs two and three need the second, and it is not a corollary of the first.

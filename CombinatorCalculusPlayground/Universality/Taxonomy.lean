@@ -291,3 +291,58 @@ theorem UniversalReach.toPathEncoding {R B : RS} (h : UniversalReach R B) :
     Nonempty (PathEncoding R B) :=
   match h with
   | ⟨S⟩ => ⟨S.toPathEncoding⟩
+
+-- ## Stage 44: what a measure can and cannot do about cycles
+-- Rungs two and three need ACYCLICITY, and Stage 43's ranking proposed finite-state invariants as
+-- the missing tool after counts and positional measures. Working out what such an invariant buys
+-- is the cheap thing to do before building one, and it draws a hard ceiling.
+
+/-- An infinite reduction sequence, at `RS` level. -/
+def RS.HasInfinite (B : RS) : Prop := ∃ f : Nat → B.Carrier, ∀ i, B.step (f i) (f (i + 1))
+
+/-- **A single strictly-decreasing measure proves TERMINATION, not merely acyclicity — so no
+system with an infinite reduction has one.** `RS.Acyclic.of_decreasing_measure` therefore cannot
+be applied to any rung of the ladder, all of which contain `S`: C1(a) now supplies the infinite
+reduction. This is why C2 needed the three-level squeeze rather than one measure, and it is a
+statement about the METHOD, so it is worth having as a theorem rather than a remark. -/
+theorem RS.no_decreasing_measure_of_infinite {B : RS} (h : B.HasInfinite)
+    (mu : B.Carrier → Nat) : ¬ (∀ {b b' : B.Carrier}, B.step b b' → mu b' < mu b) := by
+  intro hstrict
+  obtain ⟨f, hf⟩ := h
+  have key : ∀ i, mu (f i) + i ≤ mu (f 0) := by
+    intro i
+    induction i with
+    | zero => omega
+    | succ i ih => have := hstrict (hf i); omega
+  have := key (mu (f 0) + 1)
+  omega
+
+theorem RS.mu_le_of_steps {B : RS} (mu : B.Carrier → Nat)
+    (hmono : ∀ {b b' : B.Carrier}, B.step b b' → mu b' ≤ mu b)
+    {x y : B.Carrier} (h : B.Steps x y) : mu y ≤ mu x := by
+  induction h with
+  | refl => exact Nat.le_refl _
+  | tail hs _ ih => exact Nat.le_trans ih (hmono hs)
+
+/-- **What a non-increasing measure DOES buy: nothing climbs back.** Once the measure has strictly
+dropped there is no path back, so any step that strictly lowers it cannot lie on a cycle.
+(Originally stated with a hypothesis `B.step b b'`; Lean reported it unused, and it is — the fact
+needs only the drop, not a step realising it. The cycle reading is the intended USE, not a
+hypothesis.)
+
+This is the whole yield of a bounded invariant, and it is a partition of the cycle space rather
+than an emptying of it — which is the ceiling. With the theorem above: strictness everywhere is
+impossible once an infinite reduction exists, so measure-preserving steps always survive, and
+ruling those out needs a different kind of argument. -/
+theorem RS.no_return_of_strict_drop {B : RS} (mu : B.Carrier → Nat)
+    (hmono : ∀ {b b' : B.Carrier}, B.step b b' → mu b' ≤ mu b)
+    {b b' : B.Carrier} (hstrict : mu b' < mu b) : ¬ B.Steps b' b := by
+  intro hback
+  have := RS.mu_le_of_steps mu hmono hback
+  omega
+
+/-- ...and on a cycle a non-increasing measure is constant. -/
+theorem RS.const_on_cycle {B : RS} (mu : B.Carrier → Nat)
+    (hmono : ∀ {b b' : B.Carrier}, B.step b b' → mu b' ≤ mu b)
+    {b b' : B.Carrier} (hstep : B.step b b') (hback : B.Steps b' b) : mu b' = mu b :=
+  Nat.le_antisymm (hmono hstep) (RS.mu_le_of_steps mu hmono hback)
