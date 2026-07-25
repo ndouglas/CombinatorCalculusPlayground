@@ -510,3 +510,57 @@ def skipWitness : Term := app2 K (Itower 1) (Term.app K (Itower 2))
 #guard leafCount skipWitness = 13
 #guard stepOnce skipWitness = some (Itower 1)
 #guard Itower 1 = Term.app I S
+
+-- ## Stage 55: the obligation reduces to one fact, and that fact needs strong normalisation
+-- Attempting `OnSegmentHStepPath` turns out not to need a case analysis on the step at all. The whole
+-- thing follows from the existence of a LEAST segment index, and the stutter case is subsumed rather
+-- than handled: if the least index happens to be `w`, the "advance" is the empty path.
+
+theorem countdown_steps_of_le : ∀ {m w : Nat}, m ≤ w → RS.Countdown.Steps w m := by
+  intro m w
+  induction w with
+  | zero =>
+      intro h
+      have hm : m = 0 := by omega
+      subst hm
+      exact RS.Steps.refl _
+  | succ j ih =>
+      intro h
+      rcases Nat.lt_or_ge m (j + 1) with hlt | hge
+      · exact RS.Steps.tail (show j + 1 = j + 1 from rfl) (ih (by omega))
+      · have hm : m = j + 1 := by omega
+        subst hm
+        exact RS.Steps.refl _
+
+/-- **Route two's obligation, reduced to least-index existence.** Every host term reachable from an
+encoding must have a least segment index; given that, `hstep` is four lines and needs neither the
+"not yet past `w`" clause of the hypothesis nor any analysis of the step. -/
+theorem onSegmentHStepPath_of_least
+    (hleast : ∀ (b : Term) (w : Nat), (Itower w ⟶* b) →
+      ∃ m, m ≤ w ∧ (Itower m ⟶* b) ∧ ∀ k, m = k + 1 → ¬(Itower k ⟶* b)) :
+    OnSegmentHStepPath RS.Countdown Itower := by
+  intro b b' w hs hseg
+  obtain ⟨hb, _⟩ := hseg
+  obtain ⟨m, hmle, hmreach, hmmin⟩ := hleast b' w (hb.trans (Steps.single hs))
+  exact Or.inr ⟨m, countdown_steps_of_le hmle, hmreach, hmmin⟩
+
+-- ## What `hleast` needs, and why it is not free
+-- Extracting a least element of `{m | Itower m ⟶* b}` needs that predicate to be DECIDABLE — the set is
+-- non-empty (it contains `w`) and bounded, so decidability is the only missing ingredient, and this
+-- development refuses `Classical.choice`.
+--
+-- Reachability from `Itower m` is decidable if `Itower m`'s reachable set is FINITE, which follows from
+-- strong normalisation: finitely branching plus terminating gives a finite reachable set. So route two's
+-- remaining obligation is
+--
+--     `Itower m` is strongly normalising.
+--
+-- That is not available from anything here, and the reason is worth stating. C5 (`conservation`) gives
+-- WN ⇒ SN — but only for K-FREE terms, and `Itower` is built from `I = S K K`. With `K` in play the
+-- implication is false in general: `K S omegaSK` has a normal form and an infinite reduction. So the one
+-- theorem in this tree that would supply SN cannot reach the countdown's own encoding.
+--
+-- Which is a sharper statement of where piece (v) stands than "route two looks promising": route two is
+-- reduced to a single, classical, entirely standard fact about a specific family of terms — and this
+-- development's own conservation theorem is blocked from proving it by exactly the erasure that Stage 54
+-- showed cuts both ways.
