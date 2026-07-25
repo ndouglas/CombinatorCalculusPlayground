@@ -1171,14 +1171,14 @@ theorem nuBelow_lt_of_step {N : Nat} {v w : Term} (hk : KFree v) (h : v ⟶ w)
 -- The descent itself. Read the induction as: given a self-embedding whose target is `w`, either
 -- it already reduces to a `HalfShape` term, or there is another self-embedding whose target is a
 -- PREDECESSOR of `w` — and predecessors have strictly smaller rank, so this cannot recur.
-private theorem selfEmbed_imp_halfShape_aux (N : Nat) : ∀ (k : Nat) (t w : Term),
-    nuBelow N w < k → KFree t → leafCount w ≤ N →
-    (∃ v, (t ⟶ v) ∧ (v ⟶* w)) → Subterm t w → ∃ s, HalfShape s := by
+private theorem selfEmbed_imp_halfShape_aux (N M : Nat) : ∀ (k : Nat) (t w : Term),
+    nuBelow N w < k → KFree t → leafCount w ≤ N → leafCount t ≤ M →
+    (∃ v, (t ⟶ v) ∧ (v ⟶* w)) → Subterm t w → ∃ s, HalfShape s ∧ leafCount s ≤ M := by
   intro k
   induction k with
   | zero => intro _ _ hlt; exact absurd hlt (Nat.not_lt_zero _)
   | succ k ih =>
-    intro t w hnu hkt hN hpath hsub
+    intro t w hnu hkt hN hM hpath hsub
     obtain ⟨v0, hstep0, hrest0⟩ := hpath
     rcases (Steps.tail hstep0 hrest0).cases_last with heq | ⟨v, hto, hstep⟩
     · -- the path returns to its own start: a cycle, which C2 forbids
@@ -1192,27 +1192,34 @@ private theorem selfEmbed_imp_halfShape_aux (N : Nat) : ∀ (k : Nat) (t w : Ter
         by_cases hne : t = v
         · -- t = v and v ⟶ w with t ⊴ w: a one-step self-embedding, killed by Stage 38
           exact absurd hsub (hne ▸ hstep).not_sub_self
-        · exact ih t v hrank hkt hNv (hto.plus_of_ne hne) hin
-      · -- shape A: `t` is a one-step reduct of `u ⊴ v`, so `u` self-embeds one step earlier
-        exact ih u v hrank (KFree.of_subterm huv hkv) hNv ⟨t, hut, hto⟩ huv
-      · exact ⟨t, f, g, x, v, hshape, hto, hfgx⟩
+        · exact ih t v hrank hkt hNv hM (hto.plus_of_ne hne) hin
+      · -- shape A: `t` is a one-step reduct of `u ⊴ v`, so `u` self-embeds one step earlier.
+        -- `u ⟶ t` also bounds its size by `t`'s, which is what carries the witness bound down.
+        have hku : KFree u := KFree.of_subterm huv hkv
+        exact ih u v hrank hku hNv (Nat.le_trans (leafCount_le_of_step hku hut) hM)
+          ⟨t, hut, hto⟩ huv
+      · exact ⟨t, ⟨f, g, x, v, hshape, hto, hfgx⟩, hM⟩
 
 /-- **Shape A is closed.** If any pure-S term self-embeds, then some pure-S term has `HalfShape`
-— it is one half of the reduct of an S-redex occurring in one of its own reducts.
+— it is one half of the reduct of an S-redex occurring in one of its own reducts — and that term is
+NO LARGER than the one that self-embedded. The size bound comes free: every source the descent
+produces is a one-step predecessor, and pure-S steps never shrink. It matters because it makes an
+induction on term size available to a future attempt on `HalfShape`.
 
 So the loop route to C1(a) no longer has three residual shapes but one, and it is the one Stage 39
 measured EMPTY for every pure-S term up to eight leaves. The shape that was inhabited and growing
 is the shape that is now impossible. -/
 theorem selfEmbed_imp_halfShape {t w : Term} (hk : KFree t)
-    (h : ∃ v, (t ⟶ v) ∧ (v ⟶* w)) (hs : Subterm t w) : ∃ s, HalfShape s :=
-  selfEmbed_imp_halfShape_aux (leafCount w) (nuBelow (leafCount w) w + 1) t w
-    (Nat.lt_succ_self _) hk (Nat.le_refl _) h hs
+    (h : ∃ v, (t ⟶ v) ∧ (v ⟶* w)) (hs : Subterm t w) :
+    ∃ s, HalfShape s ∧ leafCount s ≤ leafCount t :=
+  selfEmbed_imp_halfShape_aux (leafCount w) (leafCount t) (nuBelow (leafCount w) w + 1) t w
+    (Nat.lt_succ_self _) hk (Nat.le_refl _) (Nat.le_refl _) h hs
 
 /-- Contrapositive, as the loop route now reads: no term is one half of the reduct of an S-redex
 in its own reduct ⟹ no pure-S term self-embeds ⟹ the loop route to C1(a) is dead. -/
 theorem no_selfEmbed_of_no_halfShape (hbc : ∀ s : Term, ¬ HalfShape s) {t w : Term}
     (hk : KFree t) (h : ∃ v, (t ⟶ v) ∧ (v ⟶* w)) : ¬ Subterm t w :=
-  fun hs => let ⟨s, hss⟩ := selfEmbed_imp_halfShape hk h hs; hbc s hss
+  fun hs => let ⟨s, hss, _⟩ := selfEmbed_imp_halfShape hk h hs; hbc s hss
 
 /-- `HalfShape` cannot be satisfied by standing still: the redex `S f g x` outweighs both halves
 of its reduct, so the `v` it occurs in must be a STRICT reduct of `t`. Worth stating because it is
@@ -1350,3 +1357,104 @@ theorem app3_S_subterm_step_cases {v' v f g x : Term} (h : v' ⟶ v)
 -- root position, into `S f g x`'s left spine. I do not have that argument, and I am not going to
 -- claim the three controlled cases as most of a proof — the uncontrolled one is where reduction's
 -- growth lives, which is where every hard case in this development has lived.
+
+-- ## Stage 42: what exactly can break the backward invariant
+-- Stage 41 reported "three of four sub-cases controlled" and named the fourth as a step inside the
+-- requirement. Working the arithmetic out properly makes both halves of that statement sharper,
+-- and one of them was needlessly specific.
+--
+-- The generous half first: the reduct-half case does not need the requirement to be S-shaped at
+-- all. A reduct half is ALWAYS lighter than its redex, so going backwards through that case always
+-- makes the requirement bigger, whatever the requirement is. `app3_S_reduct_half_grows` was a
+-- special case of two lines of arithmetic.
+--
+-- The strict half: the remaining case is not "a step inside the requirement" but something
+-- measurable. A pure-S step grows a term by exactly `|c| - 1`, where `c` is the argument the fired
+-- S duplicated. So going backwards through a step is safe unless that step duplicated a LARGE
+-- argument — at least `|s| + 1 - |t|` leaves. That is a size condition on one subterm, not a case
+-- of a case analysis.
+
+/-- A reduct half is always strictly lighter than the redex it came from — the redex carries the
+extra `S` and the whole other argument. Nothing about the half's own shape is used. -/
+theorem reduct_half_lt {s f g x : Term} (h : s = app f x ∨ s = app g x) :
+    leafCount s < leafCount (app3 Term.S f g x) := by
+  have hf := leafCount_pos f
+  have hg := leafCount_pos g
+  rw [leafCount_app3_S]
+  rcases h with heq | heq <;> rw [heq, leafCount_app] <;> omega
+
+/-- **Pure-S growth, exactly accounted.** One step grows a term by `leafCount c - 1`, where `c` is
+the third argument of the S-redex that fired — and `c` occurs in the source. This is the
+quantitative form of Stage 2's monotonicity: not just "size does not fall" but "size rises by the
+weight of what got duplicated, less one". -/
+theorem step_growth_eq : ∀ {u s : Term}, (u ⟶ s) → KFree u →
+    ∃ a b c, Subterm (app3 Term.S a b c) u ∧ leafCount u + leafCount c = leafCount s + 1 := by
+  intro u s h
+  induction h with
+  | K_red x y => intro hk; cases hk with | app hl _ => cases hl with | app hkk _ => cases hkk
+  | S_red f g x =>
+      intro _
+      refine ⟨f, g, x, Subterm.refl _, ?_⟩
+      rw [leafCount_app3_S, leafCount_app, leafCount_app, leafCount_app]
+      omega
+  | @appL p p' q _ ih =>
+      intro hk
+      cases hk with
+      | app hl _ =>
+        obtain ⟨a, b, c, hsub, hgrow⟩ := ih hl
+        refine ⟨a, b, c, hsub.trans (Subterm.appL p q), ?_⟩
+        rw [leafCount_app, leafCount_app]
+        omega
+  | @appR p q q' _ ih =>
+      intro hk
+      cases hk with
+      | app _ hr =>
+        obtain ⟨a, b, c, hsub, hgrow⟩ := ih hr
+        refine ⟨a, b, c, hsub.trans (Subterm.appR p q), ?_⟩
+        rw [leafCount_app, leafCount_app]
+        omega
+
+/-- **The backward invariant, and the one thing that can break it.** Take the requirement `s` in
+`v`, outweighing `t`. One step back there is a requirement in `v'` that still outweighs `t` AND is
+linked to `s` — it is `s` itself, or a term reducing to `s`, or the redex of which `s` is a reduct
+half. Unless `s` was produced by a step that duplicated an argument of at least
+`leafCount s + 1 - leafCount t` leaves.
+
+The linkage clause is the whole content. Without it the first disjunct is nearly vacuous: every
+reduct of `t` already outweighs `t`, so `s' = v'` would satisfy an unlinked statement at every point
+of the path but the start. What makes this an induction step is that the requirement is *tracked*,
+so at the path's start it must be a subterm of `t` — and no subterm of `t` outweighs `t`.
+
+So the remaining gap in the loop route to C1(a) is a size condition on a single subterm rather than
+a case of a case analysis. It is not vacuous: pure-S reduction really does duplicate large
+arguments, which is why C1(a) is plausible in the first place. -/
+theorem backward_invariant_or_big_duplication {t v' v s : Term} (hk : KFree v') (h : v' ⟶ v)
+    (hs : Subterm s v) (hbig : leafCount t < leafCount s) :
+    (∃ s', Subterm s' v' ∧ leafCount t < leafCount s'
+        ∧ (s' = s ∨ (s' ⟶ s)
+            ∨ ∃ f' g' x', s' = app3 Term.S f' g' x' ∧ (s = app f' x' ∨ s = app g' x')))
+      ∨ (∃ u a b c, Subterm u v' ∧ (u ⟶ s) ∧ Subterm (app3 Term.S a b c) u
+          ∧ leafCount s + 1 ≤ leafCount t + leafCount c) := by
+  rcases h.subterm_split' hs with hin | ⟨u, huv, hus⟩ | ⟨f', g', x', hsub, hshape⟩
+  · exact Or.inl ⟨s, hin, hbig, Or.inl rfl⟩
+  · -- the requirement came from a step; the growth identity decides which disjunct we land in
+    obtain ⟨a, b, c, hsubc, hgrow⟩ := step_growth_eq hus (KFree.of_subterm huv hk)
+    rcases Nat.lt_or_ge (leafCount t) (leafCount u) with hlt | hge
+    · exact Or.inl ⟨u, huv, hlt, Or.inr (Or.inl hus)⟩
+    · exact Or.inr ⟨u, a, b, c, huv, hus, hsubc, by omega⟩
+  · -- a reduct half: the redex it came from is strictly heavier, so the invariant improves
+    exact Or.inl ⟨app3 Term.S f' g' x', hsub, Nat.lt_trans hbig (reduct_half_lt hshape),
+      Or.inr (Or.inr ⟨f', g', x', rfl, hshape⟩)⟩
+
+-- ## Where that leaves it
+-- The loop route to C1(a) is now one implication away from dead, and the implication is small
+-- enough to state in one line: no pure-S step that duplicates a big enough argument can produce a
+-- requirement whose predecessor is light. What makes it hard is exactly what makes C1(a)
+-- interesting — big duplications are the only way pure S grows, and growth is the whole subject.
+--
+-- A second route is now open too, and it is why `selfEmbed_imp_halfShape` was strengthened above to
+-- bound its witness by the size of the term that self-embedded. Chasing the requirement's SHAPE
+-- rather than its size gives, at the path's start, a self-embedding of a term strictly smaller than
+-- `t` — which the size-bounded form turns into a `HalfShape` witness strictly smaller than `t`, and
+-- hence into an induction on term size. Two of the three start-cases work out; the third (the
+-- requirement hiding inside `x`) does not yet, so this is a route and not a proof.

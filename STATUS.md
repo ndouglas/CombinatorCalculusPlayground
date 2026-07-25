@@ -167,12 +167,19 @@ leftmost-outermost trajectories reaching ~4000 leaves. Note a size-capped closur
 saturates having *silently dropped* larger reducts, so the earlier cap-24 guard
 read stronger than it was.
 
-Toward a proof, `app3_S_subterm_step_cases` lists the three places `S f g x` can
-come from one step back, and two are pinned: one half of a bigger redex makes the
-requirement **grow by ≥ 2** (`app3_S_reduct_half_grows`), and a root redex is
-forced to `S (S f) b g` with `x = b g` (`app3_S_as_root_reduct`). The open
-sub-case is a step *inside* the requirement, where reduction's growth can drop
-the size below `|t|`.
+Toward a proof (Stage 42), the gap is now a **size condition on one subterm**:
+
+- `step_growth_eq` — a pure-S step grows a term by exactly `|c| - 1`, where `c`
+  is the argument the fired S duplicated, and `c` occurs in the source.
+- `backward_invariant_or_big_duplication` — going one step back, the requirement
+  still outweighs `t` and stays linked to what it replaces, **unless** it was
+  produced by a step that duplicated an argument of at least `|s| + 1 - |t|`
+  leaves.
+
+That single case is what remains. A second route is open: `selfEmbed_imp_halfShape`
+now bounds its witness by the size of the term that self-embedded, which makes an
+induction on term size available — two of that route's three start-cases work out,
+the third does not yet.
 
 Every entry carries a **materiality** and a **prior-art** line in the ledger.
 Those two fields were added in Stage 7 after nine stages went into C1, whose
