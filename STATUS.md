@@ -158,7 +158,7 @@ against in Stage 16.
 | 0 | `{S}` | **acyclic** (`no_pure_S_cycle`); hence refuted as a host of SK |
 | 1 | `{S,I}` | **cyclic** (`omegaSI_cycle`). NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) — so the mechanism is not merely unhelpful here, it is provably inapplicable |
 | 2 | `{S,B}` | **open, target narrowed to one condition.** No counting measure is monotone (`no_monotone_counting_measure`). No cycle under **any** strategy up to 8 leaves within a 30-leaf cap, cap-insensitive to 120 (`onCycleAny`); the cap is not liftable by brute force. **τ strictly drops on every B-reduction and every τ-light S-reduction, so the τ-light fragment is ACYCLIC** (`sbLight_acyclic`) — hence any cycle must fire an S-reduction duplicating a τ-**heavy** argument (`sbCycle_needs_heavy_S`) |
-| 3 | `{S,C}` | open, same shape as rung 2 |
+| 3 | `{S,C}` | **open, and structurally UNLIKE rung 2.** `C x y z → x z y` has the same `leafCount` delta as `B` (−1), so no counting measure separates them — but τ does: B always lowers τ, **C can raise it** (`tauSC_C_red`, delta `τ(z)−τ(y)−8`), because permuting moves a heavy argument into a lighter position. So the light fragment needs **two** conditions (`scLight_acyclic`). Censused: no cycle up to 6 leaves under any strategy within a 30-leaf cap |
 | top | `{S,K}` | **cyclic** — by the Ω ↔ M cycle, and independently by inheritance from rung one (`SK_not_acyclic_via_rung1`) |
 
 **A standing caveat on census evidence here.** Cycle hunts based on a single

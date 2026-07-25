@@ -1834,3 +1834,26 @@ apply to it.
   `of_strict_measure`, which covers growing hosts while terminating-style fragments
   need the other direction. Stage 17 had an ad-hoc copy inside
   `SI_no_decreasing_measure`.
+
+### Stage 24: rung three {S,C} — τ separates what leafCount cannot
+
+- **The τ family, recorded as arithmetic.** With `τ_k(app a b) = k·τ_k(a) + τ_k(b)`
+  the S-reduction delta is `k(τ_k(x) − k²)`, so the τ-light fragment **grows with
+  k**: `S (S S)` is τ₂-heavy (5 ≥ 4) but τ₃-light (7 < 9). The general-`k` lemmas
+  need `ring`, which this zero-dependency tree does not have, so the family is not
+  formalised; the k = 2 instance is `tauSB` (Stage 23).
+- **The stage's finding.** `C x y z → x z y` has the *same* `leafCount` delta as
+  `B x y z → x (y z)` — both remove exactly one leaf — so **no counting measure can
+  separate rungs two and three.** τ separates them sharply:
+  - `tauSB_B_red`: delta `−(2τ(x) + 8)`, always negative;
+  - `tauSC_C_red`: delta `τ(z) − τ(y) − 8`, which **can be positive**, because
+    permuting moves a heavy argument into a lighter position.
+  Witnessed by two C-reductions with identical `leafCount` deltas (−1) and opposite
+  τ deltas (29→35 and 43→21).
+- **Consequences.** `SCLightStep` needs **two** clauses where rung two needed one, so
+  `scLight_acyclic` is a weaker foothold than `sbLight_acyclic`; rung three is
+  correspondingly further from a full acyclicity proof. `scSuccs` plus Stage 22's
+  generic `onCycleAny` transferred for free: no cycle through any `{S,C}`-term of ≤ 6
+  leaves within a 30-leaf cap, under any strategy, every term verdicted.
+- **Rung three is open like rung two, but for a structurally different reason** — and
+  that difference is invisible to every measure this program used before Stage 23.

@@ -1857,3 +1857,43 @@ what automation could and couldn't do. This file is a first-class deliverable
   computed the same way and may behave differently, since `C x y z → x z y`
   duplicates nothing either; (3) the joinability-insensitive abstraction lifter for
   Tag → SK; (4) transcription; (5) C6, declined an eleventh time.
+
+## 2026-07-24 — Stage 24: the measure that can tell two rungs apart
+
+- Ranked task was "hunt specifically for τ-heavy cycles". I started on it and the
+  arithmetic pulled me somewhere better. Generalising τ to `τ_k(app a b) = k·τ_k(a) +
+  τ_k(b)` gives S-delta `k(τ_k(x) − k²)`, so the light fragment GROWS with k — `S (S
+  S)` is heavy at k=2 and light at k=3. Attractive, but the general-k lemmas are
+  nonlinear in k and `omega` cannot do them; `ring` would, and this tree has no
+  Mathlib. Tested that before building on it, which is the habit finally sticking.
+  Recorded the family as arithmetic and moved on rather than triplicating the k=2
+  machinery for k=3 and 4.
+- Where it led instead: I noticed while computing deltas that `C x y z → x z y` has
+  the SAME leafCount delta as `B x y z → x (y z)`. Both remove one leaf. So no
+  counting measure can distinguish rungs two and three at all — which given Stage
+  20's theorem (no counting measure is monotone on {S,B}) means counts are useless
+  twice over here.
+- τ distinguishes them, and sharply. B always lowers τ, by `2τ(x) + 8`. C's delta is
+  `τ(z) − τ(y) − 8`, which is POSITIVE whenever the third argument is much heavier
+  than the second — because permuting moves a heavy term from the outer position
+  (weight 1) into an inner one (weight 2). I found two C-reductions with identical
+  leafCount deltas and opposite τ deltas, 29→35 and 43→21, and guarded both. That
+  pair is the whole point of the stage in two lines.
+- Consequence for rung three: its light fragment needs TWO conditions where rung
+  two's needed one, since the permuting rule also has to be restricted. So
+  `scLight_acyclic` is a weaker foothold than `sbLight_acyclic`, and rung three is
+  further from a proof than rung two — which is the opposite of what I would have
+  guessed from the rules' surface similarity.
+- Stage 22's genericity paid off exactly as hoped: `onCycleAny` is generic over the
+  term type, so rung three's strategy-independent hunt cost one successor function.
+  No cycle up to 6 leaves, every term verdicted. Writing that detector generically
+  two stages ago to enable a validation has now also given a whole rung for free.
+- The theme across 20, 23 and 24 is worth naming: **counts see size, positional
+  measures see structure.** Stage 20 proved counts cannot settle rung two. Stage 23
+  found τ handles B. Stage 24 finds τ also SEPARATES B from C where counts cannot.
+  Three stages, one moral, and it arrived by accumulation rather than correction —
+  the second such run in this program.
+- Ranking: (1) the τ-heavy cycle hunt for rung two, which I deferred this stage and
+  which is now the only narrowing left there; (2) rung three's C-heavy analogue of
+  the same question; (3) the joinability-insensitive abstraction lifter for Tag → SK;
+  (4) transcription (C1(a), C5); (5) C6, declined a twelfth time.
