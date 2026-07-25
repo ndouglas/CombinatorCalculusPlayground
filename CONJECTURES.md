@@ -2254,3 +2254,39 @@ or **`g x`**. None is contradictory on its face — size does not kill them (a s
 
 Standing: the loop route now carries two proved constraints — **≥ 2 steps** and **strict
 growth** — where Stage 37 left it carrying only search evidence.
+
+### Stage 39: the trichotomy proved, and two of three shapes measured empty
+
+Stage 38 left the three residual shapes as prose. They are theorems now.
+
+| | |
+|---|---|
+| `Step.subterm_split` | **the positional trichotomy.** A step fires ONE root redex `r ⟶ r'` sitting inside `v`, so every subterm of `w` either already occurred in `v`, or contains `r'`, or is contained in `r'` — the three positions available relative to a single rewritten site. |
+| `selfEmbed_residual_shapes` | the trichotomy applied. In a shortest self-embedding, the last step's redex is some `S f g x` inside `v` and `t` is one of exactly three shapes: **(A)** contains the reduct `f x (g x)`, **(B)** `t = f x`, **(C)** `t = g x`. |
+
+Supporting: `RootRedex` (`Step` minus congruence — what a step's *witness* is), `KFree.of_subterm`,
+`subterm_S_reduct_cases`, the three arg-subterm lemmas. All **axiom-free**, not even `propext`.
+
+**Then measured — and Stage 38's ranking is inverted.** Stage 38 ranked shapes B and C first,
+calling them "the constrained ones". They are constrained past the point of usefulness:
+
+```
+shapes B and C:  0 hits at every size up to 8 leaves
+shape A:         1 at six leaves, 4 at seven, 19 at eight
+```
+
+B and C are empty *without* the `t ⋬ v` side condition, so the emptiness is theirs and not the
+filter's. Proving them impossible would narrow the residue from three shapes to one and **would
+not touch the obstruction** — shape A is where the difficulty lives, and it grows with size.
+
+*The right question to measure.* The full residual **configuration** cannot occur: it is a case
+analysis *of* the self-embedding hypothesis, so an instance would **be** a self-embedding and
+Stage 37 found none. What is measurable is whether each shape's own structural demand is
+satisfiable among a term's reducts — and the three shapes answer that differently.
+
+**Loop route, honest standing:**
+
+- depth one — **closed**, every SK term (`Step.not_sub_self`)
+- any depth — reduced to **one shape** by the trichotomy: a self-embedding's last step must put
+  `t` strictly *above* the reduct it fires; the other two shapes empty by measurement
+- that one shape — **open**, inhabited, growing with term size

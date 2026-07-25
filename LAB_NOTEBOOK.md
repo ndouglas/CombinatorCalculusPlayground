@@ -2435,3 +2435,42 @@ what automation could and couldn't do. This file is a first-class deliverable
   are the constrained ones, since they say the whole self-embedding term is a *one-application*
   combination of pieces of the last redex, and that is a strong structural demand that may well
   be contradictory when combined with `t ⟶⁺ v`; (2) C6, declined a twenty-sixth time.
+
+## 2026-07-25 — Stage 39: I ranked the empty half first
+
+- Formalizing Stage 38's prose went cleanly. The organising fact is smaller than I had it in my
+  head: a step rewrites ONE position, so a subterm of the result is classified by its position
+  relative to that one — disjoint, above, below. That is `Step.subterm_split`, and the three
+  residual shapes are just the "above" and "below" branches after the redex's own arguments are
+  pushed back into the source. Axiom-free, including `propext`, which is unusual in this tree and
+  reflects that nothing here touches arithmetic.
+- Then I measured, and the measurement inverted my own ranking from yesterday. I had ranked
+  shapes B and C (`t = f x`, `t = g x`) first, on the reasoning that requiring the whole
+  self-embedding term to be a one-application combination of pieces of the last redex is a strong
+  structural demand likely to be contradictory. **The demand is so strong the shapes are empty** —
+  zero instances at every size up to 8 leaves, and empty without the side condition too. Shape A
+  meanwhile has 1, 4, 19 instances at 6, 7, 8 leaves and is growing.
+- So my reasoning was correct and my conclusion was backwards. "This shape is heavily constrained"
+  argues that it is *cheap to eliminate*, not that eliminating it is *valuable*. Value depends on
+  whether the shape is carrying the difficulty, and a constrained shape is exactly the one that
+  is not. I had conflated tractability with importance — and had I not measured first, I would
+  have spent the stage proving two shapes impossible and reported "residue narrowed from three to
+  one" as progress toward closing the induction, when it narrows nothing that matters.
+- This is the ninth or tenth consecutive stage where checking the cheap thing before building
+  changed what got built. I should stop treating that as a happy accident.
+- Getting the probe's QUESTION right took a false start worth recording. My first instinct was to
+  search for full residual configurations `t ⟶* v ⟶ w` with `t ⊴ w` and `t ⋬ v`. That is
+  guaranteed to return zero, and not for an interesting reason: the residual case is a case
+  analysis OF the self-embedding hypothesis, so any instance would BE a self-embedding, which
+  Stage 37 already searched for. The measurable question is the weaker one — is each shape's own
+  structural demand satisfiable among a term's reducts at all — and only that one distinguishes
+  the shapes.
+- Lean note: `cases` on an indexed hypothesis whose index IS one of the constructor's fields (as
+  `r' = x` is for the K root-redex) silently refuses to name that field, and reports it as an
+  unknown identifier at the use site rather than as a binder error. Cost three attempts before I
+  extracted the shape as a disjunction of equations instead. Third entry in the "when `cases`
+  fights the indices, go around it" family, after the `mkElimApp` motive failures.
+- Ranking: (1) shape A — the surviving one. A self-embedding's last step must put `t` strictly
+  ABOVE the reduct it fires, meaning `t` contains `f x (g x)` while `S f g x` sits in `t`'s own
+  ancestor `v`. I have no argument, and the honest note is that the 1/4/19 growth means this is
+  not going to be emptied by measurement either; (2) C6, declined a twenty-seventh time.
