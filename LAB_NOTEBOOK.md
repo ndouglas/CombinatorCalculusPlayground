@@ -3194,3 +3194,33 @@ what automation could and couldn't do. This file is a first-class deliverable
   abstraction, the way dispatch does? Cheap to check with the countdown's own machinery, and it is the last
   unmeasured component before the construction. (2) piece (v) proper. (3) rungs 2/3 via match-bounds.
   (4) C6, declined a forty-seventh time.
+
+## 2026-07-25 — Stage 60: the component that turned out not to exist
+
+- Yesterday's ranking said the rule append was the last unmeasured component of a driver. It is not a
+  component. With a right-fold encoding, appending at the end is substituting for the fold's nil argument,
+  which is a fixed four-abstraction wrapper with no recursion and no dependence on the list. I compiled it
+  with the tree's own bracket abstraction and checked it against directly-encoded lists.
+- The encoding choice is doing all the work, and it is the natural one for this problem rather than a trick:
+  tag systems consume at the front and produce at the back, and a right fold makes both ends cheap. I had
+  been carrying an unexamined assumption that the word would be a cons-list, where append is a traversal and
+  therefore recursive. That assumption was never stated, which is why it survived several stages.
+- I used two different observers for the agreement checks — `(K, S)`, which keeps only the head, and
+  `(I, K)`, which keeps the structure. A single observer that collapses would have made any two lists look
+  equal. That is the same care as Stage 50's non-vacuity count and I am glad it is becoming automatic.
+- And I ran a negative control, because the build finished in 1.3 seconds and normalising a 414-leaf term
+  four times with fuel 20000 should not be that fast. A deliberately wrong guard made the build fail, so the
+  guards bite. Second time this week that "that felt too fast" was worth thirty seconds.
+- **Where piece (v) actually stands, after ten stages of narrowing.** Three ingredients were in question.
+  Symbol dispatch was measured compatible in Stage 50 and came for free. Rule append is a constant, shown
+  here. Self-reproduction is open and has been open since Stage 50, and every attempt to test it without
+  building a driver has failed for the reason Stage 52 identified: the diagnostic is only meaningful relative
+  to a source machine.
+- So the narrowing is done. There is nothing left to measure, and the remaining question cannot be answered
+  by measurement. That is a clean place to have arrived, and it took correcting my own ranking in four of the
+  last six stages to get here — which I would rather record as the method working than as four mistakes.
+- Ranking: (1) **build the driver**. Not "test something first" — Stage 52 established that the last
+  ingredient is not testable in isolation, and Stages 59–60 have fixed the shape and eliminated two of three
+  unknowns. The construction is a fold-encoded word, a dispatch on the head symbol, a constant append, and a
+  self-reproducing wrapper; the first three are settled. (2) rungs 2/3 via match-bounds. (3) C6, declined a
+  forty-eighth time.

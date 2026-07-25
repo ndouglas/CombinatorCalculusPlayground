@@ -2988,3 +2988,40 @@ driver to **inspect** a symbol and **append** its rule, and neither happens here
 What it does buy: the shape is fixed. Encode the word, simulate one deletion per source step, reuse the
 countdown's adequacy template — the driver's extra work being symbol dispatch (Stage 50 measured this
 compatible with the K-normal-form abstraction) and the rule append (untested).
+
+### Stage 60: the rule append is not a component — it is a constant
+
+Stage 59 ranked *"test the rule append"* first, calling it the last unmeasured piece of a driver. **The
+measurement says it is not a piece at all.**
+
+Encode a word as its **right fold**: `[x₁…xₙ]` is `λc.λn. c x₁ (c x₂ (… (c xₙ n)))`. Then appending at the
+*end* is substituting for `n`, which is a fixed wrapper:
+
+```
+APPEND = λL.λy.λc.λn. L c (c y n)
+```
+
+No recursion, no traversal, no dependence on the list. Deletion at the *front* is equally cheap for a fold —
+which is why this encoding suits tag systems: they consume at one end and produce at the other.
+
+Compiled by the tree's own bracket abstraction and guarded: `APPEND` is **414 leaves** from the naive
+algorithm (no occurs check; an optimised abstraction would be far smaller) and **the same 414 whatever it is
+applied to**. Appending agrees with direct encoding on four checks, using **two different observers** `(c, n)`
+so the agreement is not by collapse — `(K, S)` keeps only the head, `(I, K)` keeps the structure. Guards
+verified to bite by negative control, since the build finished in 1.3 s and that felt too fast.
+
+**What this does to the remaining work.** Stage 59's premise was wrong in the useful direction. With a fold
+encoding, *both* halves of a tag step are fixed combinators, so a driver needs **no recursion for its list
+operations at all**.
+
+What it still needs recursion for is **self-reproduction**: `enc w` must reduce to `enc w'`, the encoding
+contains the driver, so the driver must rebuild itself. That is self-application — exactly what Stages 50–52
+isolated and could not settle without building the thing.
+
+Piece (v) now has **one** unresolved ingredient rather than three:
+
+| ingredient | status |
+|---|---|
+| symbol dispatch | measured compatible (Stage 50) |
+| rule append | **constant** (here) |
+| self-reproduction | **open** |
