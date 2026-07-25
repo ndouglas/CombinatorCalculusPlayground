@@ -180,6 +180,29 @@ therefore an **upward-closed family**, not a point: any basis with a definable
 `SK_not_acyclic_via_rung1` re-derives SK's non-acyclicity by that route —
 independent of the Ω ↔ M cycle, so the two agree.
 
+### What each rung has ESTABLISHED
+
+The spec's purpose for a rung is *"a publishable partial result that narrows where
+universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 only as
+"open" understates them against that purpose, so here is what each has delivered.
+
+- **Rung 0 `{S}`** — acyclicity PROVED (`no_pure_S_cycle`), and refuted as an SK host.
+  Also a genuine decision procedure for reachability, because monotonicity confines
+  every path.
+- **Rung 1 `{S,I}`** — cyclic, PROVED, and **upward-closed**: any basis with a
+  definable `I` inherits the cycle (`not_acyclic_of_pathEncoding`, `siInSK`). Also the
+  witness that erasure-freeness does *not* explain rung 0's acyclicity, and that
+  **arity** is the discriminator.
+- **Rung 2 `{S,B}`** — four results, none of them the full proof: no counting measure
+  is monotone (`no_monotone_counting_measure`); the τ-light fragment is ACYCLIC
+  (`sbLight_acyclic`); any cycle must fire an S-reduction on a τ-heavy argument, with
+  the threshold bootstrapped from τ ≥ 4 to an average of τ ≥ 14; and no I-like
+  combinator exists up to 7 leaves, closing the transport route. Censused clean to 8
+  leaves under *any* strategy, cap-insensitive.
+- **Rung 3 `{S,C}`** — the τ-light fragment is acyclic with a two-clause condition
+  (`scLight_acyclic`), and the structural finding that **τ separates B from C where no
+  counting measure can**, since both rules have identical `leafCount` deltas.
+
 ### The rung procedure
 
 Order is load-bearing. Rung one ran this before it was written down.

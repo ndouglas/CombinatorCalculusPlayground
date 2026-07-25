@@ -1857,3 +1857,41 @@ apply to it.
   leaves within a 30-leaf cap, under any strategy, every term verdicted.
 - **Rung three is open like rung two, but for a structurally different reason** — and
   that difference is invisible to every measure this program used before Stage 23.
+
+### Stage 25: the literature does not apply, and the threshold bootstraps
+
+The seventh review ranked "read the tree-automata papers" first, on the grounds that
+Stage 6 had registered them and never used them. Read properly, **neither applies** —
+and establishing that is the stage's most useful outcome.
+
+- **Endrullis & Zantema, *Proving non-termination by finite automata* (RTA 2015).**
+  General term rewriting, so it *does* cover `{S,B}` and `{S,C}`. Method: find a
+  non-empty **regular** language of terms closed under rewriting containing no normal
+  forms; certificate is a tree automaton; automated by SAT. Succeeds on "the S-rule
+  from combinatory logic".
+- **arXiv:2406.14305, *Disproving Termination of Non-Erasing Sole Combinatory
+  Calculus with Tree Automata* (2024).** Applies **exclusively to sole
+  (single-combinator) systems** — it cannot handle `{S,B}` or any multi-combinator
+  basis. Settled 8 previously-open combinators (P, P₃, D₁, D₂, Φ, Φ₂, S₁, S₂); S, B,
+  C, I are not among them, and S's non-termination is noted as already known.
+- **Why neither helps: they prove NON-TERMINATION, and the open rung questions are
+  about ACYCLICITY.** Those are different properties, and this program contains the
+  proof that they differ — pure S is acyclic (C2) *and* non-terminating (external,
+  Stage 6). Non-termination is about infinite paths; acyclicity is about *returning*
+  ones. The automata certificate (a closed language with no normal forms) does not
+  dualize to a no-return statement; ranking/measure arguments are the right tool for
+  that, which is what the program has been using.
+- What they *would* buy, registered as available: an automata certificate would
+  upgrade Stage 19's census evidence that `{S,B}` is non-terminating into a theorem.
+  Not the property needed, and it requires a SAT solver, which the Stage 16
+  zero-dependency decision rules out for now.
+- **The bootstrap** (`leafCount_S_red_heavy` and friends): chaining τ against
+  `leafCount` raises Stage 23's threshold from τ(x) ≥ 4 to an *average* of τ ≥ 14 over
+  a cycle's heavy S-reductions. Per-step facts proved; the summation is recorded as
+  arithmetic. **And the limit is recorded too:** iterating gives `T' = 5·f(T) − 1` with
+  `f` logarithmic (max τ on n leaves is `2ⁿ − 1`), so the iteration fixes around
+  τ ≥ 24 and stops. τ grows exponentially in size while the constraint grows linearly.
+- **No I-like combinator in `{S,B}`** up to 7 leaves, against four structurally
+  distinct probes. That closes the transport route into rung two — the emptiest
+  informative cell of the evidence chart — and is consistent with `{S,B}` being
+  acyclic.

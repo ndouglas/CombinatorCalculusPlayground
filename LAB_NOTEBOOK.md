@@ -1897,3 +1897,58 @@ what automation could and couldn't do. This file is a first-class deliverable
   which is now the only narrowing left there; (2) rung three's C-heavy analogue of
   the same question; (3) the joinability-insensitive abstraction lifter for Tag → SK;
   (4) transcription (C1(a), C5); (5) C6, declined a twelfth time.
+
+## 2026-07-24 — Stage 25: the highest-ranked item did not apply
+
+- The seventh review put "read the tree-automata papers" first, with a sharp
+  argument: Stage 6 surfaced them, I registered them, and then hand-rolled 1980s
+  polynomial interpretations for eighteen stages without going back. That critique was
+  fair. The papers still turn out not to apply, and finding that out took two fetches.
+- The 2024 paper is **sole-combinator only** — one combinator, explicitly. My rungs
+  are all two-combinator systems, so it is out on scope alone. Endrullis-Zantema is
+  general TRS and does cover {S,B} and {S,C}, and even works on the S-rule. But:
+- **both prove NON-TERMINATION, and my open questions are ACYCLICITY.** That is the
+  crux and it took me a minute to see, because I had been treating "the literature's
+  tooling for this problem class" as one bucket. It is not. Non-termination is about
+  infinite paths; acyclicity is about returning ones. This program contains the proof
+  they come apart — pure S is acyclic (C2, proved here) and non-terminating (external,
+  Stage 6). A regular language closed under rewriting with no normal forms certifies
+  an infinite path; it says nothing about return.
+- So the eighteen-stage "gap" the review identified was not a gap. The field's
+  automata methods target a neighbouring property, and measures are the right tool for
+  mine. That is a better outcome than either "the papers solve it" or "I wasted
+  eighteen stages" — but I could not have known which without reading them, and the
+  review was right to insist.
+- Worth keeping as a distinction I will need again: **a technique's problem CLASS and
+  a technique's target PROPERTY are separate filters.** I checked class (does it handle
+  two combinators?) and would have stopped there if the 2024 paper had been general.
+  Property is the filter that actually excluded both.
+- Item 2 went in: the τ threshold bootstraps. Chaining τ against leafCount — heavy
+  S-reds need |x| ≥ 3, so they raise leafCount by ≥ 2, so a cycle needs at least two
+  B-reductions per heavy S-reduction, so the τ budget forces average τ(x) ≥ 14, not
+  4. Per-step facts proved; the summation is arithmetic and left informal, because
+  classifying every step of a path needs a path-indexed induction with an accumulator
+  per class.
+- **And I wrote down why it stops**, which I think is the more valuable half.
+  Iterating gives `T' = 5·f(T) − 1` where f is the least size admitting τ ≥ T. Max τ
+  on n leaves is 2ⁿ−1, so f is logarithmic, so T' grows logarithmically and the
+  iteration fixes around τ ≥ 24. τ grows exponentially in size while the constraint
+  grows linearly. Recording the limit of an argument family costs a paragraph and
+  saves someone re-deriving it — the same reason Stage 14's mis-framing was kept.
+- Item 3 answered cheaply and negatively: no {S,B}-term up to 7 leaves acts as an
+  identity on four structurally distinct probes. So rung one's cycle has no transport
+  route into rung two at small size, which closes the chart's emptiest cell and is
+  consistent with {S,B} being acyclic.
+- Item 4, and I think it is the quiet correction of the stage: the spec says a rung is
+  *"a publishable partial result that narrows where universality is lost"*. I have been
+  reporting rungs 2 and 3 as OPEN, which is true and reads as failure. Against the
+  stated purpose they are DELIVERED — rung 2 alone has a proved impossibility, an
+  acyclic fragment, a bootstrapped necessary condition, a closed transport route, and a
+  strategy-independent census. STATUS.md now leads with what each rung ESTABLISHED.
+  Fifth time re-reading the spec changed how I was reporting rather than what I was
+  doing.
+- Ranking: (1) formalize the cycle summation, converting the bootstrap from arithmetic
+  into a theorem — it is the last piece of rung two that is clearly reachable;
+  (2) rung three's C-heavy analogue of the bootstrap; (3) the joinability-insensitive
+  abstraction lifter for Tag → SK; (4) transcription (C1(a), C5); (5) C6, declined a
+  thirteenth time.
