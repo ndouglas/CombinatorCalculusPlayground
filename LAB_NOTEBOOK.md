@@ -2831,3 +2831,38 @@ what automation could and couldn't do. This file is a first-class deliverable
   discharge `fwd`; `bwd` follows the countdown's pattern with `Itower` replaced by the word encoding,
   provided the driver keeps its data K-normal. (2) rungs 2/3 via match-bounds, still a deliberate
   multi-stage project. (3) C6, declined a thirty-sixth time.
+
+## 2026-07-25 — Stage 49: I overclaimed in yesterday's ranking, and the refutation was already in the tree
+
+- Yesterday I closed adequacy and wrote that piece (v) would follow "provided the driver keeps its data
+  K-normal". Today's first job was to start the driver. Instead I checked what the abstraction actually
+  demands, and the demand is different from what I said: `RS.abstraction_tracks_rel` — a theorem I have
+  had since Stage 8 and used in Stage 48 — forces the abstraction to be defined at every reachable host
+  term. So the constraint falls on the driver's INTERMEDIATES, not on its data.
+- The countdown passes for a reason specific to the countdown: its entire step is one S-step followed by
+  K-reduction, so every intermediate K-normalises to the after-state. Measuring it made the property
+  vivid — of the 183 terms reachable from `Itower 3`, all 183 K-normalise to one of exactly four terms,
+  the encodings of 3, 2, 1, 0. The reachable set collapses completely. That is not a mild side
+  condition, it is the whole reason the abstraction works.
+- A tag-step driver has to inspect a symbol and dispatch, so it has several S-steps per source step, and
+  each intermediate must also K-normalise to an encoding — before-state early, after-state late, flipping
+  exactly once. I do not know whether that is arrangeable. It is not obviously impossible, because
+  combinator programming has room to hide work inside things a `K` will discard. It is obviously the
+  thing to prototype first.
+- **The pattern I keep repeating, now with a name.** When I finish a hard piece, my ranking of the next
+  piece is written in the glow of the finish and is too optimistic. Stage 38 did it ("no obstruction is
+  apparent"), Stage 39 did it (ranked the empty shapes first), Stage 43 did it (one tool for two
+  literatures), Stage 48 did it here. The fix is mechanical and I should just apply it: before writing
+  the ranking, state the next piece's hardest obligation explicitly and check whether the thing I just
+  proved actually discharges it. Twice this week that check took fifteen minutes and saved a stage.
+- Worth noting the refutation cost nothing to find: the theorem was already in the tree, I had used it
+  the day before, and I had not asked what it implied about the case I was about to attempt. That is a
+  different failure from not knowing something.
+- Second honest note, added to the file so it is not lost: nothing here says the K-normal-form abstraction
+  is the only option. `bwd_of_abstraction_rel` takes an arbitrary relation. What Stage 49 establishes is
+  the price of THIS abstraction, and a driver that cannot pay it may still be adequate by another route.
+- Ranking, and this time stated as an obligation rather than a plan: (1) **prototype the intermediate
+  condition** for a minimal dispatching driver — something that inspects one symbol and branches — and
+  measure whether its intermediates K-normalise to encodings. Cheap, decisive, and it determines whether
+  piece (v) is construction or research. (2) piece (v) proper, contingent on that. (3) rungs 2/3 via
+  match-bounds. (4) C6, declined a thirty-seventh time.

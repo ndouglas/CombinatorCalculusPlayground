@@ -2623,3 +2623,41 @@ third: read the **K-normal form**, so drift is *invisible* rather than prevented
 criterion (a) was blocked on — not criterion (a). A tag-step driver, spec piece (v), is still
 unwritten. What changed is that its hardest obligation is now a solved problem with a worked example
 rather than a research risk.
+
+### Stage 49: what the K-normal-form abstraction actually demands — a correction to Stage 48
+
+Stage 48's ranking said piece (v) could follow the countdown's pattern *"provided the driver keeps its
+data K-normal"*. That is too optimistic, and the tree already contained the theorem that says so.
+
+`knf_abstraction_forces_encodings` — `RS.abstraction_tracks_rel` forces the abstraction to be defined
+at **every reachable host term**, not just at encodings. So if the K-normal-form abstraction
+discharges `hstep`, then every term reachable from an encoded state K-normalises to an encoding, of a
+source state reachable from the original. **The constraint is on intermediates, not on data.**
+(Axiom-free.)
+
+Verified on the countdown, and the measurement shows how strong the property is:
+
+```
+183 terms reachable from Itower 3
+every one K-normalises to an encoding
+and to nothing but the four states reachable from 3 — leaf counts 10, 7, 4, 1 = 3n+1
+```
+
+The whole reachable set collapses onto the encodings.
+
+**Why this changes the remaining work.** The countdown's driver does its entire step in **one** S-step
+followed by K-reduction, which is exactly why every intermediate K-normalises to the after-state. A
+tag-step driver must inspect a symbol and dispatch, and each of those S-steps produces an intermediate
+that must *also* K-normalise to an encoding — before-state for the early ones, after-state for the
+later ones, **flipping exactly once**. Not obviously satisfiable; not obviously unsatisfiable either,
+since combinator programming can hide work inside K-discards. What is clear is that it is the thing to
+**prototype** before writing a driver — the lesson Stage 8 learned about piece (vi), arriving one piece
+later.
+
+**Two honest consequences:**
+
+- *"Adequacy has a template"* is right about the machinery and wrong if read as *"the rest is
+  construction"*. The template comes with a side condition the countdown satisfies for a reason the
+  countdown alone explains.
+- A driver could use a **different** abstraction. `RS.bwd_of_abstraction_rel` takes any relation, so
+  this says what the K-normal-form one costs — not that it is the only option.
