@@ -216,11 +216,19 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   99.6% of 8-leaf terms survive — because it constrains a cycle's *steps*, not a
   search's *seeds*. Pruning during exploration is also unavailable: it would need a
   localizable unreachability certificate, and these constraints are global sums.)
-- **Rung 3 `{S,C}`** — three results: the τ-light fragment is acyclic with a two-clause
-  condition (`scLight_acyclic`); the **S-only fragment is acyclic** (`scSOnly_acyclic`),
-  so any cycle must contain a **C-reduction** (`scCycle_needs_C`); and the structural
-  finding that **τ separates B from C where no counting measure can**, since both rules
-  have identical `leafCount` deltas. Censused clean to 6 leaves under any strategy.
+- **Rung 3 `{S,C}`** — now at **parity with rung two**: the τ-light fragment is acyclic
+  with a two-clause condition (`scLight_acyclic`); the S-only fragment is acyclic
+  (`scSOnly_acyclic`); the **no-C-duplication fragment is acyclic**
+  (`scNoCDup_acyclic`, which subsumes the S-only one), so any cycle must contain an
+  S-reduction whose duplicated argument contains a `C` (`scCycle_needs_C_duplication`);
+  plus the structural finding that **τ separates B from C where no counting measure
+  can**, since both rules have identical `leafCount` deltas. Censused clean to 6 leaves
+  under any strategy.
+
+**Shared machinery.** Every acyclic-fragment result above — and C2's original argument —
+is an instance of one lemma, `RS.Acyclic.of_three_level`: three measures where each level
+pins the next (`m1` never rises; when it holds still `m2` never falls; when that holds
+still too `m3` strictly drops). Written by hand four times before being abstracted.
 
 ### The rung procedure
 

@@ -1998,3 +1998,26 @@ building, and it yields one construction and one obstruction.
   A workable abstraction must sit strictly between, and neither obvious construction
   does. Criterion (a) is therefore a **structural obstruction**, not unbuilt work — a
   more honest and more useful description than ten stages of "research-blocked".
+
+### Stage 30: the nested squeeze, abstracted; rung three at parity
+
+- **The abstraction, and the threshold I had set wrong.** Stage 27 said the duplication
+  threshold was "a fourth rung". The right threshold was a fourth **instance** — SB
+  S-only (26), SC S-only (27), SB no-B-dup (28), SC no-C-dup (30). Two rungs, four
+  instances. `RS.Acyclic.of_three_level` (`Universality/Taxonomy.lean`) now carries the
+  pattern once: three measures where each level pins the next — `m1` never rises; when it
+  holds still `m2` never falls; when that holds still too `m3` strictly drops. A
+  two-level squeeze is the case `m1 := fun _ => 0`.
+- **What was actually duplicated** was the path lemma and the final contradiction — never
+  the interesting part. All three existing instances refactored onto the generic lemma;
+  each is now a one-liner given its per-step lemma. **This is the pattern behind C2's
+  original argument too**, so the ladder's fragments and the program's first resolved
+  conjecture are now visibly the same move.
+- **Rung three reaches parity with rung two.** `scNoCDup_acyclic` and
+  `scCycle_needs_C_duplication`: any `{S,C}` cycle contains an S-reduction whose
+  duplicated argument contains a `C`. `#C` behaves exactly as `#B` — falls by 1 on a
+  C-reduction, rises by `#C(x)` on an S-reduction — because C permutes without
+  duplicating. And as at rung two the no-C-dup fragment strictly contains the S-only one,
+  so it subsumes `scSOnly_acyclic`.
+- Both rungs now have the same three constraints, and both have their S-only result
+  subsumed by their no-X-duplication result.

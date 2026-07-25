@@ -2110,3 +2110,39 @@ what automation could and couldn't do. This file is a first-class deliverable
   achievable; (3) C6, declined a seventeenth time. Note criterion (a) has left the
   ranking: it is a stated obstruction now, not a task, and it should return only if
   someone has a candidate abstraction that is neither syntactic nor joinability-based.
+
+## 2026-07-24 — Stage 30: abstracting at the right threshold, one stage late
+
+- Ranked task was rung three's no-C-duplication fragment. Checked the arithmetic first
+  (sixth stage running): `#C` falls by 1 on a C-reduction and rises by `#C(x)` on an
+  S-reduction, exactly like `#B`, because C permutes without duplicating. So Stage 28's
+  three-level squeeze transfers.
+- But this would have been the FOURTH hand-written copy of the same argument, and in Stage
+  27 I had written "if a fourth rung appears I would abstract; at two, copying is right."
+  That threshold was wrong: what matters is the number of INSTANCES, not the number of
+  rungs. Two rungs have produced four instances. So I abstracted before adding the fourth.
+- The abstraction is `RS.Acyclic.of_three_level`, and finding it clarified what had
+  actually been duplicated: the path lemma and the final contradiction, every time. The
+  per-step lemmas were always genuinely different. So the generic lemma takes the per-step
+  invariant as its hypothesis and all four instances collapse to one line each.
+- **The part I did not expect: this is C2's argument.** C2 — pure-S acyclicity, the
+  program's first resolved conjecture, Stage 5 Slice 2 — is a two-level squeeze
+  (leafCount monotone, then τ strictly dropping on the isometric fragment). It is the same
+  lemma with `m1` constant. Nine stages of ladder fragments have been re-deriving the
+  shape of the program's own earliest theorem without my noticing, and abstracting made
+  it visible. That is a better argument for abstracting than the line count was.
+- Rung three now has the same three constraints as rung two, and at both rungs the
+  no-X-duplication fragment strictly contains the S-only one, so the S-only results are
+  corollaries. The evidence got simpler at both rungs as it got stronger — same effect as
+  Stage 28 noted at rung two, now symmetric.
+- Cost note for honesty: the refactor touched three working proofs. I did it in two steps,
+  building between them, and both builds stayed green. Refactoring proofs is cheap when
+  the generic lemma's hypothesis is exactly the existing per-step lemma's statement — and
+  I chose the generic lemma's shape to make that true, which is worth doing deliberately
+  rather than discovering afterwards.
+- Ranking: (1) transcription — C1(a) (import the known 7-leaf non-normalization result)
+  and C5 (λI conservation); the largest remaining definitely-achievable work, and both are
+  labelled external so the deliverable is a machine-checked import, not a discovery;
+  (2) C6, declined an eighteenth time. The ladder has converged: both rungs have three
+  constraints, the shared machinery is factored, and further narrowing needs a genuinely
+  new idea rather than another fragment — the same place criterion (a) reached in Stage 29.
