@@ -2760,3 +2760,37 @@ what automation could and couldn't do. This file is a first-class deliverable
   completes stutter-or-advance and yields the first `Simulation` into `RS.SK` with a genuinely
   multi-step encoding; (2) piece (v), the tag-step driver, once the mechanism is certified rather
   than measured; (3) rungs 2/3 via match-bounds; (4) C6, declined a thirty-fourth time.
+
+## 2026-07-25 — Stage 47: refuting my own next step before taking it
+
+- The plan was the S-step case. I got the surrounding obligations done — `habs`, `hfun`, `fwd`, and
+  the exhaustiveness of the K/S split — and then, before starting the commutation proof, I wrote down
+  the statement I intended to prove and tested it. It is false. `S K S S` refutes it: when the fired
+  redex is `S K g x`, the reduct `(K x)(g x)` is itself a K-redex, so `kdev` collapses it further and
+  overshoots what one S-step from `kdev b` can reach.
+- That is fifteen minutes that saved a stage, and it is the same habit as Stage 44 (work out what the
+  tool buys before building it) and Stage 45 (test the mechanism before proving it). What is new is
+  that this time the thing I tested was a PROOF OBLIGATION rather than a search or a measurement. I
+  should generalise: write the target statement, look for a small counterexample, and only then start
+  the induction. It is cheaper than discovering the same fact three lemmas deep.
+- `naive_kdev_commutation_fails` is in the tree as a theorem, not a comment, because a refuted plan is
+  exactly the sort of thing that gets forgotten and retried.
+- The satisfying part of the stage is `hfun`. That obligation is what killed the joinability
+  abstraction back in Stage 29 — `RS.joinable_abs_not_functional` — and it is the one Stage 45's
+  mechanism had to pass without becoming coarse. It passes for a clean reason: K-normal forms are
+  unique (Stage 46) and `Itower` is injective, so the abstraction is genuinely single-valued while
+  still being blind to drift. Being blind to the right things and not the wrong ones is the whole
+  trick, and it now has two theorems behind it instead of a hope.
+- I also want to record `kNormalForm_I`'s role, because it looked like filler when I proved it
+  yesterday. It is the reason the design is coherent: an S-redex must be invisible to K-reduction, or
+  the abstraction would advance the machine while claiming to observe it. The abstraction is allowed
+  to be blind to doomed subterms and must NOT be blind to progress. Those are the two halves, and
+  `kNormalForm_I` is the second one.
+- **Where Goal 2 stands.** Two of three obligations discharged, the third split into a done half and
+  an open half, and the open half's cheap route eliminated. The countdown is still not a universal
+  source, so criterion (a) still wants piece (v) — but the interface it has to satisfy is now mostly
+  proved rather than mostly hoped.
+- Ranking: (1) the S-step commutation square, now with the wrong statement eliminated and two
+  narrowings identified (doomed-position S-steps cannot move the K-normal form; K-reduction never
+  duplicates, so a live S-redex has exactly one downstream image). (2) piece (v). (3) rungs 2/3 via
+  match-bounds. (4) C6, declined a thirty-fifth time.

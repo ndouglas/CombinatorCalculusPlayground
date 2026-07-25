@@ -2551,3 +2551,40 @@ Deliberately **not** claimed: nothing here concerns the fuel-based `kNorm` in `A
 which remains unverified census tooling. These are results about the *relation*.
 
 Axioms: `[propext]` or none.
+
+### Stage 47: adequacy reduced to one case, and the cheap route to it refuted
+
+Assembling Stages 45/46 for the probe's own test machine. The abstraction is relational — `b` stands
+for countdown state `n` when `b`'s **K-normal form** is `Itower n`.
+
+**Discharged:**
+
+| | |
+|---|---|
+| `Step.kOrS` | every SK step is a K-step or an S-step — the split is a theorem, not an assumption |
+| `kNormalForm_Itower` | `habs`: the encoding is K-normal, so the abstraction reads it unchanged. Rests on `kNormalForm_I` — if the abstraction could K-reduce an `I` layer it would **advance the machine while claiming to observe it** |
+| `Itower_injective` | via `leafCount (Itower n) = 3n + 1` |
+| `absKNF_enc` / `absKNF_functional` | `habs` and `hfun`. `hfun` is the obligation that killed the joinability abstraction; reading the K-normal form passes it |
+| `itower_fwd` | `fwd`: one countdown step is two host steps |
+
+So of `bwd_of_abstraction_rel`'s three obligations, two are done and `hstep` splits by `Step.kOrS`:
+
+- **K-step: done** via `IsKNF.of_kstep`, with nothing encoding-specific in it. The case Stage 45's
+  mechanism existed for — now a theorem rather than 20386 measurements.
+- **S-step: open**, and it is the half genuinely about the machine.
+
+**The cheap route to it is refuted.** The tempting one-layer statement
+
+```
+SStep b b' → SStep (kdev b) (kdev b') ∨ kdev b = kdev b'
+```
+
+is **false** — `naive_kdev_commutation_fails`, on `S K S S`. When the fired redex is `S K g x` its
+reduct `(K x)(g x)` is *itself* a K-redex, so `kdev` fires that too and lands further along than one
+S-step from `kdev b` can reach. The true shape is a **commutation square** — S-step *then*
+K-reduction — which is worth knowing before the next attempt spends a stage on the equation.
+
+Two narrowings recorded but **not** proved: `Itower n`'s only redexes are its `I` layers' S-redexes,
+so the square's right side is constrained; and an S-step in a doomed subterm cannot move the
+K-normal form at all, while K-reduction never duplicates, so a live S-redex has exactly one
+downstream image.
