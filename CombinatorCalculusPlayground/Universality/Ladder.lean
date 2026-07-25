@@ -786,3 +786,162 @@ theorem sbCycle_needs_heavy_S {t : SBTerm}
 -- So a {S,B} cycle, if one exists, must fire an S-reduction duplicating a τ-heavy
 -- argument. Rung two remains OPEN, but the target is now a single named condition
 -- rather than an unbounded search.
+
+-- ## Stage 24: rung three {S, C} — where τ distinguishes what leafCount cannot
+-- Two things led here. First, the τ family: with `τ_k(app a b) = k·τ_k(a) + τ_k(b)`
+-- the S-reduction delta is `k(τ_k(x) − k²)`, so the light fragment GROWS with k —
+-- `S (S S)` is τ₂-heavy (5 ≥ 4) but τ₃-light (7 < 9). The general-k lemmas need
+-- `ring`, which this zero-dependency tree does not have, so the family is recorded
+-- as arithmetic rather than formalised; the k = 2 instance is `tauSB` above.
+--
+-- Second, and this is the stage's content: `C x y z → x z y` has the SAME leafCount
+-- delta as `B x y z → x (y z)` — both remove exactly one leaf. So no counting
+-- measure can tell rungs two and three apart. τ can, and it says they are not alike
+-- at all: τ strictly decreases on EVERY B-reduction, but a C-reduction can INCREASE
+-- τ, because permuting arguments moves a heavy term into a lighter position.
+
+inductive SCTerm : Type
+  | S : SCTerm
+  | C : SCTerm
+  | app : SCTerm → SCTerm → SCTerm
+deriving Repr, DecidableEq
+
+def SCTerm.leafCount : SCTerm → Nat
+  | .S => 1
+  | .C => 1
+  | .app a b => a.leafCount + b.leafCount
+
+inductive SCStep : SCTerm → SCTerm → Prop
+  | S_red (f g x : SCTerm) :
+      SCStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | C_red (x y z : SCTerm) :
+      SCStep (.app (.app (.app .C x) y) z) (.app (.app x z) y)
+  | appL {t t' u : SCTerm} : SCStep t t' → SCStep (.app t u) (.app t' u)
+  | appR {t u u' : SCTerm} : SCStep u u' → SCStep (.app t u) (.app t u')
+
+def tauSC : SCTerm → Nat
+  | .S => 1
+  | .C => 1
+  | .app a b => 2 * tauSC a + tauSC b
+
+theorem tauSC_pos (t : SCTerm) : 0 < tauSC t := by
+  induction t with
+  | S => exact Nat.zero_lt_one
+  | C => exact Nat.zero_lt_one
+  | app a b iha ihb => simp only [tauSC]; omega
+
+/-- S-reduction moves τ by `2τ(x) − 8`, exactly as on {S,B}. -/
+theorem tauSC_S_red (f g x : SCTerm) :
+    tauSC (.app (.app f x) (.app g x)) + 8
+      = tauSC (.app (.app (.app .S f) g) x) + 2 * tauSC x := by
+  simp only [tauSC]; omega
+
+/-- **C-reduction moves τ by `τ(z) − τ(y) − 8`** — not always down. Contrast
+`tauSB_B_red`, where the delta is `−(2τ(x) + 8)` and therefore always negative. This
+is the asymmetry `leafCount` cannot see: both rules remove exactly one leaf. -/
+theorem tauSC_C_red (x y z : SCTerm) :
+    tauSC (.app (.app x z) y) + (tauSC y + 8)
+      = tauSC (.app (.app (.app .C x) y) z) + tauSC z := by
+  simp only [tauSC]; omega
+
+-- The asymmetry, witnessed concretely. Both are C-reductions; one raises τ, one
+-- lowers it, and their leafCount deltas are identical (−1).
+def scHeavy : SCTerm := .app (.app (.app .C .S) .S)
+  (.app (.app (.app .S .S) .S) .S)                    -- C S S (S S S S)
+def scLight : SCTerm := .app (.app (.app .C .S)
+  (.app (.app (.app .S .S) .S) .S)) .S                -- C S (S S S S) S
+
+theorem scHeavy_step : SCStep scHeavy
+    (.app (.app .S (.app (.app (.app .S .S) .S) .S)) .S) :=
+  SCStep.C_red .S .S (.app (.app (.app .S .S) .S) .S)
+theorem scLight_step : SCStep scLight
+    (.app (.app .S .S) (.app (.app (.app .S .S) .S) .S)) :=
+  SCStep.C_red .S (.app (.app (.app .S .S) .S) .S) .S
+
+-- τ rises 29 → 35 on one and falls 43 → 21 on the other...
+#guard tauSC scHeavy = 29
+#guard tauSC (.app (.app .S (.app (.app (.app .S .S) .S) .S)) .S) = 35
+#guard tauSC scLight = 43
+#guard tauSC (.app (.app .S .S) (.app (.app (.app .S .S) .S) .S)) = 21
+-- ...while leafCount falls by exactly 1 in both cases, seeing no difference at all.
+#guard scHeavy.leafCount = 7 ∧ (SCTerm.app (.app .S (.app (.app (.app .S .S) .S) .S)) .S).leafCount = 6
+#guard scLight.leafCount = 7 ∧ (SCTerm.app (.app .S .S) (.app (.app (.app .S .S) .S) .S)).leafCount = 6
+
+-- ## Rung three's light fragment, which needs TWO conditions
+-- On {S,B} only the S-reductions needed restricting. Here C-reductions do too.
+
+inductive SCLightStep : SCTerm → SCTerm → Prop
+  | S_red (f g x : SCTerm) (h : tauSC x ≤ 3) :
+      SCLightStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | C_red (x y z : SCTerm) (h : tauSC z < tauSC y + 8) :
+      SCLightStep (.app (.app (.app .C x) y) z) (.app (.app x z) y)
+  | appL {t t' u : SCTerm} : SCLightStep t t' → SCLightStep (.app t u) (.app t' u)
+  | appR {t u u' : SCTerm} : SCLightStep u u' → SCLightStep (.app t u) (.app t u')
+
+theorem scLightStep_isStep {t u : SCTerm} (h : SCLightStep t u) : SCStep t u := by
+  induction h with
+  | S_red f g x _ => exact SCStep.S_red f g x
+  | C_red x y z _ => exact SCStep.C_red x y z
+  | appL _ ih => exact SCStep.appL ih
+  | appR _ ih => exact SCStep.appR ih
+
+theorem tauSC_lt_of_light {t u : SCTerm} (h : SCLightStep t u) : tauSC u < tauSC t := by
+  induction h with
+  | S_red f g x hx => have := tauSC_S_red f g x; have := tauSC_pos x; omega
+  | C_red x y z hz => have := tauSC_C_red x y z; have := tauSC_pos y; omega
+  | appL _ ih => simp only [tauSC]; omega
+  | appR _ ih => simp only [tauSC]; omega
+
+def RS.SCLight : RS := ⟨SCTerm, SCLightStep⟩
+
+/-- **The τ-light fragment of {S,C} is acyclic** — the rung-three analogue of
+`sbLight_acyclic`, but with a two-clause light condition, since on {S,C} the
+permuting rule also needs restricting. -/
+theorem scLight_acyclic : RS.Acyclic RS.SCLight :=
+  RS.Acyclic.of_decreasing_measure tauSC tauSC_lt_of_light
+
+-- ## The strategy-independent hunt, transferred for free
+-- `onCycleAny` was written generically in Stage 22, so rung three costs only a
+-- successor function.
+
+def scSuccs : SCTerm → List SCTerm
+  | .app a b =>
+      (match (SCTerm.app a b) with
+       | .app (.app (.app .S f) g) x => [SCTerm.app (.app f x) (.app g x)]
+       | .app (.app (.app .C x) y) z => [SCTerm.app (.app x z) y]
+       | _ => [])
+      ++ (scSuccs a).map (fun a' => SCTerm.app a' b)
+      ++ (scSuccs b).map (fun b' => SCTerm.app a b')
+  | _ => []
+
+def scTermsTable (n : Nat) : Array (List SCTerm) := Id.run do
+  let mut table : Array (List SCTerm) := #[[], [SCTerm.S, SCTerm.C]]
+  for m in [2:n+1] do
+    let mut terms : List SCTerm := []
+    for k in [1:m] do
+      for l in table[k]! do
+        for r in table[m - k]! do
+          terms := SCTerm.app l r :: terms
+    table := table.push terms
+  return table
+
+def scTerms (n : Nat) : List SCTerm := (scTermsTable n)[n]!
+
+#guard (scTerms 6).length = 2688
+-- No cycle through any {S,C}-term of at most 6 leaves within a 30-leaf cap, under
+-- ANY strategy, and every term verdicted rather than fuel-exhausted.
+#guard (List.range 7).all (fun n =>
+  (scTerms n).all (fun t => onCycleAny SCTerm.leafCount scSuccs 30 100 t = some false))
+
+-- ## What rung three is, and how it differs from rung two
+--   * leafCount cannot separate them: `B x y z → x (y z)` and `C x y z → x z y`
+--     both remove exactly one leaf.
+--   * τ separates them sharply: B always lowers τ; C can raise it, because
+--     permuting moves a heavy argument into a lighter position. Witnessed above by
+--     two C-reductions with identical leafCount deltas and opposite τ deltas.
+--   * so rung three's light fragment needs TWO conditions where rung two needed one,
+--     and rung three is correspondingly further from a full acyclicity proof.
+--   * censused: no cycle up to 6 leaves under any strategy within a 30-leaf cap.
+--
+-- Rung three is OPEN, like rung two, but for a structurally different reason — and
+-- that difference is invisible to every measure the program used before Stage 23.
