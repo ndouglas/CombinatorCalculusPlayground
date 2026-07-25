@@ -2185,3 +2185,40 @@ what automation could and couldn't do. This file is a first-class deliverable
   form forever, and `frozen_normalizes_iff` reduces the question to the payload; combined
   with C5 the target is now a Nat-indexed sequence rather than a self-embedding witness,
   which is a different and possibly easier object; (2) C6, declined a nineteenth time.
+
+## 2026-07-24 — Stage 32: C1(a) down to one arithmetic gap
+
+- C5 changed what C1(a) needs. Before Stage 31 the loop route waited on an external
+  theorem; now `no_normalForm_of_infiniteRed` means an infinite reduction sequence is
+  enough, so the whole remaining task is a reducibility invariant `P` with `P c1` and
+  `P t → ∃ u, t ⟶ u ∧ P u`.
+- Two things came out clean. First, the reducibility criterion: for K-free terms head spine
+  ≥ 3 implies reducible, because the only leaf is `S`, so the head of any application chain
+  is `S` and three arguments fire it. Second, the preservation arithmetic: firing `S f g x`
+  leaves head spine `spineLength f + 2`, and with `k` trailing arguments,
+  `spineLength f + 2 + k`.
+- **So the gap is now one inequality.** If the redex sits under at least one further
+  argument (`k ≥ 1`), the reduct has spine ≥ 3 unconditionally and reducibility propagates
+  for free. Only the `k = 0` case — redex at the very head — needs `spineLength f ≥ 1`, and
+  nothing in the tree bounds the first argument's spine below. That is a much sharper
+  statement of C1(a)'s remaining difficulty than "no invariant is known", which is what the
+  ledger has said since Slice 3.
+- Measured it rather than assuming: `c1`'s payload spine along the frozen trajectory runs
+  3,4,4,3,3,4,4,3,5,6,6,5,5,8,8,7,9,10,10,9. Never below 3, so the invariant holds
+  empirically — and the awkward case does occur, so the gap is real rather than vacuous.
+- Extended the self-embedding hunt to the LITERATURE's term, which I had not done before:
+  the classic 14-leaf `S A A (S A A)` with `A = S S S` does not self-embed within 40 steps
+  either, sizes growing 14, 20, 26, 35, 44, 53, 65. So the self-embedding route is
+  witness-free at the canonical example too, not just at ours. Worth knowing — I had been
+  half-assuming the literature's term would have the nice structure ours lacks.
+- **A process failure to record.** My first draft of this stage had a fourth theorem
+  claiming "spine falls by at most one per step", with a `sorry` in it. It is overreach:
+  the reduct's spine is not determined without knowing which redex fired, and
+  `reducible_of_head_spine` returns *some* reduct without controlling that. I removed it
+  rather than trying to patch it. But I should not have written a `sorry` at all — thirty-one
+  stages with a sorry-free tree and I nearly broke it by drafting a theorem before checking
+  it was true. The habit that has served this project is checking BEFORE building, and I
+  skipped it for that one lemma because it felt like an obvious corollary.
+- Ranking: (1) the `k = 0` spine bound — the single remaining gap for C1(a), and now a
+  self-contained arithmetic question rather than an open-ended invariant hunt;
+  (2) C6, declined a twentieth time.

@@ -234,7 +234,26 @@ WHAT IT IS NOT: not evidence that any pure-S term diverges. If pure S turns
 out to be strongly normalizing, C1(b) stays true and C1(a) is simply false.
 The two halves are independent in both directions.
 
-### C1(a): existence — EXTERNAL (known in the literature)
+### C1(a): existence — EXTERNAL (known in the literature); internal route now one gap
+
+**Stage 32 status of the internal route.** C5 is proved (Stage 31), so the loop route no
+longer waits on external work: `no_normalForm_of_infiniteRed` means an infinite reduction
+sequence suffices. What remains is a reducibility invariant, and it is now down to one
+arithmetic gap:
+
+- `reducible_of_head_spine` — for K-free terms, **head spine ≥ 3 ⇒ reducible** (the only
+  leaf is `S`, so the head of any chain is `S`). The reducibility criterion.
+- `spineLength_S_red` — firing `S f g x` leaves head spine `spineLength f + 2`; with `k`
+  trailing arguments, `spineLength f + 2 + k`. The preservation arithmetic.
+- **The gap:** if `k ≥ 1` the reduct is unconditionally reducible again; if `k = 0` it needs
+  `spineLength f ≥ 1`, and nothing bounds that below. On `c1` the payload spine never drops
+  below 3 across 20 measured steps, so the invariant holds empirically — but the `k = 0`,
+  `spineLength f = 0` case occurs, and that is the unproved step.
+- Self-embedding remains witness-free, now including **the literature's own term**: the
+  classic 14-leaf `S A A (S A A)` with `A = S S S` does not self-embed within 40 steps
+  (sizes 14, 20, 26, 35, 44, 53, 65, …).
+
+The external record follows.
 
 **Stage 6 literature check — the finding that should have come first.** Both
 halves of C1 were already settled externally, and this file had presented
