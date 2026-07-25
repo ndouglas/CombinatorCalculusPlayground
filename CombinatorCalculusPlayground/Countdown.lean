@@ -280,3 +280,65 @@ def fls : Term := app S K
 --     arbitrary relation; the countdown's success does not oblige piece (v) to reuse its choice.
 -- Neither is attempted here. What is established is that the difficulty is localised to recursion,
 -- and that the dispatching half of a driver is compatible with the machinery already proved.
+
+-- ## Stage 51: committing steps cannot compute, and a conflation corrected
+-- Stage 50 ranked "find a recursion scheme that commits each unfolding through a K-discard" first.
+-- That phrasing is impossible, and the reason is two lines of injectivity.
+
+/-- An S-step **commits** when its reduct is itself a K-redex — the pattern that shows the abstraction
+exactly one flip (Stage 50 measured `S K a b` doing precisely that). It happens only when the first
+argument is literally `K`. -/
+theorem committing_S_red_iff {f g x a b : Term}
+    (h : Term.app (Term.app f x) (Term.app g x) = app2 Term.K a b) :
+    f = Term.K ∧ a = x ∧ b = Term.app g x := by
+  simp only [app2, Term.app.injEq] at h
+  exact ⟨h.1.1, h.1.2.symm, h.2.symm⟩
+
+/-- **...and then the pair of steps is a projection.** `S K g x` reduces to `x`, discarding `g` — and
+the duplicate the S-step made sits inside that discarded argument, so it does no work either.
+
+So committing steps cannot compute, and no driver can be built from them alone. Stage 50's route one
+is impossible AS PHRASED. What survives is the weaker demand: non-committing S-steps whose
+intermediates K-normalise to encodings by some other route. -/
+theorem committing_S_red_projects (g x : Term) :
+    (app3 Term.S Term.K g x ⟶ app2 Term.K x (Term.app g x))
+      ∧ KStep (app2 Term.K x (Term.app g x)) x :=
+  ⟨Step.S_red Term.K g x, KStep.K_red x (Term.app g x)⟩
+
+-- ## The conflation, corrected
+-- Stage 50 treated "recursion" and "non-termination" as the same thing and tested `omegaSK`. They are
+-- not the same, and the countdown proves it: `Itower n` TERMINATES. Its 183 reachable terms come from
+-- the many orders in which its `I` layers may fire, not from unbounded computation.
+--
+-- What a driver actually needs is SELF-REPRODUCTION — the driver term reappearing alongside advanced
+-- data, so the next source step can run — with each segment finite. So the question is not whether a
+-- non-terminating term can collapse; it is whether a self-reproducing one can.
+--
+-- And collapse is NOT rare. Searching self-applications `A A` with `|A| ≤ 5` found four that collapse,
+-- the best at 47 reachable terms over 3 K-normal forms:
+
+def bestCollapse : Term := Term.app (app2 S (app S K) (app K S)) (app2 S (app S K) (app K S))
+
+#guard leafCount bestCollapse = 10
+#guard knfCount 26 80 bestCollapse = (47, 3)
+-- ...and it TERMINATES in four steps, which is the point: collapse coexists with bounded work.
+#guard ((trace 30 bestCollapse).map leafCount) = [10, 14, 20, 7, 1]
+
+-- ## Why the searches could not settle it, which is worth more than the searches
+-- Neither sweep answered the question, and both failures were about CONTROLS.
+--   * The all-terms sweep is affordable to six leaves. Its positive control, `Itower 3`, has TEN. So
+--     "no collapsing term up to six leaves" says nothing — and indeed collapsing terms turn up at ten.
+--     I caught this one by running the control at the search's own setting before believing the zero.
+--   * The self-reproduction sweep used `onCycle?` to find self-reproducing terms. `onCycle?` is
+--     leftmost-outermost, and Stage 21 PROVED that an LO hunt is blind to cycles that exist in the
+--     relation. Sure enough `onCycle? omegaSK 40` returns `false`, even though `omega_to_M` and
+--     `M_to_omega` (Calibration.lean) are theorems putting `omegaSK` on a cycle. So the probe was
+--     blind to its own control, and the smallest cycle is fourteen leaves — beyond exhaustive reach
+--     anyway. Two independent reasons the zero meant nothing.
+#guard (onCycle? omegaSK 40) == some false   -- the Stage 21 blind spot, on the one term that matters
+#guard leafCount omegaSK = 14
+
+-- The transferable lesson is the one Stage 41 wrote down and I did not apply here: when a probe has a
+-- parameter, the finding is about the parameter — and a probe with a KNOWN blind spot must be run
+-- against a control that exercises it. I used a detector this tree had already proved unreliable for
+-- exactly this purpose.
