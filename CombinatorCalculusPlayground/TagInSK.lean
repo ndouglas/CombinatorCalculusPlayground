@@ -165,3 +165,55 @@ private def ap4 (f a b c d : Term) : Term := Term.app (Term.app (Term.app (Term.
 --
 -- So piece (v) has one unresolved ingredient rather than three, and it is the one already named. Symbol
 -- dispatch: measured compatible (Stage 50). Rule append: constant, shown here. Self-reproduction: open.
+
+-- ## Stage 61: self-reproduction, without a fixpoint combinator
+-- Stage 60 left exactly one ingredient open: the driver must rebuild itself, because `enc w` contains it and
+-- has to reduce to `enc w'`. I had been assuming that meant a fixpoint combinator and the sprawl Stage 50
+-- measured. It does not. Two abstractions suffice:
+--
+--     W = λx.λd. x x (F d)      and then      W W d ⟶* W W (F d)
+--
+-- for an ARBITRARY step function `F`. The data advances, the driver reappears, and nothing recurses — the
+-- self-application is a single `S`-redex, not an unfolding. Bracket-abstracting by hand keeps it small.
+
+/-- `λx.λd. x x (F d)`, abstracted by hand: `λd. x x (F d)` is `S (K (x x)) F`, and abstracting `x` from that
+gives `S (S (K S) (S (K K) (S I I))) (K F)`. -/
+def selfRepW (F : Term) : Term :=
+  app2 S (app2 S (Term.app K S) (app2 S (Term.app K K) (app2 S I I))) (Term.app K F)
+
+/-- The driver: the wrapper applied to itself. -/
+def selfRep (F : Term) : Term := Term.app (selfRepW F) (selfRepW F)
+
+/-- The wrapper's self-application exposes the shape that advances data. -/
+theorem selfRepW_unfold (F : Term) :
+    selfRep F ⟶* app2 S (Term.app K (selfRep F)) F := by
+  have hI : ∀ x : Term, Term.app I x ⟶* x := I_reduces
+  -- `S I I W ⟶* W W`
+  have hSII : Term.app (app2 S I I) (selfRepW F) ⟶* selfRep F :=
+    Steps.tail (Step.S_red I I (selfRepW F))
+      (Steps.congApp (hI (selfRepW F)) (hI (selfRepW F)))
+  -- `S (K K) (S I I) W ⟶* K (W W)`
+  have hB : Term.app (app2 S (Term.app K K) (app2 S I I)) (selfRepW F)
+      ⟶* Term.app K (selfRep F) :=
+    Steps.tail (Step.S_red (Term.app K K) (app2 S I I) (selfRepW F))
+      (Steps.congApp (Steps.single (Step.K_red K (selfRepW F))) hSII)
+  -- `S (K S) B W ⟶* S (K (W W))`
+  have hA : Term.app (app2 S (Term.app K S) (app2 S (Term.app K K) (app2 S I I))) (selfRepW F)
+      ⟶* Term.app S (Term.app K (selfRep F)) :=
+    Steps.tail (Step.S_red (Term.app K S) (app2 S (Term.app K K) (app2 S I I)) (selfRepW F))
+      (Steps.congApp (Steps.single (Step.K_red S (selfRepW F))) hB)
+  -- and the outer self-application
+  refine Steps.tail (Step.S_red _ _ (selfRepW F)) ?_
+  exact Steps.congApp hA (Steps.single (Step.K_red F (selfRepW F)))
+
+/-- **Self-reproduction with advancing data.** For any step function `F`, the driver applied to `d` reduces
+to the driver applied to `F d`. This is the ingredient Stage 60 left open, and it needs no fixpoint. -/
+theorem selfRep_advances (F d : Term) :
+    Term.app (selfRep F) d ⟶* Term.app (selfRep F) (Term.app F d) := by
+  refine Steps.trans (Steps.congL (selfRepW_unfold F)) ?_
+  refine Steps.tail (Step.S_red (Term.app K (selfRep F)) F d) ?_
+  exact Steps.congL (Steps.single (Step.K_red (selfRep F) d))
+
+-- Small, and the size is independent of `F` apart from carrying `F` itself.
+#guard leafCount (selfRepW S) = 16
+#guard (List.range 5).all (fun n => leafCount (selfRepW (Itower n)) = 15 + leafCount (Itower n))
