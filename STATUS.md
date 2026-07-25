@@ -61,12 +61,28 @@ substantive rather than bookkeeping.
 | **no one-combinator one-rule system of any arity can (C4)** | `no_pathEncoding_SK_poly` |
 | `bwd` from a stuttering abstraction (adequacy) | `RS.bwd_of_abstraction`, `Simulation.ofAbstraction` |
 | a `Simulation` whose source is known-universal | `universalReach_extend` |
+| **a `Simulation` of a genuine multi-step machine INSIDE SK** | `countdownInSK` |
 
 **Negative controls** — what the definitions would collapse to if loosened:
 `bareEncNorm_trivial` (an oracle encoder witnesses unpinned normalization-based
 universality for *any* source) and `universalReach_self` / `universalNorm_self` /
 `universalConv_self` (all three modes are trivially true on the diagonal, so a
 ledger cell carries information only when reference ≠ host).
+
+**Adequacy — the blocker, now cleared (Stages 45–48).** `bwd` was the risky
+piece from Stage 8. Stage 10 found the failure (duplicated arguments drift),
+Stage 13 refuted the first two fixes (constrain the encoding: impossible, since
+transient duplicates are unavoidable; abstract up to joinability: too coarse,
+`joinable_abs_not_functional`), Stage 45 found the third — read a term's
+**K-normal form**, so doomed subterms and any drift inside them are invisible —
+Stage 46 made that denote (`knf_unique`, `IsKNF.of_kstep`), and Stages 47–48
+proved the S-step half via a commutation square (`sk_square`, `itower_sStep`).
+The result is `countdownInSK`, a `Simulation` into `RS.SK` with a genuinely
+multi-step encoding rather than an inclusion.
+
+Its limit, stated plainly: the countdown is **not** universal, so this
+discharges the *mechanism* criterion (a) was blocked on, not criterion (a). A
+tag-step driver — spec piece (v) — is still unwritten.
 
 **Calibration criteria, from the spec.** (b) discharged in Stage 3. (c)
 discharged by the definitions ledger plus the `PathEncoding` scoping. (a) — see

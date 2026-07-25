@@ -17,7 +17,7 @@ open Term
 /-- The countdown: `n+1` steps to `n`, and `0` is normal. Known-universal it is not — it is the
 smallest source that is a genuine MULTI-STEP machine rather than an inclusion, which is what the
 probe needed. -/
-def RS.Countdown : RS := ⟨Nat, fun a b => a = b + 1⟩
+@[reducible] def RS.Countdown : RS := ⟨Nat, fun a b => a = b + 1⟩
 
 theorem leafCount_Itower : ∀ n, leafCount (Itower n) = 3 * n + 1 := by
   intro n
@@ -66,36 +66,106 @@ theorem itower_fwd (n : Nat) : Itower (n + 1) ⟶* Itower n :=
   Steps.tail (Step.S_red K K (Itower n))
     (Steps.tail (Step.K_red (Itower n) (Term.app K (Itower n))) (Steps.refl _))
 
--- ## Where adequacy stands
+-- ## Where adequacy stands — SETTLED (Stage 48)
 -- `RS.bwd_of_abstraction_rel` needs `habs`, `hfun` and `hstep`. The first two are above. `hstep`
--- splits by `Step.kOrS`:
+-- splits by `Step.kOrS` into two cases and both are now closed:
 --
---   * K-step — DONE, and with nothing encoding-specific in it: `IsKNF.of_kstep` says a K-step does
---     not move the K-normal form, so the abstraction stutters. That is the case Stage 45's whole
---     mechanism existed to handle, and it is now a theorem rather than 20386 measurements.
---   * S-step — OPEN. This is the half that is genuinely about the machine.
+--   * K-step — `IsKNF.of_kstep`: a K-step does not move the K-normal form, so the abstraction
+--     stutters. Nothing encoding-specific in it. This is the case Stage 45's whole mechanism existed
+--     to handle, and it is a theorem rather than 20386 measurements.
+--   * S-step — `sk_square` plus `itower_sStep`: the square's S-side lands on `Itower n` itself
+--     (stutter) or one S-step past it, and an S-step out of `Itower n` can only fire an `I` layer,
+--     whose reduct K-collapses to `Itower (n-1)` (advance).
 --
--- The S-step obligation, stated exactly:
---
---     SStep b b' → IsKNF b (Itower n) →
---       IsKNF b' (Itower n) ∨ ∃ m, n = m + 1 ∧ IsKNF b' (Itower m)
---
--- and `naive_kdev_commutation_fails` (KConfluence.lean) already rules out the cheap route to it.
--- The true shape is a commutation square — an S-step followed by K-reduction, not an S-step between
--- K-normal forms — because an S-reduct can itself be a K-redex and collapse further.
---
--- Two things make the remaining case narrower than it looks, and both are worth recording:
---   * `Itower n` is K-normal AND its only redexes are the `I` layers' S-redexes, so the right-hand
---     side of the square is highly constrained.
---   * An S-step inside a doomed subterm cannot change the K-normal form at all, which is the
---     stuttering half; only S-steps in LIVE position can advance, and K-reduction never duplicates,
---     so a live S-redex corresponds to exactly one S-redex downstream.
--- Neither is proved here. What is proved is that the obligation has been reduced to one case, that
--- the case is about S-steps only, and that the encoding satisfies everything else the interface asks
--- for.
+-- Stage 47's `naive_kdev_commutation_fails` was right that the cheap route is unavailable; the square
+-- is what replaced it, and both of its weakenings turned out to be forced — zero S-steps on the K-side
+-- when the S-redex sits in a discarded argument, two K-steps on the S-side when the S-step duplicated
+-- a K-redex.
 
 -- Anchors: the encoding is injective and its states really are distinct host terms.
 #guard Itower 0 = S
 #guard Itower 3 = Term.app I (Term.app I (Term.app I S))
 #guard (List.range 6).map (fun n => leafCount (Itower n)) = [1, 4, 7, 10, 13, 16]
 #guard Itower 2 != Itower 3
+
+-- ## Stage 48: the S-step case, and the Simulation
+-- The commutation square (`sk_square`) supplies the missing half. Its S-side output is `Itower n`
+-- itself or one S-step past it, and an S-step out of `Itower n` is completely determined: it can only
+-- fire an `I` layer, whose reduct K-collapses to `Itower (n-1)`.
+
+/-- **An S-step out of the encoding advances it by exactly one.** `Itower n`'s only redexes are its
+`I` layers, and firing one leaves `(K u)(K u)`, which K-reduces to `u`. -/
+theorem itower_sStep : ∀ {n : Nat} {c : Term}, SStep (Itower n) c →
+    ∃ m, n = m + 1 ∧ KSteps c (Itower m) := by
+  intro n
+  induction n with
+  | zero => intro c h; cases h
+  | succ n ih =>
+      intro c h
+      cases h with
+      | S_red => exact ⟨n, rfl, KSteps.single (KStep.K_red _ _)⟩
+      | appL hl => exact absurd ⟨_, hl⟩ sNormalForm_I
+      | appR hr =>
+          obtain ⟨m, hm, hk⟩ := ih hr
+          exact ⟨m + 1, by omega, KSteps.congR hk⟩
+
+/-- `dec_enc`: the syntactic I-layer count inverts the encoder. -/
+theorem naiveAbs_Itower : ∀ n, naiveAbs (Itower n) = some n := by
+  intro n
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+      show (naiveAbs (Itower n)).map (· + 1) = some (n + 1)
+      rw [ih]
+      rfl
+
+/-- **`hstep`, complete.** Split by `Step.kOrS`: a K-step cannot move the K-normal form, and an
+S-step either dies in a doomed subterm (stutter) or advances the count by one. -/
+theorem countdown_hstep {b b' : Term} {n : Nat} (hs : b ⟶ b') (habs : absKNF b n) :
+    absKNF b' n ∨ ∃ m, RS.Countdown.step n m ∧ absKNF b' m := by
+  rcases hs.kOrS with hk | hsS
+  · exact Or.inl (habs.of_kstep hk)
+  · obtain ⟨c', hc1, hc2⟩ := sk_square habs.1 hsS
+    rcases hc2 with hadv | heq
+    · obtain ⟨m, hm, hk⟩ := itower_sStep hadv
+      exact Or.inr ⟨m, hm, ⟨KSteps.trans hc1 hk, kNormalForm_Itower m⟩⟩
+    · subst heq
+      exact Or.inl ⟨hc1, kNormalForm_Itower n⟩
+
+/-- **A `Simulation` of a genuine multi-step machine inside SK.** Every piece is now a theorem:
+`fwd` is two host steps per source step, and `bwd` comes from the relational adequacy machinery with
+the abstraction that reads a term's K-normal form — blind to doomed subterms, and provably not blind
+to progress.
+
+This is what Stage 8 flagged as piece (vi), the one that could fail in kind rather than in volume. It
+took Stage 10 to find the failure, Stage 13 to refute the first two fixes, Stage 45 to find the third,
+Stage 46 to make it well defined, and Stages 47–48 to prove it. -/
+def countdownInSK : Simulation RS.Countdown RS.SK where
+  enc := Itower
+  dec := naiveAbs
+  dec_enc := naiveAbs_Itower
+  fwd := by
+    intro a a' h
+    subst h
+    exact RS.SK_steps_iff.mpr (itower_fwd a')
+  bwd := by
+    intro a a' h
+    exact RS.bwd_of_abstraction_rel (A := RS.Countdown) (B := RS.SK)
+      Itower absKNF absKNF_enc absKNF_functional countdown_hstep h
+
+-- Non-triviality, so this is not the diagonal instance the Stage 8 negative controls rule out: the
+-- carriers differ, the encoder is not an inclusion, and one source step really is several host steps.
+#guard naiveAbs (Itower 4) = some 4
+example : RS.Countdown.step (4 : Nat) (3 : Nat) := rfl
+example : Itower 4 ⟶* Itower 3 := itower_fwd 3
+#guard leafCount (Itower 4) = 13
+
+/-- The taxonomy therefore certifies a genuine multi-step machine inside SK. Stated for the record,
+and with its limit stated too: the COUNTDOWN is not universal, so this does not discharge criterion
+(a) — it discharges the mechanism criterion (a) was blocked on. -/
+theorem universalReach_countdown_SK : UniversalReach RS.Countdown RS.SK :=
+  ⟨countdownInSK⟩
+
+-- The encoder is injective as a consequence of `dec_enc`, which is what stops this from being the
+-- degenerate instance the Stage 8 negative controls exclude.
+example {m n : Nat} (h : Itower m = Itower n) : m = n := countdownInSK.enc_injective h

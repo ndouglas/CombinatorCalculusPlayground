@@ -289,3 +289,84 @@ theorem naive_kdev_commutation_fails :
   simp only [show kdev (app3 S K S S) = app3 S K S S from by decide,
     show kdev (app (app K S) (app S S)) = S from by decide] at h
   cases h
+
+-- ## The commutation square
+-- Stage 47 refuted the equation; this is the square that replaces it. Read it as: an S-step and a
+-- K-step out of the same term can be closed, with K-reduction on the S-side and AT MOST one S-step
+-- on the K-side. Both weakenings are forced, and by different cases:
+--   * the K-side may need ZERO S-steps, because the S-redex may sit in the argument a `K` discards;
+--   * the S-side may need TWO K-steps, because the S-step duplicates its third argument and a
+--     K-redex inside it gets copied along with it.
+
+theorem sk_local_square : ∀ {b c : Term}, KStep b c → ∀ {b' : Term}, SStep b b' →
+    ∃ c', KSteps b' c' ∧ (SStep c c' ∨ c = c') := by
+  intro b c hk
+  induction hk with
+  | K_red x y =>
+      intro b' hs
+      cases hs with
+      | appL hl =>
+          cases hl with
+          | appL h => cases h                       -- no S-step out of the bare `K`
+          | appR hx => exact ⟨_, KSteps.single (KStep.K_red _ y), Or.inl hx⟩
+      | appR hy =>
+          -- the S-step happened in the argument `K` discards, so it simply vanishes
+          exact ⟨x, KSteps.single (KStep.K_red x _), Or.inr rfl⟩
+  | @appL t t' u hkt ih =>
+      intro b' hs
+      cases hs with
+      | S_red f g =>
+          -- `u` IS the S-redex's third argument; the K-step is inside `f` or `g`
+          cases hkt with
+          | appL hkl =>
+              cases hkl with
+              | appL h => cases h                   -- no K-step out of the bare `S`
+              | appR hf =>
+                  exact ⟨_, KSteps.congL (KSteps.congL (KSteps.single hf)),
+                    Or.inl (SStep.S_red _ g u)⟩
+          | appR hg =>
+              exact ⟨_, KSteps.congR (KSteps.congL (KSteps.single hg)),
+                Or.inl (SStep.S_red f _ u)⟩
+      | appL hst =>
+          obtain ⟨e, he1, he2⟩ := ih hst
+          exact ⟨Term.app e u, KSteps.congL he1, he2.imp SStep.appL (fun h => by rw [h])⟩
+      | appR hsu =>
+          exact ⟨Term.app t' _, KSteps.single (KStep.appL hkt), Or.inl (SStep.appR hsu)⟩
+  | @appR t u u' hku ih =>
+      intro b' hs
+      cases hs with
+      | S_red f g =>
+          -- the K-step is inside the argument the S-step DUPLICATED, so the S-side needs two
+          exact ⟨_, KSteps.trans (KSteps.congL (KSteps.congR (KSteps.single hku)))
+            (KSteps.congR (KSteps.congR (KSteps.single hku))), Or.inl (SStep.S_red f g u')⟩
+      | appL hst =>
+          exact ⟨Term.app _ u', KSteps.single (KStep.appR hku), Or.inl (SStep.appL hst)⟩
+      | appR hsu =>
+          obtain ⟨e, he1, he2⟩ := ih hsu
+          exact ⟨Term.app t e, KSteps.congR he1, he2.imp SStep.appR (fun h => by rw [h])⟩
+
+/-- **The square, lifted to whole K-reductions.** An S-step out of `b` and a K-reduction from `b` to
+`c` close up: `b'` K-reduces to some `c'` that is `c` itself or one S-step past it. -/
+theorem sk_square : ∀ {b c : Term}, KSteps b c → ∀ {b' : Term}, SStep b b' →
+    ∃ c', KSteps b' c' ∧ (SStep c c' ∨ c = c') := by
+  intro b c h
+  induction h with
+  | refl => intro b' hs; exact ⟨b', KSteps.refl _, Or.inl hs⟩
+  | @tail b d c hkd hrest ih =>
+      intro b' hs
+      obtain ⟨e, he1, he2⟩ := sk_local_square hkd hs
+      rcases he2 with hse | rfl
+      · obtain ⟨c', hc1, hc2⟩ := ih hse
+        exact ⟨c', KSteps.trans he1 hc1, hc2⟩
+      · exact ⟨c, KSteps.trans he1 hrest, Or.inr rfl⟩
+
+/-- `S K K` is underapplied, hence S-normal — the fact that lets an `I` layer be observed rather
+than stepped. -/
+theorem sNormalForm_I : ¬ ∃ u, SStep I u := by
+  rintro ⟨u, hu⟩
+  cases hu with
+  | appL h =>
+      cases h with
+      | appL h' => cases h'
+      | appR h' => cases h'
+  | appR h => cases h
