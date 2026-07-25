@@ -564,3 +564,118 @@ theorem onSegmentHStepPath_of_least
 -- reduced to a single, classical, entirely standard fact about a specific family of terms — and this
 -- development's own conservation theorem is blocked from proving it by exactly the erasure that Stage 54
 -- showed cuts both ways.
+
+-- ## Stage 56: the reachable set of `Itower m` has bounded size
+-- Route two needs decidability of `Itower m ⟶* b`, which needs the reachable set to be finite. Full
+-- strong normalisation would give that, and C5 cannot supply it (Stage 55). But FINITE SIZE is weaker and
+-- enough, and it is provable directly. Measurement first: the largest reduct of `Itower m` has
+-- 1, 4, 10, 22 leaves for m = 0,1,2,3 — which is 3·2^m − 2, tight.
+--
+-- The proof needs a characterisation of the reachable set, because no measure works for all of SK: `S`
+-- duplicates, so size growth is unbounded in general. Three layer states suffice — intact, half-consumed,
+-- and collapsed — with the two copies of a half-consumed layer allowed to DRIFT independently, which is
+-- the phenomenon Stage 10 found and every later abstraction had to cope with.
+
+-- (`I` is already known to be a full-SK normal form: `normalForm_I`, Bracket.lean — it is `S`
+-- underapplied. That is what makes an intact layer's only step its own root redex.)
+
+/-- `Tower m t`: `t` is a state of an `m`-layer countdown tower. `half` lets the two copies differ, which
+is what makes this closed under reduction; `drop` records that a collapsed layer leaves a shorter tower
+where a longer one stood. -/
+inductive Tower : Nat → Term → Prop
+  | zero : Tower 0 Term.S
+  | intact {m : Nat} {t : Term} : Tower m t → Tower (m + 1) (Term.app I t)
+  | half {m : Nat} {t u : Term} : Tower m t → Tower m u →
+      Tower (m + 1) (Term.app (Term.app Term.K t) (Term.app Term.K u))
+  | drop {m : Nat} {t : Term} : Tower m t → Tower (m + 1) t
+
+theorem tower_Itower : ∀ m, Tower m (Itower m) := by
+  intro m
+  induction m with
+  | zero => exact Tower.zero
+  | succ n ih => exact Tower.intact ih
+
+/-- **Closed under reduction.** The intact layer's only step is its own S-redex, which produces the
+half-consumed shape; the half-consumed layer's root step is the `K`, which drops a layer; everything else
+is congruence into a sub-tower. -/
+theorem Tower.of_step : ∀ {m : Nat} {t : Term}, Tower m t → ∀ {u : Term}, (t ⟶ u) → Tower m u := by
+  intro m t h
+  induction h with
+  | zero => intro u hu; cases hu
+  | @intact m t ht ih =>
+      intro u hu
+      cases hu with
+      | S_red f g x => exact Tower.half ht ht
+      | appL hl =>
+          -- a step inside `I = S K K`, which is a normal form
+          exact absurd ⟨_, hl⟩ normalForm_I
+      | appR hr => exact Tower.intact (ih hr)
+  | @half m t v ht hv iht ihv =>
+      intro u hu
+      cases hu with
+      | K_red a b => exact Tower.drop ht
+      | appL hl =>
+          cases hl with
+          | appL h => cases h
+          | appR hr => exact Tower.half (iht hr) hv
+      | appR hr =>
+          cases hr with
+          | appL h => cases h
+          | appR hr' => exact Tower.half ht (ihv hr')
+  | @drop m t ht ih => intro u hu; exact Tower.drop (ih hu)
+
+/-- **The size bound**, tight: `3·2^m − 2`, stated without truncated subtraction. -/
+theorem Tower.leafCount_bound : ∀ {m : Nat} {t : Term}, Tower m t → leafCount t + 2 ≤ 3 * 2 ^ m := by
+  intro m t h
+  induction h with
+  | zero => decide
+  | @intact m t _ ih =>
+      have h2 : 1 ≤ 2 ^ m := Nat.one_le_pow m 2 (by omega)
+      have hp : 2 ^ (m + 1) = 2 ^ m * 2 := Nat.pow_succ 2 m
+      show leafCount I + leafCount t + 2 ≤ 3 * 2 ^ (m + 1)
+      rw [hp]
+      show 3 + leafCount t + 2 ≤ 3 * (2 ^ m * 2)
+      omega
+  | @half m t v _ _ iht ihv =>
+      have hp : 2 ^ (m + 1) = 2 ^ m * 2 := Nat.pow_succ 2 m
+      show (leafCount Term.K + leafCount t) + (leafCount Term.K + leafCount v) + 2
+        ≤ 3 * 2 ^ (m + 1)
+      rw [hp]
+      show (1 + leafCount t) + (1 + leafCount v) + 2 ≤ 3 * (2 ^ m * 2)
+      omega
+  | @drop m t _ ih =>
+      have h2 : 1 ≤ 2 ^ m := Nat.one_le_pow m 2 (by omega)
+      have hp : 2 ^ (m + 1) = 2 ^ m * 2 := Nat.pow_succ 2 m
+      rw [hp]
+      omega
+
+/-- **Every reduct of the encoding is small.** So the reachable set of `Itower m` is finite: it lives
+inside the finitely many SK terms with at most `3·2^m − 2` leaves. -/
+theorem Tower.of_steps : ∀ {m : Nat} {t u : Term}, (t ⟶* u) → Tower m t → Tower m u := by
+  intro m t u h
+  induction h with
+  | refl => exact id
+  | tail s _ ih => exact fun ht => ih (Tower.of_step ht s)
+
+theorem itower_reduct_bound {m : Nat} {u : Term} (h : Itower m ⟶* u) :
+    leafCount u + 2 ≤ 3 * 2 ^ m :=
+  (Tower.of_steps h (tower_Itower m)).leafCount_bound
+
+-- The bound is tight, and matches the measurement that suggested it: 1, 4, 10, 22 leaves.
+#guard (List.range 4).map (fun m => 3 * 2 ^ m - 2) = [1, 4, 10, 22]
+#guard (List.range 4).map (fun m => leafCount (Itower m)) = [1, 4, 7, 10]
+
+-- ## What this gives route two, and what it still does not
+-- `itower_reduct_bound` makes the reachable set of `Itower m` FINITE: it sits inside the SK terms of at
+-- most `3·2^m − 2` leaves. That is the ingredient Stage 55 said was missing, obtained without strong
+-- normalisation and therefore without needing C5 to reach past its K-freeness restriction.
+--
+-- What it does not yet give is `hleast`, because turning "finite reachable set" into "decidable
+-- reachability" needs a CERTIFIED finite universe of SK terms of bounded size — and this tree's universe,
+-- `smallTerms`, is built from `enumAt`, which enumerates K-FREE terms only. Goal 3's decidability machinery
+-- is K-free by construction, for the good reason that it was built for pure S.
+--
+-- So the chain now reads: route two's `hstep` ⟸ `hleast` ⟸ decidable reachability from `Itower m` ⟸ a
+-- K-inclusive bounded enumeration + the size bound above. The last item is the only gap, it is
+-- infrastructure rather than research, and `skTerms` (AdequacyProbe.lean) is already the uncertified
+-- version of exactly it.
