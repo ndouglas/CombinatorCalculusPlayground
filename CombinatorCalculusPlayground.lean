@@ -16,6 +16,7 @@ import CombinatorCalculusPlayground.Universality.Ladder
 import CombinatorCalculusPlayground.Census.Eval
 import CombinatorCalculusPlayground.Census.Enumerate
 import CombinatorCalculusPlayground.Census.Completeness
+import CombinatorCalculusPlayground.Census.SKComplete
 import CombinatorCalculusPlayground.Reachability
 import CombinatorCalculusPlayground.Invariants
 import CombinatorCalculusPlayground.Decidability
