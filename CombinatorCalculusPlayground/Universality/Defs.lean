@@ -153,6 +153,86 @@ def Simulation.ofAbstraction {A B : RS}
   fwd := fwd
   bwd := RS.bwd_of_abstraction enc abs habs hstep
 
+-- ## Stage 29: the relational abstraction, and why joinability cannot instantiate it
+-- Stages 10 and 13 showed the SYNTACTIC abstraction fails: `S f g x` duplicates `x`,
+-- the copies drift, and a function reading them syntactically falls off to `none`. The
+-- standing proposal (Stage 10's "route 1", carried in the ranking ever since) was to
+-- define the abstraction UP TO JOINABILITY, using SK confluence to ignore doomed
+-- duplicates. Two results below: the generalisation that proposal needs, and a proof
+-- that joinability itself cannot supply it.
+
+/-- Joinability: a common reduct. -/
+def RS.Joinable (B : RS) (b c : B.Carrier) : Prop := ∃ w, B.Steps b w ∧ B.Steps c w
+
+/-- The abstraction as a RELATION rather than a function — strictly more general, and
+what any joinability-style abstraction would need, since "decodes to" becomes a
+semantic condition rather than a computation. -/
+theorem RS.abstraction_tracks_rel {A B : RS}
+    (absR : B.Carrier → A.Carrier → Prop)
+    (hstep : ∀ {b b' : B.Carrier} {a : A.Carrier}, B.step b b' → absR b a →
+      absR b' a ∨ ∃ a', A.step a a' ∧ absR b' a')
+    {b b' : B.Carrier} (h : B.Steps b b') :
+    ∀ a, absR b a → ∃ a₂, A.Steps a a₂ ∧ absR b' a₂ := by
+  induction h with
+  | refl _ => intro a ha; exact ⟨a, RS.Steps.refl _, ha⟩
+  | @tail b w b' s _ ih =>
+    intro a ha
+    rcases hstep s ha with hstut | ⟨a₁, hadv, hw⟩
+    · exact ih a hstut
+    · obtain ⟨a₂, hpath, hb'⟩ := ih a₁ hw
+      exact ⟨a₂, RS.Steps.tail hadv hpath, hb'⟩
+
+/-- **Adequacy from a relational abstraction.** Note the third hypothesis: the relation
+must be FUNCTIONAL ON THE IMAGE of `enc`. That is the price of relaxing from a function,
+and it is exactly where joinability fails (below). -/
+theorem RS.bwd_of_abstraction_rel {A B : RS}
+    (enc : A.Carrier → B.Carrier) (absR : B.Carrier → A.Carrier → Prop)
+    (habs : ∀ a, absR (enc a) a)
+    (hfun : ∀ {a a' : A.Carrier}, absR (enc a) a' → a = a')
+    (hstep : ∀ {b b' : B.Carrier} {a : A.Carrier}, B.step b b' → absR b a →
+      absR b' a ∨ ∃ a', A.step a a' ∧ absR b' a')
+    {a a' : A.Carrier} (h : B.Steps (enc a) (enc a')) : A.Steps a a' := by
+  obtain ⟨a₂, hpath, hend⟩ := RS.abstraction_tracks_rel absR hstep h a (habs a)
+  exact (hfun hend) ▸ hpath
+
+/-- Stage 8's function version is the special case `absR b a := (abs b = some a)`, so
+nothing is lost by working relationally. -/
+theorem RS.bwd_of_abstraction_rel_generalises {A B : RS}
+    (enc : A.Carrier → B.Carrier) (abs : B.Carrier → Option A.Carrier)
+    (habs : ∀ a, abs (enc a) = some a)
+    (hstep : ∀ {b b' : B.Carrier} {a : A.Carrier}, B.step b b' → abs b = some a →
+      abs b' = some a ∨ ∃ a', A.step a a' ∧ abs b' = some a')
+    {a a' : A.Carrier} (h : B.Steps (enc a) (enc a')) : A.Steps a a' :=
+  RS.bwd_of_abstraction_rel enc (fun b a => abs b = some a) habs
+    (fun {a _} hr => Option.some.inj ((habs a).symm.trans hr)) hstep h
+
+-- ## Why "up to joinability" cannot be the abstraction
+-- The proposal was `absR b a := B.Joinable b (enc a)`. It does fix drift — two copies
+-- that have drifted apart are still joinable in a confluent host. But it fixes drift by
+-- being far too coarse, and the failure is not incidental:
+
+/-- **Joinability relates an encoded state to every source state it came from.** So
+`Joinable · (enc ·)` is never functional on the image once the source has a single
+nontrivial step, and `bwd_of_abstraction_rel`'s third hypothesis is unsatisfiable for it.
+The intuition, made precise: everything on a machine's trajectory is joinable with
+everything else, so joinability cannot tell machine states apart at all. -/
+theorem RS.joinable_abs_not_functional {A B : RS} (enc : A.Carrier → B.Carrier)
+    (fwd : ∀ {x y : A.Carrier}, A.step x y → B.Steps (enc x) (enc y))
+    {a a' : A.Carrier} (h : A.step a a') :
+    B.Joinable (enc a') (enc a) ∧ B.Joinable (enc a') (enc a') :=
+  ⟨⟨enc a', RS.Steps.refl _, fwd h⟩, ⟨enc a', RS.Steps.refl _, RS.Steps.refl _⟩⟩
+
+-- So the two candidate routes to `bwd` fail for OPPOSITE reasons:
+--
+--   * the syntactic abstraction is too FINE — duplicated copies drift and it loses
+--     track (Stages 10, 13);
+--   * the joinability abstraction is too COARSE — it relates every trajectory state to
+--     every other and loses the ability to distinguish them (above).
+--
+-- A workable abstraction has to sit strictly between, and neither obvious construction
+-- does. That is why spec Goal 2's criterion (a) has stayed blocked, stated now as a
+-- structural obstruction rather than as unbuilt work.
+
 -- ## The three observation modes
 -- Same triple shape, different question asked of the host system.
 
