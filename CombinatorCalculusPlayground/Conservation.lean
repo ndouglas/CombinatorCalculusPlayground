@@ -471,3 +471,85 @@ theorem no_normalForm_iff_unbounded {t : Term} (hk : KFree t) :
   · intro h
     exact unbounded_of_all_reducible hk (all_reducible_of_no_normalForm h)
   · exact no_normalForm_of_unbounded hk
+
+-- ## Stage 36: the reformulations are all the same problem
+-- Stage 35's ranking claimed "every reduct is reducible" was a better target for C1(a) than
+-- the invariant (Stage 32) or the raw size claim (Stage 33). Checking that before attacking
+-- it shows the claim was wrong: all three are EQUIVALENT, and so is the invariant form,
+-- because `fun u => t ⟶* u` is itself an invariant whenever every reduct is reducible.
+--
+-- So Stages 32, 33 and 35 each replaced C1(a)'s statement with a provably equivalent one and
+-- I read each replacement as progress. It was not. The theorem below makes that a fact rather
+-- than a suspicion, so the cycle cannot repeat: **any further reformulation of C1(a) along
+-- these lines is a restatement, and closing it requires new mathematics about pure S, not a
+-- better phrasing.**
+
+/-- Iterating a chosen successor function. -/
+def iterFn (next : Term → Term) (t : Term) : Nat → Term
+  | 0 => t
+  | k + 1 => next (iterFn next t k)
+
+/-- **The four formulations of C1(a), proved equivalent.**
+
+1. `t` has no normal form — the conjecture as stated;
+2. every reduct of `t` is reducible — the positive phrasing (Stage 35's "better target");
+3. there is a reducibility invariant with an explicit successor function — the invariant
+   route hunted in Slices 3, 4 and Stage 32;
+4. `t`'s reducts have unbounded size — the size criterion (Stage 33).
+
+Constructive throughout: (1)→(2) decides reducibility with `stepOnce`, (2)→(3) takes the
+invariant to be "is a reduct of `t`" with `stepOnce` as the successor, (3)→(1) builds an
+infinite reduction and applies C5, and (1)↔(4) is Stage 35. -/
+theorem c1a_formulations {t : Term} (hk : KFree t) :
+    ((¬ ∃ n, (t ⟶* n) ∧ NormalForm n) ↔ (∀ u, (t ⟶* u) → ∃ v, u ⟶ v))
+  ∧ ((∀ u, (t ⟶* u) → ∃ v, u ⟶ v) ↔
+      (∃ (P : Term → Prop) (next : Term → Term),
+         P t ∧ ∀ u, P u → (u ⟶ next u) ∧ P (next u)))
+  ∧ ((¬ ∃ n, (t ⟶* n) ∧ NormalForm n) ↔ (∀ N, ∃ u, (t ⟶* u) ∧ N < leafCount u)) := by
+  refine ⟨⟨all_reducible_of_no_normalForm, ?_⟩, ⟨?_, ?_⟩, no_normalForm_iff_unbounded hk⟩
+  · -- (2) → (1): a normal form would be an irreducible reduct
+    intro hall ⟨n, hn, hnf⟩
+    exact hnf (hall n hn)
+  · -- (2) → (3): "is a reduct of t" is the invariant, with stepOnce as the successor
+    intro hall
+    refine ⟨fun u => t ⟶* u, fun u => (stepOnce u).getD u, Steps.refl _, ?_⟩
+    intro u hu
+    obtain ⟨v, hv⟩ := hall u hu
+    have hsome : (stepOnce u).isSome := stepOnce_isSome_of_step hv
+    match hs : stepOnce u with
+    | none => rw [hs] at hsome; simp at hsome
+    | some w =>
+      have he : (stepOnce u).getD u = w := by rw [hs]; rfl
+      show (u ⟶ (stepOnce u).getD u) ∧ (t ⟶* (stepOnce u).getD u)
+      rw [he]
+      exact ⟨stepOnce_sound hs, Steps.trans hu (Steps.single (stepOnce_sound hs))⟩
+  · -- (3) → (2): iterate `next` to get an infinite reduction, then C5
+    rintro ⟨P, next, hPt, hstep⟩ u hu
+    -- the invariant gives an infinite reduction from t, so t has no normal form...
+    have hPall : ∀ k, P (iterFn next t k) := by
+      intro k
+      induction k with
+      | zero => exact hPt
+      | succ j ih => exact (hstep _ ih).2
+    have hinf : InfiniteRed t :=
+      ⟨iterFn next t, rfl, fun k => (hstep _ (hPall k)).1⟩
+    -- ...and then every reduct is reducible, by the decidable route
+    exact all_reducible_of_no_normalForm (no_normalForm_of_infiniteRed hk hinf) u hu
+
+-- ## What C1(a) actually needs
+-- Not another phrasing. Every route above is the same statement, so closing C1(a) requires a
+-- genuinely new fact about pure-S reduction — something that produces, for one concrete
+-- term, either an infinite reduction, an unbounded family of reducts, or a preserved
+-- reducibility predicate. The tree now supplies every *bridge* between those, and none of
+-- the sources.
+--
+-- What the program HAS contributed to C1(a), stated so the negative result above is not
+-- mistaken for the whole story:
+--   * C1(b) PROVED — no pure-S term below 7 leaves diverges (Slice 5);
+--   * C5 PROVED — conservation, so an infinite reduction suffices (Stage 31);
+--   * the frozen head PROVED — c1's trajectory is `S A B` with `A` a fixed normal form,
+--     reducing the question to the payload (Slice 4);
+--   * the four-way equivalence above, so the target is unambiguous;
+--   * honest negatives: no self-embedding for `c1` within 120 steps, none for the
+--     literature's 14-leaf term within 40, and no I-like combinator in {S,B} to transport
+--     rung one's cycle.
