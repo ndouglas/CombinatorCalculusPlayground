@@ -378,3 +378,102 @@ def bestCollapse : Term := Term.app (app2 S (app S K) (app K S)) (app2 S (app S 
 -- countdown's choice of one. The trajectory relation — "b lies on the host segment for source state w" —
 -- is the obvious candidate and has not been examined. It is also the honest next step, because unlike
 -- route one it can be designed and checked without first building the driver.
+
+-- ## Stage 53: route two — the trajectory relation
+-- Stage 49 noted that `RS.bwd_of_abstraction_rel` takes an ARBITRARY relation, so nothing obliges a
+-- driver to reuse the countdown's K-normal-form abstraction. The obvious alternative is the trajectory
+-- relation: `b` stands for `w` when `b` lies on the host segment belonging to `w`. Unlike route one it
+-- can be designed and checked before any driver exists — which is why Stage 52 pivoted here.
+--
+-- The definition has to say "not yet past `w`", or it degenerates. Plain reachability in either
+-- direction fails `hfun` immediately, and for the same reason joinability did: the countdown's
+-- encodings are linearly ordered by reachability, so any bare reachability relation confuses them.
+
+/-- `b` is reachable from `enc w`, and not yet reachable from the encoding of any successor of `w`. -/
+def OnSegment {A : RS} (enc : A.Carrier → Term) (b : Term) (w : A.Carrier) : Prop :=
+  (enc w ⟶* b) ∧ ∀ w', A.step w w' → ¬ (enc w' ⟶* b)
+
+/-- The countdown's instance, named because `A` is not inferable from `Nat` alone. -/
+def onSeg (b : Term) (w : Nat) : Prop := OnSegment (A := RS.Countdown) Itower b w
+
+theorem countdown_steps_le : ∀ {a a' : Nat}, RS.Countdown.Steps a a' → a' ≤ a := by
+  intro a a' h
+  exact h.rec (fun _ => Nat.le_refl _) (fun {x y _} hs _ ih => by
+    have : x = y + 1 := hs
+    omega)
+
+/-- Reachability between encodings recovers the source order — via the Stage 48 `Simulation`, whose
+`bwd` is exactly this statement transported. -/
+theorem itower_steps_le {w w' : Nat} (h : Itower w ⟶* Itower w') : w' ≤ w :=
+  countdown_steps_le (countdownInSK.bwd (RS.SK_steps_iff.mpr h))
+
+/-- `habs` for the trajectory relation. It needs the encoding not to run backwards, which for the
+countdown is `itower_steps_le`. -/
+theorem onSegment_enc (w : Nat) : onSeg (Itower w) w := by
+  refine ⟨Steps.refl _, ?_⟩
+  intro w' hs hreach
+  have : w = w' + 1 := hs
+  have := itower_steps_le hreach
+  omega
+
+/-- `fwd` iterated: the encoding reaches every lower state. -/
+theorem itower_steps_of_le : ∀ {a k : Nat}, a ≤ k → (Itower k ⟶* Itower a) := by
+  intro a k
+  induction k with
+  | zero =>
+      intro h
+      have ha : a = 0 := by omega
+      subst ha
+      exact Steps.refl _
+  | succ j ih =>
+      intro h
+      rcases Nat.lt_or_ge a (j + 1) with hlt | hge
+      · exact Steps.trans (itower_fwd j) (ih (by omega))
+      · have ha : a = j + 1 := by omega
+        subst ha
+        exact Steps.refl _
+
+/-- **`hfun` for the trajectory relation — the obligation that killed joinability.** It survives, and
+the "not yet past `w`" clause is exactly what makes it survive: reachability alone gives `a ≤ a\'`, and
+the clause supplies `a\' ≤ a`. -/
+theorem onSegment_functional {a a' : Nat} (h : onSeg (Itower a) a') : a = a' := by
+  obtain ⟨hreach, hnot⟩ := h
+  have hle : a ≤ a' := itower_steps_le hreach
+  cases a' with
+  | zero => omega
+  | succ k =>
+      have hno := hnot k rfl
+      have hnk : ¬ (a ≤ k) := fun hak => hno (itower_steps_of_le hak)
+      omega
+
+-- ## What route two costs and what it demands
+-- `habs` and `hfun` are above, and `hfun` is the one that mattered: it is what killed joinability
+-- (`RS.joinable_abs_not_functional`) and what any coarse relation has to survive. The trajectory
+-- relation survives it, and the "not yet past `w`" clause is precisely the thing that makes it — bare
+-- reachability supplies `a ≤ a'`, the clause supplies `a' ≤ a`.
+--
+-- `hstep` remains, and unwinding it gives a condition of a completely different character from route
+-- one's. If a host step lands on a term reachable from the successor's encoding, tracking it requires
+--
+--     no single host step reaches past TWO source states,
+--
+-- i.e. consecutive encodings are at least two host steps apart. For the countdown that is exactly true —
+-- `Itower (n+1) ⟶ (K ·)(K ·) ⟶ Itower n` is two steps — and for a driver it is a design property one can
+-- arrange and check, not a structural coincidence one has to hope for.
+--
+-- **The reason this is the promising route.** The trajectory relation says nothing whatever about the
+-- SHAPE of intermediates — only about reachability. So Stage 49's constraint, that every intermediate
+-- K-normalise to an encoding, simply does not apply to it. That constraint was what made route one look
+-- hard and Stage 50–52 unable to test it; route two does not incur it at all.
+--
+-- The cost, stated so it is not discovered later: the relation quantifies over reachability, so it is not
+-- a computation. That is fine for `bwd` — `RS.bwd_of_abstraction_rel` takes an arbitrary relation — but a
+-- `Simulation` also needs a decoder FUNCTION, and the trajectory relation does not supply one. The
+-- countdown got its decoder from `naiveAbs` independently of the abstraction, and a driver would have to
+-- do the same: decode syntactically, track relationally. Those are two separate obligations and route two
+-- only discharges the second.
+
+-- Anchors.
+example : onSeg (Itower 4) 4 := onSegment_enc 4
+example {a : Nat} (h : onSeg (Itower a) 3) : a = 3 := onSegment_functional h
+#guard leafCount (Itower 4) = 13
