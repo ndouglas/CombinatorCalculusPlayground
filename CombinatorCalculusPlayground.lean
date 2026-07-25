@@ -20,6 +20,7 @@ import CombinatorCalculusPlayground.Census.SKComplete
 import CombinatorCalculusPlayground.Reachability
 import CombinatorCalculusPlayground.Invariants
 import CombinatorCalculusPlayground.Decidability
+import CombinatorCalculusPlayground.SKDecidability
 import CombinatorCalculusPlayground.AdequacyProbe
 import CombinatorCalculusPlayground.Countdown
 import CombinatorCalculusPlayground.Conservation

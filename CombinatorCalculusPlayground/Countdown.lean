@@ -12,6 +12,7 @@
 import CombinatorCalculusPlayground.KConfluence
 import CombinatorCalculusPlayground.AdequacyProbe
 import CombinatorCalculusPlayground.Universality.Calibration
+import CombinatorCalculusPlayground.SKDecidability
 
 open Term
 
@@ -679,3 +680,45 @@ theorem itower_reduct_bound {m : Nat} {u : Term} (h : Itower m ⟶* u) :
 -- K-inclusive bounded enumeration + the size bound above. The last item is the only gap, it is
 -- infrastructure rather than research, and `skTerms` (AdequacyProbe.lean) is already the uncertified
 -- version of exactly it.
+
+-- ## Stage 58: the chain closes
+-- Stage 56 bounded the region, Stage 57 certified the universe, and `SKDecidability.lean` removed the
+-- K-freeness from saturation. That is everything `hleast` was waiting on.
+
+/-- Reachability from the encoding is decidable: the region is bounded by `3·2^m − 2`, so
+`stepsDecidableWithin` applies with no K-freeness anywhere. -/
+instance itowerStepsDecidable (m : Nat) (b : Term) : Decidable (Itower m ⟶* b) :=
+  stepsDecidableWithin (bound := 3 * 2 ^ m - 2)
+    (fun v hv => by have := itower_reduct_bound hv; omega)
+
+/-- **`hleast`.** With the predicate decidable, `Nat.find` supplies the least segment index directly —
+this is the step that needed `Classical.choice` in Stage 55 and now does not. -/
+theorem hleast_itower (b : Term) (w : Nat) (h : Itower w ⟶* b) :
+    ∃ m, m ≤ w ∧ (Itower m ⟶* b) ∧ ∀ k, m = k + 1 → ¬(Itower k ⟶* b) := by
+  obtain ⟨m, hle, hp, hmin⟩ := exists_least (p := fun m => Itower m ⟶* b) h
+  exact ⟨m, hle, hp, fun k hk => hmin k (by omega)⟩
+
+/-- **Route two's `hstep`, proved.** -/
+theorem onSegmentHStepPath_countdown : OnSegmentHStepPath RS.Countdown Itower :=
+  onSegmentHStepPath_of_least hleast_itower
+
+/-- **A second, independent adequacy proof for the countdown.** `bwd` again — but via the trajectory
+relation and the path-advancing interface, sharing nothing with Stage 48's K-normal-form argument except
+the encoding itself. Two abstractions, two proofs, one theorem. -/
+theorem countdown_bwd_via_trajectory {a a' : Nat}
+    (h : RS.SK.Steps (Itower a) (Itower a')) : RS.Countdown.Steps a a' :=
+  RS.bwd_of_abstraction_path (A := RS.Countdown) (B := RS.SK)
+    Itower onSeg onSegment_enc onSegment_functional onSegmentHStepPath_countdown h
+
+/-- ...and the `Simulation` assembled from it, distinct from `countdownInSK` in its `bwd` field. -/
+def countdownInSK' : Simulation RS.Countdown RS.SK where
+  enc := Itower
+  dec := naiveAbs
+  dec_enc := naiveAbs_Itower
+  fwd := by
+    intro a a' h
+    subst h
+    exact RS.SK_steps_iff.mpr (itower_fwd a')
+  bwd := by
+    intro a a' h
+    exact countdown_bwd_via_trajectory h
