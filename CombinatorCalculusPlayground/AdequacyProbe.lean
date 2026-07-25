@@ -16,6 +16,7 @@
 -- proceed outside-in, inside-out, or interleaved.
 import CombinatorCalculusPlayground.Universality.Defs
 import CombinatorCalculusPlayground.Bracket
+import CombinatorCalculusPlayground.Reachability
 
 open Term
 
@@ -211,3 +212,103 @@ theorem naive_bracket_drifts :
 -- Stage 11's `normalForm_bracket` is unaffected and still useful: machine CODE
 -- is normal, so the fixpoint's self-application is safe. The problem is
 -- specifically the pending recursive call, which is data-shaped and not normal.
+
+-- ## Stage 45: the third route — an abstraction blind to doomed subterms
+-- Stage 13 closed with two routes dead and a third named but untried. The syntactic abstraction is
+-- too FINE (duplicated copies drift), and joinability is too COARSE
+-- (`RS.joinable_abs_not_functional`). The third: *"defined so it reads only the live spine and
+-- ignores subterms destined for a `K`-discard."*
+--
+-- There is a mechanism for that, and it is small. A doomed subterm is doomed because some `K` will
+-- discard it, so CONTRACT THE K-REDEXES FIRST and read the result. K-reduction on its own strictly
+-- lowers `leafCount`, so it terminates with no fuel guesswork, and a doomed copy `(K a) u`
+-- collapses to `a` no matter what `u` drifted into. Drift becomes invisible instead of impossible —
+-- which is what route (2) could not achieve, since Stage 13 showed transient duplicates are
+-- unavoidable in SK.
+
+/-- One K-contraction, leftmost. `S`-redexes are left alone: contracting them is what advances the
+machine, and the abstraction must not do that. -/
+def kStepOnce : Term → Option Term
+  | .app (.app .K a) _ => some a
+  | .app a b => match kStepOnce a with
+      | some a' => some (.app a' b)
+      | none => (kStepOnce b).map (.app a)
+  | _ => none
+
+/-- Contract K-redexes to exhaustion. `leafCount` is enough fuel because each K-contraction
+discards both the `K` and an argument, so the term strictly shrinks — but that is an argument, not
+a proof: this and `kStepOnce` are UNVERIFIED census tooling. Certifying them (soundness, and the
+`leafCount` bound) is listed below as part of the remaining work; three attempts at the two
+induction proofs ran into the overlapping-pattern equation lemmas and were abandoned rather than
+thrashed on, since the finding below does not depend on them. -/
+def kNorm : Nat → Term → Term
+  | 0, t => t
+  | n + 1, t => match kStepOnce t with
+      | none => t
+      | some u => kNorm n u
+
+/-- The Stage 13 abstraction, made blind to doomed subterms. -/
+def absK (t : Term) : Option Nat := naiveAbs (kNorm (leafCount t) t)
+
+-- Route (1) and route (2) both failed on `desync'`. Route (3) does not.
+#guard naiveAbs desync = some 2
+#guard naiveAbs desync' = none      -- Stage 10's failure: drift lost the count
+#guard absK desync = some 1
+#guard absK desync' = some 0        -- ...and K-contraction restores it
+
+-- The abstraction still inverts the encoder, which is `habs` and is what makes it a candidate at
+-- all — a coarser abstraction that lost this would be useless.
+#guard (List.range 8).all (fun n => absK (Itower n) = some n)
+
+-- ## Stutter-or-advance, tested where the obligation actually lives
+-- `RS.bwd_of_abstraction` quantifies `hstep` over EVERY pair of host terms, not just the ones
+-- reachable from an encoded state. So the test enumerates all SK terms, K included.
+def skUpTo : Nat → List (List Term)
+  | 0 => [[]]
+  | 1 => [[], [S, K]]
+  | n + 1 =>
+      let prev := skUpTo n
+      prev ++ [(List.range n).flatMap (fun i =>
+        (prev.getD (i + 1) []).flatMap (fun a =>
+          (prev.getD (n - i) []).map (fun b => Term.app a b)))]
+
+def skTerms (n : Nat) : List Term := (skUpTo n).getD n []
+
+#guard (List.range 8).map (fun n => (skTerms n).length) = [0, 2, 4, 16, 80, 448, 2688, 16896]
+
+/-- The countdown machine's step is `n+1 ↦ n`, so tracking means: every host successor either
+keeps the count or drops it by exactly one. -/
+def stutterOrAdvance (b : Term) : Bool :=
+  match absK b with
+  | none => true
+  | some a => (succs b).all (fun b' =>
+      match absK b' with
+      | none => false
+      | some a' => a' == a || a == a' + 1)
+
+-- Clean over every SK term up to six leaves; measured clean to seven as well (16896 terms at that
+-- size), guarded at six for build cost.
+#guard (List.range 7).all (fun n => (skTerms n).all stutterOrAdvance)
+
+-- Non-vacuity: the abstraction is DEFINED on plenty of these, so the check above is not passing
+-- because `absK` returns `none` everywhere.
+#guard (List.range 8).map (fun n => ((skTerms n).filter (fun b => (absK b).isSome)).length)
+  = [0, 1, 0, 2, 5, 28, 142, 813]
+
+-- ## What this settles and what it does not
+-- SETTLED: the route Stage 13 named and left untried is the right one, and it is cheap. Drift does
+-- not have to be prevented (Stage 10's route 2, which Stage 13 refuted) nor tolerated by coarsening
+-- (route 1, refuted by `RS.joinable_abs_not_functional`) — it can be made INVISIBLE, by reading the
+-- term only after its doomed subterms have been discarded. On the countdown machine the resulting
+-- abstraction satisfies stutter-or-advance over every SK term up to seven leaves, with no failures,
+-- while still inverting the encoder.
+--
+-- NOT SETTLED, and both are real:
+--   * The general proof. The crux is how an S-step interacts with K-normalisation: a K-step leaves
+--     the K-normal form alone (given confluence of K-reduction, which is not proved here), but an
+--     S-step can create and destroy K-redexes, so `absK` tracking it is exactly what needs an
+--     argument. Empirical agreement over 20386 terms is evidence, not a theorem.
+--   * The source system. The countdown is a genuine multi-step machine, which is what the probe
+--     needed, but it is not universal. Criterion (a) wants a known-universal source, so piece (v) —
+--     a tag-step driver — is still unwritten. What changes is that its hardest obligation now has a
+--     mechanism instead of two dead ends.
