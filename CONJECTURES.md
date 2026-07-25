@@ -2183,3 +2183,32 @@ directly**, and the argument is five lines of English.
   normal form, reducing the question to the payload); this equivalence, so the target is
   unambiguous; and three honest negatives — no self-embedding for `c1` within 120 steps, none
   for the literature's 14-leaf term within 40, and no I-like combinator in `{S,B}`.
+
+### Stage 37: construct-don't-search, attempted
+
+Stage 36 named the one route with genuinely new content: build a self-embedding `t ⟶⁺ C[t]`
+by design. Such a `t` gives an infinite reduction directly (`C[t] ⟶⁺ C[C[t]]` by congruence)
+and hence, via C5, no normal form — proving C1(a). Note **C2 forces `C` to be non-trivial**,
+since `t ⟶⁺ t` is a cycle and pure S has none, so the target is *strict* self-embedding.
+
+Attempting it meant first searching the design space systematically — which Slices 3 and 4
+never did, having checked `c1` and `c2` only. **Result: nothing.**
+
+```
+leftmost-outermost, 60 steps, cap 3000,  every pure-S term up to 8 leaves:  0
+leftmost-outermost, 200 steps, cap 20000, every term up to 8 leaves:        0
+ALL STRATEGIES (bounded closure, cap 40, fuel 200), every term up to 6:     0
+```
+
+- **The all-strategies row is the one that counts.** Stage 21 showed a leftmost-outermost hunt
+  provably misses cycles that exist in the relation — rung one's `omegaSI` is the witness — so
+  an LO-only negative would have been weak evidence. The closure search is
+  strategy-independent.
+- Shipped as `selfEmbeds` with build-enforced guards at an affordable size; deeper runs
+  recorded. Slice 3's 120-step result on `c1`/`c2` extended to 200 steps under a size cap.
+- **What changes:** the route is no longer *unexplored* but *searched and empty where
+  searchable* — a materially stronger negative than the ledger held.
+- **What is not settled:** whether self-embedding is **impossible** in pure S. No obstruction
+  is proved and none is apparent; C2 rules out only the trivial context. Proving impossibility
+  would close the loop route for good; a witness at larger size would prove C1(a). The search
+  cannot decide between them.

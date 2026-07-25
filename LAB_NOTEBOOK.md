@@ -2361,3 +2361,38 @@ what automation could and couldn't do. This file is a first-class deliverable
   pass 2 registered as "construct-don't-search" and which no stage has attempted. It is the
   one item on the board that could produce an infinite reduction rather than relate the ways
   of describing one; (2) C6, declined a twenty-fourth time.
+
+## 2026-07-25 — Stage 37: the last untried route, tried
+
+- Stage 36 had cleared away the reformulations and left exactly one item with new content:
+  construct a self-embedding rather than search for one. Registered as "construct-don't-search"
+  in the second ideonomy pass, never attempted in thirty-five stages.
+- Before attempting a construction I searched the design space, because Slices 3 and 4 had only
+  ever checked `c1` and `c2` — two terms, one strategy, 120 steps. A systematic sweep is cheap
+  with the existing tooling and it settles whether construction is even needed. It found
+  nothing: no pure-S term up to 8 leaves reappears inside its own leftmost-outermost trajectory
+  within 200 steps, and — the row that matters — no term up to 6 leaves does so under ANY
+  strategy.
+- I included the all-strategies row specifically because of Stage 21, where validating a
+  leftmost-outermost cycle detector revealed it provably misses cycles that exist in the
+  relation. An LO-only negative here would have inherited exactly that weakness, and I would
+  have reported it as stronger than it was. Using the bounded closure costs more but the
+  evidence is of a different kind.
+- **What the result does and does not do.** It upgrades the loop route from "unexplored" to
+  "searched and empty where searchable", which is a real change in the ledger's standing. It
+  does not show self-embedding is impossible, and I want to be careful there: no obstruction is
+  proved and none is apparent to me. C2 rules out the trivial context and nothing more.
+- So C1(a) is in an unusually well-characterised position for an open problem. Every bridge
+  between its formulations is proved (Stage 36). Its dependency is discharged (C5, Stage 31).
+  Its minimality half is proved (Slice 5). Its trajectory's structure is proved (frozen head,
+  Slice 4). And all three candidate sources — invariant, self-embedding, unbounded growth — have
+  been searched at the sizes searchable and come back empty. What remains is genuinely a
+  research question about pure-S reduction, not a gap in this development.
+- Worth recording as the honest summary of thirty-seven stages on C1: the program has
+  contributed a great deal AROUND the conjecture and nothing that closes it, and it can now say
+  precisely why — the missing ingredient is a source of infinite reduction, and none exists at
+  any size a search reaches.
+- Ranking: (1) prove self-embedding IMPOSSIBLE in pure S — the only remaining move that would
+  change C1(a)'s status, since it would close the loop route for good and force any future
+  attempt onto unbounded growth without a witness. Genuinely open, and I have no candidate
+  argument; (2) C6, declined a twenty-fifth time.
