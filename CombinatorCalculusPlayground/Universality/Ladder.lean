@@ -1139,3 +1139,122 @@ theorem sbCycle_needs_B {t : SBTerm}
 -- Sanity: the S-only fragment is not empty of dynamics — `S S S S` steps in it.
 example : SBSStep (.app (.app (.app .S .S) .S) .S)
     (.app (.app .S .S) (.app .S .S)) := SBSStep.S_red .S .S .S
+
+-- ## Stage 27: rung three's S-only fragment, and the composed condition
+-- `C x y z → x z y` has leafCount delta −1, exactly like `B`, so C is the only
+-- shrinking rule in {S,C} and the S-only fragment again has monotone leafCount. The
+-- Stage 26 argument therefore transplants a second time.
+--
+-- DUPLICATION, deliberate and flagged: the two S-only fragments are structurally the
+-- same system — pure S over a two-symbol alphabet — so this is a near-copy of Stage
+-- 26. Abstracting it would need a term type parameterised by its atom set plus
+-- transport lemmas, which is more work than the copy and adds indirection for two
+-- instances. Recorded rather than hidden.
+
+theorem SCTerm.leafCount_pos (t : SCTerm) : 0 < t.leafCount := by
+  induction t with
+  | S => exact Nat.zero_lt_one
+  | C => exact Nat.zero_lt_one
+  | app a b iha ihb => simp only [SCTerm.leafCount]; omega
+
+theorem SCTerm.eq_atom_of_leafCount_one {t : SCTerm} (h : t.leafCount = 1) :
+    t = .S ∨ t = .C := by
+  cases t with
+  | S => exact Or.inl rfl
+  | C => exact Or.inr rfl
+  | app a b =>
+    exfalso
+    have := SCTerm.leafCount_pos a
+    have := SCTerm.leafCount_pos b
+    simp only [SCTerm.leafCount] at h
+    omega
+
+inductive SCSStep : SCTerm → SCTerm → Prop
+  | S_red (f g x : SCTerm) :
+      SCSStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | appL {t t' u : SCTerm} : SCSStep t t' → SCSStep (.app t u) (.app t' u)
+  | appR {t u u' : SCTerm} : SCSStep u u' → SCSStep (.app t u) (.app t u')
+
+theorem scSStep_isStep {t u : SCTerm} (h : SCSStep t u) : SCStep t u := by
+  induction h with
+  | S_red f g x => exact SCStep.S_red f g x
+  | appL _ ih => exact SCStep.appL ih
+  | appR _ ih => exact SCStep.appR ih
+
+def RS.SCSOnly : RS := ⟨SCTerm, SCSStep⟩
+
+theorem scSStep_squeeze {t u : SCTerm} (h : SCSStep t u) :
+    t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSC u < tauSC t) := by
+  induction h with
+  | S_red f g x =>
+    have hx := SCTerm.leafCount_pos x
+    have htau := tauSC_S_red f g x
+    have hpx := tauSC_pos x
+    refine ⟨by simp only [SCTerm.leafCount]; omega, ?_⟩
+    intro heq
+    simp only [SCTerm.leafCount] at heq
+    have hx1 : x.leafCount = 1 := by omega
+    have : tauSC x = 1 := by
+      rcases SCTerm.eq_atom_of_leafCount_one hx1 with rfl | rfl <;> rfl
+    omega
+  | appL _ ih =>
+    refine ⟨by simp only [SCTerm.leafCount]; omega, ?_⟩
+    intro heq
+    simp only [SCTerm.leafCount] at heq
+    have := ih.2 (by omega)
+    simp only [tauSC]; omega
+  | appR _ ih =>
+    refine ⟨by simp only [SCTerm.leafCount]; omega, ?_⟩
+    intro heq
+    simp only [SCTerm.leafCount] at heq
+    have := ih.2 (by omega)
+    simp only [tauSC]; omega
+
+theorem scSSteps_squeeze {t u : SCTerm} (h : RS.SCSOnly.Steps t u) :
+    t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSC u ≤ tauSC t) := by
+  refine h.rec (fun a => ⟨Nat.le_refl _, fun _ => Nat.le_refl _⟩) ?_
+  intro a w c s _ ih
+  obtain ⟨hs1, hs2⟩ := scSStep_squeeze s
+  refine ⟨Nat.le_trans hs1 ih.1, ?_⟩
+  intro heq
+  have hw : a.leafCount = w.leafCount := by omega
+  have := hs2 hw
+  have := ih.2 (by omega)
+  omega
+
+/-- **The S-only fragment of {S,C} is acyclic** — Stage 26's argument, second
+transplant. -/
+theorem scSOnly_acyclic : RS.Acyclic RS.SCSOnly := by
+  intro b b' hstep hback
+  obtain ⟨h1, h2⟩ := scSStep_squeeze hstep
+  obtain ⟨h3, h4⟩ := scSSteps_squeeze hback
+  have heq : b.leafCount = b'.leafCount := by omega
+  have hdrop := h2 heq
+  have hback' := h4 heq.symm
+  omega
+
+/-- **Any {S,C} cycle must contain a C-reduction.** Rung three's second constraint,
+alongside `scLight_acyclic`. -/
+theorem scCycle_needs_C {t : SCTerm}
+    (hcyc : ∃ u, SCSStep t u ∧ RS.SCSOnly.Steps u t) : False := by
+  obtain ⟨u, h1, h2⟩ := hcyc
+  exact scSOnly_acyclic h1 h2
+
+-- ## Rung two's composed condition, as arithmetic
+-- The three independent constraints combine into something sharper than any of them,
+-- and sharper than Stage 26 left it. Ingredients, all proved:
+--
+--   (i)   a cycle contains a B-reduction                    `sbCycle_needs_B`
+--   (ii)  a cycle fires an S-reduction with τ(x) ≥ 4        `sbCycle_needs_heavy_S`
+--   (iii) τ(x) ≥ 4 forces |x| ≥ 3                            `leafCount_ge_three_of_heavy`
+--   (iv)  on a cycle, Σ over S-reds of #B(xᵢ) = #B-reds      Stage 20's #B arithmetic
+--
+-- From (i) the right-hand side of (iv) is at least 1, so SOME S-reduction on the cycle
+-- duplicates an argument CONTAINING A B. Combined with (ii) and (iii):
+--
+--   **a {S,B} cycle requires an S-reduction whose third argument has at least three
+--   leaves, and some S-reduction whose third argument contains a B.**
+--
+-- That is a syntactic, checkable condition on the redexes a cycle must contain — much
+-- more restrictive than a τ threshold, and it is what a targeted search should filter
+-- on. The summation in (iv) remains the unformalised step, as in Stage 25.
