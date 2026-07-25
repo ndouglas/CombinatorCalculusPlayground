@@ -1099,32 +1099,11 @@ theorem sbSStep_squeeze {t u : SBTerm} (h : SBSStep t u) :
     have := ih.2 (by omega)
     simp only [tauSB]; omega
 
-/-- The same invariant along a whole path — the conjunction is exactly what makes the
-induction go through, since the strict τ drop must be recovered from the first step
-once leafCount is pinned. -/
-theorem sbSSteps_squeeze {t u : SBTerm} (h : RS.SBSOnly.Steps t u) :
-    t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSB u ≤ tauSB t) := by
-  -- Raw recursor: `induction` hits the mkElimApp motive error at a concrete RS.
-  refine h.rec (fun a => ⟨Nat.le_refl _, fun _ => Nat.le_refl _⟩) ?_
-  intro a w c s _ ih
-  obtain ⟨hs1, hs2⟩ := sbSStep_squeeze s
-  refine ⟨Nat.le_trans hs1 ih.1, ?_⟩
-  intro heq
-  -- all three leaf counts coincide, so the first step drops τ strictly
-  have hw : a.leafCount = w.leafCount := by omega
-  have := hs2 hw
-  have := ih.2 (by omega)
-  omega
-
-/-- **The S-only fragment of {S,B} is acyclic** — C2's argument, transplanted. -/
-theorem sbSOnly_acyclic : RS.Acyclic RS.SBSOnly := by
-  intro b b' hstep hback
-  obtain ⟨h1, h2⟩ := sbSStep_squeeze hstep
-  obtain ⟨h3, h4⟩ := sbSSteps_squeeze hback
-  have heq : b.leafCount = b'.leafCount := by omega
-  have hdrop := h2 heq
-  have hback' := h4 heq.symm
-  omega
+/-- **The S-only fragment of {S,B} is acyclic** — C2's argument, transplanted, now via
+the generic nested squeeze (`RS.Acyclic.of_three_level` with a constant top level). -/
+theorem sbSOnly_acyclic : RS.Acyclic RS.SBSOnly :=
+  RS.Acyclic.of_three_level (fun _ => 0) SBTerm.leafCount tauSB
+    (fun h => ⟨Nat.le_refl _, fun _ => sbSStep_squeeze h⟩)
 
 /-- **Any {S,B} cycle must contain a B-reduction.** Contrapositive of the above: a
 cycle built only from S-reductions is impossible. This is independent of the τ-heavy
@@ -1210,28 +1189,10 @@ theorem scSStep_squeeze {t u : SCTerm} (h : SCSStep t u) :
     have := ih.2 (by omega)
     simp only [tauSC]; omega
 
-theorem scSSteps_squeeze {t u : SCTerm} (h : RS.SCSOnly.Steps t u) :
-    t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSC u ≤ tauSC t) := by
-  refine h.rec (fun a => ⟨Nat.le_refl _, fun _ => Nat.le_refl _⟩) ?_
-  intro a w c s _ ih
-  obtain ⟨hs1, hs2⟩ := scSStep_squeeze s
-  refine ⟨Nat.le_trans hs1 ih.1, ?_⟩
-  intro heq
-  have hw : a.leafCount = w.leafCount := by omega
-  have := hs2 hw
-  have := ih.2 (by omega)
-  omega
-
-/-- **The S-only fragment of {S,C} is acyclic** — Stage 26's argument, second
-transplant. -/
-theorem scSOnly_acyclic : RS.Acyclic RS.SCSOnly := by
-  intro b b' hstep hback
-  obtain ⟨h1, h2⟩ := scSStep_squeeze hstep
-  obtain ⟨h3, h4⟩ := scSSteps_squeeze hback
-  have heq : b.leafCount = b'.leafCount := by omega
-  have hdrop := h2 heq
-  have hback' := h4 heq.symm
-  omega
+/-- **The S-only fragment of {S,C} is acyclic** — same shape, via the generic squeeze. -/
+theorem scSOnly_acyclic : RS.Acyclic RS.SCSOnly :=
+  RS.Acyclic.of_three_level (fun _ => 0) SCTerm.leafCount tauSC
+    (fun h => ⟨Nat.le_refl _, fun _ => scSStep_squeeze h⟩)
 
 /-- **Any {S,C} cycle must contain a C-reduction.** Rung three's second constraint,
 alongside `scLight_acyclic`. -/
@@ -1353,34 +1314,10 @@ theorem sbNoBDup_squeeze {t u : SBTerm} (h : SBNoBDupStep t u) :
     have := ht (by omega)
     simp only [tauSB]; omega
 
-theorem sbNoBDup_path {t u : SBTerm} (h : RS.SBNoBDup.Steps t u) :
-    u.countB ≤ t.countB ∧ (u.countB = t.countB →
-      t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSB u ≤ tauSB t)) := by
-  refine h.rec (fun a => ⟨Nat.le_refl _, fun _ => ⟨Nat.le_refl _, fun _ => Nat.le_refl _⟩⟩) ?_
-  intro a w c s _ ih
-  obtain ⟨hs1, hs2⟩ := sbNoBDup_squeeze s
-  obtain ⟨hi1, hi2⟩ := ih
-  refine ⟨Nat.le_trans hi1 hs1, fun heq => ?_⟩
-  -- #B pinned across the whole path pins it across the first step too
-  obtain ⟨hsl, hst⟩ := hs2 (by omega)
-  obtain ⟨hil, hit⟩ := hi2 (by omega)
-  refine ⟨Nat.le_trans hsl hil, fun hleq => ?_⟩
-  have := hst (by omega)
-  have := hit (by omega)
-  omega
-
-/-- **The no-B-duplication fragment of {S,B} is acyclic.** -/
-theorem sbNoBDup_acyclic : RS.Acyclic RS.SBNoBDup := by
-  intro b b' hstep hback
-  obtain ⟨h1, h2⟩ := sbNoBDup_squeeze hstep
-  obtain ⟨h3, h4⟩ := sbNoBDup_path hback
-  have hbeq : b'.countB = b.countB := by omega
-  obtain ⟨hl1, ht1⟩ := h2 hbeq
-  obtain ⟨hl2, ht2⟩ := h4 (by omega)
-  have hleq : b.leafCount = b'.leafCount := by omega
-  have := ht1 hleq
-  have := ht2 (by omega)
-  omega
+/-- **The no-B-duplication fragment of {S,B} is acyclic** — the full three-level
+squeeze, via the generic lemma. -/
+theorem sbNoBDup_acyclic : RS.Acyclic RS.SBNoBDup :=
+  RS.Acyclic.of_three_level SBTerm.countB SBTerm.leafCount tauSB sbNoBDup_squeeze
 
 /-- **Stage 27's composed condition, now proved rather than derived informally.** Any
 `{S,B}` cycle must contain an S-reduction whose duplicated argument CONTAINS A `B`.
@@ -1396,3 +1333,88 @@ theorem sbCycle_needs_B_duplication {t : SBTerm}
 -- Stage 26 result is now a corollary rather than an independent fact.
 example : SBNoBDupStep (.app (.app (.app .B .S) .S) .S) (.app .S (.app .S .S)) :=
   SBNoBDupStep.B_red .S .S .S
+
+-- ## Stage 30: rung three's no-C-duplication fragment
+-- `C`'s counts behave exactly as `B`'s: `#C` falls by 1 on a C-reduction and rises by
+-- `#C(x)` on an S-reduction, since C permutes without duplicating. So Stage 28's
+-- three-level squeeze transfers — and with `RS.Acyclic.of_three_level` factored out, the
+-- transfer costs a per-step lemma instead of a path lemma plus a contradiction.
+
+def SCTerm.countC : SCTerm → Nat
+  | .S => 0
+  | .C => 1
+  | .app a b => a.countC + b.countC
+
+inductive SCNoCDupStep : SCTerm → SCTerm → Prop
+  | S_red (f g x : SCTerm) (h : x.countC = 0) :
+      SCNoCDupStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | C_red (x y z : SCTerm) :
+      SCNoCDupStep (.app (.app (.app .C x) y) z) (.app (.app x z) y)
+  | appL {t t' u : SCTerm} : SCNoCDupStep t t' → SCNoCDupStep (.app t u) (.app t' u)
+  | appR {t u u' : SCTerm} : SCNoCDupStep u u' → SCNoCDupStep (.app t u) (.app t u')
+
+theorem scNoCDupStep_isStep {t u : SCTerm} (h : SCNoCDupStep t u) : SCStep t u := by
+  induction h with
+  | S_red f g x _ => exact SCStep.S_red f g x
+  | C_red x y z => exact SCStep.C_red x y z
+  | appL _ ih => exact SCStep.appL ih
+  | appR _ ih => exact SCStep.appR ih
+
+def RS.SCNoCDup : RS := ⟨SCTerm, SCNoCDupStep⟩
+
+theorem scNoCDup_squeeze {t u : SCTerm} (h : SCNoCDupStep t u) :
+    u.countC ≤ t.countC ∧ (u.countC = t.countC →
+      t.leafCount ≤ u.leafCount ∧ (t.leafCount = u.leafCount → tauSC u < tauSC t)) := by
+  induction h with
+  | S_red f g x hx =>
+    have hpx := SCTerm.leafCount_pos x
+    have htau := tauSC_S_red f g x
+    refine ⟨by simp only [SCTerm.countC]; omega, fun _ => ⟨?_, ?_⟩⟩
+    · simp only [SCTerm.leafCount]; omega
+    · intro heq
+      simp only [SCTerm.leafCount] at heq
+      have hx1 : x.leafCount = 1 := by omega
+      have : tauSC x = 1 := by
+        rcases SCTerm.eq_atom_of_leafCount_one hx1 with rfl | rfl
+        · rfl
+        · simp only [SCTerm.countC] at hx; omega
+      omega
+  | C_red x y z =>
+    refine ⟨by simp only [SCTerm.countC]; omega, fun heq => ?_⟩
+    simp only [SCTerm.countC] at heq
+    omega
+  | appL _ ih =>
+    refine ⟨by simp only [SCTerm.countC]; omega, fun heq => ?_⟩
+    simp only [SCTerm.countC] at heq
+    obtain ⟨hb, himp⟩ := ih
+    obtain ⟨hl, ht⟩ := himp (by omega)
+    refine ⟨by simp only [SCTerm.leafCount]; omega, ?_⟩
+    intro hleq
+    simp only [SCTerm.leafCount] at hleq
+    have := ht (by omega)
+    simp only [tauSC]; omega
+  | appR _ ih =>
+    refine ⟨by simp only [SCTerm.countC]; omega, fun heq => ?_⟩
+    simp only [SCTerm.countC] at heq
+    obtain ⟨hb, himp⟩ := ih
+    obtain ⟨hl, ht⟩ := himp (by omega)
+    refine ⟨by simp only [SCTerm.leafCount]; omega, ?_⟩
+    intro hleq
+    simp only [SCTerm.leafCount] at hleq
+    have := ht (by omega)
+    simp only [tauSC]; omega
+
+/-- **The no-C-duplication fragment of {S,C} is acyclic** — rung three reaches parity
+with rung two. -/
+theorem scNoCDup_acyclic : RS.Acyclic RS.SCNoCDup :=
+  RS.Acyclic.of_three_level SCTerm.countC SCTerm.leafCount tauSC scNoCDup_squeeze
+
+/-- **Any {S,C} cycle must contain an S-reduction whose duplicated argument contains a
+`C`.** Rung three's third constraint, matching `sbCycle_needs_B_duplication`. -/
+theorem scCycle_needs_C_duplication {t : SCTerm}
+    (hcyc : ∃ u, SCNoCDupStep t u ∧ RS.SCNoCDup.Steps u t) : False := by
+  obtain ⟨u, h1, h2⟩ := hcyc
+  exact scNoCDup_acyclic h1 h2
+
+-- As at rung two, this fragment strictly contains the S-only one (it admits every
+-- C-reduction), so `scNoCDup_acyclic` subsumes `scSOnly_acyclic`.

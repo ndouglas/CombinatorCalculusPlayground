@@ -226,6 +226,42 @@ theorem RS.Acyclic.of_decreasing_measure {B : RS} (mu : B.Carrier → Nat)
   have := hpath hback
   omega
 
+/-- **The nested squeeze, once and generically.** Three measures where each level pins
+the next: `m1` never rises; when it holds still `m2` never falls; when that holds still
+too `m3` strictly drops. Then no cycle exists.
+
+This is the pattern behind C2's original argument and behind every acyclic-fragment
+result on the relaxation ladder. It was written out by hand four times (Stages 26–28 and
+the rung-three transfer) before being abstracted; the duplicated part was always the path
+lemma and the final contradiction, which live here now. A two-level squeeze is the case
+`m1 := fun _ => 0`. -/
+theorem RS.Acyclic.of_three_level {B : RS} (m1 m2 m3 : B.Carrier → Nat)
+    (hstep : ∀ {b b' : B.Carrier}, B.step b b' →
+      m1 b' ≤ m1 b ∧ (m1 b' = m1 b → m2 b ≤ m2 b' ∧ (m2 b = m2 b' → m3 b' < m3 b))) :
+    RS.Acyclic B := by
+  have hpath : ∀ {x y : B.Carrier}, B.Steps x y →
+      m1 y ≤ m1 x ∧ (m1 y = m1 x → m2 x ≤ m2 y ∧ (m2 x = m2 y → m3 y ≤ m3 x)) := by
+    intro x y h
+    refine h.rec (fun a => ⟨Nat.le_refl _, fun _ => ⟨Nat.le_refl _, fun _ => Nat.le_refl _⟩⟩) ?_
+    intro a w c s _ ih
+    obtain ⟨hs1, hs2⟩ := hstep s
+    obtain ⟨hi1, hi2⟩ := ih
+    refine ⟨Nat.le_trans hi1 hs1, fun heq => ?_⟩
+    obtain ⟨hsl, hst⟩ := hs2 (by omega)
+    obtain ⟨hil, hit⟩ := hi2 (by omega)
+    refine ⟨Nat.le_trans hsl hil, fun hleq => ?_⟩
+    have := hst (by omega)
+    have := hit (by omega)
+    omega
+  intro b b' hstepbb' hback
+  obtain ⟨h1, h2⟩ := hstep hstepbb'
+  obtain ⟨h3, h4⟩ := hpath hback
+  obtain ⟨hl1, ht1⟩ := h2 (by omega)
+  obtain ⟨hl2, ht2⟩ := h4 (by omega)
+  have := ht1 (by omega)
+  have := ht2 (by omega)
+  omega
+
 -- ## Claim asymmetry: positive and negative claims want OPPOSITE classes
 -- Recorded because it corrects a plausible-sounding plan. `PathEncoding` is
 -- strictly weaker than `Simulation` (`pathEncoding_strictly_weaker`,
