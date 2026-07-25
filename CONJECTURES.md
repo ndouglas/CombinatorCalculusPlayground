@@ -2517,3 +2517,37 @@ were abandoned per the three-attempt rule. Guards verified to bite by negative c
 a theorem. *The source system:* the countdown is a genuine multi-step machine but is not universal,
 so piece (v), the tag-step driver, is still unwritten. What changed is that its hardest obligation
 now has a mechanism instead of two dead ends.
+
+### Stage 46: confluence of K-reduction, and unique K-normal forms
+
+Stage 45's mechanism reads a host term only after its doomed subterms are discarded, which makes
+*"the K-normal form of `t`"* load-bearing — and the abstraction is well defined only if that phrase
+denotes. This is the lemma Stage 45's ranking named.
+
+Architecture mirrors `Confluence.lean` restricted to the K rule, because that file already
+establishes the pattern in this development: `KStep`/`KSteps`, parallel `KPar` in between, complete
+development `kdev`, Takahashi's triangle, then diamond → strip → confluence. The K-only version is
+**strictly simpler** — no `S_red` case anywhere, and `kdev` has one redex arm instead of two.
+
+| | |
+|---|---|
+| `KStep` / `KSteps` | the K rule and congruence, S-redexes deliberately excluded — contracting one is what *advances* an encoded machine |
+| `KStep.toStep` | everything here sits inside the ambient SK system |
+| `KPar`, `kdev`, `KPar.triangle` | Takahashi |
+| `kconfluence` | **K-reduction is confluent** |
+| `knf_unique` | **"the" K-normal form is well defined** |
+| `IsKNF`, `IsKNF.unique` | the relational form, which is what `RS.bwd_of_abstraction_rel` needs |
+| `IsKNF.of_kstep` | **a K-step does not move the K-normal form** |
+
+That last one is exactly the **K-step case** of Stage 45's stutter-or-advance obligation, and it
+needs no case analysis on the encoding: a host step that merely discards a doomed subterm leaves the
+abstraction alone. Half the crux, certified.
+
+Anchored against vacuity: `S` and `I` are K-normal — the second matters, since an S-redex being
+K-normal is what keeps the machine's own steps out of the abstraction's reach — and `K S S` has
+K-normal form `S`.
+
+Deliberately **not** claimed: nothing here concerns the fuel-based `kNorm` in `AdequacyProbe.lean`,
+which remains unverified census tooling. These are results about the *relation*.
+
+Axioms: `[propext]` or none.

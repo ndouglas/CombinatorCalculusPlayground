@@ -2725,3 +2725,38 @@ what automation could and couldn't do. This file is a first-class deliverable
   confluence of K-reduction, which is a small self-contained lemma this tree does not yet have.
   (2) piece (v), the tag-step driver, once the mechanism is certified rather than measured.
   (3) rungs 2/3 via match-bounds. (4) C6, declined a thirty-third time.
+
+## 2026-07-25 — Stage 46: mirroring beat inventing
+
+- The task was the lemma I named yesterday: K-reduction is confluent, so "the K-normal form" denotes
+  and Stage 45's abstraction is a function of its argument. I did the thing CLAUDE.md says to do and
+  I have not always done — found the existing implementation of the same shape and followed it.
+  `Confluence.lean` proves SK confluence by Takahashi: parallel reduction sandwiched between step
+  and steps, a complete development, the triangle, then diamond → strip → confluence. Restricting
+  that to the K rule is mechanical, and the K-only version is strictly simpler because there is no
+  S_red case and `kdev` has one redex arm.
+- It built with two small fixes, both mine and both from not following the model closely enough. I
+  hand-rolled the `app` congruence case of `KPar.to_ksteps` as a nested type-ascribed `by` block
+  instead of factoring out `congL`/`congR` the way the original does, and it did not elaborate. And
+  I copied the original's `rw [← ..., ← ...]` ending for `knf_unique` without checking that my
+  lemma's equation pointed the same way; `.trans` and `.symm` were clearer anyway. Both were the
+  cost of paraphrasing rather than mirroring.
+- The result I actually wanted is `IsKNF.of_kstep`: a K-step does not move the K-normal form. That is
+  the K-step case of stutter-or-advance, and it falls out of confluence with no reference to the
+  encoding at all — no case analysis, no countdown-specific reasoning. Half the crux of Stage 45's
+  obligation is now a theorem instead of a measurement.
+- I anchored it against vacuity deliberately, including one anchor I nearly skipped: `I` is K-normal.
+  It looks like a triviality and it is the property the whole design rests on — if S-redexes were
+  K-reducible, the abstraction would advance the machine while pretending to observe it. Worth a
+  theorem, not a comment.
+- Axiom footprint is `[propext]` or nothing across the file, which is the cleanest section in the
+  tree. Nothing here touches arithmetic, and it shows.
+- **What is left of the crux.** The S-step case. A K-step is settled; an S-step can create and
+  destroy K-redexes, so I still need: if `b ⟶_S b'` and `IsKNF b w`, then `IsKNF b' w'` with `w'`
+  either equal to `w` or one countdown step further along. That is where the encoding finally has to
+  be reasoned about, and it is the half that is genuinely about the machine rather than about
+  rewriting.
+- Ranking, unchanged in shape but with the first item now smaller: (1) the S-step case, which
+  completes stutter-or-advance and yields the first `Simulation` into `RS.SK` with a genuinely
+  multi-step encoding; (2) piece (v), the tag-step driver, once the mechanism is certified rather
+  than measured; (3) rungs 2/3 via match-bounds; (4) C6, declined a thirty-fourth time.
