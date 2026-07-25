@@ -2737,3 +2737,37 @@ The transferable lesson is Stage 41's, which I failed to apply: **when a probe h
 finding is about the parameter — and a probe with a known blind spot must be run against a control that
 exercises it.** I used a detector this tree had already proved unreliable for exactly this purpose. Both
 facts are now guards.
+
+### Stage 52: the diagnostic needs a source machine — correcting Stage 50
+
+Stage 50 concluded *"dispatch passes, recursion does not"* from K-normal-form counts. **Half of that was
+an unfounded inference**, and trying to construct Stage 51's self-reproducing prototype is what exposed it.
+
+The diagnostic says: along one **source** step the abstraction tolerates at most two K-normal forms.
+Applying it requires knowing how many source steps a host trajectory covers — and `omegaSK` **encodes
+nothing**, so its seventeen K-normal forms cannot be compared to anything. Seventeen is fine for a machine
+with seventeen reachable states.
+
+- Stage 50's **dispatch** verdict stands: `S K a b` selects between two branches, the source is a two-state
+  selection, and two K-normal forms is exactly right.
+- Stage 50's **recursion** verdict does not follow from its measurement.
+
+What the numbers do show is a difference in *kind* — suggestive, not decisive, and now guarded:
+
+```
+countdown   K-normal form leaf counts shrink monotonically:  10, 7, 4, 1
+omegaSK     they oscillate and revisit:  14, 20, 17, 17, 26, 23, 23, 20, 20, 32, …
+```
+
+The first is the signature of a source that only moves forward; the second would force a source cycle.
+Neither refutes anything, because neither term encodes anything.
+
+**The methodological finding, which is the real output.** *"Prototype the obligation before building the
+artifact"* has been the winning habit for six stages. This is the first time it does not apply, and the
+precondition is now explicit: **the diagnostic must be interpretable without the artifact.** Here it is
+not — "how many K-normal forms is too many" is a question about the source machine. Route one can only be
+tested by building a driver, which is the work the prototype was meant to de-risk.
+
+So the pivot is **route two**, which Stage 49 flagged and nothing since has touched:
+`RS.bwd_of_abstraction_rel` takes an **arbitrary** relation, and the trajectory relation — *"`b` lies on
+the host segment for source state `w`"* — can be designed and checked without first building the driver.

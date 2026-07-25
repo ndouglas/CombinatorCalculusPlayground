@@ -2937,3 +2937,39 @@ what automation could and couldn't do. This file is a first-class deliverable
   than search, because search cannot reach the size. (2) route two: design the trajectory-relation
   abstraction, which Stage 49 noted is unconstrained by any of this. (3) rungs 2/3 via match-bounds.
   (4) C6, declined a thirty-ninth time.
+
+## 2026-07-25 — Stage 52: the habit that has been winning has a precondition
+
+- I set out to construct the self-reproducing prototype Stage 51 asked for, and found that the tree already
+  contains a certified one — `omegaSK`, with `omega_to_M` and `M_to_omega` proving it returns to itself. So
+  I measured that instead of building something new, which was the right call for about ten minutes.
+- Then the measurement would not interpret. The diagnostic I invented in Stage 50 counts K-normal forms and
+  compares against "at most two per source step". `omegaSK` has no source. So seventeen K-normal forms, or
+  thirteen along a twenty-step trace, is not too many or few — it is not comparable to anything. Stage 50's
+  headline was "dispatch passes, recursion does not", and the second half of that does not follow from what
+  I measured. The first half does: dispatch's source really is a two-state selection, so two is exactly
+  right.
+- I want to be clear that this is my error and not a subtlety. I wrote the diagnostic as "at most two per
+  SOURCE step" in Stage 50 and then applied it to a term with no source in the same stage. The words were
+  right and I did not read them.
+- What the numbers do show is a difference in kind, and I have guarded it as suggestive rather than
+  decisive: the countdown's K-normal forms shrink monotonically along its trajectory — 10, 7, 4, 1 — which
+  is what a source that only moves forward looks like. `omegaSK`'s oscillate and revisit — 14, 20, 17, 17,
+  26, 23, 23, 20, 20, 32 — which would force the source to cycle. Suggestive. Not a refutation, because
+  neither term encodes anything.
+- **The finding I actually value.** "Prototype the obligation before building the artifact" has driven the
+  last six stages and been right every time. This is the first time it fails, and now I know why: the
+  diagnostic has to be interpretable WITHOUT the artifact. "How many K-normal forms is too many" is a
+  question about the source machine, so it cannot be answered before there is a driver. The prototype was
+  supposed to de-risk building the driver and it turns out to require it. That is a precondition on the
+  habit, not a failure of it, and it is worth having explicit before the next time I reach for it.
+- So route one is not refuted and not testable cheaply, and I am going to stop circling it. Route two has
+  been sitting untouched since Stage 49 and has the property route one lacks: `bwd_of_abstraction_rel`
+  takes an arbitrary relation, so the trajectory relation — "b lies on the host segment for source state
+  w" — can be designed and its obligations checked against the countdown, which I already have, before any
+  driver exists.
+- Ranking, as obligations: (1) **design the trajectory relation** and check its three obligations against
+  the countdown — `habs` and `hfun` are the ones to worry about, since a trajectory relation is naturally
+  coarse and `hfun` is exactly what coarseness broke for joinability. If it survives the countdown it is a
+  candidate for piece (v); if it fails `hfun` the same way joinability did, that is a third dead route and
+  worth knowing. (2) rungs 2/3 via match-bounds. (3) C6, declined a fortieth time.
