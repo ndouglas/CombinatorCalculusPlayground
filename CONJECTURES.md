@@ -2959,3 +2959,32 @@ structural** and are now lifted; the fifth was real, and got replaced by the rig
 
 Decidability of bounded-region SK reachability is not in tension with anything: SK reachability is
 undecidable precisely because the region cannot be bounded in advance.
+
+### Stage 59: a `TagSystem` hosted in SK, end to end
+
+Before building a driver for a universal tag system, run the pipeline on the simplest genuine one and find
+out whether the plumbing composes.
+
+**The choice of system is the trick.** Deletion number `m = 1`, one symbol, rule appending nothing: words are
+determined by their length, and the system halts exactly when empty. That **is** `RS.Countdown`, with
+`List.length` as the isomorphism.
+
+| | |
+|---|---|
+| `unaryTag` | the `TagSystem` |
+| `unaryTagInCountdown` | the isomorphism, as a `Simulation` |
+| `unaryTagInSK` | composed with Stage 48's `countdownInSK` |
+| `unaryTagInSK'` | and with Stage 58's `countdownInSK'`, so the tag system inherits **both** independent adequacy proofs — composition does not care which `bwd` it is handed |
+| `universalReach_unaryTag_SK` | |
+
+**Settled:** the pipeline composes. `Simulation.comp` was written in Stage 8 and never used on anything but
+toys; it now carries a `TagSystem` into SK through two layers with **no new SK-side work at all**.
+
+**Not settled, and it is the whole of criterion (a):** `unaryTag` is **not universal**. Deletion number one
+with an empty rule cannot compute — it is a countdown wearing a tag system's clothes, which is exactly why
+the composition was free. A universal tag system (Cocke–Minsky: `m = 2` over a finite alphabet) needs the
+driver to **inspect** a symbol and **append** its rule, and neither happens here.
+
+What it does buy: the shape is fixed. Encode the word, simulate one deletion per source step, reuse the
+countdown's adequacy template — the driver's extra work being symbol dispatch (Stage 50 measured this
+compatible with the K-normal-form abstraction) and the rule append (untested).

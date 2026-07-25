@@ -3166,3 +3166,31 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking, as obligations: (1) **piece (v)** — the tag-step driver, now with two proven adequacy templates
   and a decidability layer that no longer stops at pure S. This is construction work at last. (2) rungs 2/3
   via match-bounds. (3) C6, declined a forty-sixth time.
+
+## 2026-07-25 — Stage 59: the composition was free, and that is the finding and the caveat
+
+- I wanted to know whether the pipeline composes before building a driver, so I looked for the smallest
+  genuine `TagSystem` I could push through it. Deletion number one, one symbol, empty rule: the word shrinks
+  by one per step and halts when empty. That is the countdown exactly, `List.length` is the isomorphism, and
+  `Simulation.comp` did the rest.
+- Two things I did not expect. First, `Simulation.comp` has been in the tree since Stage 8 and had never been
+  used for anything but a sanity example; it worked on the first try. Second, the tag system inherits BOTH of
+  the countdown's adequacy proofs for nothing, because composition takes whatever `bwd` it is handed — so
+  there are now two independent `Simulation`s of a `TagSystem` into SK.
+- And the composition was free precisely because the system does not compute. A unary tag system with an
+  empty rule is a countdown wearing a tag system's clothes. I want that stated as loudly as the result,
+  because "a TagSystem is now hosted in SK" is exactly the sort of sentence that could be read as discharging
+  criterion (a), and it does not come close: Cocke–Minsky universality needs m = 2 over a finite alphabet, and
+  the driver has to inspect a symbol and append its rule. Neither happens anywhere in this file.
+- What it does buy is the shape of the remaining construction, and that is not nothing after nine stages of
+  circling. Encode the word, do one deletion per source step, reuse the countdown's adequacy template. The
+  extra work is symbol dispatch — which Stage 50 measured as compatible with the K-normal-form abstraction,
+  and which was the part I had expected to be hardest — and the rule append, which no stage has tested.
+- Small Lean note, third time this week: `subst` on `h : w' = rest` eliminates whichever variable it can, and
+  which one that is depends on binding order. Twice now I have written the follow-up proof against the wrong
+  survivor. The fix is to rewrite with the equation rather than substitute when I care which name remains.
+- Ranking, as obligations: (1) **test the rule append** — the one part of a driver no stage has probed.
+  Concretely: can a term that appends a fixed list to an encoded word keep its intermediates inside the
+  abstraction, the way dispatch does? Cheap to check with the countdown's own machinery, and it is the last
+  unmeasured component before the construction. (2) piece (v) proper. (3) rungs 2/3 via match-bounds.
+  (4) C6, declined a forty-seventh time.
