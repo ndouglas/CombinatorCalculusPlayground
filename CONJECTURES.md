@@ -1895,3 +1895,26 @@ and establishing that is the stage's most useful outcome.
   distinct probes. That closes the transport route into rung two — the emptiest
   informative cell of the evidence chart — and is consistent with `{S,B}` being
   acyclic.
+
+### Stage 26: the S-only fragment of {S,B} is acyclic
+
+The ranked task was formalising Stage 25's τ ≥ 14 summation. Doing the arithmetic first
+showed that is per-class path accounting — one accumulator per step kind — for a
+*tightening* of a bound whose argument family Stage 25 already proved caps near τ ≈ 24.
+Redirected to a new structural fact, per the standing lesson about doing the cheap
+arithmetic before committing.
+
+- **The observation:** the S-only fragment of `{S,B}` is pure S over a two-symbol
+  alphabet, so **C2's squeeze transplants verbatim** — `leafCount` is monotone there
+  (no B-reduction to shrink it), a cycle forces it constant, constancy forces every
+  duplicated argument atomic, and τ drops by 6 on those.
+- **`sbSOnly_acyclic`** (`Universality/Ladder.lean`), via `sbSStep_squeeze` and
+  `sbSSteps_squeeze`. The per-step lemma states both halves — leafCount never shrinks,
+  and when it is unchanged τ strictly drops — in **one** conjunction, because the path
+  induction has to recover the strict τ drop from the first step once leafCount is
+  pinned.
+- **`sbCycle_needs_B`**: therefore **any `{S,B}` cycle must contain a B-reduction.**
+- **The three constraints on rung two now compose**, and they were obtained
+  independently: a cycle needs a B-reduction (Stage 26), needs a τ-heavy S-reduction
+  (Stage 23), and needs at least two of the former per one of the latter (Stage 25).
+  That is a joint necessary condition, not three restatements.

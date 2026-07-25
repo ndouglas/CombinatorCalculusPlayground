@@ -1952,3 +1952,40 @@ what automation could and couldn't do. This file is a first-class deliverable
   (2) rung three's C-heavy analogue of the bootstrap; (3) the joinability-insensitive
   abstraction lifter for Tag → SK; (4) transcription (C1(a), C5); (5) C6, declined a
   thirteenth time.
+
+## 2026-07-24 — Stage 26: redirected before building, and it paid
+
+- Ranked task was formalising the τ ≥ 14 summation. I did the arithmetic first — the
+  habit that has now caught three stages in a row — and it said: per-class path
+  accounting, one accumulator per step kind, ~150 lines, to TIGHTEN a bound whose
+  argument family I had myself proved caps near τ ≈ 24 one stage earlier. Tightening a
+  known-capped bound is the least valuable thing available. Redirected.
+- What I redirected to came from re-reading my own Stage 20 arithmetic: B-reduction is
+  the only shrinking rule, so on the S-ONLY fragment leafCount is monotone. And
+  monotone leafCount is exactly the ingredient C2 needed and {S,B} as a whole lacks
+  (Stage 20's theorem). So C2's squeeze transplants to the sub-fragment verbatim: cycle
+  forces leafCount constant, constancy forces atomic arguments, τ drops by 6.
+- The formalisation detail worth keeping: the per-step lemma has to state BOTH halves
+  in one conjunction — "leafCount never shrinks" AND "if leafCount is unchanged then τ
+  strictly drops". Stating them separately does not work, because the path induction
+  needs to pin leafCount across the whole path first and then reach back into the FIRST
+  step for the strict drop. I tried it as two lemmas, saw the induction fail to close,
+  and merged them. That is a small piece of proof-engineering knowledge that
+  generalises to any squeeze argument.
+- Result: `sbCycle_needs_B` — any {S,B} cycle contains a B-reduction. New, and
+  independent of everything else known about rung two.
+- **What I like about the state of rung two now is that the constraints COMPOSE.** A
+  cycle must contain a B-reduction (26), must fire a τ-heavy S-reduction (23), and needs
+  at least two B-reductions per heavy S-reduction (25). Three independent derivations,
+  one joint condition. That is different from the earlier stretches where each stage
+  corrected the last; this is the third accumulating run and the longest.
+- Fourth occurrence of the mkElimApp motive error on `RS.Steps` at a concrete instance.
+  Raw recursor, as in `iota_steps_le`, `RS.Discrete2_steps_eq`, `SI_no_decreasing_measure`.
+  It is fully a known local idiom now and cost nothing.
+- Ranking: (1) rung three's analogue — does {S,C} have an acyclic S-only fragment too?
+  It should, by the identical argument, since C is also the only shrinking rule there;
+  cheap and it would give rung three its second constraint; (2) the joint condition on
+  rung two is now specific enough to guide a targeted search — hunt for cycles among
+  terms that can host both a B-reduction and a τ-heavy S-reduction; (3) the
+  joinability-insensitive abstraction lifter for Tag → SK; (4) transcription (C1(a),
+  C5); (5) C6, declined a fourteenth time.

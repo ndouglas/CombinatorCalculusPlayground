@@ -193,12 +193,17 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   definable `I` inherits the cycle (`not_acyclic_of_pathEncoding`, `siInSK`). Also the
   witness that erasure-freeness does *not* explain rung 0's acyclicity, and that
   **arity** is the discriminator.
-- **Rung 2 `{S,B}`** — four results, none of them the full proof: no counting measure
-  is monotone (`no_monotone_counting_measure`); the τ-light fragment is ACYCLIC
-  (`sbLight_acyclic`); any cycle must fire an S-reduction on a τ-heavy argument, with
-  the threshold bootstrapped from τ ≥ 4 to an average of τ ≥ 14; and no I-like
-  combinator exists up to 7 leaves, closing the transport route. Censused clean to 8
-  leaves under *any* strategy, cap-insensitive.
+- **Rung 2 `{S,B}`** — five results, none of them the full proof, and they **compose**
+  into a joint necessary condition on any cycle:
+  - no counting measure is monotone (`no_monotone_counting_measure`);
+  - the τ-light fragment is ACYCLIC (`sbLight_acyclic`), so a cycle must fire an
+    S-reduction on a τ-**heavy** argument — threshold bootstrapped from τ ≥ 4 to an
+    *average* of τ ≥ 14, with the argument family's cap recorded at τ ≈ 24;
+  - the **S-only fragment is ACYCLIC** (`sbSOnly_acyclic`), so a cycle must contain a
+    **B-reduction** (`sbCycle_needs_B`) — C2's squeeze transplanted, since S-only
+    {S,B} is pure S over a two-symbol alphabet;
+  - no I-like combinator up to 7 leaves, closing the transport route;
+  - censused clean to 8 leaves under *any* strategy, cap-insensitive to 120.
 - **Rung 3 `{S,C}`** — the τ-light fragment is acyclic with a two-clause condition
   (`scLight_acyclic`), and the structural finding that **τ separates B from C where no
   counting measure can**, since both rules have identical `leafCount` deltas.
