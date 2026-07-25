@@ -20,3 +20,4 @@ import CombinatorCalculusPlayground.Invariants
 import CombinatorCalculusPlayground.Decidability
 import CombinatorCalculusPlayground.AdequacyProbe
 import CombinatorCalculusPlayground.Conservation
+import CombinatorCalculusPlayground.Recurrence

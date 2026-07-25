@@ -12,8 +12,8 @@ Mathlib, no Batteries), **no `sorry`**, **no `native_decide`**, and **no
 throughout — `Quot.sound` rides core tactic machinery (`omega`/`simp`), a trail
 inherited since Stage 0.
 
-At time of writing: 48 build targets, ~200 theorems, ~177 build-enforced
-`#guard`s, ~4,700 lines of Lean.
+At time of writing: 52 build targets, ~344 theorems, ~238 build-enforced
+`#guard`s, ~7,900 lines of Lean.
 
 ---
 
@@ -119,7 +119,7 @@ plainly: *"if Stage 5 never terminates, the notebook is the result."*
 
 | | Claim | Status |
 |---|---|---|
-| C1(a) | some pure-S term has no normal form | **external** (Wolfram; Waldmann) |
+| C1(a) | some pure-S term has no normal form | **PROVED** `c1a` — `Recurrence.lean`, via a regular-tree-language certificate |
 | C1(b) | none with ≤ 6 leaves does, so 7 is the floor | **PROVED** `no_small_divergence` |
 | C2 | no proper cycles in pure-S reduction | **PROVED** `no_pure_S_cycle` (probably external too) |
 | C3 | growth-pattern regularities | **RETIRED** as a census artifact |
@@ -127,59 +127,23 @@ plainly: *"if Stage 5 never terminates, the notebook is the result."*
 | C5 | conservation for pure S (WN ⇒ SN) | **PROVED** `conservation` — *not* an import; proved from Stages 1, 2, 6 and C2 |
 | C6 | divergence density → 1 | **probed**, open, low materiality |
 
-C1(a)'s **loop route** — find `t ⟶⁺ C[t]`, which pumps to an infinite
-reduction by congruence and hence (via C5) to no normal form — now carries two
-proved constraints rather than search evidence alone:
+C1(a) is proved by a **recurrence set** (Endrullis–Zantema 2014): a
+six-state deterministic tree automaton whose accepted language is non-empty,
+closed under reduction, and contains no normal forms. Witness:
+`S S S (S S S) (S S S (S S S))`, twelve leaves. C5 supplies the last step —
+"admits an infinite reduction" ⟹ "has no normal form" is not automatic for
+pure S, it *is* the conservation theorem.
 
-- `Step.not_sub_self` — **no term reappears inside its own one-step reduct.**
-  Every SK term, no size bound. Structural, not a measure: the reduct of a
-  redex never contains that redex.
-- `selfEmbed_leafCount_lt` — any self-embedding must **strictly grow**, since
-  equal size would make it a cycle and C2 forbids that.
+The certificate is not tight: C1(b) proves the true divergence floor is **seven**
+leaves, and the automaton rejects both seven-leaf candidates, so `c1` and `c2`
+remain individually open.
 
-- `Step.subterm_split` — the **positional trichotomy**: a step fires one root
-  redex, so every subterm of the result either already occurred in the source,
-  or contains the reduct, or sits inside it.
-- `selfEmbed_residual_shapes` — the trichotomy applied: in a shortest
-  self-embedding, the last step's redex is some `S f g x` and the term is one
-  of three shapes — it contains the reduct, or it *is* `f x`, or it *is* `g x`.
-
-Measurement (Stage 39) emptied two of the three: no reduct of any pure-S term
-up to 8 leaves hosts an S-redex one of whose reduct halves is the term itself.
-The third — the term sits strictly **above** the reduct it fires — was the
-inhabited, growing one (1 term at 6 leaves, 4 at 7, 19 at 8).
-
-Stage 40 **closed that third shape**:
-
-- `selfEmbed_imp_halfShape` — if any pure-S term self-embeds, then some pure-S
-  term has `HalfShape`: it is one half of the reduct of an S-redex occurring in
-  one of its own reducts.
-
-The strengthened trichotomy `Step.subterm_split'` is what does it. A subterm of
-`w` above the redex is not merely "a term containing the reduct" — it is a
-**one-step reduct of a subterm of `v`**, so it self-embeds one step earlier, and
-walking backwards drops a rank built from leaf count and τ. So the inhabited
-shape is impossible and the loop route rests entirely on `HalfShape`.
-
-`HalfShape` is measured empty (Stage 41 raised the ceiling): strategy-independent
-to 40 leaves out to eight-leaf terms, to 60 leaves out to seven, and along
-leftmost-outermost trajectories reaching ~4000 leaves. Note a size-capped closure
-saturates having *silently dropped* larger reducts, so the earlier cap-24 guard
-read stronger than it was.
-
-Toward a proof (Stage 42), the gap is now a **size condition on one subterm**:
-
-- `step_growth_eq` — a pure-S step grows a term by exactly `|c| - 1`, where `c`
-  is the argument the fired S duplicated, and `c` occurs in the source.
-- `backward_invariant_or_big_duplication` — going one step back, the requirement
-  still outweighs `t` and stays linked to what it replaces, **unless** it was
-  produced by a step that duplicated an argument of at least `|s| + 1 - |t|`
-  leaves.
-
-That single case is what remains. A second route is open: `selfEmbed_imp_halfShape`
-now bounds its witness by the size of the term that self-embedded, which makes an
-induction on term size available — two of that route's three start-cases work out,
-the third does not yet.
+C1(a)'s **loop route** (Stages 37–42) is closed off and was prior art —
+Waldmann 2000 proved CL(S) admits no ground loops. What survives from those
+stages is reusable machinery (`Subterm`, `Step.subterm_split'`,
+`step_growth_eq`, `selfEmbed_imp_halfShape`) and one live pointer: the
+**open-term** version, `t ⟶* C[tσ]`, is open in the literature. Everything
+here is ground.
 
 Every entry carries a **materiality** and a **prior-art** line in the ledger.
 Those two fields were added in Stage 7 after nine stages went into C1, whose

@@ -1458,3 +1458,22 @@ theorem backward_invariant_or_big_duplication {t v' v s : Term} (hk : KFree v') 
 -- `t` — which the size-bounded form turns into a `HalfShape` witness strictly smaller than `t`, and
 -- hence into an induction on term size. Two of the three start-cases work out; the third (the
 -- requirement hiding inside `x`) does not yet, so this is a route and not a proof.
+
+-- ## Stage 43 postscript: this was Waldmann's theorem
+-- The literature check that should have happened at Stage 7 happened at Stage 43. Endrullis &
+-- Zantema, *Non-termination using Regular Languages* (IWT 2014), Example 2, states it directly:
+-- "For the S-rule it is known that there are no reductions `t →* C[t]` for ground terms `t`" —
+-- citing Waldmann, *The Combinator S*, Inf. Comput. 159 (2000). So the target of Stages 37–42 is
+-- Waldmann's ground-loop theorem, and this development re-derived it as far as one size condition
+-- (`backward_invariant_or_big_duplication`) before checking whether it was already known.
+--
+-- Two things survive that, and are worth separating from the re-derivation:
+--   * the machinery is general and reusable — `Subterm`, `Step.subterm_split'`, `step_growth_eq`
+--     (pure-S growth is exactly the duplicated argument's weight, less one), and the descent in
+--     `selfEmbed_imp_halfShape`;
+--   * the OPEN-TERM version is open. The same Example 2 continues: "For open terms `t` the
+--     existence of reductions `t →* C[tσ]` is open." Everything here is ground, so nothing above
+--     bears on it, but that is where the live question sits.
+--
+-- C1(a) itself is proved in `Recurrence.lean`, and not by this route: a recurrence set, which is
+-- the technique the same paper supplies. See that file.
