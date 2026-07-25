@@ -144,13 +144,23 @@ proved constraints rather than search evidence alone:
   self-embedding, the last step's redex is some `S f g x` and the term is one
   of three shapes — it contains the reduct, or it *is* `f x`, or it *is* `g x`.
 
-Measurement (Stage 39) then emptied two of the three: no reduct of any pure-S
-term up to 8 leaves hosts an S-redex one of whose reduct halves is the term
-itself. The surviving shape — the term sits strictly **above** the reduct it
-fires — is inhabited and grows with size (1 term at 6 leaves, 4 at 7, 19 at 8).
+Measurement (Stage 39) emptied two of the three: no reduct of any pure-S term
+up to 8 leaves hosts an S-redex one of whose reduct halves is the term itself.
+The third — the term sits strictly **above** the reduct it fires — was the
+inhabited, growing one (1 term at 6 leaves, 4 at 7, 19 at 8).
 
-So a self-embedding needs at least two steps, strict growth, and a last step
-that puts the term above its own redex. Whether one exists is open.
+Stage 40 **closed that third shape**:
+
+- `selfEmbed_imp_halfShape` — if any pure-S term self-embeds, then some pure-S
+  term has `HalfShape`: it is one half of the reduct of an S-redex occurring in
+  one of its own reducts.
+
+The strengthened trichotomy `Step.subterm_split'` is what does it. A subterm of
+`w` above the redex is not merely "a term containing the reduct" — it is a
+**one-step reduct of a subterm of `v`**, so it self-embeds one step earlier, and
+walking backwards drops a rank built from leaf count and τ. So the inhabited
+shape is impossible and the loop route rests entirely on the shape measurement
+found empty.
 
 Every entry carries a **materiality** and a **prior-art** line in the ledger.
 Those two fields were added in Stage 7 after nine stages went into C1, whose

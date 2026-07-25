@@ -1043,3 +1043,193 @@ def closureUndecided (bound fuel : Nat) (t : Term) : Bool :=
 --     `t` strictly above the reduct it fires — with the other two shapes empty by measurement;
 --   * that one shape: open, inhabited, and growing with term size.
 -- Which is a genuinely better-characterised open problem than Stage 37 left, and still open.
+
+-- ## Stage 40: shape A, closed
+-- Stage 39 measured shape A as the inhabited, growing residue and ranked it first with no
+-- argument in hand. There is one, and it comes from noticing what the trichotomy THREW AWAY.
+--
+-- `Step.subterm_split` records that a subterm of `w` lying above the redex "contains the reduct".
+-- That is weaker than the truth. If `t` sits at a position above the redex, then the subterm of
+-- `v` at that SAME position — call it `u` — satisfies `u ⟶ t`, by firing the very same redex.
+-- So shape A does not merely say `t` contains something; it says
+--
+--   t is a one-step reduct of a subterm of v.
+--
+-- And that is fatal, because `u ⊴ v` and `u ⟶ t ⟶⁺ v` make `u` a self-embedding term in its own
+-- right, one step EARLIER than `t`. Walking backwards like this cannot go on forever: a pure-S
+-- step never adds leaves, and a leaf-preserving step strictly lowers τ (`tau_lt_of_isometric_step`
+-- — the engine of C2), so each backward step drops a rank built from the finite universe
+-- `smallTerms`. The descent bottoms out, and shape A is gone.
+
+/-- The strengthened trichotomy. Same three positions as `Step.subterm_split`, but the "above the
+redex" case is recorded as what it actually is — `s` is a one-step reduct of a subterm of `v` —
+rather than the weaker "s contains the reduct". -/
+theorem Step.subterm_split' : ∀ {v w : Term}, (v ⟶ w) → ∀ {s : Term}, Subterm s w →
+    Subterm s v ∨ (∃ u, Subterm u v ∧ (u ⟶ s)) ∨
+      (∃ f g x, Subterm (app3 Term.S f g x) v ∧ (s = app f x ∨ s = app g x)) := by
+  intro v w h
+  induction h with
+  | K_red x y =>
+      intro s hs
+      exact Or.inl (hs.trans (Subterm.left (Subterm.right (Subterm.refl x))))
+  | S_red f g x =>
+      intro s hs
+      rcases hs.app_cases with heq | hl | hr
+      · exact Or.inr (Or.inl ⟨app3 Term.S f g x, Subterm.refl _,
+          by rw [heq]; exact Step.S_red f g x⟩)
+      · rcases hl.app_cases with heq | h1 | h2
+        · exact Or.inr (Or.inr ⟨f, g, x, Subterm.refl _, Or.inl heq⟩)
+        · exact Or.inl (h1.trans (Subterm.app3_S_arg1 f g x))
+        · exact Or.inl (h2.trans (Subterm.app3_S_arg3 f g x))
+      · rcases hr.app_cases with heq | h1 | h2
+        · exact Or.inr (Or.inr ⟨f, g, x, Subterm.refl _, Or.inr heq⟩)
+        · exact Or.inl (h1.trans (Subterm.app3_S_arg2 f g x))
+        · exact Or.inl (h2.trans (Subterm.app3_S_arg3 f g x))
+  | @appL t t' u hstep ih =>
+      intro s hs
+      rcases hs.app_cases with heq | hl | hr
+      · exact Or.inr (Or.inl ⟨app t u, Subterm.refl _, by rw [heq]; exact Step.appL hstep⟩)
+      · rcases ih hl with h1 | ⟨u0, hu0, hstep0⟩ | ⟨f, g, x, hfgx, hshape⟩
+        · exact Or.inl (h1.trans (Subterm.appL t u))
+        · exact Or.inr (Or.inl ⟨u0, hu0.trans (Subterm.appL t u), hstep0⟩)
+        · exact Or.inr (Or.inr ⟨f, g, x, hfgx.trans (Subterm.appL t u), hshape⟩)
+      · exact Or.inl (hr.trans (Subterm.appR t u))
+  | @appR t u u' hstep ih =>
+      intro s hs
+      rcases hs.app_cases with heq | hl | hr
+      · exact Or.inr (Or.inl ⟨app t u, Subterm.refl _, by rw [heq]; exact Step.appR hstep⟩)
+      · exact Or.inl (hl.trans (Subterm.appL t u))
+      · rcases ih hr with h1 | ⟨u0, hu0, hstep0⟩ | ⟨f, g, x, hfgx, hshape⟩
+        · exact Or.inl (h1.trans (Subterm.appR t u))
+        · exact Or.inr (Or.inl ⟨u0, hu0.trans (Subterm.appR t u), hstep0⟩)
+        · exact Or.inr (Or.inr ⟨f, g, x, hfgx.trans (Subterm.appR t u), hshape⟩)
+
+theorem Steps.plus_of_ne : ∀ {t v : Term}, (t ⟶* v) → t ≠ v → ∃ u, (t ⟶ u) ∧ (u ⟶* v) := by
+  intro t v h hne
+  cases h with
+  | refl => exact absurd rfl hne
+  | tail h1 h2 => exact ⟨_, h1, h2⟩
+
+theorem Steps.cases_last : ∀ {t w : Term}, (t ⟶* w) → t = w ∨ ∃ v, (t ⟶* v) ∧ (v ⟶ w) := by
+  intro t w h
+  induction h with
+  | refl => exact Or.inl rfl
+  | @tail t u w hstep _ ih =>
+      rcases ih with heq | ⟨v, h1, h2⟩
+      · exact Or.inr ⟨t, Steps.refl t, heq ▸ hstep⟩
+      · exact Or.inr ⟨v, Steps.tail hstep h1, h2⟩
+
+/-- Residual shapes B and C, as a predicate on one term: `t` is one half of the reduct of an
+S-redex that occurs in one of `t`'s own reducts. Stage 39 measured this EMPTY for every pure-S
+term up to eight leaves; it is unproved in general, and after Stage 40 it is the only remaining
+route to a self-embedding. -/
+def HalfShape (t : Term) : Prop :=
+  ∃ f g x v, (t = app f x ∨ t = app g x) ∧ (t ⟶* v) ∧ Subterm (app3 Term.S f g x) v
+
+-- The descent rank: how much of the bounded universe lies strictly below `t` in the order "fewer
+-- leaves, or equally many and larger τ". Both clauses are needed because a pure-S step can
+-- preserve leaf count, and that is exactly the case τ was built for.
+private def belowPred (t s : Term) : Bool :=
+  decide (leafCount s < leafCount t) ||
+    (decide (leafCount s = leafCount t) && decide (tau t < tau s))
+
+def nuBelow (N : Nat) (t : Term) : Nat := ((smallTerms N).filter (belowPred t)).length
+
+/-- Walking BACKWARDS along a step lowers the rank. This is what makes the shape-A descent
+terminate, and it is the same squeeze that proves C2: leaf count cannot rise, and when it stays
+put, τ falls. -/
+theorem nuBelow_lt_of_step {N : Nat} {v w : Term} (hk : KFree v) (h : v ⟶ w)
+    (hN : leafCount v ≤ N) : nuBelow N v < nuBelow N w := by
+  have hsize := leafCount_le_of_step hk h
+  refine length_filter_lt_of_witness ?_ (mem_smallTerms hk hN) ?_ ?_
+  · -- The disjunctions are split by hand rather than handed to `omega`: `omega` case-splitting a
+    -- DISJUNCTIVE HYPOTHESIS pulls in `Classical.choice`, while a disjunctive goal does not.
+    -- Seventh Classical encounter in this tree, and the first from omega's hypothesis handling.
+    rcases Nat.lt_or_ge (leafCount v) (leafCount w) with hlt | hge
+    · intro a _ ha
+      simp only [belowPred, Bool.or_eq_true, Bool.and_eq_true, decide_eq_true_eq] at ha ⊢
+      rcases ha with h1 | ⟨h1, _⟩
+      · exact Or.inl (by omega)
+      · exact Or.inl (by omega)
+    · have heq : leafCount v = leafCount w := Nat.le_antisymm hsize hge
+      have htau := tau_lt_of_isometric_step hk h heq
+      intro a _ ha
+      simp only [belowPred, Bool.or_eq_true, Bool.and_eq_true, decide_eq_true_eq] at ha ⊢
+      rcases ha with h1 | ⟨h1, h2⟩
+      · exact Or.inl (by omega)
+      · exact Or.inr ⟨by omega, by omega⟩
+  · -- and here even a disjunctive GOAL costs the axiom once a conjunction is nested inside it, so
+    -- the witnesses are supplied as terms
+    rcases Nat.lt_or_ge (leafCount v) (leafCount w) with hlt | hge
+    · simp only [belowPred, Bool.or_eq_true, Bool.and_eq_true, decide_eq_true_eq]
+      exact Or.inl hlt
+    · have heq : leafCount v = leafCount w := Nat.le_antisymm hsize hge
+      simp only [belowPred, Bool.or_eq_true, Bool.and_eq_true, decide_eq_true_eq]
+      exact Or.inr ⟨heq, tau_lt_of_isometric_step hk h heq⟩
+  · simp [belowPred]
+
+-- The descent itself. Read the induction as: given a self-embedding whose target is `w`, either
+-- it already reduces to a `HalfShape` term, or there is another self-embedding whose target is a
+-- PREDECESSOR of `w` — and predecessors have strictly smaller rank, so this cannot recur.
+private theorem selfEmbed_imp_halfShape_aux (N : Nat) : ∀ (k : Nat) (t w : Term),
+    nuBelow N w < k → KFree t → leafCount w ≤ N →
+    (∃ v, (t ⟶ v) ∧ (v ⟶* w)) → Subterm t w → ∃ s, HalfShape s := by
+  intro k
+  induction k with
+  | zero => intro _ _ hlt; exact absurd hlt (Nat.not_lt_zero _)
+  | succ k ih =>
+    intro t w hnu hkt hN hpath hsub
+    obtain ⟨v0, hstep0, hrest0⟩ := hpath
+    rcases (Steps.tail hstep0 hrest0).cases_last with heq | ⟨v, hto, hstep⟩
+    · -- the path returns to its own start: a cycle, which C2 forbids
+      exact absurd ⟨v0, hstep0, heq ▸ hrest0⟩ (no_pure_S_cycle hkt)
+    · have hkv : KFree v := hkt.of_steps hto
+      have hNv : leafCount v ≤ N := Nat.le_trans (leafCount_le_of_step hkv hstep) hN
+      have hrank : nuBelow N v < k :=
+        Nat.lt_of_lt_of_le (nuBelow_lt_of_step hkv hstep hNv) (Nat.lt_succ_iff.mp hnu)
+      rcases hstep.subterm_split' hsub with hin | ⟨u, huv, hut⟩ | ⟨f, g, x, hfgx, hshape⟩
+      · -- `t` already occurred in `v`: same source, a strictly earlier target
+        by_cases hne : t = v
+        · -- t = v and v ⟶ w with t ⊴ w: a one-step self-embedding, killed by Stage 38
+          exact absurd hsub (hne ▸ hstep).not_sub_self
+        · exact ih t v hrank hkt hNv (hto.plus_of_ne hne) hin
+      · -- shape A: `t` is a one-step reduct of `u ⊴ v`, so `u` self-embeds one step earlier
+        exact ih u v hrank (KFree.of_subterm huv hkv) hNv ⟨t, hut, hto⟩ huv
+      · exact ⟨t, f, g, x, v, hshape, hto, hfgx⟩
+
+/-- **Shape A is closed.** If any pure-S term self-embeds, then some pure-S term has `HalfShape`
+— it is one half of the reduct of an S-redex occurring in one of its own reducts.
+
+So the loop route to C1(a) no longer has three residual shapes but one, and it is the one Stage 39
+measured EMPTY for every pure-S term up to eight leaves. The shape that was inhabited and growing
+is the shape that is now impossible. -/
+theorem selfEmbed_imp_halfShape {t w : Term} (hk : KFree t)
+    (h : ∃ v, (t ⟶ v) ∧ (v ⟶* w)) (hs : Subterm t w) : ∃ s, HalfShape s :=
+  selfEmbed_imp_halfShape_aux (leafCount w) (nuBelow (leafCount w) w + 1) t w
+    (Nat.lt_succ_self _) hk (Nat.le_refl _) h hs
+
+/-- Contrapositive, as the loop route now reads: no term is one half of the reduct of an S-redex
+in its own reduct ⟹ no pure-S term self-embeds ⟹ the loop route to C1(a) is dead. -/
+theorem no_selfEmbed_of_no_halfShape (hbc : ∀ s : Term, ¬ HalfShape s) {t w : Term}
+    (hk : KFree t) (h : ∃ v, (t ⟶ v) ∧ (v ⟶* w)) : ¬ Subterm t w :=
+  fun hs => let ⟨s, hss⟩ := selfEmbed_imp_halfShape hk h hs; hbc s hss
+
+/-- `HalfShape` cannot be satisfied by standing still: the redex `S f g x` outweighs both halves
+of its reduct, so the `v` it occurs in must be a STRICT reduct of `t`. Worth stating because it is
+the first thing to check about a hypothesis the headline theorem reduces everything to — a
+predicate satisfiable at `v = t` would make the reduction empty. -/
+theorem halfShape_target_ne {t f g x : Term} (hsh : t = app f x ∨ t = app g x)
+    (h : Subterm (app3 Term.S f g x) t) : False := by
+  have hle := h.leafCount_le
+  rw [leafCount_app3_S] at hle
+  have hf := leafCount_pos f
+  have hg := leafCount_pos g
+  have hx := leafCount_pos x
+  rcases hsh with heq | heq
+  · rw [heq, leafCount_app] at hle; omega
+  · rw [heq, leafCount_app] at hle; omega
+
+-- Stage 39's census probe measured exactly `HalfShape`: `hasHalfRedex t v` asks whether some
+-- S-redex in `v` has `t` as a reduct half, scanned over `t`'s bounded reduction closure. The
+-- guards above record it empty for every pure-S term up to 7 leaves (8 measured). After Stage 40
+-- that is no longer one of three routes to a self-embedding — it is the only one.
