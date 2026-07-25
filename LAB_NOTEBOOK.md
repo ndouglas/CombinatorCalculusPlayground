@@ -2474,3 +2474,45 @@ what automation could and couldn't do. This file is a first-class deliverable
   ABOVE the reduct it fires, meaning `t` contains `f x (g x)` while `S f g x` sits in `t`'s own
   ancestor `v`. I have no argument, and the honest note is that the 1/4/19 growth means this is
   not going to be emptied by measurement either; (2) C6, declined a twenty-seventh time.
+
+## 2026-07-25 — Stage 40: the argument was in what I had thrown away
+
+- Yesterday I ranked shape A first and wrote that I had no argument. The argument was already in
+  the tree, discarded. `Step.subterm_split`'s middle disjunct says "s contains the reduct" — I
+  wrote that lemma, and I wrote it too weak. What is actually true is that a subterm sitting above
+  the redex is the image of the subterm of `v` at the same position, under the very step being
+  fired. So it is not "t contains something", it is `∃ u ⊴ v, u ⟶ t`. Once stated that way the
+  case kills itself: `u` self-embeds one step earlier than `t`, and backward steps cannot recur
+  because leaf count never rises and τ falls when it stalls.
+- The pattern is worth naming because it is now the third time: **I lost the result by recording a
+  consequence instead of the fact.** Stage 38 recorded "no obstruction is apparent" when it meant
+  "no measure obstruction". Stage 39 recorded three shapes as prose before turning them into a
+  theorem. Here I recorded "contains the reduct" when the position argument gave something
+  strictly stronger for free. Each time the weakening was invisible because the weaker statement
+  was true and sufficient for the immediate goal.
+- The descent needed no new theory, which surprised me. `tau_lt_of_isometric_step` is the engine
+  of C2, `smallTerms` and `length_filter_lt_of_witness` are Goal 3's decidability plumbing, and
+  `mem_smallTerms` rests on the census's `enum_complete`. Four separate pieces of the tree, all
+  built for other reasons, and the rank falls out of composing them. This is the second time (C5
+  was the first) that a result arrived by assembling existing parts rather than by adding.
+- One design choice paid off. My first plan needed a SHORTEST path so that `t ⋬ v` came for free,
+  which would have meant a length-indexed reduction relation and a nested induction. Then I noticed
+  the case `t ⊴ v` also descends — the TARGET moves back one step, and the rank is a function of
+  the target. So one measure covers both cases and there is no path-length bookkeeping at all. I
+  should look for that simplification earlier; "which of my hypotheses am I only using to make the
+  induction go" is a question worth asking before writing the induction.
+- Seventh Classical.choice encounter, and two new variants, both from `omega`. Case-splitting a
+  disjunctive HYPOTHESIS costs the axiom; so does a disjunctive GOAL once a conjunction is nested
+  in it, though a bare disjunctive goal is fine. `#print axioms` caught both, as it has caught all
+  seven; review has caught none. Fixed by splitting by hand and giving the witnesses as terms.
+- **Where this leaves C1(a).** The loop route is down to one shape, and it is the shape with zero
+  instances up to eight leaves. That is a much better position than Stage 37's, and I want to be
+  careful not to oversell it: `HalfShape` being empty is a MEASUREMENT, and the route being closed
+  requires a proof. Nor would closing the loop route prove C1(a) false — an infinite reduction need
+  not be periodic, so pure S could still diverge with no self-embedding anywhere.
+- Ranking: (1) prove `HalfShape` uninhabited. It is a sharp, self-contained question with no
+  reduction theory left in it: can a term `f x` have a reduct containing `S f g x`? The size
+  arithmetic is tight (the redex outweighs the term by `1 + |g|`) and `f`, `x` are `t`'s own
+  children, so there is more structure here than in anything shape A offered. If it goes through,
+  the loop route to C1(a) is dead outright and that is a publishable negative; (2) C6, declined a
+  twenty-eighth time.

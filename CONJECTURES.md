@@ -2290,3 +2290,42 @@ satisfiable among a term's reducts — and the three shapes answer that differen
 - any depth — reduced to **one shape** by the trichotomy: a self-embedding's last step must put
   `t` strictly *above* the reduct it fires; the other two shapes empty by measurement
 - that one shape — **open**, inhabited, growing with term size
+
+### Stage 40: shape A closed — the loop route now rests on the shape measured empty
+
+Stage 39 ranked shape A first and recorded no argument. There is one, and it comes from noticing
+what the trichotomy **threw away**.
+
+`Step.subterm_split` records that a subterm of `w` above the redex "contains the reduct". That is
+weaker than the truth. If `t` sits at a position above the redex, then the subterm of `v` at that
+**same position** — call it `u` — satisfies `u ⟶ t`, by firing the very same redex. So shape A
+does not say `t` contains something. It says:
+
+> `t` is a one-step reduct of a subterm of `v`.
+
+And that is fatal. `u ⊴ v` together with `u ⟶ t ⟶⁺ v` makes `u` a self-embedding term in its own
+right, **one step earlier** than `t`. Walking backwards cannot go on forever: a pure-S step never
+adds leaves, and a leaf-preserving step strictly lowers τ (`tau_lt_of_isometric_step` — the engine
+of C2), so each backward step drops a rank built from the finite universe `smallTerms`.
+
+| | |
+|---|---|
+| `Step.subterm_split'` | the strengthened trichotomy — "above the redex" recorded as *one-step reduct of a subterm* |
+| `nuBelow`, `nuBelow_lt_of_step` | the rank, and the fact that stepping *backwards* lowers it |
+| `selfEmbed_imp_halfShape` | **if any pure-S term self-embeds, some pure-S term has `HalfShape`** |
+| `no_selfEmbed_of_no_halfShape` | contrapositive — the form the loop route now takes |
+| `halfShape_target_ne` | the reduction is not vacuous: the redex outweighs both halves of its reduct, so `HalfShape` cannot be met by standing still |
+
+`HalfShape` is **exactly** what Stage 39's census probe measured, and measured empty for every
+pure-S term up to eight leaves. So the shape that was inhabited and growing is now impossible, and
+the single remaining route is the one with no known instance at any size searched.
+
+**C1(a), loop route:**
+
+- depth one — closed, every SK term
+- shape A (above the redex) — **closed**, every pure-S term, no size bound
+- shapes B/C (`HalfShape`) — open, **no instance up to 8 leaves**
+
+*Seventh Classical.choice encounter*, two new variants, both from `omega`: case-splitting a
+**disjunctive hypothesis** costs the axiom, and so does a **disjunctive goal with a conjunction
+nested inside it**. Both fixed by splitting by hand and supplying witnesses as terms.
