@@ -205,11 +205,17 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   - no I-like combinator up to 7 leaves, closing the transport route;
   - censused clean to 8 leaves under *any* strategy, cap-insensitive to 120.
 
-  Composed, these give a **syntactic** necessary condition: a cycle requires an
-  S-reduction whose third argument has ≥ 3 leaves, and some S-reduction whose third
+  - the **no-B-duplication fragment is ACYCLIC** (`sbNoBDup_acyclic`) — a three-level
+    squeeze on `#B`, then `leafCount`, then τ — so a cycle must contain an S-reduction
+    whose duplicated argument **contains a `B`** (`sbCycle_needs_B_duplication`). This
+    fragment strictly contains the S-only one, so it *subsumes* `sbSOnly_acyclic`.
+
+  Composed, these give a **proved syntactic** necessary condition: a cycle requires an
+  S-reduction whose third argument has ≥ 3 leaves, and an S-reduction whose third
   argument contains a `B`. (Measured: this does *not* prune a seed-filtered search —
-  99.6% of 8-leaf terms survive the filter — because it constrains a cycle's *steps*,
-  not a search's *seeds*.)
+  99.6% of 8-leaf terms survive — because it constrains a cycle's *steps*, not a
+  search's *seeds*. Pruning during exploration is also unavailable: it would need a
+  localizable unreachability certificate, and these constraints are global sums.)
 - **Rung 3 `{S,C}`** — three results: the τ-light fragment is acyclic with a two-clause
   condition (`scLight_acyclic`); the **S-only fragment is acyclic** (`scSOnly_acyclic`),
   so any cycle must contain a **C-reduction** (`scCycle_needs_C`); and the structural

@@ -1944,3 +1944,26 @@ arithmetic before committing.
   closure exploration — a different algorithm from `onCycleAny` — but it buys nothing
   for the hunt as written. Recorded so the condition is not credited with a speedup it
   does not provide.
+
+### Stage 28: the composed condition, proved
+
+- **Pruning-during-exploration is unavailable, checked before building.** Sound pruning
+  needs a *localizable* certificate that the seed is unreachable from a given state.
+  Every constraint rung two has is a **global sum** over a cycle, and global sums do not
+  localize into per-state tests. So the one remaining use Stage 27 credited the composed
+  condition with does not exist either.
+- **But the condition itself is now a theorem.** Stage 27 stated it as arithmetic
+  depending on an unformalised summation. Contrapositively it admits Stage 26's pattern:
+  if no S-reduction duplicates a `B`, then `#B` never rises and strictly falls on every
+  B-reduction, so a cycle can contain no B-reduction — and what remains is the S-only
+  fragment, already acyclic.
+- **`sbNoBDup_acyclic`** (`Universality/Ladder.lean`), via a **three-level squeeze**:
+  `#B` never rises; when it holds still, `leafCount` never falls; when that holds still
+  too, τ strictly drops. The three levels must travel in a single invariant because each
+  one pins the next — the same lesson as Stage 26, one level deeper.
+- **`sbCycle_needs_B_duplication`**: any `{S,B}` cycle contains an S-reduction whose
+  duplicated argument contains a `B`. **The unformalised summation is no longer needed —
+  the squeeze replaces the accounting entirely.**
+- The fragment is strictly larger than the S-only one (it contains every B-reduction), so
+  `sbNoBDup_acyclic` **subsumes** `sbSOnly_acyclic`, and Stage 26's result is now a
+  corollary rather than an independent fact.

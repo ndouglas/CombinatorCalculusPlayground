@@ -2028,3 +2028,43 @@ what automation could and couldn't do. This file is a first-class deliverable
   input; (2) the joinability-insensitive abstraction lifter for Tag → SK, still the only
   route to Goal 2's open instance; (3) transcription (C1(a), C5); (4) C6, declined a
   fifteenth time.
+
+## 2026-07-24 — Stage 28: the accounting I kept deferring was not needed
+
+- Ranked task was pruning-during-exploration, the one use Stage 27 had left the composed
+  condition. Checked it first — fourth stage running — and it is not available. Sound
+  pruning needs a localizable certificate that the seed is unreachable from a state, and
+  every constraint I have on rung two is a global sum over a whole cycle. Global sums do
+  not localize. So both uses I had claimed for the composed condition (seed filtering in
+  Stage 26, exploration pruning in Stage 27) are gone.
+- Then the useful part. While working out WHY the sums don't localize, I noticed the
+  composed condition itself does not need the sums. I had been carrying "Σ over S-reds of
+  #B(x) = #B-reds" as an unformalised summation since Stage 25 and treating its
+  formalisation as a 150-line accounting job I kept deferring. The contrapositive is a
+  squeeze: if no S-reduction duplicates a B, #B never rises and strictly falls on every
+  B-reduction, so a cycle has no B-reduction, so it lives in the S-only fragment, which I
+  proved acyclic two stages ago.
+- **So the accounting was never needed.** Three stages of deferring a formalisation I had
+  mis-scoped, and the fix was to state the negation as a fragment and squeeze it. That is
+  the same move as Stages 26 and 27, applied one level deeper — three levels now: #B, then
+  leafCount, then τ, each pinning the next.
+- The engineering lesson from Stage 26 held and sharpened: the levels MUST travel in one
+  invariant. I wrote it as three nested conjunctions and it went through; separating any
+  level fails, because the path induction pins the outer measure across the whole path and
+  then has to reach back into the first step for the inner strictness. Now confirmed at
+  depth three, so it is a pattern rather than a coincidence.
+- Pleasing side effect I did not plan: the no-B-duplication fragment strictly contains the
+  S-only fragment, since it admits every B-reduction as well. So Stage 26's
+  `sbSOnly_acyclic` is now a corollary of Stage 28's theorem rather than an independent
+  result. The ladder's rung-two evidence got simpler as it got stronger, which is unusual
+  and worth noting.
+- Standing on the "check first" habit: four consecutive stages where checking changed the
+  work (25 papers, 26 capped bound, 27 seed pruning, 28 exploration pruning). In three of
+  the four, the check ALSO surfaced the better target — the checking is not just avoidance,
+  it is where the redirection comes from.
+- Ranking: (1) the joinability-insensitive abstraction lifter for Tag → SK — now clearly
+  first, since rung two's constraints have converged to a proved syntactic condition and
+  the remaining narrowing there needs a genuinely new idea rather than another fragment;
+  (2) transfer the three-level squeeze to rung three ({S,C}'s no-C-duplication fragment),
+  which should work by the same pattern; (3) transcription (C1(a), C5); (4) C6, declined a
+  sixteenth time.
