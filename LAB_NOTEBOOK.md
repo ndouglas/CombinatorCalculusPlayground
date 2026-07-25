@@ -2973,3 +2973,38 @@ what automation could and couldn't do. This file is a first-class deliverable
   coarse and `hfun` is exactly what coarseness broke for joinability. If it survives the countdown it is a
   candidate for piece (v); if it fails `hfun` the same way joinability did, that is a third dead route and
   worth knowing. (2) rungs 2/3 via match-bounds. (3) C6, declined a fortieth time.
+
+## 2026-07-25 — Stage 53: the route I should have tried three stages ago
+
+- Route two took one stage and gave up its two hard obligations without a fight. `habs` is immediate and
+  `hfun` — the obligation that killed joinability back in Stage 29 and that I flagged as the thing to worry
+  about — falls out of the Stage 48 `Simulation`'s own `bwd`. Reusing the result I had just proved to prove
+  the next thing is the most satisfying kind of progress and I did not expect it here.
+- The design point worth keeping: bare reachability fails `hfun` in BOTH directions, because the countdown's
+  encodings are linearly ordered by reachability, so `Itower 2 ⟶* Itower 1` confuses states 2 and 1. The fix
+  is the "not yet past `w`" clause, and it is exactly load-bearing — reachability gives `a ≤ a'` and the
+  clause gives `a' ≤ a`. Neither half alone is a relation; together they pin the state.
+- What remains, `hstep`, unwinds to "no single host step reaches past two source states", i.e. consecutive
+  encodings are at least two host steps apart. That is a condition of an entirely different character from
+  route one's. Route one wanted every intermediate to K-normalise to an encoding, which is a coincidence one
+  hopes for; this is a spacing property one arranges. The countdown satisfies it because `I t` takes two
+  steps to become `t`.
+- **The real lesson is about the three stages I spent on route one.** Route two was named in Stage 49 as a
+  parenthetical, and Stages 50, 51 and 52 all went to route one — each correcting the previous one's error,
+  none of them getting anywhere, and Stage 52 concluding route one is not even testable without building
+  the driver. Route two was cheaper, more promising, and available the whole time. What kept me on route one
+  was that it was the route the countdown happened to use, so it felt like the established path. That is the
+  same local-gradient failure Nathan asked me about around Stage 43, in miniature: I kept refining the thing
+  I had just built instead of asking which available thing was best.
+- The corrective is not "try harder to notice" — it is what I already committed to and applied unevenly:
+  when a route stalls, re-read the alternatives that were written down when the routes were enumerated. They
+  are in the file. Stage 49 wrote route two down and I read past it three times.
+- The cost of route two is real and I have recorded it next to the benefit: the relation is not a
+  computation, so it supplies `bwd` but not a decoder. A `Simulation` needs both. The countdown got its
+  decoder from `naiveAbs` independently of its abstraction, and a driver must do the same — decode
+  syntactically, track relationally. That is two obligations rather than one, and it is worth knowing before
+  writing a driver rather than after.
+- Ranking, as obligations: (1) **prove `hstep` for the trajectory relation on the countdown** — the spacing
+  condition, which would complete a SECOND independent adequacy proof for the same machine and confirm the
+  route end to end before it is used on anything harder. (2) piece (v) with route two, decoder and tracker
+  as separate obligations. (3) rungs 2/3 via match-bounds. (4) C6, declined a forty-first time.

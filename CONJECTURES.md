@@ -2771,3 +2771,42 @@ tested by building a driver, which is the work the prototype was meant to de-ris
 So the pivot is **route two**, which Stage 49 flagged and nothing since has touched:
 `RS.bwd_of_abstraction_rel` takes an **arbitrary** relation, and the trajectory relation — *"`b` lies on
 the host segment for source state `w`"* — can be designed and checked without first building the driver.
+
+### Stage 53: route two — the trajectory relation survives `hfun`
+
+Stage 52 pivoted here because route two can be designed and checked *before* any driver exists. It can, and
+the two obligations that matter are now proved for the countdown.
+
+`OnSegment enc b w` — *`b` is reachable from `enc w`, and not yet from the encoding of any successor of
+`w`.*
+
+| | |
+|---|---|
+| `onSegment_enc` | **`habs`** |
+| `onSegment_functional` | **`hfun`** — the obligation that killed joinability |
+| `itower_steps_le` | reachability between encodings recovers the source order, via the Stage 48 `Simulation`'s own `bwd` |
+
+`hfun` is the one that mattered: it killed joinability (`RS.joinable_abs_not_functional`) and it is what any
+coarse relation must survive. The trajectory relation survives, and the **"not yet past `w`"** clause is
+precisely what makes it — bare reachability supplies `a ≤ a'`, the clause supplies `a' ≤ a`. Plain
+reachability in *either* direction fails immediately, since the countdown's encodings are linearly ordered
+by reachability.
+
+**`hstep` remains**, and unwinding it gives a condition of a completely different character from route one's:
+
+> no single host step may reach past **two** source states — i.e. consecutive encodings are at least two
+> host steps apart.
+
+For the countdown that is exactly true (`Itower (n+1)` reaches `Itower n` in two steps), and for a driver it
+is a **design property one can arrange and check**, not a structural coincidence to hope for.
+
+**Why this is the promising route.** The trajectory relation says nothing about the *shape* of intermediates,
+only about reachability. So Stage 49's constraint — every intermediate must K-normalise to an encoding —
+**does not apply to it at all.** That constraint is what made route one look hard and left Stages 50–52
+unable to test it.
+
+**The cost**, stated so it is not discovered later: the relation quantifies over reachability, so it is not a
+computation. Fine for `bwd`, which takes an arbitrary relation — but a `Simulation` also needs a decoder
+**function**, and the trajectory relation supplies none. The countdown got its decoder from `naiveAbs`
+independently; a driver must do the same. **Decode syntactically, track relationally** — two obligations, and
+route two discharges only the second.
