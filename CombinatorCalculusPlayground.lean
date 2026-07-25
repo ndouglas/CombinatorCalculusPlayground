@@ -23,5 +23,6 @@ import CombinatorCalculusPlayground.Decidability
 import CombinatorCalculusPlayground.SKDecidability
 import CombinatorCalculusPlayground.AdequacyProbe
 import CombinatorCalculusPlayground.Countdown
+import CombinatorCalculusPlayground.TagInSK
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
