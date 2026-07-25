@@ -357,3 +357,117 @@ theorem normalizes_of_no_growth : ∀ (t : Term), KFree t →
 -- What IS contained is the half that matters for C1(a), plus `normalizes_of_no_growth`
 -- above, which already says the essential thing: **growth is necessary for
 -- non-termination in pure S.**
+
+-- ## Stage 35: the equivalence, constructively
+-- Stage 34 recorded the constructive route and declined to build it. Building it turned up
+-- one thing that route had not noticed: the negative-to-positive step Stage 34 called
+-- intrinsic is avoidable, because per-reduct reducibility is DECIDABLE. Stage 34's
+-- `by_cases` was on `∃ u, t ⟶* u ∧ leafCount t < leafCount u` — a statement about ALL
+-- reducts, genuinely undecidable. But `∃ v, u ⟶ v` for a FIXED `u` is decided by
+-- `stepOnce`. Routing through "every reduct is reducible" therefore needs no classical step
+-- anywhere, and the full equivalence is constructive.
+
+/-- The leftmost-outermost trajectory as a total function: stalls at a normal form. -/
+def iter (t : Term) : Nat → Term
+  | 0 => t
+  | k + 1 => match stepOnce (iter t k) with
+    | some u => u
+    | none => iter t k
+
+/-- **The constructive bridge.** No normal form gives reducibility of every reduct — by
+casing on the computable `stepOnce`, not on the proposition. -/
+theorem all_reducible_of_no_normalForm {t : Term}
+    (h : ¬ ∃ n, (t ⟶* n) ∧ NormalForm n) : ∀ u, (t ⟶* u) → ∃ v, u ⟶ v := by
+  intro u hu
+  match hs : stepOnce u with
+  | none => exact absurd ⟨u, hu, stepOnce_none_normal hs⟩ h
+  | some v => exact ⟨v, stepOnce_sound hs⟩
+
+theorem iter_reduct {t : Term} (hall : ∀ u, (t ⟶* u) → ∃ v, u ⟶ v) :
+    ∀ k, t ⟶* iter t k
+  | 0 => Steps.refl _
+  | k + 1 => by
+    have hprev := iter_reduct hall k
+    obtain ⟨v, hv⟩ := hall _ hprev
+    have hsome : (stepOnce (iter t k)).isSome := stepOnce_isSome_of_step hv
+    match hs : stepOnce (iter t k) with
+    | none => rw [hs] at hsome; simp at hsome
+    | some w =>
+      have : iter t (k + 1) = w := by simp only [iter, hs]
+      rw [this]
+      exact Steps.trans hprev (Steps.single (stepOnce_sound hs))
+
+theorem iter_step {t : Term} (hall : ∀ u, (t ⟶* u) → ∃ v, u ⟶ v) :
+    ∀ k, iter t k ⟶ iter t (k + 1) := by
+  intro k
+  obtain ⟨v, hv⟩ := hall _ (iter_reduct hall k)
+  have hsome : (stepOnce (iter t k)).isSome := stepOnce_isSome_of_step hv
+  match hs : stepOnce (iter t k) with
+  | none => rw [hs] at hsome; simp at hsome
+  | some w =>
+    have he : iter t (k + 1) = w := by simp only [iter, hs]
+    rw [he]
+    exact stepOnce_sound hs
+
+/-- **The τ budget.** If the trajectory has not grown by step `k`, then τ has paid `k` units
+— because every step on a size plateau strictly drops τ. -/
+theorem tau_budget {t : Term} (hk : KFree t) (hall : ∀ u, (t ⟶* u) → ∃ v, u ⟶ v) :
+    ∀ k, leafCount (iter t k) = leafCount t → tau (iter t k) + k ≤ tau t
+  | 0 => fun _ => by simp [iter]
+  | k + 1 => by
+    intro heq
+    -- monotonicity squeezes the intermediate size, so this step is on the plateau
+    have hmid := leafCount_le_of_steps hk (iter_reduct hall k)
+    have hlast := leafCount_le_of_steps hk (iter_reduct hall (k + 1))
+    have hstep := iter_step hall k
+    have hgrow := leafCount_le_of_step (hk.of_steps (iter_reduct hall k)) hstep
+    have hmk : leafCount (iter t k) = leafCount t := by omega
+    have hdrop : tau (iter t (k + 1)) < tau (iter t k) :=
+      tau_lt_of_isometric_step (hk.of_steps (iter_reduct hall k)) hstep (by omega)
+    have := tau_budget hk hall k hmk
+    omega
+
+/-- **The growth step, constructively.** A K-free term all of whose reducts are reducible
+has a strictly larger reduct — found at trajectory index `tau t + 1`, where the τ budget is
+exhausted. -/
+theorem exists_larger_of_all_reducible {t : Term} (hk : KFree t)
+    (hall : ∀ u, (t ⟶* u) → ∃ v, u ⟶ v) :
+    ∃ u, (t ⟶* u) ∧ leafCount t < leafCount u := by
+  refine ⟨iter t (tau t + 1), iter_reduct hall _, ?_⟩
+  have hle := leafCount_le_of_steps hk (iter_reduct hall (tau t + 1))
+  have hne : leafCount (iter t (tau t + 1)) ≠ leafCount t := by
+    intro heq
+    have hb := tau_budget hk hall (tau t + 1) heq
+    have := tau_pos (iter t (tau t + 1))
+    omega
+  omega
+
+/-- Iterated: unbounded reducts. -/
+theorem unbounded_of_all_reducible {t : Term} (hk : KFree t)
+    (hall : ∀ u, (t ⟶* u) → ∃ v, u ⟶ v) :
+    ∀ N, ∃ u, (t ⟶* u) ∧ N < leafCount u := by
+  intro N
+  induction N with
+  | zero =>
+    obtain ⟨u, hu, hlt⟩ := exists_larger_of_all_reducible hk hall
+    have := leafCount_pos t
+    exact ⟨u, hu, by omega⟩
+  | succ k ih =>
+    obtain ⟨u, hu, hgt⟩ := ih
+    have hallu : ∀ v, (u ⟶* v) → ∃ w, v ⟶ w :=
+      fun v hv => hall v (Steps.trans hu hv)
+    obtain ⟨w, hw, hlt⟩ := exists_larger_of_all_reducible (hk.of_steps hu) hallu
+    exact ⟨w, Steps.trans hu hw, by omega⟩
+
+/-- **The equivalence, fully constructive.** For a K-free term, having no normal form is the
+same thing as having reducts of unbounded size.
+
+This settles the framing question Stages 32–34 circled: the census measured sizes, the
+conjecture asked about normalization, and for pure S **they are the same question** — with no
+classical step anywhere, because `stepOnce` decides reducibility pointwise. -/
+theorem no_normalForm_iff_unbounded {t : Term} (hk : KFree t) :
+    (¬ ∃ n, (t ⟶* n) ∧ NormalForm n) ↔ (∀ N, ∃ u, (t ⟶* u) ∧ N < leafCount u) := by
+  constructor
+  · intro h
+    exact unbounded_of_all_reducible hk (all_reducible_of_no_normalForm h)
+  · exact no_normalForm_of_unbounded hk
