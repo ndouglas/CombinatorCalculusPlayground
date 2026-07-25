@@ -2698,3 +2698,42 @@ Two routes for piece (v), and this stage says which is which:
   — a real design constraint, not obviously achievable;
 - or use a different abstraction. `RS.bwd_of_abstraction_rel` takes an arbitrary relation, so the
   countdown's choice is not binding.
+
+### Stage 51: committing steps cannot compute; and a conflation corrected
+
+Stage 50 ranked *"find a recursion scheme that commits each unfolding through a K-discard"* first. That
+phrasing is **impossible**, and the reason is two lines of injectivity.
+
+| | |
+|---|---|
+| `committing_S_red_iff` | an S-step's reduct is a K-redex **only** when the first argument is literally `K` |
+| `committing_S_red_projects` | and then `S K g x` reduces to `x`, discarding `g` — and the duplicate the S-step made sits *inside* that discarded argument, so it does no work either |
+
+So committing steps cannot compute, and no driver can be built from them alone. What survives is the
+weaker demand: **non-committing** S-steps whose intermediates K-normalise to encodings by some other
+route.
+
+**A conflation corrected.** Stage 50 treated "recursion" and "non-termination" as the same thing and
+tested `omegaSK`. They are not — **the countdown terminates.** Its 183 reachable terms come from the many
+orders its `I` layers may fire in, not from unbounded computation. What a driver needs is
+**self-reproduction** — the driver reappearing alongside advanced data — with each segment finite.
+
+And collapse is not rare: self-applications `A A` with `|A| ≤ 5` yielded four that collapse, the best at
+**47 reachable / 3 K-normal forms** — and it terminates in four steps. Collapse coexists with bounded
+work.
+
+**Why the searches could not settle it** — worth more than the searches. Both failures were about
+**controls**:
+
+- the all-terms sweep is affordable to six leaves; its positive control `Itower 3` has **ten**. So "no
+  collapsing term up to six leaves" says nothing — and collapsing terms do turn up at ten. Caught by
+  running the control at the search's own setting before believing the zero.
+- the self-reproduction sweep used `onCycle?`, which is leftmost-outermost — and **Stage 21 proved an LO
+  hunt is blind to cycles that exist in the relation**. `onCycle? omegaSK 40` returns `false` even though
+  `omega_to_M`/`M_to_omega` are theorems putting it on a cycle. The probe was blind to its own control,
+  and the smallest cycle is fourteen leaves, beyond exhaustive reach anyway.
+
+The transferable lesson is Stage 41's, which I failed to apply: **when a probe has a parameter, the
+finding is about the parameter — and a probe with a known blind spot must be run against a control that
+exercises it.** I used a detector this tree had already proved unreliable for exactly this purpose. Both
+facts are now guards.

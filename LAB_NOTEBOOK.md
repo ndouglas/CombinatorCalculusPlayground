@@ -2901,3 +2901,39 @@ what automation could and couldn't do. This file is a first-class deliverable
   decisive for route one. (2) if not, design a different abstraction for piece (v) — the trajectory
   relation rather than the K-normal form. (3) rungs 2/3 via match-bounds. (4) C6, declined a
   thirty-eighth time.
+
+## 2026-07-25 — Stage 51: I used a detector my own tree had proved unreliable
+
+- Two real results and one instructive failure.
+- The results. A committing S-step — one whose reduct is immediately a K-redex, the pattern Stage 50
+  measured as ideal — requires its first argument to be literally `K`, and then the whole thing is a
+  projection: `S K g x` gives `x` and throws `g` away, with the duplicate it just made sitting inside the
+  discarded part. So committing steps cannot compute. Stage 50's route one is impossible as I phrased it,
+  and it took two lines of injectivity to see.
+- And a conflation I should not have made: I tested `omegaSK` as a proxy for "recursion" when what I
+  needed was "self-reproduction". The countdown TERMINATES. Its 183 reachable terms are the orders its
+  layers can fire in, not unbounded work. A driver needs the driver term to reappear alongside advanced
+  data, with each segment finite — which is a different property from non-termination, and one the
+  countdown has.
+- **The failure.** To look for self-reproducing terms I filtered by `onCycle?`. That is the
+  leftmost-outermost cycle detector, and Stage 21 of this very project proved that an LO hunt is blind to
+  cycles that exist in the relation — that was the stage that rescoped all my earlier hunt data. So I
+  reached for a tool my own notebook records as unreliable for precisely this question, got zeros, and
+  had to notice for myself that `onCycle? omegaSK` returns false while two theorems in Calibration.lean
+  put `omegaSK` on a cycle. The probe could not see its own control.
+- Stage 41 wrote the lesson down: when a probe has a parameter, the finding is about the parameter. What
+  Stage 51 adds is the sharper version — a probe with a KNOWN blind spot must be run against a control
+  that exercises the blind spot, not just any control. I did run controls this stage, twice, and caught
+  the size-range problem that way. I did not think to control the detector itself.
+- I have made both facts guards rather than comments, because the next person to reach for `onCycle?` on
+  a question about cycles-in-the-relation should trip over `onCycle? omegaSK = false` immediately.
+- What the stage leaves: the question is unsettled and I now believe search cannot settle it. The smallest
+  self-reproducing object in SK is fourteen leaves and exhaustive enumeration dies at seven or eight. So
+  route one needs a CONSTRUCTION — design a self-reproducing driver and check its segment — rather than a
+  sweep. That is a genuine change in method, and it is the honest output of a stage that otherwise
+  produced two small theorems and a mistake.
+- Ranking, as obligations: (1) **construct** a minimal self-reproducing term by hand — something of the
+  shape `X data` reducing to `X data'` — and measure its segment's K-normal forms. Construction rather
+  than search, because search cannot reach the size. (2) route two: design the trajectory-relation
+  abstraction, which Stage 49 noted is unconstrained by any of this. (3) rungs 2/3 via match-bounds.
+  (4) C6, declined a thirty-ninth time.
