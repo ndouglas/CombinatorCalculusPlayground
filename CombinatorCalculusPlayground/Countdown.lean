@@ -169,3 +169,57 @@ theorem universalReach_countdown_SK : UniversalReach RS.Countdown RS.SK :=
 -- The encoder is injective as a consequence of `dec_enc`, which is what stops this from being the
 -- degenerate instance the Stage 8 negative controls exclude.
 example {m n : Nat} (h : Itower m = Itower n) : m = n := countdownInSK.enc_injective h
+
+-- ## Stage 49: what the K-normal-form abstraction demands of a driver
+-- Stage 48's ranking said piece (v) could follow the countdown's pattern "provided the driver keeps
+-- its data K-normal". That is too optimistic, and the tree already contained the theorem that says
+-- so. `RS.abstraction_tracks_rel` forces the abstraction to be defined at EVERY reachable host term,
+-- not just at encodings — so the constraint is not on the driver's data, it is on its INTERMEDIATES.
+
+/-- **The design constraint on any driver, forced.** If the K-normal-form abstraction discharges
+`hstep`, then every host term reachable from an encoded state has a K-normal form that is itself an
+encoding — of a source state reachable from the original. A driver whose intermediate states
+K-normalise to anything else cannot use this abstraction, however normal its data is. -/
+theorem knf_abstraction_forces_encodings {A : RS} (enc : A.Carrier → Term)
+    (hstep : ∀ {b b' : Term} {a : A.Carrier}, (b ⟶ b') → IsKNF b (enc a) →
+      IsKNF b' (enc a) ∨ ∃ a', A.step a a' ∧ IsKNF b' (enc a'))
+    (hnorm : ∀ a, KNormalForm (enc a))
+    {a : A.Carrier} {b : Term} (h : enc a ⟶* b) :
+    ∃ a₂, A.Steps a a₂ ∧ IsKNF b (enc a₂) :=
+  RS.abstraction_tracks_rel (A := A) (B := RS.SK) (fun b a => IsKNF b (enc a)) hstep
+    (RS.SK_steps_iff.mpr h) a (isKNF_self (hnorm a))
+
+-- The countdown satisfies it, and the measurement shows how STRONG the property is: the whole
+-- reachable set collapses onto the handful of encodings. (Unverified census tooling — `kNorm`.)
+def isItower (t : Term) : Bool := (List.range 10).any (fun m => t == Itower m)
+
+def knfAllEncodings (bound fuel : Nat) (t : Term) : Bool :=
+  match boundedClosure bound fuel [t] with
+  | none => false
+  | some cl => cl.all (fun b => isItower (kNorm (leafCount b) b))
+
+-- 183 reachable terms from `Itower 3`, and every one of them K-normalises to an encoding.
+#guard ((boundedClosure 30 120 [Itower 3]).getD []).length = 183
+#guard (List.range 4).all (fun n => knfAllEncodings 30 120 (Itower n))
+-- ...and to nothing but the four states reachable from 3: leaf counts 10, 7, 4, 1 = 3n+1.
+#guard (((boundedClosure 30 120 [Itower 3]).getD []).map
+  (fun b => leafCount (kNorm (leafCount b) b))).eraseDups = [10, 7, 4, 1]
+
+-- ## What piece (v) therefore needs, and what it does not
+-- The correction matters because it changes the shape of the remaining work. The countdown's driver
+-- does its whole step in ONE S-step followed by K-reduction, which is why every intermediate
+-- K-normalises to the after-state. A tag-step driver has to inspect a symbol and dispatch, and each
+-- of those S-steps produces an intermediate that must ALSO K-normalise to an encoding — before-state
+-- for the early ones, after-state for the later ones, flipping exactly once.
+--
+-- That is a real constraint and it is not obviously satisfiable; it is also not obviously
+-- unsatisfiable, since combinator programming has enough freedom to hide work inside K-discards.
+-- What is now clear is that it is the thing to PROTOTYPE before writing a driver — the same lesson
+-- Stage 8 learned about piece (vi), arriving one piece later.
+--
+-- Two honest consequences:
+--   * "adequacy has a template" (Stage 48) is right about the MACHINERY and wrong if read as "the
+--     remaining work is construction". The template comes with a side condition that the countdown
+--     satisfies for a reason the countdown alone explains.
+--   * a driver could instead use a DIFFERENT abstraction. Nothing here says the K-normal-form one is
+--     the only option; it says what that one costs. `RS.bwd_of_abstraction_rel` takes any relation.
