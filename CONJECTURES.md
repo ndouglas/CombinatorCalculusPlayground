@@ -3025,3 +3025,42 @@ Piece (v) now has **one** unresolved ingredient rather than three:
 | symbol dispatch | measured compatible (Stage 50) |
 | rule append | **constant** (here) |
 | self-reproduction | **open** |
+
+### Stage 61: self-reproduction, without a fixpoint combinator
+
+Stage 60 left exactly one ingredient of piece (v) open. I had been assuming it meant a fixpoint combinator and
+the sprawl Stage 50 measured. **It does not.**
+
+```
+W = λx.λd. x x (F d)        and then        W W d  ⟶*  W W (F d)
+```
+
+for an **arbitrary** step function `F`. The data advances, the driver reappears, and nothing recurses — the
+self-application is a single `S`-redex, not an unfolding.
+
+| | |
+|---|---|
+| `selfRepW` / `selfRep` | bracket-abstracted **by hand**: `λd. x x (F d)` is `S (K (x x)) F`, and abstracting `x` gives `S (S (K S) (S (K K) (S I I))) (K F)` |
+| `selfRepW_unfold` | the self-application exposes `S (K (W W)) F` |
+| **`selfRep_advances`** | **`W W d ⟶* W W (F d)`** |
+
+Both theorems need **no axioms at all** — explicit reduction chains, nothing but congruence and the two rules.
+
+**Size: `15 + |F|` leaves**, so the wrapper costs fifteen leaves regardless of what it drives. Contrast the
+**414** leaves naive bracket abstraction produced for `APPEND` in Stage 60: doing this one by hand was worth
+it, and the hand version is also what made the proof a short explicit chain rather than a normalisation.
+
+**Piece (v)'s three ingredients are now all settled:**
+
+| ingredient | |
+|---|---|
+| symbol dispatch | measured compatible (Stage 50) |
+| rule append | a constant (Stage 60) |
+| **self-reproduction** | **proved here**, and cheaper than expected |
+
+Stage 50's measurement of `omegaSK` is not contradicted: `omegaSK` is self-application *without* a step
+function, so it has nothing to advance and no reason for its K-normal forms to collapse. A driver's
+self-application carries `F`, and `F` is where the encoding's discipline lives.
+
+What remains is assembling the step function itself — head extraction, dispatch, append, and the `m = 2`
+double deletion — from parts that are individually understood.

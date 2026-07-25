@@ -3224,3 +3224,34 @@ what automation could and couldn't do. This file is a first-class deliverable
   unknowns. The construction is a fold-encoded word, a dispatch on the head symbol, a constant append, and a
   self-reproducing wrapper; the first three are settled. (2) rungs 2/3 via match-bounds. (3) C6, declined a
   forty-eighth time.
+
+## 2026-07-25 — Stage 61: the fixpoint I did not need
+
+- The last open ingredient turned out to be two abstractions. `W = λx.λd. x x (F d)` gives `W W d ⟶* W W (F d)`
+  for any `F`: the driver reappears, the data advances, and the self-application is one `S`-redex rather than
+  an unfolding. Fifteen leaves plus `F`.
+- I had been carrying "self-reproduction means a fixpoint combinator" since Stage 11, and it shaped three
+  stages of measurement. Stage 50 measured `omegaSK` as the proxy and found its K-normal forms sprawl; Stages
+  51 and 52 tried and failed to make that measurement mean something. The proxy was wrong in a way I can now
+  say precisely: `omegaSK` is self-application with NOTHING TO ADVANCE. A driver's self-application carries a
+  step function, and the step function is where the discipline lives. Measuring the bare self-application told
+  me about a term with no encoding, which is exactly Stage 52's complaint about itself.
+- Doing the bracket abstraction by hand instead of calling `bracket` mattered twice. It gave fifteen leaves
+  instead of the hundreds the naive algorithm produces — Stage 60's `APPEND` came out at 414 — and it made the
+  proof a short explicit reduction chain, which needs no axioms at all, rather than a normalisation of
+  something enormous. When the term is small enough to reason about, prove it; when it is not, the tooling
+  will only tell you it evaluates.
+- So all three ingredients of piece (v) are settled: dispatch free, append constant, self-reproduction proved.
+  What is left is assembling the step function for a universal tag system, and that is engineering with
+  understood parts rather than an open question. After eleven stages of narrowing that is a real change in
+  kind, and I want to be careful not to overstate it: assembling `head`, `tail`, `dispatch` and `append` into
+  one certified `fwd` for m = 2 over a two-symbol alphabet is still a substantial build, and the terms will be
+  large enough that proving `fwd` will need the same by-hand discipline that made today cheap.
+- The pattern worth keeping from today: **an assumption inherited from a plausible analogy survived eleven
+  stages because it was never written as a claim.** "Recursion needs a fixpoint" is true for general recursion
+  and false for self-reproduction with a fixed step, and I never separated the two. Stage 60 caught the same
+  shape — "append needs a traversal" was true for cons-lists and false for folds. Both were unstated
+  assumptions about representation, and both dissolved the moment I wrote down what was actually required.
+- Ranking: (1) **assemble the step function** for a two-symbol m = 2 tag system — head, double tail, dispatch,
+  append — and prove `fwd` for it. By hand where the terms are small enough to reason about. (2) rungs 2/3 via
+  match-bounds. (3) C6, declined a forty-ninth time.
