@@ -3074,3 +3074,35 @@ what automation could and couldn't do. This file is a first-class deliverable
   attempt is a measure on the number of `I` layers times something, and it is a self-contained termination
   problem. That completes route two's adequacy for the countdown and gives the second independent proof.
   (2) piece (v) with route two. (3) rungs 2/3 via match-bounds. (4) C6, declined a forty-third time.
+
+## 2026-07-25 — Stage 56: measure the answer, then prove it
+
+- Stage 55 left route two needing strong normalisation of `Itower m`, which is a real theorem I did not
+  want to prove. So I asked what I actually needed — a finite reachable set — and noticed that BOUNDED SIZE
+  suffices and is much weaker. Then I measured the bound before trying to prove anything: largest reducts
+  of `Itower m` are 1, 4, 10, 22 leaves. That is `3·2^m − 2`, and having the closed form in hand made the
+  proof a matter of checking four cases rather than searching for a measure.
+- The proof needs the reachable set characterised, because no measure can work for all of SK — `S`
+  duplicates, so size growth is unbounded, and any measure that dominated leaf count would have to be
+  non-increasing on a rule that doubles its argument. Three layer states do it: intact, half-consumed,
+  collapsed.
+- **The satisfying part.** The `half` constructor has to let the two copies of a half-consumed layer be
+  DIFFERENT tower states, or the family is not closed under reduction. That is exactly the drift Stage 10
+  discovered and that every abstraction since has had to cope with — and here, for the first time, it is not
+  an obstacle but a constructor. Fifty stages after finding drift I finally gave it a type, and the size
+  bound falls out because a drifted pair is still two things of bounded size. The `half` case is also where
+  the bound is tight.
+- What remains is smaller than it was and of a different kind. Decidable reachability needs a certified
+  enumeration of bounded-size SK terms, and this tree's `smallTerms` is K-free because `enumAt` is — Goal 3's
+  whole decidability layer was built for pure S and inherits that restriction. So the gap is now
+  infrastructure: build the K-inclusive version of a thing I already have uncertified as `skTerms`. That is
+  the first time in about ten stages that the blocker has been engineering rather than mathematics, and I
+  should say so plainly rather than dress it up.
+- Method note worth keeping, since it is now three for three: measure the answer, then prove it. Stage 54
+  measured that hstep fails, Stage 56 measured what the bound is. Knowing `3·2^m − 2` before starting turned
+  an open-ended search for a measure into four arithmetic checks. I have been treating measurement as a way
+  to decide WHETHER to prove something; it is at least as useful for deciding WHAT to prove.
+- Ranking, as obligations: (1) **certify a K-inclusive bounded enumeration** — `skTerms` plus the soundness
+  and completeness lemmas `enumAt` has, which would close the chain to route two's `hstep` and, incidentally,
+  widen Goal 3's decidability layer beyond pure S. Engineering, but it unblocks a proof. (2) piece (v) with
+  route two, once the chain closes. (3) rungs 2/3 via match-bounds. (4) C6, declined a forty-fourth time.

@@ -2876,3 +2876,39 @@ from reaching the countdown's own encoding** — by exactly the erasure Stage 54
 
 That is a sharper statement of where piece (v) stands than "route two looks promising": it is reduced to a
 single standard fact about one family of terms.
+
+### Stage 56: the reachable set of `Itower m` has bounded size — `3·2^m − 2`, tight
+
+Stage 55 reduced route two to strong normalisation of the encoding and found C5 blocked from supplying it
+(C5 needs K-freeness; `Itower` is built from `I = S K K`). **Finite size is weaker, enough, and provable
+directly.**
+
+Measured first: the largest reduct of `Itower m` has **1, 4, 10, 22** leaves for m = 0…3 — which is
+`3·2^m − 2`. The proved bound is exactly that, and the `half` case attains it.
+
+| | |
+|---|---|
+| `Tower` | states of an m-layer tower: intact, half-consumed, collapsed. **The two copies of a half-consumed layer may drift independently** — the Stage 10 phenomenon, finally given a type, and what makes the family closed under reduction |
+| `tower_Itower` | the encoding is one |
+| `Tower.of_step` / `of_steps` | closed under reduction. An intact layer's only step is its own root redex, because `I` is a full-SK normal form |
+| `Tower.leafCount_bound` | `leafCount t + 2 ≤ 3 · 2^m` |
+| `itower_reduct_bound` | hence every reduct of the encoding is small |
+
+No measure works for all of SK — `S` duplicates, so growth is unbounded — so the proof needs the reachable
+set *characterised*, and three layer states suffice.
+
+**What it gives.** The reachable set is finite: it sits inside the SK terms of at most `3·2^m − 2` leaves.
+That is Stage 55's missing ingredient, obtained *without* strong normalisation.
+
+**What it does not.** Turning "finite reachable set" into "decidable reachability" needs a **certified finite
+universe of bounded-size SK terms** — and this tree's universe, `smallTerms`, is built from `enumAt`, which
+enumerates **K-free** terms only. Goal 3's decidability machinery is K-free by construction, for the good
+reason that it was built for pure S.
+
+The chain now reads:
+
+> route two's `hstep` ⟸ `hleast` ⟸ decidable reachability from `Itower m` ⟸ **a K-inclusive bounded
+> enumeration** + the size bound above.
+
+The last item is the only gap, it is **infrastructure rather than research**, and `skTerms`
+(`AdequacyProbe.lean`) is already the uncertified version of exactly it.
