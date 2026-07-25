@@ -2661,3 +2661,40 @@ later.
   countdown alone explains.
 - A driver could use a **different** abstraction. `RS.bwd_of_abstraction_rel` takes any relation, so
   this says what the K-normal-form one costs — not that it is the only option.
+
+### Stage 50: prototyping the intermediate condition — dispatch passes, recursion does not
+
+Stage 49 said to prototype the K-normal-form abstraction's demand before writing a driver. The
+diagnostic is a **ratio**: along one source step's trajectory the abstraction tolerates at most **two**
+distinct K-normal forms — before-state and after-state — so a construct producing more than that per
+step cannot be tracked.
+
+```
+dispatch, true branch    K (S S) (K K)      reachable   2    K-normal forms   1
+dispatch, false branch   S K (S S) (K K)    reachable   3    K-normal forms   2
+countdown                Itower 3           reachable 183    K-normal forms   4
+self-application         omegaSK            reachable 107    K-normal forms  17
+```
+
+**Dispatch passes, and exactly.** `S K a b` shows precisely two K-normal forms — itself and the
+selected branch — because selecting is one S-step whose reduct is a K-redex, so it commits immediately
+and the doomed branch vanishes with it. That is the flip-once behaviour the abstraction wants, arising
+natively from the idiom. Dispatch was the part I expected to fight; it comes for free.
+
+**Self-application does not.** `omegaSK`'s reachable set is *smaller* than the countdown's and its
+K-normal forms are four times as many, sprawling into nested `S K K (…)` shapes instead of collapsing.
+
+So the blocker for piece (v) is **recursion, not dispatch** — corroborating with numbers what Stages 11
+and 13 flagged in prose about the pending recursive call.
+
+**Honest limit.** `omegaSK` is not a driver and has no source machine, so seventeen K-normal forms is
+not a refutation: a real driver's seventeen could all be encodings of reachable source states, since
+the abstraction may stutter across many host terms. What the ratio shows is a **trend** in the wrong
+direction — the countdown's set collapses as the closure grows, `omegaSK`'s does not.
+
+Two routes for piece (v), and this stage says which is which:
+
+- keep this abstraction and find a recursion scheme that **commits each unfolding through a K-discard**
+  — a real design constraint, not obviously achievable;
+- or use a different abstraction. `RS.bwd_of_abstraction_rel` takes an arbitrary relation, so the
+  countdown's choice is not binding.

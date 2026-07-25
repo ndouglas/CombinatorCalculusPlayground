@@ -2866,3 +2866,38 @@ what automation could and couldn't do. This file is a first-class deliverable
   measure whether its intermediates K-normalise to encodings. Cheap, decisive, and it determines whether
   piece (v) is construction or research. (2) piece (v) proper, contingent on that. (3) rungs 2/3 via
   match-bounds. (4) C6, declined a thirty-seventh time.
+
+## 2026-07-25 — Stage 50: the part I expected to fight came for free
+
+- I applied yesterday's fix and it worked. Instead of writing a driver I stated the obligation, found a
+  cheap diagnostic for it, and measured. The diagnostic is a ratio — reachable terms versus distinct
+  K-normal forms — because the abstraction can only tolerate two K-normal forms per source step, so any
+  construct that sprawls is disqualified before a line of driver exists.
+- The result inverted my expectations in both directions. Dispatch, which I assumed would be the hard
+  part, is perfect: `S K a b` produces exactly two K-normal forms, itself and the selected branch,
+  because selecting is one S-step whose reduct is immediately a K-redex. It commits, the doomed branch
+  vanishes, and the abstraction sees precisely the flip it needs. That behaviour is not something I
+  arranged; it falls out of how booleans are encoded in SK.
+- Recursion, which Stages 11 and 13 had already warned about in prose, fails on the numbers.
+  `omegaSK`'s reachable set is smaller than the countdown's — 107 against 183 — and it has seventeen
+  distinct K-normal forms against the countdown's four. Sprawl, not collapse.
+- I want to be careful about what that does and does not show, because the temptation is to write
+  "recursion is incompatible" and move on. `omegaSK` is not a driver. It has no source machine, so
+  there is no notion of how many K-normal forms it is ALLOWED. Seventeen would be fine for a machine
+  with seventeen reachable states. What is genuinely evidence is the direction: as the closure grows,
+  the countdown's K-normal-form set stays at four while `omegaSK`'s keeps growing. That is a trend, and
+  it is the right kind of thing to steer by, and it is not a theorem.
+- The stage's real output is a localisation. Piece (v) was "write a tag-step driver and hope adequacy
+  follows". It is now "find a recursion scheme that commits each unfolding through a K-discard, or pick
+  a different abstraction" — with the dispatching half already known compatible with machinery that is
+  proved. That is a much better-shaped problem, and it cost one measurement rather than a construction.
+- Meta-note I want on the record after fifty stages: the last four stages have each consisted of
+  checking an obligation before attempting it, and three of the four overturned the plan I had written
+  the day before. The habit is now clearly worth more than the individual results — it is the reason
+  the plans keep getting better rather than the reason they keep being wrong.
+- Ranking, stated as obligations: (1) **can a recursion commit through a K-discard?** — the concrete
+  question is whether there is a fixpoint idiom whose unfolding is `S K`-shaped, so each recursive step
+  behaves like a dispatch rather than like self-application. Cheap to search over small terms, and
+  decisive for route one. (2) if not, design a different abstraction for piece (v) — the trajectory
+  relation rather than the K-normal form. (3) rungs 2/3 via match-bounds. (4) C6, declined a
+  thirty-eighth time.
