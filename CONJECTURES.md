@@ -2934,3 +2934,28 @@ layer can now be widened past pure S whenever something wants it.
 
 Counts guarded: `Catalan(n−1) · 2^n` = 2, 4, 16, 80, 448, 2688. And the reason the file exists is guarded
 too — `I = S K K` has three leaves, sits in `skEnumAt 3`, and does **not** sit in `enumAt 3`.
+
+### Stage 58: route two's chain closes — a second, independent adequacy proof
+
+Stage 56 bounded the region, Stage 57 certified the universe, and the saturation argument shed its
+K-freeness. That was everything `hleast` waited on.
+
+| | |
+|---|---|
+| `skDeficit`, `skBoundedClosure_isSome` | `Decidability.lean`'s saturation argument with the `KFree` hypotheses **gone** — they existed only to place a frontier element in `smallTerms`, and `mem_skSmallTerms` wants a size bound and nothing else |
+| `mem_of_saturated_region` | here the `KFree` hypothesis **was** load-bearing (it bounds an *intermediate* by leaf-count monotonicity, and with `K` present leaf count rises and falls). Replaced by what is actually needed: a bound on the whole **region**, which travels along the path because a reduct of a reduct is a reduct |
+| `reachableWithin_correct` | **bounded-region reachability is decidable for full SK** |
+| `exists_least` | least witness for a decidable predicate on `Nat`, by hand — `Nat.find` is Mathlib's, not core's |
+| `hleast_itower` | the step that needed `Classical.choice` in Stage 55, now constructive |
+| **`onSegmentHStepPath_countdown`** | **route two's `hstep`, proved** |
+| **`countdownInSK'`** | a second `Simulation`, sharing nothing with Stage 48's but the encoding |
+
+**Two abstractions, two independent proofs of the same `bwd`.** Stage 48 went through K-normal forms and a
+commutation square; this goes through trajectory segments and a path-advancing interface.
+
+Goal 3's decidability layer was pure-S-only in **five** places: `enumAt`, `smallTerms`, `deficit`,
+`boundedClosure_isSome`, `mem_of_saturated`. Four of the five restrictions were **inherited rather than
+structural** and are now lifted; the fifth was real, and got replaced by the right hypothesis.
+
+Decidability of bounded-region SK reachability is not in tension with anything: SK reachability is
+undecidable precisely because the region cannot be bounded in advance.

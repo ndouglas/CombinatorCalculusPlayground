@@ -80,6 +80,15 @@ proved the S-step half via a commutation square (`sk_square`, `itower_sStep`).
 The result is `countdownInSK`, a `Simulation` into `RS.SK` with a genuinely
 multi-step encoding rather than an inclusion.
 
+Stages 49–58 then produced a **second, independent** adequacy proof for the
+same machine (`countdownInSK'`), via the *trajectory relation* rather than
+K-normal forms, sharing nothing with the first but the encoding. Getting there
+lifted four inherited pure-S restrictions from Goal 3's decidability layer
+(`enumAt`, `smallTerms`, `deficit`, `boundedClosure_isSome`) and produced
+`reachableWithin_correct` — **bounded-region reachability is decidable for full
+SK** — plus `RS.bwd_of_abstraction_path`, which lets an abstraction advance by a
+source *path* rather than a single step.
+
 Its limit, stated plainly: the countdown is **not** universal, so this
 discharges the *mechanism* criterion (a) was blocked on, not criterion (a). A
 tag-step driver — spec piece (v) — is still unwritten.

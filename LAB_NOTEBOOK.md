@@ -3133,3 +3133,36 @@ what automation could and couldn't do. This file is a first-class deliverable
   `deficit_lt` and `boundedClosure_isSome` are the pieces, all of them K-free only for the same inherited
   reason. That yields decidable reachability from `Itower m` and closes route two's chain to `hstep`.
   (2) piece (v) with route two. (3) rungs 2/3 via match-bounds. (4) C6, declined a forty-fifth time.
+
+## 2026-07-25 — Stage 58: four inherited restrictions and one real one
+
+- The chain closed. Route two's `hstep` is proved and there is now a second `Simulation` of the countdown
+  into SK whose `bwd` shares nothing with the first except the encoding — one through K-normal forms and a
+  commutation square, one through trajectory segments and a path-advancing interface. Getting two
+  independent proofs of the same adequacy is the kind of confirmation I would not have sought deliberately
+  and am glad to have.
+- The stage's real content is the audit of five K-freeness restrictions. Four of them — `enumAt`,
+  `smallTerms`, `deficit`, `boundedClosure_isSome` — turned out to be inherited from what the census wanted
+  rather than structural, and lifting them was mechanical once I looked. The fifth, `mem_of_saturated`, was
+  genuinely load-bearing: it bounds an intermediate by leaf-count monotonicity, and with `K` around leaf
+  count rises and falls, so an intermediate can exceed both endpoints. That one could not be removed. It
+  could be REPLACED, by the hypothesis actually needed — a bound on the whole region, which travels along a
+  path because a reduct of a reduct is a reduct.
+- I want to hold onto the distinction, because "check whether the restriction is load-bearing or inherited"
+  was Stage 57's habit and this is the first time the answer came back "load-bearing". The right response
+  was not to give up and not to force it, but to ask what the hypothesis was BUYING and supply that instead.
+  Four removals and one substitution is a better outcome than five removals would have been, because the
+  substitution is where the mathematics actually was.
+- A general fact fell out that is worth more than its role here: bounded-region reachability is decidable
+  for full SK. That does not contradict undecidability of SK reachability — it is undecidable precisely
+  because the region cannot be bounded in advance — and the countdown supplies its own bound via Stage 56.
+- Small note: `Nat.find` is Mathlib's, not core's, so the least-witness extraction is fifteen lines of
+  walking up from zero carrying "nothing below has satisfied it yet". Zero-dependency has cost real time
+  across this project and almost never cost correctness; this is a typical instance of the tax.
+- Stage 55 said this step needed `Classical.choice` and I declined to use it, reporting a reduction instead.
+  Three stages later the reduction closed constructively. I do not think that was luck — the reduction named
+  what was missing precisely enough that finding it was a search rather than a hope — but it is worth noting
+  that "report the reduction rather than reach for the axiom" paid off in the end and not just in principle.
+- Ranking, as obligations: (1) **piece (v)** — the tag-step driver, now with two proven adequacy templates
+  and a decidability layer that no longer stops at pure S. This is construction work at last. (2) rungs 2/3
+  via match-bounds. (3) C6, declined a forty-sixth time.
