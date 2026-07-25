@@ -342,3 +342,39 @@ def bestCollapse : Term := Term.app (app2 S (app S K) (app K S)) (app2 S (app S 
 -- parameter, the finding is about the parameter — and a probe with a KNOWN blind spot must be run
 -- against a control that exercises it. I used a detector this tree had already proved unreliable for
 -- exactly this purpose.
+
+-- ## Stage 52: the diagnostic needs a source machine — correcting Stage 50
+-- Stage 50 concluded "dispatch passes, recursion does not" from K-normal-form counts. Half of that was
+-- an unfounded inference, and constructing the self-reproducing prototype Stage 51 called for is what
+-- exposed it.
+--
+-- The diagnostic says: along one SOURCE step the abstraction tolerates at most two K-normal forms. To
+-- apply it one must know how many source steps a host trajectory covers — and `omegaSK` encodes nothing,
+-- so its seventeen K-normal forms cannot be compared to anything. Seventeen would be perfectly fine for
+-- a machine with seventeen reachable states. **Stage 50's recursion verdict does not follow from its
+-- measurement.** Its dispatch verdict does: `S K a b` selects between two branches, the source is a
+-- two-state selection, and two K-normal forms is exactly right.
+--
+-- What the numbers do show is a difference in KIND, and it is suggestive rather than decisive.
+
+-- The countdown's K-normal forms shrink monotonically along its trajectory — the signature of a source
+-- that only ever moves forward.
+#guard ((trace 30 (Itower 3)).map (fun t => leafCount (knfOf t))).eraseDups = [10, 7, 4, 1]
+
+-- `omegaSK`'s oscillate and revisit values, which would force the source to cycle.
+#guard ((trace 20 omegaSK).map (fun t => leafCount (knfOf t)))
+  = [14, 20, 17, 17, 26, 23, 23, 20, 20, 32, 29, 29, 26, 26, 23, 23, 38, 35, 35, 32, 32]
+#guard (((trace 20 omegaSK).map knfOf).eraseDups).length = 13
+
+-- ## The methodological finding, which is this stage's real output
+-- "Prototype the obligation before building the artifact" has been the winning habit for six stages.
+-- Stage 52 is the first time it does not apply, and the precondition is now explicit: **the diagnostic
+-- must be interpretable without the artifact.** Here it is not — "how many K-normal forms is too many"
+-- is a question about the source machine, so it cannot be answered before there is one. Route one can
+-- only be tested by building a driver, which is the work the prototype was meant to de-risk.
+--
+-- That leaves route two, and Stage 49 already noted it is untouched by any of this:
+-- `RS.bwd_of_abstraction_rel` takes an ARBITRARY relation, and nothing obliges piece (v) to reuse the
+-- countdown's choice of one. The trajectory relation — "b lies on the host segment for source state w" —
+-- is the obvious candidate and has not been examined. It is also the honest next step, because unlike
+-- route one it can be designed and checked without first building the driver.
