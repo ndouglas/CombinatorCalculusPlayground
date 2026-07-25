@@ -297,3 +297,63 @@ theorem bounded_of_normalizes {t : Term} (hk : KFree t)
 -- from any reduct, reach a strictly larger one — and that remains open. But the shape of
 -- the missing lemma is now "reducts keep growing" rather than "some predicate is
 -- preserved", and the former is the one the trajectory data speaks to.
+
+-- ## Stage 34: growth is forced — the size criterion's other half
+-- Stage 33 proved unbounded reducts imply non-normalization. The converse direction needs
+-- the fact that a pure-S term which never grows must terminate, and that is exactly what
+-- τ already gives: on a size plateau τ strictly drops (`tau_lt_of_isometric_step`), and a
+-- Nat cannot drop forever.
+--
+-- Note the recursion is on `stepOnce`, not on a classical case split over `NormalForm`.
+-- That keeps the proof constructive: `stepOnce` is computable and certified on both ends
+-- (`stepOnce_sound`, `stepOnce_none_normal`), so "normal or reducible" is decided rather
+-- than assumed.
+
+/-- **A K-free term whose reducts never grow must normalize.** Strong induction on τ: each
+step on a size plateau strictly drops τ, so the recursion is well-founded. -/
+theorem normalizes_of_no_growth : ∀ (t : Term), KFree t →
+    (∀ u, (t ⟶* u) → leafCount u = leafCount t) → ∃ n, (t ⟶* n) ∧ NormalForm n
+  | t, hk, hng => by
+    match hs : stepOnce t with
+    | none => exact ⟨t, Steps.refl _, stepOnce_none_normal hs⟩
+    | some u =>
+      have hstep : t ⟶ u := stepOnce_sound hs
+      have heq : leafCount t = leafCount u := (hng u (Steps.single hstep)).symm
+      have hdrop : tau u < tau t := tau_lt_of_isometric_step hk hstep heq
+      have hngu : ∀ v, (u ⟶* v) → leafCount v = leafCount u := by
+        intro v hv
+        rw [← heq]
+        exact hng v (Steps.trans (Steps.single hstep) hv)
+      obtain ⟨n, hn, hnf⟩ :=
+        normalizes_of_no_growth u (hk.of_step hstep) hngu
+      exact ⟨n, Steps.trans (Steps.single hstep) hn, hnf⟩
+  termination_by t => tau t
+
+-- ## The other direction: available classically, NOT shipped
+-- The converse — "no normal form implies unbounded reducts" — completes the equivalence,
+-- and it is three short proofs away. But getting it from a NEGATIVE hypothesis
+-- (`¬ ∃ normal form`) to a POSITIVE conclusion (`∃ arbitrarily large reduct`) needs
+-- `¬∀ → ∃`, which is not constructive: written the obvious way with `by_cases` on
+-- `∃ u, t ⟶* u ∧ leafCount t < leafCount u`, all three theorems report
+-- `Classical.choice`. Measured, then removed rather than shipped — this tree has advertised
+-- "no Classical.choice" since Stage 0 and the equivalence is a nice-to-have, while the
+-- direction that is actually a TOOL (`no_normalForm_of_unbounded`) is already choice-free.
+--
+-- THE CONSTRUCTIVE ROUTE, worked out and recorded for whoever wants it. Replace the
+-- negative hypothesis by the positive one `∀ u, t ⟶* u → ∃ v, u ⟶ v` (every reduct is
+-- reducible), which is what non-normalization is used for anyway. Then:
+--
+--   1. `stepOnce` is total on reducts (by `stepOnce_isSome_of_step`), so the trajectory
+--      `f k := iterate stepOnce k t` is definable with `f k ⟶ f (k+1)` — no choice, since
+--      `stepOnce` is computable.
+--   2. Prove `leafCount (f k) = leafCount t → tau (f k) + k ≤ tau t` by induction on `k`.
+--      Each step is on a size plateau (monotonicity squeezes the intermediates), so
+--      `tau_lt_of_isometric_step` gives one unit of drop per step.
+--   3. Instantiate at `k = tau t + 1`. Since `1 ≤ tau`, the bound is contradictory, so
+--      `leafCount (f (tau t + 1)) ≠ leafCount t` — and that is a DECIDABLE proposition
+--      being refuted, so monotonicity upgrades it to `>` with no classical step.
+--
+-- So the equivalence is constructively true; only this development does not yet contain it.
+-- What IS contained is the half that matters for C1(a), plus `normalizes_of_no_growth`
+-- above, which already says the essential thing: **growth is necessary for
+-- non-termination in pure S.**
