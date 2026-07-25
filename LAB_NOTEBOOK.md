@@ -2551,3 +2551,42 @@ what automation could and couldn't do. This file is a first-class deliverable
   into the left spine of `S f g x` where `t = f x`? It is a sharper question than any of the three
   shapes were, and the forcing lemmas suggest the answer is no; I have no argument. (2) C6, declined
   a twenty-ninth time.
+
+## 2026-07-25 — Stage 42: the linkage clause I nearly shipped without
+
+- Two results, and one near-miss that is the more useful entry.
+- The results. `step_growth_eq` says a pure-S step grows a term by exactly `|c| - 1` for the
+  duplicated argument `c`. That is Stage 2's monotonicity made quantitative, it was four lines by
+  induction on the step, and it should have existed twenty stages ago — every size argument in this
+  tree has been reaching for it and settling for the inequality. And `reduct_half_lt` collapses
+  Stage 41's `app3_S_reduct_half_grows` to a general fact needing nothing about S-shapes: a reduct
+  half is always lighter than its redex. I had proved the special case because I was looking at
+  `S f g x` specifically, which is the third time this week that looking at the instance cost me
+  the general statement.
+- Together they turn Stage 41's "fourth sub-case, open" into a size condition on one subterm: going
+  backwards is safe unless the step duplicated something at least `|s| + 1 - |t|` leaves heavy. That
+  is a better-shaped gap. It is also, unmistakably, the gap where the actual difficulty of C1(a)
+  lives — big duplication is the only way pure S grows.
+- **The near-miss.** I first stated the invariant theorem as "one step back there is still some
+  requirement in `v'` outweighing `t`", and it built, and it was nearly vacuous. Every reduct of `t`
+  outweighs `t`, so `s' = v'` satisfies that at every point of the path except the start. I caught
+  it while writing the ledger entry, not while writing the proof, and only because I asked what the
+  theorem would let me DO. The fix is the linkage clause: the new requirement must be `s` itself, or
+  reduce to `s`, or be the redex `s` is a half of. With linkage the induction is real, because at
+  the path's start the requirement must be a subterm of `t`.
+- This is the fourth instance of the same failure in five stages: recording something true but too
+  weak to use. "No obstruction is apparent" (38), three shapes as prose (39), "contains the reduct"
+  (40), and now an unlinked existential. The pattern is specific enough to test for: after stating a
+  lemma, ask whether a TRIVIAL witness satisfies it. `s' = v'` would have failed that test
+  instantly. I am adding that check to how I write these, because reading the proof does not catch
+  it — the proof of the weak statement is perfectly correct.
+- Also strengthened `selfEmbed_imp_halfShape` to bound its witness by the size of the self-embedding
+  term. Free from the descent's structure, and it opens a second route: chase the requirement's shape
+  instead of its size, and the path's start yields a self-embedding of something strictly smaller
+  than `t`, which the size bound converts into an induction on term size. Two of three start-cases
+  work; the third does not, so I am recording it as a route.
+- Ranking: (1) the third start-case of the shape route — the requirement hiding inside `x` rather
+  than being `t` or inside `f`. It is the one place where `P ⊴ x` gives no relation between `P` and
+  the term `P` reduces to, and closing it would complete an induction on term size rather than
+  leaving a size condition to check. That is the better of the two routes because its remaining gap
+  is combinatorial rather than about growth; (2) C6, declined a thirtieth time.

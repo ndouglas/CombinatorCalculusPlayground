@@ -2365,3 +2365,29 @@ That last sub-case is the whole remaining gap. It is smaller than "prove `HalfSh
 was — it asks only whether a term at or below `t`'s size can reduce, at its own root, into
 `S f g x`'s left spine. **Three controlled cases are not most of a proof**: the uncontrolled one is
 where reduction's growth lives, which is where every hard case in this development has lived.
+
+### Stage 42: pure-S growth accounted exactly; the gap is one size condition
+
+Working Stage 41's arithmetic out properly made both halves of it sharper — and one was needlessly
+specific.
+
+| | |
+|---|---|
+| `reduct_half_lt` | a reduct half is **always** lighter than its redex, whatever its own shape. `app3_S_reduct_half_grows` was a special case of two lines of arithmetic; that branch of the backward induction needs nothing about S-shapes. |
+| `step_growth_eq` | **a pure-S step grows a term by exactly `leafCount c - 1`**, where `c` is the third argument of the S-redex that fired, and `c` occurs in the source. The quantitative form of Stage 2's monotonicity: not "size does not fall" but "size rises by the weight of what got duplicated, less one". |
+| `backward_invariant_or_big_duplication` | one step back, the requirement still outweighs `t` and stays **linked** to what it replaces — unless it was produced by a step duplicating an argument of at least `\|s\| + 1 - \|t\|` leaves. |
+
+So Stage 41's "fourth sub-case" is not a case of a case analysis. It is a **size condition on a
+single subterm**.
+
+**The linkage clause is the content, and I nearly shipped without it.** Unlinked, the first disjunct
+is almost vacuous: every reduct of `t` already outweighs `t`, so `s' = v'` satisfies it at every
+point of the path but the start. Tracking the requirement is what makes this an induction step —
+at the path's start it must be a subterm of `t`, and no subterm of `t` outweighs `t`.
+
+**A second route, now enabled.** `selfEmbed_imp_halfShape` is strengthened to bound its witness by
+the size of the term that self-embedded. The bound comes free — every source the descent produces is
+a one-step predecessor, and pure-S steps never shrink — and it makes an **induction on term size**
+available: chasing the requirement's *shape* rather than its size yields, at the path's start, a
+self-embedding of a term strictly smaller than `t`. Two of that route's three start-cases work out;
+the third (the requirement hiding inside `x`) does not yet.
