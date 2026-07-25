@@ -236,3 +236,64 @@ theorem spineLength_S_red_appL (f g x y : Term) :
 -- C1(a) therefore stands as: dependency discharged (C5), reducibility criterion proved
 -- (spine ≥ 3), preservation arithmetic proved, and ONE arithmetic gap remaining — a lower
 -- bound on the first argument's spine when the redex sits at the head.
+
+-- ## Stage 33: the size criterion — a better-matched target than an invariant
+-- Stage 32 framed C1(a)'s remaining gap as "bound the first argument's spine in the k = 0
+-- case". Checking that before attacking it shows the framing was wrong, and instructively:
+-- `reducible_of_head_spine` is SUFFICIENT for reducibility but not NECESSARY. A term of
+-- head spine 2 such as `(S x)(g x)` can still reduce inside. So demanding head spine ≥ 3
+-- as an INVARIANT asks for more than reducibility needs, and the `k = 0` gap was an
+-- artefact of that over-strong demand rather than a real obstacle.
+--
+-- The criterion below replaces it, needs no invariant at all, and matches what the census
+-- actually measured.
+
+/-- **Reducts of a normalizing term are size-bounded.** If `t` reaches a normal form `n`,
+confluence sends every reduct of `t` to `n` as well, and monotonicity then caps its size.
+(This is the step C5's proof used internally; extracted because it is the useful criterion
+on its own.) -/
+theorem leafCount_le_of_normalizes {t n u : Term} (hk : KFree t)
+    (hn : t ⟶* n) (hnf : NormalForm n) (hu : t ⟶* u) : leafCount u ≤ leafCount n := by
+  obtain ⟨w, hw1, hw2⟩ := confluence hu hn
+  have hwn : w = n := hnf.steps_eq hw2
+  subst hwn
+  exact leafCount_le_of_steps (hk.of_steps hu) hw1
+
+/-- **The size criterion for non-normalization.** A K-free term with reducts of unbounded
+size has no normal form. No reducibility invariant is required — only arbitrarily large
+reducts.
+
+This is the criterion the census evidence actually fits: `c1` reaches 120112 leaves by step
+200 and 25740409924 by fuel 1000 (CONJECTURES.md, C1). Unbounded growth is precisely what
+was measured, whereas an invariant was never observed at all. -/
+theorem no_normalForm_of_unbounded {t : Term} (hk : KFree t)
+    (hub : ∀ N, ∃ u, (t ⟶* u) ∧ N < leafCount u) :
+    ¬ ∃ n, (t ⟶* n) ∧ NormalForm n := by
+  rintro ⟨n, hn, hnf⟩
+  obtain ⟨u, hu, hlt⟩ := hub (leafCount n)
+  have := leafCount_le_of_normalizes hk hn hnf hu
+  omega
+
+/-- Contrapositive, for reading the census the other way: a normalizing K-free term has a
+size bound on its whole reduction graph. So the census's exploding sizes are not merely
+suggestive — any bound on them would have been a normalization proof. -/
+theorem bounded_of_normalizes {t : Term} (hk : KFree t)
+    (h : ∃ n, (t ⟶* n) ∧ NormalForm n) :
+    ∃ N, ∀ u, (t ⟶* u) → leafCount u ≤ N := by
+  obtain ⟨n, hn, hnf⟩ := h
+  exact ⟨leafCount n, fun u hu => leafCount_le_of_normalizes hk hn hnf hu⟩
+
+-- ## C1(a)'s remaining gap, restated
+-- With `no_normalForm_of_unbounded`, C1(a) needs exactly one thing: a K-free term whose
+-- reducts have unbounded size. Three things are now true of that target that were not true
+-- of the invariant target:
+--
+--   * it needs no preserved predicate — only a family of reducts, one above each bound;
+--   * it is what the census measured, so the evidence and the goal finally agree;
+--   * it is monotone in the evidence: every larger reduct found is progress toward it,
+--     whereas invariant hunting produced nothing cumulative across Slices 3, 4 and 32.
+--
+-- What is still missing is a PROOF of unboundedness, which needs a growth step —
+-- from any reduct, reach a strictly larger one — and that remains open. But the shape of
+-- the missing lemma is now "reducts keep growing" rather than "some predicate is
+-- preserved", and the former is the one the trajectory data speaks to.
