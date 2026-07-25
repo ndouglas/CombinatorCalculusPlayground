@@ -607,3 +607,233 @@ def selfEmbeds (cap steps : Nat) (t : Term) : Bool :=
 -- Establishing impossibility would be a genuine theorem and would close the loop route for
 -- good; finding a witness at larger size would prove C1(a). Both are open, and the search
 -- cannot decide between them.
+
+-- ## Stage 38: the one-step obstruction, PROVED
+-- Stage 37 left the loop route "searched and empty where searchable" and said plainly that no
+-- obstruction was proved and none was apparent. One is apparent after all, at depth one, and it
+-- is not a measure argument — measures cannot work here, since a measure that fell on every
+-- pure-S step would prove strong normalization and hence REFUTE C1(a). It is structural:
+--
+--   the reduct of a redex never contains that redex.
+--
+-- `S f g x ⟶ f x (g x)`, and the reduct's subterms are exactly `f x`, `g x`, the reduct itself,
+-- and the subterms of `f`, `g`, `x`. The last group is too small to hold `S f g x`. Of the first
+-- three, each forces an equation a term cannot satisfy — `x = g x`, or `f = S f g` — because a
+-- term is never a proper subterm of itself. Congruence then lifts this to a redex anywhere, and
+-- the lifting is where transitivity of the subterm relation does the work: if `app f u` sits
+-- inside `f'`, then so does `f`, which is the induction hypothesis.
+--
+-- This needs a Prop-level subterm relation. `isSubterm` (Reachability, Slice 3) is Bool-valued
+-- census tooling with no lemmas; `Subterm` is the relation the kernel can reason about, and the two
+-- are bridged below so the Stage 37 guards inherit the kernel's meaning.
+
+/-- `Subterm s t` — `s` occurs as a subterm of `t`, reflexively. -/
+inductive Subterm : Term → Term → Prop
+  | refl (t : Term) : Subterm t t
+  | left {s a b : Term} : Subterm s a → Subterm s (Term.app a b)
+  | right {s a b : Term} : Subterm s b → Subterm s (Term.app a b)
+
+-- The three ways to be a subterm of an application — packaged as an inversion principle so the
+-- proofs below never have to `cases` on an indexed hypothesis with a compound index.
+theorem Subterm.app_cases {s a b : Term} (h : Subterm s (Term.app a b)) :
+    s = Term.app a b ∨ Subterm s a ∨ Subterm s b := by
+  cases h with
+  | refl => exact Or.inl rfl
+  | left h => exact Or.inr (Or.inl h)
+  | right h => exact Or.inr (Or.inr h)
+
+theorem Subterm.trans {s t u : Term} (h1 : Subterm s t) (h2 : Subterm t u) : Subterm s u := by
+  induction h2 with
+  | refl => exact h1
+  | left _ ih => exact Subterm.left ih
+  | right _ ih => exact Subterm.right ih
+
+-- Immediate but used constantly: a term is a subterm of anything it is applied to or against.
+theorem Subterm.appL (a b : Term) : Subterm a (Term.app a b) := Subterm.left (Subterm.refl a)
+theorem Subterm.appR (a b : Term) : Subterm b (Term.app a b) := Subterm.right (Subterm.refl b)
+
+-- Arithmetic of the leaf measure on the shapes the step relation produces. All `rfl`: `leafCount`
+-- matches on constructors and `1 + f + g + x` associates the same way the nesting does.
+theorem leafCount_app (a b : Term) : leafCount (Term.app a b) = leafCount a + leafCount b := rfl
+theorem leafCount_app2_K (x y : Term) :
+    leafCount (app2 Term.K x y) = 1 + leafCount x + leafCount y := rfl
+theorem leafCount_app3_S (f g x : Term) :
+    leafCount (app3 Term.S f g x) = 1 + leafCount f + leafCount g + leafCount x := rfl
+
+theorem Subterm.leafCount_le {s t : Term} (h : Subterm s t) : leafCount s ≤ leafCount t := by
+  induction h with
+  | refl => exact Nat.le_refl _
+  | @left a b _ ih =>
+      have hb := leafCount_pos b
+      show leafCount s ≤ leafCount a + leafCount b
+      omega
+  | @right a b _ ih =>
+      have ha := leafCount_pos a
+      show leafCount s ≤ leafCount a + leafCount b
+      omega
+
+/-- Antisymmetry, in the form the proofs want it: a subterm that is not smaller is the whole
+term. This is what makes "no cycle" (C2) forbid a size-preserving self-embedding. -/
+theorem Subterm.eq_of_leafCount_le {s t : Term} (h : Subterm s t) (hle : leafCount t ≤ leafCount s) :
+    s = t := by
+  induction h with
+  | refl => rfl
+  | @left a b hsub _ =>
+      have hb := leafCount_pos b
+      have := hsub.leafCount_le
+      exact absurd hle (by show ¬ (leafCount a + leafCount b ≤ leafCount s); omega)
+  | @right a b hsub _ =>
+      have ha := leafCount_pos a
+      have := hsub.leafCount_le
+      exact absurd hle (by show ¬ (leafCount a + leafCount b ≤ leafCount s); omega)
+
+/-- **No term reappears inside its own one-step reduct.** Every term, no size bound, and full SK
+rather than just pure S — the K case is settled by size alone, since `K x y` discards `y` and
+outweighs `x`. -/
+theorem Step.not_sub_self : ∀ {t u : Term}, (t ⟶ u) → ¬ Subterm t u := by
+  intro t u h
+  induction h with
+  | K_red x y =>
+      intro hs
+      have hle := hs.leafCount_le
+      rw [leafCount_app2_K] at hle
+      have hy := leafCount_pos y
+      omega
+  | S_red f g x =>
+      intro hs
+      -- Abbreviate: the redex outweighs f, g and x, which kills every "too small" branch.
+      have hT := leafCount_app3_S f g x
+      have hf := leafCount_pos f
+      have hg := leafCount_pos g
+      have hx := leafCount_pos x
+      have small : ∀ {s : Term}, Subterm (app3 Term.S f g x) s →
+          leafCount s < leafCount (app3 Term.S f g x) → False := fun hsub hlt =>
+        absurd hsub.leafCount_le (by omega)
+      rcases hs.app_cases with heq | hl | hr
+      · -- the reduct IS the redex. Size alone does not settle this branch: the leaf counts
+        -- agree when x is a single leaf. Injectivity is what closes it — the equation's right
+        -- components give x = g x, and THAT is impossible by size.
+        rw [app3, Term.app.injEq] at heq
+        have := congrArg leafCount heq.2
+        rw [leafCount_app] at this
+        omega
+      · rcases hl.app_cases with heq | hl' | hl'
+        · -- redex = f x: forces f = S f g, impossible by size
+          have := congrArg leafCount heq
+          rw [hT, leafCount_app] at this
+          omega
+        · exact small hl' (by omega)
+        · exact small hl' (by omega)
+      · rcases hr.app_cases with heq | hr' | hr'
+        · -- redex = g x: forces g = S f g, impossible by size
+          have := congrArg leafCount heq
+          rw [hT, leafCount_app] at this
+          omega
+        · exact small hr' (by omega)
+        · exact small hr' (by omega)
+  | @appL t t' u hstep ih =>
+      intro hs
+      rcases hs.app_cases with heq | hl | hr
+      · -- app t u = app t' u forces t = t', so the step is a one-step cycle on t
+        rw [Term.app.injEq] at heq
+        exact ih (heq.1 ▸ Subterm.refl t)
+      · -- app t u sits inside t', hence so does t — exactly the induction hypothesis
+        exact ih ((Subterm.appL t u).trans hl)
+      · -- app t u sits inside u: impossible, it is strictly bigger
+        have hle := hr.leafCount_le
+        rw [leafCount_app] at hle
+        have := leafCount_pos t
+        omega
+  | @appR t u u' hstep ih =>
+      intro hs
+      rcases hs.app_cases with heq | hl | hr
+      · rw [Term.app.injEq] at heq
+        exact ih (heq.2 ▸ Subterm.refl u)
+      · have hle := hl.leafCount_le
+        rw [leafCount_app] at hle
+        have := leafCount_pos u
+        omega
+      · exact ih ((Subterm.appR t u).trans hr)
+
+-- The Bool-valued census predicate and the kernel relation agree, so Stage 37's guards — and
+-- Slice 3's before them — are statements about `Subterm` and not merely about a search routine.
+theorem isSubterm_iff_Subterm : ∀ {s t : Term}, isSubterm s t = true ↔ Subterm s t := by
+  intro s t
+  induction t with
+  | S =>
+      constructor
+      · intro h
+        simp [isSubterm] at h
+        exact h ▸ Subterm.refl _
+      · intro h
+        cases h with
+        | refl => simp [isSubterm]
+  | K =>
+      constructor
+      · intro h
+        simp [isSubterm] at h
+        exact h ▸ Subterm.refl _
+      · intro h
+        cases h with
+        | refl => simp [isSubterm]
+  | app a b iha ihb =>
+      constructor
+      · intro h
+        rw [isSubterm] at h
+        rcases Bool.or_eq_true _ _ |>.mp h with heq | hrest
+        · exact (of_decide_eq_true (by simpa using heq) : Term.app a b = s) ▸ Subterm.refl _
+        · rcases Bool.or_eq_true _ _ |>.mp hrest with hl | hr
+          · exact Subterm.left (iha.mp hl)
+          · exact Subterm.right (ihb.mp hr)
+      · intro h
+        rw [isSubterm]
+        rcases h.app_cases with heq | hl | hr
+        · simp [heq]
+        · simp [iha.mpr hl]
+        · simp [ihb.mpr hr]
+
+/-- **Any self-embedding must strictly grow.** If `t` reappears inside a reduct of itself, the
+reduct is strictly bigger — because equal leaf counts would force `t` to BE that reduct, i.e. a
+cycle, and pure S has none (C2, `no_pure_S_cycle`). This is the kernel form of what Stage 37
+argued in prose: the context `C` in `t ⟶⁺ C[t]` cannot be trivial. -/
+theorem selfEmbed_leafCount_lt {t u : Term} (hk : KFree t)
+    (h : ∃ v, (t ⟶ v) ∧ (v ⟶* u)) (hs : Subterm t u) : leafCount t < leafCount u := by
+  rcases Nat.lt_or_ge (leafCount t) (leafCount u) with hlt | hge
+  · exact hlt
+  · have heq : t = u := hs.eq_of_leafCount_le hge
+    subst heq
+    exact absurd h (no_pure_S_cycle hk)
+
+/-- **Any self-embedding needs at least two steps.** The one-step case is impossible, so the
+first step cannot already be the whole path. -/
+theorem selfEmbed_needs_two_steps {t u : Term} (hs : Subterm t u)
+    (h : ∃ v, (t ⟶ v) ∧ (v ⟶* u)) : ∃ v w, (t ⟶ v) ∧ (v ⟶ w) ∧ (w ⟶* u) := by
+  rcases h with ⟨v, hstep, hback⟩
+  cases hback with
+  | refl => exact absurd hs hstep.not_sub_self
+  | tail h2 hrest => exact ⟨v, _, hstep, h2, hrest⟩
+
+-- ## What lifts and what does not
+-- The one-step theorem holds for every SK term with no size bound, which is a different KIND of
+-- statement from Stage 37's search: not "no witness below 8 leaves" but "no witness, ever, at
+-- depth one". Together with `selfEmbed_leafCount_lt` the loop route now carries two proved
+-- constraints — a self-embedding needs at least two steps and must strictly grow.
+--
+-- It does NOT lift to multi-step reduction, and the reason is worth recording precisely rather
+-- than left as "the induction fails". The natural argument inducts on path length: given a
+-- shortest self-embedding `t ⟶⁺ w` with last step `v ⟶ w`, split the occurrence of `t` in `w`
+-- by its position relative to the redex. Off the redex, `t` is a subterm of `v`, so `t ⟶⁺ v` is
+-- a SHORTER self-embedding and minimality closes the case. The residual cases are the ones where
+-- the occurrence meets the redex `S f g x`, and there `t` is one of:
+--
+--   * a term containing the reduct `f x (g x)`,   * `f x`,   * `g x`.
+--
+-- None of the three is contradictory on its face. Size does not kill them — a self-embedding is
+-- allowed to grow, which is exactly what `selfEmbed_leafCount_lt` says — and neither does
+-- acyclicity, since these `t` need not recur. So the depth-one proof is a genuine base case with
+-- no inductive step, and closing the loop route needs a new idea about those three shapes, not
+-- more of this argument.
+--
+-- One thing the failure does settle: the missing ingredient is not a measure. A measure falling
+-- on every pure-S step would prove strong normalization for pure S and so REFUTE C1(a), which
+-- the census evidence says is true. Whatever closes this is structural, as the base case is.

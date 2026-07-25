@@ -127,6 +127,20 @@ plainly: *"if Stage 5 never terminates, the notebook is the result."*
 | C5 | conservation for pure S (WN ⇒ SN) | **PROVED** `conservation` — *not* an import; proved from Stages 1, 2, 6 and C2 |
 | C6 | divergence density → 1 | **probed**, open, low materiality |
 
+C1(a)'s **loop route** — find `t ⟶⁺ C[t]`, which pumps to an infinite
+reduction by congruence and hence (via C5) to no normal form — now carries two
+proved constraints rather than search evidence alone:
+
+- `Step.not_sub_self` — **no term reappears inside its own one-step reduct.**
+  Every SK term, no size bound. Structural, not a measure: the reduct of a
+  redex never contains that redex.
+- `selfEmbed_leafCount_lt` — any self-embedding must **strictly grow**, since
+  equal size would make it a cycle and C2 forbids that.
+
+So a self-embedding needs at least two steps and strict growth. Whether one
+exists is open; Stage 38 records exactly which three shapes the depth-one
+argument cannot rule out at greater depth.
+
 Every entry carries a **materiality** and a **prior-art** line in the ledger.
 Those two fields were added in Stage 7 after nine stages went into C1, whose
 materiality was low from the start and whose prior art was discoverable in an
