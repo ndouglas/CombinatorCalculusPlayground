@@ -3008,3 +3008,37 @@ what automation could and couldn't do. This file is a first-class deliverable
   condition, which would complete a SECOND independent adequacy proof for the same machine and confirm the
   route end to end before it is used on anything harder. (2) piece (v) with route two, decoder and tracker
   as separate obligations. (3) rungs 2/3 via match-bounds. (4) C6, declined a forty-first time.
+
+## 2026-07-25 — Stage 54: the obstruction was in my own interface
+
+- I measured `hstep` before proving it, and it failed — 36 of 183. Good thing, because Stage 53 had
+  hypothesised the wrong reason for the difficulty (a spacing condition) and I would have spent the stage
+  proving something false about something irrelevant.
+- The actual reason is one term. `K (Itower 1) (K (Itower 2))` sits on segment three and is itself a
+  K-redex whose contraction is `Itower 1`. One host step, two source states, segment two skipped. The
+  pending computation was in the discarded argument, so contracting the `K` arrived early. Nothing to do
+  with how far apart the encodings are.
+- And then the fix was not in the relation but in the INTERFACE I wrote in Stage 8. `hstep` let the
+  abstraction advance by at most one source step per host step. Nothing in the tracking proof needs that —
+  it composes source paths, and composing with `trans` instead of `tail` is the whole change. Relaxing it
+  takes the failures from 36 to 0. So route two was fine and my own adequacy interface was the obstruction,
+  for forty-six stages, unnoticed because until now every encoding I tried advanced one step at a time.
+- I want to name that failure mode because it is new in this project. I have repeatedly caught myself
+  overclaiming, mis-ranking, and using blind probes. This is different: a definition I wrote early, that
+  was adequate for every case I met, silently narrower than the theorem it supports. The tell was available
+  — `abstraction_tracks_rel`'s proof builds a path and then artificially restricts the input to single
+  steps — and reading my own proof would have shown it. I only looked because a measurement forced me to.
+- The symmetry is the thing I will remember from this stage. The K rule erases, and erasure is exactly what
+  makes the K-normal-form abstraction work (drift in discarded arguments becomes invisible) and exactly
+  what makes the trajectory relation fail (discarding pending work skips states). The same mechanism, load
+  bearing for one design and fatal to the other. That is a genuinely nice fact about SK and it fell out of
+  comparing two failed routes rather than from either one.
+- Where this leaves piece (v): two abstractions, both viable, with complementary demands. Route one wants
+  intermediates whose K-normal forms are encodings — a shape condition. Route two wants nothing about
+  shape, only that segments be well defined, and now tolerates state-skipping. Route two looks better and
+  is measured clean; the honest caveat is that "measured clean" means one machine at one size.
+- Ranking, as obligations: (1) **prove `OnSegmentHStepPath` for the countdown**, which would give a second
+  independent adequacy proof for the same machine and validate the generalised interface on something. The
+  proof needs the source-order lemmas from Stage 53 plus a case analysis on whether the step crosses a
+  segment boundary. (2) piece (v) with route two. (3) rungs 2/3 via match-bounds. (4) C6, declined a
+  forty-second time.

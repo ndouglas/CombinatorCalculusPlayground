@@ -2810,3 +2810,39 @@ computation. Fine for `bwd`, which takes an arbitrary relation — but a `Simula
 **function**, and the trajectory relation supplies none. The countdown got its decoder from `naiveAbs`
 independently; a driver must do the same. **Decode syntactically, track relationally** — two obligations, and
 route two discharges only the second.
+
+### Stage 54: adequacy may advance by a path — the restriction that broke route two
+
+Measured `hstep` for the trajectory relation **before** attempting the proof.
+
+```
+single-step advance:   36 failures out of the 183 terms reachable from Itower 3
+path advance:           0
+```
+
+Stable at closure bounds 26, 30 and 36 with identical saturated closures — so the 36 is real, not a bound
+artefact.
+
+**The diagnosis is one example**, kept as a guard so the next attempt does not rediscover it.
+`skipWitness = K (Itower 1) (K (Itower 2))` sits on segment 3 and is *itself a K-redex* whose contraction is
+`Itower 1`. One host step, two source states — **segment 2 skipped.** Nothing to do with the spacing
+condition hypothesised in Stage 53: the cause is that a K-step can **discard a pending computation and
+arrive early.**
+
+So the trajectory relation was never the problem — `bwd_of_abstraction_rel`'s single-step restriction was.
+The tracking proof never needed it (it composes paths either way), so `trans` instead of `tail` removes it:
+
+| | |
+|---|---|
+| `RS.abstraction_tracks_path` | tracking with multi-step advance |
+| `RS.bwd_of_abstraction_path` | adequacy from a relation that may advance by a path |
+| `RS.bwd_of_abstraction_path_generalises` | the single-step form is the special case |
+
+All three **axiom-free**.
+
+**Note the symmetry.** The K rule's erasure is what makes the K-normal-form abstraction well behaved —
+drift inside discarded arguments becomes invisible — and it is the *very same* erasure that makes the
+trajectory relation skip states. One mechanism, helping one abstraction and hurting the other.
+
+Route two's obligation is now stated in the form the generalised interface asks for
+(`OnSegmentHStepPath`), measured clean over one machine at one size, and unproved.
