@@ -1756,3 +1756,77 @@ theorem encTagN_drift_fwd {w w' : List Bool} (hstep : (RS.Tag tagAB).step w w')
 -- them forward is the remaining case analysis: each phase's pending computation must finish
 -- canonically while its doomed branches are discarded. The endpoints and the data slots are done;
 -- the interior is what is left of `bwd`.
+
+-- ## Stage 72: what completion cannot see — a correction, and the interior's true shape
+--
+-- Stage 71 closed with "the interior is what is left of `bwd`", and Stage 70 called forward
+-- completion "bwd's tracking argument". THE SECOND CLAIM IS WRONG, and the error is worth stating
+-- precisely because it redirects the remaining work. Suppose full forward completion held: every
+-- reduct of `encTagN w` reaches an on-trajectory encoding. A host path `encTagN w ⟶* encTagN w'`
+-- with `w'` OFF the trajectory is still consistent with that — the foreign encoding's cone would
+-- simply rejoin the trajectory downstream, a confluent tributary. Completion sees where states FLOW;
+-- `bwd` is a statement about the ORDER in which encodings can be VISITED, and order is invisible to
+-- endpoint-completion. The countdown knew this: both its adequacy proofs are per-step arguments
+-- (stutter-or-advance; least-segment-index), not completions. So the remaining target is the
+-- `hstep` of a genuine segment relation — with Stage 71's completion lemmas as ingredients, not as
+-- the argument.
+--
+-- What IS true and cheap, recorded as theorems below:
+--   * the CONE LEMMA: every interior state joins with every future encoding — confluence composed
+--     with `fwd`, one line, and the honest generic content of "completion" available without any
+--     invariant;
+--   * the LAYER-SHEDDING algebra: the driver's shell nests self-similarly (`selfRep F`'s inner
+--     self-application can pre-unfold future cycles), and each pre-unfolded layer, once applied,
+--     advances the data by exactly one step-function application. This is WHY the path-advancing
+--     adequacy interface (`RS.bwd_of_abstraction_path`) exists: a single host step inside a nested
+--     shell corresponds to several source steps at once;
+--   * RECOGNIZABILITY: canonical-form data is syntactically invisible to the decoder — interior
+--     states and encodings cannot be confused.
+
+/-- **The cone lemma.** Every reduct of `encTagN w` joins with the encoding of every source state
+reachable from `w`. Interior states never leave the trajectory's joint cone. -/
+theorem interior_joins_trajectory {w u : List Bool} (hu : (RS.Tag tagAB).Steps w u)
+    {t : Term} (h : encTagN w ⟶* t) : ∃ s, (t ⟶* s) ∧ (encTagN u ⟶* s) :=
+  confluence h (RS.SK_steps_iff.mp (tagABn_path hu))
+
+/-- **Layer shedding.** A pre-unfolded driver layer, applied to data, hands the data one
+step-function application and exposes the next layer: `S (K X) F d ⟶* X (F d)`, generically in the
+continuation `X`. `selfRep_advances` is `selfRepW_unfold` followed by one instance of this. -/
+theorem selfRep_layer_shed (X F d : Term) :
+    Term.app (app2 S (Term.app K X) F) d ⟶* Term.app X (Term.app F d) :=
+  Steps.tail (Step.S_red (Term.app K X) F d)
+    (Steps.congL (Steps.single (Step.K_red X d)))
+
+/-- **Recognizability.** The decoder is blind to canonical-form cells: a drifted word can never be
+mistaken for a literal encoding. (With `decWord_encWord`, the decoder separates literal encodings
+from every completed interior state.) -/
+theorem decWord_wordCode (x M : Term) : decWord (wordCode x M) = none := by
+  have hc : (S = CONSf) = False := eq_false (by decide)
+  have hnil : ∀ (f a b : Term), (Term.app (Term.app f a) b = NILf) = False := fun f a b =>
+    eq_false (fun h => by injection h with h1 _; exact Term.noConfusion h1)
+  rw [wordCode_explicit]
+  simp only [decWord, _root_.app2, hc, hnil, if_false]
+
+-- ## The corrected design, recorded before the next attempt
+--
+-- THE TARGET. A relation `absR t u` feeding `RS.bwd_of_abstraction_path`, with the loop-tolerant
+-- "not yet past" that Stage 65 showed is mandatory. The candidate:
+--
+--     absR t u  :=  (encTagN u ⟶* t)  ∧  ∀ v, Tag.step u v → (encTagN v ⟶* t) → Tag.Steps v u
+--
+-- — t sits in u's cone, and any successor cone containing t can RETURN to u (true at the fixed
+-- point, vacuous off it). `habs` is immediate; `hfun` and `hstep` both reduce to facts about
+-- ENCODING-TO-ENCODING reachability, which is where the order lives.
+--
+-- THE ENGINE such facts need: the interior factorization. Every reachable state should factor as a
+-- SHELL context (drift-free, from a finite family — the code is normal) over DATA holes (word-drift,
+-- completed by Stage 69/71). The subtlety that makes this the hard theorem: holes are consumed in
+-- FUNCTION position (the fold applies the word), so context and content genuinely mix at the moment
+-- of consumption — the factorization must hand off, at exactly those steps, to the data layer's
+-- completion lemmas. The shell's self-similar nesting (above) adds bookkeeping but not difficulty:
+-- shed layers advance the source by a PATH, which the interface already permits.
+--
+-- ASKED, PER STAGE 65's LESSON: could `bwd` be FALSE again — some interior state stepping to a
+-- foreign literal encoding? No falsifier found: literal `mkWord` output arises only from the fold
+-- rebuild, the fold rebuilds only `tail² ++ rule` words, and doomed branches are discarded whole,
+-- unreduced. The design proceeds on `bwd` true, with the question kept open until `hstep` closes it.
