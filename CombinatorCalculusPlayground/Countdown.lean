@@ -722,3 +722,17 @@ def countdownInSK' : Simulation RS.Countdown RS.SK where
   bwd := by
     intro a a' h
     exact countdown_bwd_via_trajectory h
+
+-- ## Stage 65: the trajectory relation requires a loop-free source
+-- Found while transplanting route two to the tag driver. `OnSegment`'s "not yet past `w`" clause is
+-- what buys `hfun` (Stage 53) — and it is also an assumption about the SOURCE, hidden in plain
+-- sight: if any state can step to itself, the clause is violated AT THE ENCODING, so `habs` fails
+-- before any host behaviour is even consulted. The countdown never noticed because it only ever
+-- counts down.
+
+/-- **`OnSegment`'s `habs` is unsatisfiable at any source self-loop, for every encoding.** Nothing
+about SK, nothing about the encoder: the segment of `w` must exclude everything reachable from its
+successors, and a self-loop makes `w` its own successor. -/
+theorem onSegment_habs_fails_of_selfLoop {A : RS} (enc : A.Carrier → Term) {w : A.Carrier}
+    (h : A.step w w) : ¬ OnSegment enc (enc w) w :=
+  fun ⟨_, hnot⟩ => hnot w h (Steps.refl _)

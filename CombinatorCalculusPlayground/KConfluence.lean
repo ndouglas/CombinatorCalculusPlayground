@@ -370,3 +370,54 @@ theorem sNormalForm_I : ¬ ∃ u, SStep I u := by
       | appL h' => cases h'
       | appR h' => cases h'
   | appR h => cases h
+
+-- ## Stage 65: K-normality by decision
+-- Checking `KNormalForm` for the tag driver's terms by hand-written shape lemmas does not scale to
+-- 1400-leaf machines. But K-normality is a syntactic property — no subterm is `K` applied to two
+-- arguments — so it is DECIDABLE, and the kernel can evaluate the check on any concrete term. One
+-- Bool function, one soundness lemma, and every K-normality obligation on machine code becomes
+-- `kNormalForm_of_no_kredex (by decide)`.
+
+/-- Is the ROOT a K-redex? -/
+def isKRedex : Term → Bool
+  | Term.app (Term.app Term.K _) _ => true
+  | _ => false
+
+/-- Does any subterm have a K-redex at its root? -/
+def hasKRedex : Term → Bool
+  | Term.app a b => isKRedex (Term.app a b) || hasKRedex a || hasKRedex b
+  | _ => false
+
+theorem kNormalForm_K : KNormalForm Term.K := by rintro ⟨u, hu⟩; cases hu
+
+/-- Composition: an application is K-normal when its root is not a K-redex and both sides are. The
+root condition is stated with the Bool so that concrete heads discharge it by `rfl`, without
+inspecting the (possibly abstract) argument. -/
+theorem kNormalForm_app' {a b : Term} (hroot : isKRedex (Term.app a b) = false)
+    (ha : KNormalForm a) (hb : KNormalForm b) : KNormalForm (Term.app a b) := by
+  rintro ⟨u, hu⟩
+  cases hu with
+  | K_red x y => simp [isKRedex] at hroot
+  | appL hl => exact ha ⟨_, hl⟩
+  | appR hr => exact hb ⟨_, hr⟩
+
+/-- **Soundness of the check**: no K-redex anywhere means K-normal. -/
+theorem kNormalForm_of_no_kredex : ∀ {t : Term}, hasKRedex t = false → KNormalForm t := by
+  intro t
+  induction t with
+  | S => exact fun _ => kNormalForm_S
+  | K => exact fun _ => kNormalForm_K
+  | app a b iha ihb =>
+      intro h
+      have h3 : isKRedex (Term.app a b) = false
+          ∧ hasKRedex a = false ∧ hasKRedex b = false := by
+        have hunf : hasKRedex (Term.app a b)
+            = (isKRedex (Term.app a b) || hasKRedex a || hasKRedex b) := rfl
+        rw [hunf] at h
+        simpa [Bool.or_eq_false_iff, and_assoc] using h
+      exact kNormalForm_app' h3.1 (iha h3.2.1) (ihb h3.2.2)
+
+-- Anchors: the checker agrees with the hand-proved facts, and bites on a real K-redex.
+#guard hasKRedex I = false
+#guard hasKRedex (app2 Term.K Term.S Term.S) = true
+#guard isKRedex (Term.app Term.K Term.S) = false

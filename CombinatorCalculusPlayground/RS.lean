@@ -32,6 +32,13 @@ theorem Steps.trans {a b c : A.Carrier} (h1 : A.Steps a b) (h2 : A.Steps b c) :
 /-- No step applies. -/
 def NormalForm (A : RS) (a : A.Carrier) : Prop := ¬ ∃ b, A.step a b
 
+/-- A normal form goes nowhere: any path out of it has length zero. (Stage 65 — the generic twin of
+Term's `NormalForm.steps_eq`.) -/
+theorem NormalForm.steps_eq {a b : A.Carrier} (hn : A.NormalForm a) (h : A.Steps a b) : a = b := by
+  cases h with
+  | refl => rfl
+  | tail s _ => exact absurd ⟨_, s⟩ hn
+
 /-- Some reduction path ends at a normal form. -/
 def Normalizes (A : RS) (a : A.Carrier) : Prop :=
   ∃ b, A.Steps a b ∧ A.NormalForm b

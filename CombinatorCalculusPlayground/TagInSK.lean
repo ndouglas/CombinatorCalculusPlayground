@@ -593,3 +593,248 @@ example : (RS.Tag tagAB).step [false, true] [true, false] :=
 -- The structural difference this time: `enc`'s image contains the driver, which duplicates ITSELF at every
 -- step, so the Stage 11 result that machine code is safe to duplicate (`normalForm_bracket`) becomes
 -- load-bearing rather than reassuring.
+
+-- ## Stage 65: the decoder, a `PathEncoding` — and `bwd` is FALSE for this encoding
+--
+-- Toward the `Simulation`, in the order the obligations fall. The decoder is mechanical and done below,
+-- and with `fwd` it already yields a machine-checked `PathEncoding (RS.Tag tagAB) RS.SK` — the weaker of
+-- the two certificate classes, but a real one: the refutation results are stated over exactly this class.
+--
+-- Then the demanding half — and checking it produced three theorems, one fatal and two instructive:
+--
+--   * **`bwd` IS FALSE OUTRIGHT** (`tagAB_bwd_false`). A tag step is PARTIAL — it needs `m ≤ |w|` — but
+--     `STEPc` is TOTAL: on the stuck word `[b]` it computes `tail (tail [b]) = []`, `head [b] = b`,
+--     appends `[a,b]`, and so the host walks `encTag [b] ⟶* encTag [a,b]` while the source has no step at
+--     all. No abstraction, however clever, can prove a false proposition: the DRIVER must change, not the
+--     proof technique. The fix is a design item — guard the step on `|w| ≥ 2`, so stuck words self-loop.
+--   * ROUTE TWO (trajectory relation) fails at `habs` independently of any driver: `tagAB` has a FIXED
+--     POINT, `[b,a,b] ↦ [b,a,b]`, and `OnSegment`'s "not yet past `w`" clause is unsatisfiable at any
+--     source self-loop (`onSegment_habs_fails_of_selfLoop`, Countdown.lean). This survives the guard fix —
+--     it is a property of the SOURCE.
+--   * ROUTE ONE (K-normal form) fails at `hstep` at the VERY FIRST host step out of any encoded state:
+--     firing the driver's self-application leaves `(X W)((K STEPc) W) d`, whose K-normal form
+--     `(X W) STEPc d` is a mid-step term and provably not an encoding of anything
+--     (`tagDriver_knf_hstep_fails`). This also survives the guard fix — any `selfRep`-driven encoding
+--     starts with the same self-application. Stage 49 predicted the constraint; this is its concrete bite.
+
+-- ### The decoder
+
+/-- The encoder, named: the driver applied to the encoded word. Its `fwd` is `tagAB_fwd_SK`. -/
+def encTag (w : List Bool) : Term := Term.app (selfRep STEPc) (encWord w)
+
+/-- Symbols back from combinators: `K ↦ a`, `S K ↦ b`. -/
+def decSym (t : Term) : Option Bool :=
+  if t = symA then some true else if t = symB then some false else none
+
+/-- Words back from cons-built folds, syntactically. -/
+def decWord : Term → Option (List Bool)
+  | Term.app (Term.app c x) r =>
+      if c = CONSf then
+        match decSym x, decWord r with
+        | some s, some w => some (s :: w)
+        | _, _ => none
+      else if Term.app (Term.app c x) r = NILf then some [] else none
+  | t => if t = NILf then some [] else none
+
+/-- The full decoder: peel the driver, decode the word. -/
+def decTag (t : Term) : Option (List Bool) :=
+  match t with
+  | Term.app d w => if d = selfRep STEPc then decWord w else none
+  | _ => none
+
+theorem decWord_encWord : ∀ (u : List Bool), decWord (encWord u) = some u := by
+  intro u
+  induction u with
+  | nil => rfl
+  | cons s u' ih =>
+      have ih' : decWord (mkWord (u'.map encSym)) = some u' := ih
+      cases s <;> simp [encWord, encSym, mkWord, decWord, decSym, symA, symB, ih']
+
+/-- **`dec_enc` for the tag driver.** -/
+theorem decTag_encTag (u : List Bool) : decTag (encTag u) = some u := by
+  show (if selfRep STEPc = selfRep STEPc then decWord (encWord u) else none) = some u
+  rw [if_pos rfl]
+  exact decWord_encWord u
+
+/-- The encoder is injective — distinct words stay distinct inside SK. -/
+theorem encTag_injective {u u' : List Bool} (h : encTag u = encTag u') : u = u' := by
+  have h1 := decTag_encTag u
+  rw [h, decTag_encTag] at h1
+  exact (Option.some.inj h1).symm
+
+/-- `fwd`, iterated to paths. (Raw recursor: `induction` fails on `RS.Steps` at a concrete
+instance — the same mkElimApp motive error `SK_steps_iff` works around.) -/
+theorem tagAB_path {w w' : List Bool} (h : (RS.Tag tagAB).Steps w w') :
+    RS.SK.Steps (encTag w) (encTag w') :=
+  h.rec (fun a => @RS.Steps.refl RS.SK (encTag a))
+    (fun s _ ih => RS.Steps.trans (tagAB_fwd_SK s) ih)
+
+/-- **The m = 2 tag system PATH-ENCODES into SK, machine-checked.** Injective, path-preserving — the
+class every refutation in this development is stated over, now inhabited by a genuine
+inspect-dispatch-append machine. (Not yet a `Simulation`: `bwd` is missing, and the two theorems below
+say why it will not come from the countdown's templates.) -/
+def tagABPathEncoding : PathEncoding (RS.Tag tagAB) RS.SK where
+  enc := encTag
+  inj := encTag_injective
+  path := tagAB_path
+
+-- Anchors: the decoder really decodes, rejects junk, and the pieces are what they say.
+#guard decTag (encTag [true, false, false]) = some [true, false, false]
+#guard decTag (encTag []) = some []
+#guard decWord (encWord [false, true]) = some [false, true]
+#guard decSym symA = some true
+#guard decSym symB = some false
+#guard decSym S = none
+#guard decTag S = none
+#guard decTag (Term.app S (encWord [])) = none
+
+-- ### The central finding: the host outruns the source on stuck words
+
+/-- `tail` of the EMPTY word is the empty word — the fold's initial pair simply comes back. This is
+the benign half of `STEPc`'s totality. -/
+theorem TAILf_nil : Term.app TAILf (mkWord []) ⟶* mkWord [] := by
+  refine Steps.trans (TAILf_beta _) ?_
+  refine Steps.trans (Steps.congR (mkWord_tailPair [])) ?_
+  exact SNDf_pair _ _
+
+/-- `head` of the empty word is the DEFAULT `K` — which is `symA`. This is the treacherous half: a
+stuck word still dispatches, as if its missing head were `a`. -/
+theorem HEADf_nil : Term.app HEADf (mkWord []) ⟶* K := by
+  refine Steps.trans (HEADf_beta _) ?_
+  exact NILf_beta K K
+
+/-- **The step function steps a stuck word.** `[b]` has length 1 < m = 2, so the tag system halts —
+but `STEPc` is total: both tails succeed, the head dispatches, and out comes `[a,b]`. -/
+theorem STEPc_stuck : Term.app STEPc (encWord [false]) ⟶* encWord [true, false] := by
+  refine Steps.trans (STEPc_beta _) ?_
+  have htail : Term.app TAILf (Term.app TAILf (encWord [false])) ⟶* mkWord [] := by
+    refine Steps.trans (Steps.congR (TAILf_mkWord symB [])) ?_
+    exact TAILf_nil
+  have hrule : Term.app RULEf (Term.app HEADf (encWord [false])) ⟶* encWord [true, false] := by
+    refine Steps.trans (Steps.congR (HEADf_mkWord symB [])) ?_
+    exact RULEf_symB
+  refine Steps.trans (Steps.congApp (Steps.congR htail) hrule) ?_
+  exact CATf_mkWord [] [symA, symB]
+
+/-- So the host reaches the encoding of a word the source can never reach. -/
+theorem encTag_outruns : encTag [false] ⟶* encTag [true, false] :=
+  tagFwd_of_step STEPc_stuck
+
+/-- ...and the source really cannot: `[b]` is a tag normal form. -/
+theorem tagAB_stuck_singleton : (RS.Tag tagAB).NormalForm [false] := by
+  rintro ⟨w', a, rest, _, hlen, _⟩
+  exact absurd hlen (by decide)
+
+/-- **`bwd` is FALSE for `encTag`.** Not "hard": false. The tag step is partial and the compiled step
+function is total, so the host keeps computing where the source has halted. No choice of abstraction
+can rescue this — the adequacy machinery proves `bwd` from its hypotheses, so every instantiation of
+it must fail somewhere. The driver needs a LENGTH GUARD, and that is a Stage 66 design item, not a
+proof item. -/
+theorem tagAB_bwd_false :
+    ¬ (∀ {w w' : List Bool}, RS.SK.Steps (encTag w) (encTag w') → (RS.Tag tagAB).Steps w w') := by
+  intro hbwd
+  have h := hbwd (RS.SK_steps_iff.mpr encTag_outruns)
+  have heq : ([false] : List Bool) = [true, false] :=
+    RS.NormalForm.steps_eq tagAB_stuck_singleton h
+  exact absurd heq (by decide)
+
+-- The outrun is visible to plain evaluation too — kept as an anchor because this is the guard the
+-- Stage 63 validation suite COULD have contained and did not: it only ever tested words long enough
+-- to step.
+#guard nfW (Term.app STEPc (encWord [false])) == nfW (encWord [true, false])
+
+-- ### Route two, refuted for this source: the fixed point
+
+/-- `[b,a,b] ↦ [b,a,b]` — drop two, and `b`'s rule restores exactly what was consumed. -/
+theorem tagAB_selfLoop :
+    (RS.Tag tagAB).step [false, true, false] [false, true, false] :=
+  ⟨false, [true, false], rfl, by decide, rfl⟩
+
+/-- **The trajectory relation cannot start on this source.** Instance of the general obstruction: the
+source has a self-loop, so `OnSegment`'s `habs` fails for `encTag` — and for every other encoder. -/
+theorem onSegment_habs_fails_tagAB :
+    ¬ OnSegment (A := RS.Tag tagAB) encTag (encTag [false, true, false]) [false, true, false] :=
+  onSegment_habs_fails_of_selfLoop encTag tagAB_selfLoop
+
+-- ### Route one, refuted for this driver: the first step already leaves the encodings
+
+/-- The applicative part of the driver's wrapper: `selfRepW F = S selfRepX (K F)`. Named so the
+mid-step terms below can be written down. -/
+def selfRepX : Term :=
+  app2 S (Term.app K S) (app2 S (Term.app K K) (app2 S I I))
+
+/-- Every encoded state is K-normal (`habs` would hold — the abstraction APPLIES; it is `hstep` that
+fails). Machine code is checked by the Stage 65 decision procedure, the word by induction. -/
+theorem kNormalForm_encSym (s : Bool) : KNormalForm (encSym s) := by
+  cases s
+  · exact kNormalForm_app' rfl kNormalForm_S kNormalForm_K
+  · exact kNormalForm_K
+
+theorem kNormalForm_encWord (u : List Bool) : KNormalForm (encWord u) := by
+  induction u with
+  | nil => exact kNormalForm_of_no_kredex (by decide)
+  | cons s u' ih =>
+      exact kNormalForm_app' rfl
+        (kNormalForm_app' rfl (kNormalForm_of_no_kredex (by decide)) (kNormalForm_encSym s)) ih
+
+theorem kNormalForm_encTag (u : List Bool) : KNormalForm (encTag u) :=
+  kNormalForm_app' rfl (kNormalForm_of_no_kredex (by decide)) (kNormalForm_encWord u)
+
+/-- The first host step out of any encoded state: the driver's self-application fires. -/
+theorem encTag_first_step (u : List Bool) :
+    encTag u ⟶ Term.app (Term.app (Term.app selfRepX (selfRepW STEPc))
+      (Term.app (Term.app K STEPc) (selfRepW STEPc))) (encWord u) :=
+  Step.appL (Step.S_red selfRepX (Term.app K STEPc) (selfRepW STEPc))
+
+/-- ...and its K-normal form is this mid-step term, which is NOT an encoding. -/
+def tagMid (u : List Bool) : Term :=
+  Term.app (Term.app (Term.app selfRepX (selfRepW STEPc)) STEPc) (encWord u)
+
+theorem isKNF_first_step (u : List Bool) :
+    IsKNF (Term.app (Term.app (Term.app selfRepX (selfRepW STEPc))
+      (Term.app (Term.app K STEPc) (selfRepW STEPc))) (encWord u)) (tagMid u) :=
+  ⟨KSteps.single (KStep.appL (KStep.appR (KStep.K_red STEPc (selfRepW STEPc)))),
+   kNormalForm_app' rfl (kNormalForm_of_no_kredex (by decide)) (kNormalForm_encWord u)⟩
+
+/-- **The K-normal-form abstraction's `hstep` is FALSE for the tag driver.** If it held, Stage 49's
+forced consequence (`knf_abstraction_forces_encodings`) would make every reachable term K-normalise
+to an encoding — but the very first step out of `encTag []` K-normalises to `tagMid []`, whose head
+is `selfRepX (selfRepW STEPc)` where every encoding's head is the driver, and the two differ as
+terms. The mechanism that carried the countdown cannot even leave the start state here. -/
+theorem tagDriver_knf_hstep_fails :
+    ¬ (∀ {b b' : Term} {u : List Bool}, (b ⟶ b') → IsKNF b (encTag u) →
+        IsKNF b' (encTag u) ∨ ∃ u', (RS.Tag tagAB).step u u' ∧ IsKNF b' (encTag u')) := by
+  intro hstep
+  obtain ⟨u₂, _, hknf⟩ := knf_abstraction_forces_encodings (A := RS.Tag tagAB) encTag
+    (fun {b b' a} hs habs => hstep hs habs) kNormalForm_encTag
+    (Steps.single (encTag_first_step []))
+  have heq : encTag u₂ = tagMid [] := hknf.unique (isKNF_first_step [])
+  simp only [encTag, tagMid] at heq
+  injection heq with h1 _
+  exact absurd h1 (by decide)
+
+-- ## Where `bwd` stands after this stage
+-- Three theorems, in order of force.
+--
+-- FIRST, `bwd` for the current encoding is FALSE (`tagAB_bwd_false`), because the tag step is partial
+-- and `STEPc` is total. This is a design defect in the driver, found only by attempting the proof —
+-- the Stage 63/64 validation could not see it, because every test word was long enough to step. The
+-- fix is known and buildable with the existing toolkit: dispatch on "has at least two symbols" (a
+-- constant-size fold observer, like `HEADf`) and return the word unchanged when it fails, so stuck
+-- words SELF-LOOP in the host. That is Stage 66.
+--
+-- SECOND AND THIRD, the two adequacy templates are each provably inapplicable, for reasons that
+-- SURVIVE the guard fix. Route two's clause is an assumption about the SOURCE (no state on its own
+-- trajectory may recur), violated by `tagAB`'s fixed point regardless of encoder. Route one's side
+-- condition is an assumption about the HOST (every reachable intermediate K-normalises to an
+-- encoding), violated by the driver's own self-application before the word is even touched.
+--
+-- So after the guard, `bwd` still needs a THIRD abstraction: one that assigns mid-step host terms to
+-- a source state (K-normal forms cannot — the S-machinery is visible to them) and that survives
+-- source loops (segments cannot — "not yet past" is empty on a loop). The natural candidate — a
+-- phase-indexed relation, "b lies on the fwd-path from `enc w`, up to reduction inside doomed
+-- subterms" — must quantify over the driver's reachable set, and characterising that set (the
+-- analogue of Stage 56's `Tower`, for a 1450-leaf machine) is the genuine remaining obstacle. What
+-- this stage contributes is the negative space: the characterisation cannot be avoided by either
+-- shortcut that worked before, and it would be wasted effort on the UNGUARDED driver, whose `bwd` no
+-- effort can prove.
