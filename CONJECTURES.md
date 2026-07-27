@@ -3386,3 +3386,36 @@ Axioms `[propext, Quot.sound]`, zero warnings, and the anchors show the evaluato
 **What remains of `bwd`**: the segment INTERIOR — reducts where the DRIVER has partially unfolded
 (mid-`selfRep`, mid-dispatch, mid-fold) rather than only the data having drifted. The endpoints
 re-anchor themselves (this stage); the interior is the remaining case analysis.
+
+### Stage 72: what completion cannot see — a correction, and the interior's true shape
+
+**The correction, before anything else.** Stage 70 called forward drift-completion "bwd's tracking
+argument" and Stage 71 repeated the frame. It is WRONG: completion sees where states FLOW, and `bwd`
+is a statement about the ORDER in which encodings can be VISITED. Full forward completion is
+consistent with a foreign encoding sitting inside the cone as a confluent tributary that rejoins the
+trajectory downstream — completion would never notice it. The countdown's two adequacy proofs both
+knew this implicitly: stutter-or-advance and least-segment-index are per-step and order-aware;
+neither is an endpoint completion. The remaining target is therefore the `hstep` of a genuine
+segment relation, with Stage 71's completion lemmas as ingredients rather than as the argument.
+
+| | |
+|---|---|
+| `interior_joins_trajectory` | the cone lemma: every interior state joins with EVERY future encoding — confluence ∘ `fwd`, one line; the honest generic content of completion |
+| `selfRep_layer_shed` | the shell's self-similarity, tamed: a pre-unfolded driver layer, applied, advances the data by exactly one step-function application — `S (K X) F d ⟶* X (F d)`, generic in the continuation, AXIOM-FREE |
+| `decWord_wordCode` | recognizability: the decoder is blind to canonical-form cells, so interior states and literal encodings cannot be confused |
+
+**The design, recorded.** The candidate segment relation, loop-tolerant per Stage 65:
+
+    absR t u := (encTagN u ⟶* t) ∧ ∀ v, Tag.step u v → (encTagN v ⟶* t) → Tag.Steps v u
+
+`habs` immediate; `hfun` and `hstep` reduce to encoding-to-encoding reachability facts — which is
+where the order lives, and which need the interior factorization: shell contexts (drift-free, finite
+family — the code is normal) over data holes (completed by Stages 69/71), with hand-off to the data
+layer exactly where holes are consumed in function position. The shell's nesting corresponds to
+multi-step source advances, which `RS.bwd_of_abstraction_path` already permits — that interface,
+built in Stage 54 for the countdown's K-discards, turns out to be shaped for this driver too.
+
+Stage 65's question was asked again, as it now must be: is `bwd` false once more? No falsifier
+found — literal `mkWord` output arises only from the fold rebuild, the rebuild produces only
+`tail² ++ rule` words, and doomed branches are discarded whole. The question stays open until
+`hstep` closes it.

@@ -3583,3 +3583,35 @@ what automation could and couldn't do. This file is a first-class deliverable
   completes forward to the next checkpoint, then chain. The unknown is whether "basin" can be
   characterised by completion the way words were, or needs the case analysis the countdown's
   `sk_square` did. (2) rungs 2/3 via match-bounds. (3) C6, declined a fifty-ninth time.
+
+## 2026-07-27 — Stage 72: the frame I had to take back
+
+- Two stages of momentum said the remaining work was "prove forward completion for the interior".
+  Pressure-testing that plan before building it found the flaw: completion is about where states
+  flow, and `bwd` is about the order in which encodings can be visited. A foreign encoding reachable
+  from `encTagN w` whose own cone rejoins the trajectory downstream satisfies every completion
+  statement I was planning to prove. The countdown's proofs were never completions — stutter-or-
+  advance and least-index are per-step and order-aware — and I knew that in Stage 65 when I refuted
+  their transplants, then lost it in the satisfaction of Stage 71's theorem. The correction cost an
+  hour of analysis and zero wasted stages, which is the pattern I most want to keep: pressure-test
+  the frame BEFORE the multi-stage investment, the same reflex that caught bwd's falsity and the
+  rigidity failure.
+- What survives of Stages 70–71 is everything except the framing: drift-completion, literalness
+  restoration, and the identity layer are exactly the ingredients `hstep` will consume when it
+  handles the data slots. The order bookkeeping is what they cannot supply.
+- Three small theorems today, each earning its place: the cone lemma (`interior_joins_trajectory` —
+  the true generic content of completion, one line); layer-shedding (`selfRep_layer_shed`, axiom-
+  free — the driver's shell nests future cycles, and each shed layer advances the data once, which
+  is precisely why Stage 54's path-advancing interface exists); and decoder-blindness
+  (`decWord_wordCode` — interiors and encodings are syntactically separated).
+- The loop-tolerant segment relation is now written down in the file, and its obligations named:
+  `hfun` and `hstep` both reduce to encoding-to-encoding reachability facts, and THOSE need the
+  interior factorization — shell contexts over data holes, hand-off at consumption. That
+  factorization is the one theorem left of `bwd`, and it has been since Stage 65; what changed today
+  is that nothing else is mistaken for it.
+- Asked again, as Stage 65 taught: is `bwd` simply false? No falsifier — the fold rebuilds only
+  `tail² ++ rule` words and dooms are discarded unreduced. Open until `hstep` closes it.
+- Ranking: (1) **`hfun` and `habs` for the segment relation** — cheap, testable before the expensive
+  engine, and they will say whether the relation's shape is right (Stage 53 did exactly this for the
+  countdown and it caught the design early). (2) The factorization engine. (3) rungs 2/3.
+  (4) C6, declined a sixtieth time.
