@@ -217,3 +217,60 @@ theorem selfRep_advances (F d : Term) :
 -- Small, and the size is independent of `F` apart from carrying `F` itself.
 #guard leafCount (selfRepW S) = 16
 #guard (List.range 5).all (fun n => leafCount (selfRepW (Itower n)) = 15 + leafCount (Itower n))
+
+-- ## Stage 62: the fold-list toolkit, and why it needed the occurs check
+-- Assembling the step function needs `head`, `tail`, `cons`, `nil` and pairs on fold-encoded words. All are
+-- fixed combinators — the traversal in `tail` is performed BY THE DATA's own fold, not by driver recursion.
+--
+-- Compiled with the naive `bracket` they are unusable: `TAIL` came out at 14100 leaves and `normalize`
+-- ABORTED on it. Compiled with `bracketOpt` (Stage 62, Bracket.lean) the same definitions give 192 leaves and
+-- run in a third of a second. The occurs check was the difference between a design and a program.
+
+private def V (n : Nat) : TermV := .var n
+private def o1 (b : TermV) : Term := toTerm (TermV.bracketOpt 0 b)
+private def o3 (b : TermV) : Term :=
+  toTerm (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 b)))
+private def o4 (b : TermV) : Term :=
+  toTerm (TermV.bracketOpt 3 (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 b))))
+
+/-- `[]` as a fold: `λc n. n`. -/
+def NILf : Term := toTerm (TermV.bracketOpt 1 (TermV.bracketOpt 0 (V 0)))
+/-- `cons`: `λx L c n. c x (L c n)`. -/
+def CONSf : Term := o4 (TermV.app2 (V 1) (V 3) (TermV.app2 (V 2) (V 1) (V 0)))
+/-- `head`: `λL. L K K` — `c := K` discards the recursive part, `n := K` is the default. -/
+def HEADf : Term := o1 (TermV.app2 (V 0) .K .K)
+def PAIRf : Term := o3 (TermV.app2 (V 0) (V 2) (V 1))
+def FSTf : Term := o1 (TermV.app (V 0) .K)
+def SNDf : Term := o1 (TermV.app (V 0) (TermV.app .S .K))
+
+/-- `tail`, by the standard pair trick: fold building `⟨cons x (fst p), fst p⟩` and take the second. -/
+def TAILSTEPf : Term :=
+  toTerm (TermV.bracketOpt 1 (TermV.bracketOpt 0 (TermV.app2 (ofTerm PAIRf)
+    (TermV.app2 (ofTerm CONSf) (V 1) (TermV.app (ofTerm FSTf) (V 0)))
+    (TermV.app (ofTerm FSTf) (V 0)))))
+
+def TAILf : Term := o1 (TermV.app (ofTerm SNDf)
+  (TermV.app2 (V 0) (ofTerm TAILSTEPf) (TermV.app2 (ofTerm PAIRf) (ofTerm NILf) (ofTerm NILf))))
+
+-- Sizes, all constant in the word:
+#guard (leafCount NILf, leafCount CONSf, leafCount HEADf) = (4, 66, 9)
+#guard (leafCount PAIRf, leafCount FSTf, leafCount SNDf) = (29, 6, 7)
+#guard (leafCount TAILSTEPf, leafCount TAILf) = (139, 192)
+
+private def nfOf' (t : Term) : Option Term := (normalize 100000 t).map (·.1)
+private def obs (L c n : Term) : Term := Term.app (Term.app L c) n
+private def LSK : Term := Term.app (Term.app CONSf S) (Term.app (Term.app CONSf K) NILf)
+private def LK : Term := Term.app (Term.app CONSf K) NILf
+
+-- `head [S,K] = S`, and `tail [S,K]` agrees with `[K]` under two different observers, so the agreement is
+-- not by collapse.
+#guard nfOf' (Term.app HEADf LSK) = some S
+#guard nfOf' (obs (Term.app TAILf LSK) I S) = nfOf' (obs LK I S)
+#guard nfOf' (obs (Term.app TAILf LSK) K S) = nfOf' (obs LK K S)
+
+-- ## Where the driver stands
+-- Every component now exists and runs: `head` and `tail` here, `APPEND` in Stage 60, dispatch for free
+-- (Stage 50 — symbols encoded as `K` and `S K` select branches by application), and self-reproduction in
+-- Stage 61. What remains is to write the m = 2 step function as one term and prove `fwd` for it, which is
+-- assembly rather than design — and which will be a long proof, because `fwd` has to be a reduction chain
+-- and the assembled term will be in the hundreds of leaves.

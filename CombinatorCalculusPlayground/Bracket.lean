@@ -406,3 +406,76 @@ theorem normalForm_abs2 (x y : Nat) (t : TermV) :
 
 -- Sanity: [x][y] y is the "return the second argument" combinator, and it does.
 #guard toTerm (abs2 0 1 (.var 1)) = toTerm (TermV.bracket 0 (TermV.app2 .S .K .K))
+
+-- ## Stage 62: the occurs-check optimisation, added when it finally paid
+-- `bracket` above says why it is naive: "Terms come out bigger, proofs come out smaller; for calibration
+-- the proofs win (YAGNI)." That was right for calibration and it is exactly what blocks the tag driver.
+-- Stage 62 compiled a fold-list toolkit with it and got `TAIL` at 14100 leaves, on which the tree's own
+-- evaluator ABORTS — so the naive algorithm makes the driver not merely large but uncomputable.
+--
+-- The missing rule is the standard one: if `x` does not occur, do not distribute, just protect with `K`.
+
+namespace TermV
+
+/-- `subst` is the identity when the variable is absent — the fact the new rule needs. -/
+theorem subst_of_not_occurs (x : Nat) (u : TermV) :
+    ∀ {t : TermV}, occurs x t = false → subst x u t = t := by
+  intro t
+  induction t with
+  | S => intro _; rfl
+  | K => intro _; rfl
+  | var y =>
+      intro h
+      simp only [occurs, beq_eq_false_iff_ne, ne_eq] at h
+      simp [subst, h]
+  | app a b iha ihb =>
+      intro h
+      simp only [occurs, Bool.or_eq_false_iff] at h
+      simp [subst, iha h.1, ihb h.2]
+
+/-- Bracket abstraction with the occurs check. Same specification as `bracket`, smaller output. -/
+def bracketOpt (x : Nat) : TermV → TermV
+  | .var y => if y = x then app2 .S .K .K else .app .K (.var y)
+  | .app a b =>
+      if occurs x (.app a b) then app2 .S (bracketOpt x a) (bracketOpt x b)
+      else .app .K (.app a b)
+  | .S => .app .K .S
+  | .K => .app .K .K
+
+/-- **Same beta property as `bracket`.** The extra branch is discharged by `subst_of_not_occurs`. -/
+theorem bracketOpt_beta (x : Nat) (t u : TermV) :
+    StepsV (.app (bracketOpt x t) u) (subst x u t) := by
+  induction t with
+  | S => exact StepsV.tail (StepV.K_red .S u) (StepsV.refl _)
+  | K => exact StepsV.tail (StepV.K_red .K u) (StepsV.refl _)
+  | var y =>
+      by_cases hy : y = x
+      · simp [bracketOpt, subst, hy]
+        exact StepsV.tail (StepV.S_red .K .K u)
+          (StepsV.tail (StepV.K_red u (.app .K u)) (StepsV.refl u))
+      · simp [bracketOpt, subst, hy]
+        exact StepsV.tail (StepV.K_red (.var y) u) (StepsV.refl _)
+  | app a b iha ihb =>
+      by_cases hocc : occurs x (.app a b) = true
+      · simp only [bracketOpt, hocc, if_pos]
+        exact StepsV.tail (StepV.S_red (bracketOpt x a) (bracketOpt x b) u)
+          (StepsV.congApp iha ihb)
+      · have hf : occurs x (TermV.app a b) = false := by simpa using hocc
+        simp only [bracketOpt, if_neg hocc]
+        rw [subst_of_not_occurs x u hf]
+        exact StepsV.tail (StepV.K_red (.app a b) u) (StepsV.refl _)
+
+end TermV
+
+/-- The `Term`-level statement, matching `combinatory_completeness_Term`. -/
+theorem combinatory_completeness_opt (x : Nat) (t : TermV) (u : Term) :
+    toTerm (.app (TermV.bracketOpt x t) (ofTerm u)) ⟶* toTerm (TermV.subst x (ofTerm u) t) :=
+  steps_toTerm (TermV.bracketOpt_beta x t (ofTerm u))
+
+-- The optimisation is not cosmetic. `λx.λy.λz. x` distributes through three abstractions naively and
+-- collapses to almost nothing with the check.
+-- The optimisation compounds with nesting: negligible on `λx.λy.λz. x` (15 vs 9), decisive on real code.
+-- Stage 62's fold-list toolkit: `CONS` 414 → 66, `TAIL` 14100 → 192, which is the difference between a term
+-- the evaluator aborts on and one it handles in a third of a second.
+#guard leafCount (toTerm (TermV.bracket 2 (TermV.bracket 1 (TermV.bracket 0 (.var 2))))) = 15
+#guard leafCount (toTerm (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 (.var 2))))) = 9
