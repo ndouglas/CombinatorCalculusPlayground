@@ -1497,3 +1497,97 @@ theorem encWord_drift_complete {w : List Bool} {t : Term} (h : encWord w ⟶* t)
 -- encodings) and confluence. What it does NOT have is normality of the checkpoints — `encTagN w` is
 -- never normal — so the completion argument needs the driver's own structure, not just `nf_unique`.
 -- That is the next real problem.
+
+-- ## Stage 70: drift pins the word — injectivity, and the identity layer is complete
+--
+-- Stage 69 ended one step short: two drifted copies with a common reduct have equal CANONICAL FORMS.
+-- Injectivity of `wordNF` upgrades that to equal WORDS. The proof is what the explicit skeleton was
+-- for: each entry and the tail sit at fixed positions, so equality of cells is an injection chain,
+-- and equality of words is that chain plus one induction.
+
+theorem wordNF_injective : ∀ {u v : List Term}, wordNF u = wordNF v → u = v := by
+  intro u
+  induction u with
+  | nil =>
+      intro v h
+      cases v with
+      | nil => rfl
+      | cons y ys =>
+          rw [show wordNF (y :: ys) = wordCode y (wordNF ys) from rfl, wordCode_explicit,
+              show wordNF [] = Term.app K I from rfl] at h
+          injection h with h1 _
+          exact Term.noConfusion h1
+  | cons x xs ih =>
+      intro v h
+      cases v with
+      | nil =>
+          rw [show wordNF (x :: xs) = wordCode x (wordNF xs) from rfl, wordCode_explicit,
+              show wordNF [] = Term.app K I from rfl] at h
+          injection h with h1 _
+          exact Term.noConfusion h1
+      | cons y ys =>
+          rw [show wordNF (x :: xs) = wordCode x (wordNF xs) from rfl,
+              show wordNF (y :: ys) = wordCode y (wordNF ys) from rfl,
+              wordCode_explicit, wordCode_explicit] at h
+          simp only [_root_.app2, Term.app.injEq, true_and, and_true] at h
+          obtain ⟨hx, hM⟩ := h
+          rw [hx, ih hM]
+
+/-- **Drift pins the word.** Two words whose (arbitrarily drifted) copies share a reduct are THE SAME
+WORD. This is `hfun` at the data level: the relation "t is a reduct of `mkWord w`" is functional in
+`w`, with no shape analysis anywhere — confluence, one canonical form, one injection. -/
+theorem mkWord_drift_pins {u v : List Term}
+    (hu : ∀ x ∈ u, NormalForm x) (hv : ∀ x ∈ v, NormalForm x) {t : Term}
+    (h1 : mkWord u ⟶* t) (h2 : mkWord v ⟶* t) : u = v :=
+  wordNF_injective (mkWord_drift_functional hu hv h1 h2)
+
+-- ### Down to the tag alphabet
+theorem encSym_injective {s s' : Bool} (h : encSym s = encSym s') : s = s' := by
+  cases s <;> cases s' <;> first | rfl | exact absurd h (by decide)
+
+theorem map_encSym_injective : ∀ {u v : List Bool}, u.map encSym = v.map encSym → u = v := by
+  intro u
+  induction u with
+  | nil =>
+      intro v h
+      cases v with
+      | nil => rfl
+      | cons _ _ =>
+          simp only [List.map_nil, List.map_cons] at h
+          exact nomatch h
+  | cons s u' ih =>
+      intro v h
+      cases v with
+      | nil =>
+          simp only [List.map_nil, List.map_cons] at h
+          exact nomatch h
+      | cons s' v' =>
+          simp only [List.map_cons, List.cons.injEq] at h
+          rw [encSym_injective h.1, ih h.2]
+
+/-- **The identity layer, complete.** An encoded tag word in flight — duplicated, drifted, reduced by
+whatever schedule the host chose — still determines its source word uniquely. -/
+theorem encWord_drift_pins {u v : List Bool} {t : Term}
+    (h1 : encWord u ⟶* t) (h2 : encWord v ⟶* t) : u = v :=
+  map_encSym_injective
+    (mkWord_drift_pins (encWord_entries_normal u) (encWord_entries_normal v) h1 h2)
+
+-- Anchors.
+#guard wordNF [symA] != wordNF [symB]
+#guard wordNF [symA, symB] != wordNF [symB, symA]
+example : encSym true ≠ encSym false := fun h => by cases encSym_injective h
+
+-- ## The phase layer, scoped while the identity layer is fresh
+-- What `bwd` still needs is the analogue of drift-completion for MACHINE STATES: a relation
+-- "b belongs to source state w" that every host step preserves-or-advances. The word layer's recipe
+-- was: canonical form + confluence + injectivity. The phase layer has the first and third
+-- ingredients — encodings are canonical checkpoints and `encTagN` is injective — but NOT normality:
+-- `encTagN w` always carries its driver redex, so `nf_unique` cannot pin join points, and a reduct
+-- of `encTagN w` may genuinely never return to `encTagN w` (it may only complete FORWARD, to
+-- `encTagN` of a LATER state). The candidate statement, recorded for the next attempt:
+--
+--     every reduct of `encTagN w` reaches `encTagN w'` for some w' with `Tag.Steps w w'`
+--
+-- — forward drift-completion, with `encWord_drift_pins` handling the data slots. Proving it needs
+-- what no stage has yet built: a completion argument through the driver's own phases. That is the
+-- remaining research content of `bwd`, now with its base layer done.
