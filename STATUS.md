@@ -116,6 +116,13 @@ self-application step already violates that (`tagDriver_knf_hstep_fails`).
 A third abstraction, plus a characterisation of the guarded driver's
 reachable set, is the remaining research obligation.
 
+**Stage 66: the guarded driver is built and proved** (`STEPg`, 936 leaves):
+stuck words are literally fixed (`STEPg_stuck`), `fwd` re-proved with the
+Stage 64 lemmas untouched (`tagABg_fwd`), decoder and `PathEncoding`
+retargeted (`tagABgPathEncoding`), and Stage 65's falsifier repaired
+(`encTagG_stuck_returns`). `bwd` is now open rather than false; the
+reachable-set characterisation is the whole of the remaining distance.
+
 **Calibration criteria, from the spec.** (b) discharged in Stage 3. (c)
 discharged by the definitions ledger plus the `PathEncoding` scoping. (a) — see
 Stage 16 in the ledger — is **unsatisfiable as written**, because its

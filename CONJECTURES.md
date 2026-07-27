@@ -3218,3 +3218,34 @@ abstraction — mid-step-aware and loop-tolerant — and the genuine obstacle is
 driver's reachable set, the analogue of Stage 56's `Tower` for a 1450-leaf machine. Attempting that
 on the unguarded driver would have been effort spent proving the unprovable, which is what makes the
 refutation-first order this stage followed the right one.
+
+### Stage 66: the guarded driver — the step function learns that tag steps are partial
+
+The repair Stage 65 called for, built and proved in one sitting because every ingredient already
+existed. The guard is the same constant-size fold-observer idiom as the rest of the toolkit:
+`NONNIL = λL. L (λx a. T) F` reads emptiness off the fold (12 leaves), `HASTWO = NONNIL ∘ TAIL`
+shifts it by one (211), and `STEPg = λL. HASTWO L (STEPc L) L` dispatches (936, vs `STEPc`'s 710 —
+226 leaves is what respecting partiality costs).
+
+| | |
+|---|---|
+| `NONNILf_nil` / `NONNILf_cons` | the observer's verdicts — one β each, NO induction |
+| `HASTWOf_nil` / `HASTWOf_one` / `HASTWOf_long` | the guard's three verdicts, riding `TAILf_mkWord` |
+| **`STEPg_mkWord`** | step-correctness where a tag step exists — guard passes, `STEPc_mkWord` finishes |
+| **`STEPg_stuck`** | **stuck words are FIXED, literally**: `F = S K` exposes a `K` that discards the doomed `STEPc L` branch UNREDUCED |
+| `tagABg_fwd` / `tagABg_fwd_SK` | `fwd`, re-proved — the Stage 64 lemmas carried over untouched |
+| `encTagG_stuck_returns` | Stage 65's falsifier repaired: the stuck-word trajectory returns to its own encoding |
+| `decTagG_encTagG` / **`tagABgPathEncoding`** | decoder and `PathEncoding`, retargeted at the guarded driver |
+
+New permanent regression guards include exactly the input class Stage 63's suite missed: a stuck word
+normalises to ITSELF, and provably NOT to what the unguarded driver produced.
+
+**What the guard does and does not buy.** `bwd` is now OPEN rather than false — the one known
+falsifier is repaired, and the dispatch shape means the driver shell never adopts the doomed branch as
+data: on stuck words the `K` discards it whole. NOT bought: a smaller reachable set. The host remains
+free to reduce INSIDE the doomed `STEPc L` argument before the dispatch discards it, so the reachable
+set still contains the unguarded computation's states — as subterms of doomed positions. The future
+abstraction must be blind to them (which is exactly what both Stage 65 refutations, still standing,
+already demanded: mid-step-aware, loop-tolerant, doomed-blind). The remaining distance to
+`Simulation (RS.Tag tagAB) RS.SK` is unchanged in kind: characterise the guarded driver's reachable
+set — Stage 56's `Tower`, for a machine three orders larger.

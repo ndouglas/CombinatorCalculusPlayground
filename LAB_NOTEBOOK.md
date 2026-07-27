@@ -3389,3 +3389,41 @@ what automation could and couldn't do. This file is a first-class deliverable
   abstraction and the driver's reachable-set characterisation — the analogue of `Tower` for a
   1450-leaf machine, now correctly targeted at a driver whose `bwd` is at least not false. (3) rungs
   2/3 via match-bounds. (4) C6, declined a fifty-third time.
+
+## 2026-07-27 — Stage 66: the guard, assembled from parts that already existed
+
+- The repair went through in one sitting, and the reason is worth stating plainly: not one new
+  induction was needed. The emptiness observer's verdicts are one β each (`NONNILf_cons` needs no
+  recursion — any cons makes the constant observer fire); the guard's three verdicts ride
+  `TAILf_mkWord`; step-correctness is "guard passes, then Stage 64's theorem"; the stuck case is a
+  two-firing dispatch chain. The compositional lemma library from Stage 64 absorbed the entire stage.
+  This is what Stage 61 predicted paying for the by-hand discipline, and it has now paid twice.
+- `STEPg` costs 936 leaves against `STEPc`'s 710. Two hundred twenty-six leaves is the price of
+  respecting the tag step's partiality — cheap, and I note that the expensive-looking part of the
+  guard (`HASTWOf`, 211) is almost entirely the embedded `TAILf`. A dedicated two-symbol probe could
+  be smaller, and I am deliberately not building it: the lesson of Stages 60 and 63 is to stop
+  optimising representations that already compose.
+- The dispatch discards the doomed `STEPc L` branch UNREDUCED — `F = S K` exposes a `K` and the whole
+  pending computation vanishes. That is elegant and it is also a trap I want on record before it
+  bites: the HOST is not obliged to take my path. It may reduce inside the doomed branch first, so
+  the reachable set from a stuck word's encoding still CONTAINS the unguarded computation — confined
+  to doomed positions. The guard did not shrink the reachable set; it changed which whole terms are
+  reachable. The future abstraction must be blind to doomed subterms, which is the same demand both
+  Stage 65 refutations already made. Nothing new is owed, but nothing was waived either.
+- One wrong proof chain (`NONNILf_cons`) was caught immediately by the elaborator: I wrote a congruence
+  where the whole term was already the redex. Small, but the pattern — over-decomposing a reduction
+  that is one step — is the proof-level cousin of over-decomposing a design, and both come from not
+  looking at the term first.
+- The regression suite now contains the input class whose absence let Stage 65's bug survive three
+  stages: stuck words normalise to themselves, and provably not to the unguarded driver's output.
+- Where the Simulation stands: `enc`, `dec`, `dec_enc`, `fwd` all done for the guarded driver;
+  `bwd` open rather than false. The whole remaining distance is the reachable-set characterisation
+  and the third abstraction over it.
+- Ranking: (1) **the reachable-set characterisation**, and I want to attempt it COMPOSITIONALLY:
+  per-combinator segment invariants ("every reduct of `HEADf (mkWord w)` lies in this family", and so
+  on for `TAILf`, `CATf`, the dispatch, the driver shell), composed the way the step function itself
+  composes. Stage 56's `Tower` was four constructors for a three-leaf-per-layer machine; a monolithic
+  invariant for a 936-leaf machine is not writable, but the machine is a composition and the invariant
+  might be too. If the first per-combinator invariant (start with `HEADf`, the smallest) turns out
+  unwritable, that is the finding. (2) rungs 2/3 via match-bounds. (3) C6, declined a fifty-fourth
+  time.
