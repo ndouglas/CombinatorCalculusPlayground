@@ -888,3 +888,111 @@ theorem selArgs_normal : ∀ (k i : Nat), i < k → NormalForm (selArgs k i)
 #guard selArgs 3 0 = Term.app Term.K (Term.app Term.K I)
 #guard (List.range 5).all (fun i => leafCount (selArgs 5 i) < 20)
 
+
+-- ## Stage 77: the any-alphabet dispatch
+-- The dispatcher `λs. s out₀ … out_{n-1}` compiled, generically in the output list. Applied to the
+-- `p`-th selector it returns the `p`-th output — `dispatchT_correct` composes `dispatchT_beta` with
+-- `selArgs_correct`, and the pre/post style keeps every index computation out of the proofs.
+-- Selector INJECTIVITY closes the section: distinct symbols stay distinct, which is what a decoder
+-- and the canonical-form pinning will consume at the tag layer.
+
+/-- `appArgs`, at the `TermV` level. -/
+def appArgsV (f : TermV) : List TermV → TermV
+  | [] => f
+  | a :: as => appArgsV (.app f a) as
+
+theorem toTerm_appArgsV : ∀ (args : List TermV) (f : TermV),
+    toTerm (appArgsV f args) = appArgs (toTerm f) (args.map toTerm)
+  | [], _ => rfl
+  | _ :: as, f => toTerm_appArgsV as (.app f _)
+
+theorem subst_appArgsV (x : Nat) (u : TermV) : ∀ (args : List TermV) (f : TermV),
+    TermV.subst x u (appArgsV f args)
+      = appArgsV (TermV.subst x u f) (args.map (TermV.subst x u))
+  | [], _ => rfl
+  | _ :: as, f => subst_appArgsV x u as (.app f _)
+
+theorem map_subst_toTerm (x : Nat) (u : TermV) : ∀ (outs : List Term),
+    ((outs.map ofTerm).map (TermV.subst x u)).map toTerm = outs
+  | [] => rfl
+  | o :: os => by
+      show toTerm (TermV.subst x u (ofTerm o)) :: _ = o :: os
+      rw [subst_ofTerm, toTerm_ofTerm, map_subst_toTerm x u os]
+
+/-- The dispatcher: `λs. s out₀ … out_{n-1}`, one compiled term per output table. -/
+def dispatchT (outs : List Term) : Term :=
+  toTerm (TermV.bracketOpt 0 (appArgsV (.var 0) (outs.map ofTerm)))
+
+theorem dispatchT_beta (outs : List Term) (s : Term) :
+    Term.app (dispatchT outs) s ⟶* appArgs s outs := by
+  have h := bracketOpt_beta_Term 0 (appArgsV (.var 0) (outs.map ofTerm)) s
+  rw [subst_appArgsV, toTerm_appArgsV, map_subst_toTerm,
+      show TermV.subst 0 (ofTerm s) (.var 0) = ofTerm s from rfl, toTerm_ofTerm] at h
+  exact h
+
+/-- **Dispatch-correctness, any alphabet**: the dispatcher applied to the selector standing at
+position `|pre|` returns the output standing at position `|pre|`. -/
+theorem dispatchT_correct (pre : List Term) (x : Term) (post : List Term) :
+    Term.app (dispatchT (pre ++ x :: post))
+      (selArgs (pre ++ x :: post).length post.length) ⟶* x :=
+  Steps.trans (dispatchT_beta _ _) (selArgs_correct pre x post)
+
+-- ### Selector injectivity: distinct symbols stay distinct
+
+/-- Below the top index, one abstraction layer is one `K`-wrap. -/
+theorem selArgs_succ_lt {k i : Nat} (h : i < k) :
+    selArgs (k + 1) i = Term.app Term.K (selArgs k i) := by
+  show toTerm (TermV.bracketOpt k (absArgs k (.var i))) = _
+  rw [bracketOpt_not_occurs (by
+    rw [occurs_absArgs_var i k k (Nat.le_refl k)]
+    exact beq_eq_false_iff_ne.mpr (by omega))]
+  rfl
+
+/-- The top selector is `S`-headed — never a `K`-wrap. -/
+theorem selArgs_top_S (k : Nat) :
+    ∃ A B, selArgs (k + 1) k = Term.app (Term.app Term.S A) B := by
+  show ∃ A B, toTerm (TermV.bracketOpt k (absArgs k (.var k))) = _
+  rw [absArgs_var_ge k k (Nat.le_refl k)]
+  cases k with
+  | zero => exact ⟨Term.K, Term.K, rfl⟩
+  | succ j =>
+      have hocc : TermV.occurs (j + 1) (kTowerV (j + 1) (.var (j + 1))) = true := by
+        rw [occurs_kTowerV]
+        show ((j + 1) == (j + 1)) = true
+        exact TermV.beqSelf (j + 1)
+      show ∃ A B, toTerm (if TermV.occurs (j + 1) (kTowerV (j + 1) (.var (j + 1))) = true
+        then TermV.app2 .S (TermV.bracketOpt (j + 1) .K)
+          (TermV.bracketOpt (j + 1) (kTowerV j (.var (j + 1))))
+        else _) = _
+      rw [if_pos hocc]
+      exact ⟨_, _, rfl⟩
+
+/-- **Selectors are injective**: same arity, same term, same index. -/
+theorem selArgs_injective : ∀ {k i j : Nat}, i < k → j < k →
+    selArgs k i = selArgs k j → i = j := by
+  intro k
+  induction k with
+  | zero => intro i j hi _ _; exact absurd hi (Nat.not_lt_zero i)
+  | succ k ih =>
+      intro i j hi hj h
+      by_cases hik : i = k <;> by_cases hjk : j = k
+      · rw [hik, hjk]
+      · exfalso
+        obtain ⟨A, B, hAB⟩ := selArgs_top_S k
+        rw [hik, hAB, selArgs_succ_lt (show j < k by omega)] at h
+        injection h with h1 _
+        exact Term.noConfusion h1
+      · exfalso
+        obtain ⟨A, B, hAB⟩ := selArgs_top_S k
+        rw [hjk, hAB, selArgs_succ_lt (show i < k by omega)] at h
+        injection h with h1 _
+        exact Term.noConfusion h1
+      · rw [selArgs_succ_lt (by omega), selArgs_succ_lt (by omega)] at h
+        injection h with _ h2
+        exact ih (by omega) (by omega) h2
+
+-- Anchors: the empty dispatch is the identity, one layer is one wrap, and a 3-way table really
+-- has three distinct symbols.
+#guard dispatchT [] = I
+#guard selArgs 3 1 = Term.app Term.K (selArgs 2 1)
+#guard (selArgs 3 0 != selArgs 3 1) && (selArgs 3 1 != selArgs 3 2) && (selArgs 3 0 != selArgs 3 2)
