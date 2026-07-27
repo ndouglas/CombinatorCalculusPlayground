@@ -838,3 +838,180 @@ theorem tagDriver_knf_hstep_fails :
 -- this stage contributes is the negative space: the characterisation cannot be avoided by either
 -- shortcut that worked before, and it would be wasted effort on the UNGUARDED driver, whose `bwd` no
 -- effort can prove.
+
+-- ## Stage 66: the guarded driver — the step function learns that tag steps are partial
+--
+-- Stage 65 proved `bwd` false for `encTag` because `STEPc` is total where the tag step is partial: it
+-- happily "steps" a stuck word. The repair is a guard — dispatch on "has at least two symbols" and
+-- return the word UNCHANGED when it fails — built from the same constant-size fold-observer idiom as
+-- everything else: `NONNIL = λL. L (λx a. T) F` reads emptiness off the fold, `HASTWO = NONNIL ∘ TAIL`
+-- shifts it by one, and the guard is Stage 50's dispatch again, with the whole step in one branch and
+-- the identity in the other. On stuck words the doomed `STEP L` branch is DISCARDED UNREDUCED by the
+-- `K` that `F = S K` exposes — the guard never runs what it rejects.
+
+/-- `λx a. T` — the fold observer for "nonempty": any cons makes it true. Three leaves. -/
+def constTf : Term := toTerm (TermV.bracketOpt 1 (TermV.bracketOpt 0 (.K)))
+
+/-- `λL. L (λx a. T) F` — is the word nonempty? -/
+def NONNILf : Term := o1 (TermV.app2 (V 0) (ofTerm constTf) (ofTerm symB))
+
+/-- `λL. NONNIL (TAIL L)` — does the word have at least two symbols? (= is its tail nonempty). -/
+def HASTWOf : Term := o1 (TermV.app (ofTerm NONNILf) (TermV.app (ofTerm TAILf) (V 0)))
+
+/-- **The guarded step function**: `λL. HASTWO L (STEPc L) L`. -/
+def STEPg : Term := o1 (TermV.app2 (TermV.app (ofTerm HASTWOf) (V 0))
+  (TermV.app (ofTerm STEPc) (V 0)) (V 0))
+
+-- ### β and the guard's verdicts
+
+theorem constTf_beta (x a : Term) : Term.app (Term.app constTf x) a ⟶* K := by
+  have h := bracketOpt_beta2_Term .K x a
+  simpa [TermV.subst] using h
+
+theorem NONNILf_beta (L : Term) :
+    Term.app NONNILf L ⟶* Term.app (Term.app L constTf) symB := by
+  have h := bracketOpt_beta_Term 0 (TermV.app2 (V 0) (ofTerm constTf) (ofTerm symB)) L
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+theorem HASTWOf_beta (L : Term) :
+    Term.app HASTWOf L ⟶* Term.app NONNILf (Term.app TAILf L) := by
+  have h := bracketOpt_beta_Term 0
+    (TermV.app (ofTerm NONNILf) (TermV.app (ofTerm TAILf) (V 0))) L
+  simpa [V, TermV.subst, subst_ofTerm, toTerm] using h
+
+theorem STEPg_beta (L : Term) :
+    Term.app STEPg L ⟶* Term.app (Term.app (Term.app HASTWOf L) (Term.app STEPc L)) L := by
+  have h := bracketOpt_beta_Term 0 (TermV.app2 (TermV.app (ofTerm HASTWOf) (V 0))
+    (TermV.app (ofTerm STEPc) (V 0)) (V 0)) L
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+/-- The emptiness observer says no on `[]`... -/
+theorem NONNILf_nil : Term.app NONNILf (mkWord []) ⟶* symB := by
+  refine Steps.trans (NONNILf_beta _) ?_
+  exact NILf_beta constTf symB
+
+/-- ...and yes on any cons — no induction, one β and one constant observer. -/
+theorem NONNILf_cons (x : Term) (xs : List Term) :
+    Term.app NONNILf (mkWord (x :: xs)) ⟶* symA := by
+  refine Steps.trans (NONNILf_beta _) ?_
+  refine Steps.trans (CONSf_beta x (mkWord xs) constTf symB) ?_
+  exact constTf_beta x _
+
+/-- The guard's three verdicts, by word length. -/
+theorem HASTWOf_nil : Term.app HASTWOf (mkWord []) ⟶* symB := by
+  refine Steps.trans (HASTWOf_beta _) ?_
+  exact Steps.trans (Steps.congR TAILf_nil) NONNILf_nil
+
+theorem HASTWOf_one (x : Term) : Term.app HASTWOf (mkWord [x]) ⟶* symB := by
+  refine Steps.trans (HASTWOf_beta _) ?_
+  exact Steps.trans (Steps.congR (TAILf_mkWord x [])) NONNILf_nil
+
+theorem HASTWOf_long (x y : Term) (ys : List Term) :
+    Term.app HASTWOf (mkWord (x :: y :: ys)) ⟶* symA := by
+  refine Steps.trans (HASTWOf_beta _) ?_
+  exact Steps.trans (Steps.congR (TAILf_mkWord x (y :: ys))) (NONNILf_cons y ys)
+
+-- ### The guarded step: computes the tag step where one exists, the identity where none does
+
+/-- **Step-correctness for the guarded driver** — the guard passes and hands the word to `STEPc`. -/
+theorem STEPg_mkWord (s y : Bool) (rest : List Bool) :
+    Term.app STEPg (encWord (s :: y :: rest)) ⟶* encWord (rest ++ ruleAB s) := by
+  refine Steps.trans (STEPg_beta _) ?_
+  refine Steps.trans (Steps.congL (Steps.congL
+    (HASTWOf_long (encSym s) (encSym y) (rest.map encSym)))) ?_
+  refine Steps.trans (Steps.single (Step.K_red _ _)) ?_
+  exact STEPc_mkWord s y rest
+
+/-- **Stuck words are FIXED, literally.** `F = S K` selects the identity branch, and the `K` it
+exposes discards the doomed `STEPc L` UNREDUCED. This is the repair of Stage 65's falsifier. -/
+theorem STEPg_stuck : ∀ {w : List Bool}, w.length < 2 →
+    Term.app STEPg (encWord w) ⟶* encWord w := by
+  intro w hw
+  match w with
+  | [] =>
+      refine Steps.trans (STEPg_beta _) ?_
+      refine Steps.trans (Steps.congL (Steps.congL HASTWOf_nil)) ?_
+      exact Steps.tail (Step.S_red K _ _) (Steps.single (Step.K_red _ _))
+  | [s] =>
+      refine Steps.trans (STEPg_beta _) ?_
+      refine Steps.trans (Steps.congL (Steps.congL (HASTWOf_one (encSym s)))) ?_
+      exact Steps.tail (Step.S_red K _ _) (Steps.single (Step.K_red _ _))
+  | _ :: _ :: _ => exact absurd hw (by simp)
+
+-- ### The guarded encoder, its `fwd`, and its `PathEncoding`
+
+/-- The guarded encoder. Same driver idiom, guarded step function. -/
+def encTagG (w : List Bool) : Term := Term.app (selfRep STEPg) (encWord w)
+
+/-- **`fwd` for the guarded driver** — the Stage 64 lemmas carry over untouched. -/
+theorem tagABg_fwd {w w' : List Bool} (h : (RS.Tag tagAB).step w w') :
+    encTagG w ⟶* encTagG w' := by
+  obtain ⟨a, rest, hw, hlen, hw'⟩ := h
+  subst hw
+  cases rest with
+  | nil => simp [tagAB] at hlen
+  | cons y rest' =>
+      subst hw'
+      exact tagFwd_of_step (STEPg_mkWord a y rest')
+
+theorem tagABg_fwd_SK {w w' : List Bool} (h : (RS.Tag tagAB).step w w') :
+    RS.SK.Steps (encTagG w) (encTagG w') :=
+  RS.SK_steps_iff.mpr (tagABg_fwd h)
+
+/-- **On stuck words the driver IDLES**: its own advance (`selfRep_advances` supplies
+`encTagG w ⟶* selfRep STEPg (STEPg (encWord w))`) leads straight back to the encoding. Stage 65's
+counterexample path — the only known falsifier of `bwd` — now returns home instead of escaping to
+`encTag [a,b]`. What is NOT claimed: that no other path escapes. That is `bwd` itself, and it needs
+the reachable-set characterisation. -/
+theorem encTagG_stuck_returns {w : List Bool} (hw : w.length < 2) :
+    Term.app (selfRep STEPg) (Term.app STEPg (encWord w)) ⟶* encTagG w :=
+  Steps.congR (STEPg_stuck hw)
+
+/-- The decoder, retargeted at the guarded driver. -/
+def decTagG (t : Term) : Option (List Bool) :=
+  match t with
+  | Term.app d w => if d = selfRep STEPg then decWord w else none
+  | _ => none
+
+theorem decTagG_encTagG (u : List Bool) : decTagG (encTagG u) = some u := by
+  show (if selfRep STEPg = selfRep STEPg then decWord (encWord u) else none) = some u
+  rw [if_pos rfl]
+  exact decWord_encWord u
+
+theorem encTagG_injective {u u' : List Bool} (h : encTagG u = encTagG u') : u = u' := by
+  have h1 := decTagG_encTagG u
+  rw [h, decTagG_encTagG] at h1
+  exact (Option.some.inj h1).symm
+
+theorem tagABg_path {w w' : List Bool} (h : (RS.Tag tagAB).Steps w w') :
+    RS.SK.Steps (encTagG w) (encTagG w') :=
+  h.rec (fun a => @RS.Steps.refl RS.SK (encTagG a))
+    (fun s _ ih => RS.Steps.trans (tagABg_fwd_SK s) ih)
+
+/-- **The `PathEncoding`, on the guarded driver** — the encoding a future `Simulation` will extend,
+now that its `bwd` is no longer KNOWN false. -/
+def tagABgPathEncoding : PathEncoding (RS.Tag tagAB) RS.SK where
+  enc := encTagG
+  inj := encTagG_injective
+  path := tagABg_path
+
+-- Anchors. Sizes; the guard really dispatches; a long word still steps; and the two tests Stage 63's
+-- suite was missing — a stuck word is FIXED, and it provably does NOT step to what the unguarded
+-- driver produced.
+#guard (leafCount constTf, leafCount NONNILf, leafCount HASTWOf, leafCount STEPg) = (3, 12, 211, 936)
+#guard nfW (Term.app STEPg (encWord [true, true, false])) == nfW (encWord [false, false])
+#guard nfW (Term.app STEPg (encWord [false, true])) == nfW (encWord [true, false])
+#guard nfW (Term.app STEPg (encWord [false])) == nfW (encWord [false])
+#guard nfW (Term.app STEPg (encWord [])) == nfW (encWord [])
+#guard !(nfW (Term.app STEPg (encWord [false])) == nfW (encWord [true, false]))
+#guard decTagG (encTagG [true, false]) = some [true, false]
+#guard decTagG (encTag [true, false]) = none   -- the two drivers' encodings do not cross-decode
+
+-- ## Where the Simulation stands after the guard
+-- `enc`, `dec`, `dec_enc`, `fwd`: done for the guarded driver, and Stage 65's falsifier is repaired —
+-- the stuck-word trajectory returns to its own encoding (`encTagG_stuck_returns`) instead of escaping.
+-- `bwd` is now an OPEN obligation rather than a false one. What it needs is unchanged from Stage 65's
+-- analysis, and both refutations there survive the guard: a third abstraction (mid-step-aware,
+-- loop-tolerant) over a characterisation of the guarded driver's reachable set. That characterisation
+-- — the `Tower` analogue for this machine — is the whole of the remaining distance to
+-- `Simulation (RS.Tag tagAB) RS.SK`.
