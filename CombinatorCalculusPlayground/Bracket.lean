@@ -115,15 +115,43 @@ theorem bracket_beta (x : Nat) (t u : TermV) :
     exact StepsV.tail (StepV.S_red (bracket x a) (bracket x b) u)
       (StepsV.congApp (iha) (ihb))
 
+/-- `(n == n) = true`, by a route that provably avoids `Classical.choice` — Stage 9's trap, and
+Stage 76's sixth leak (which had been hiding in THIS FILE since `occurs_bracket` was proved by
+`grind`; see the notebook). -/
+private theorem beqSelf (n : Nat) : (n == n) = true := by
+  first
+    | exact Nat.beq_refl n
+    | exact decide_eq_true rfl
+
 -- The abstraction really binds: x is gone, other variables survive.
+-- (Stage 76: the `var` case was `grind`, and `grind` was this development's sixth
+-- `Classical.choice` leak — pre-existing, found when new code imitated it. Now explicit.)
 theorem occurs_bracket (x y : Nat) (t : TermV) :
     occurs y (bracket x t) = (occurs y t && !(y == x)) := by
   induction t with
   | S => simp [bracket, occurs]
   | K => simp [bracket, occurs]
   | var z =>
-    simp only [bracket]
-    by_cases hz : z = x <;> simp only [hz, if_true, if_false, occurs, app2] <;> grind
+    show occurs y (if z = x then app2 .S .K .K else .app .K (.var z))
+      = (occurs y (.var z) && !(y == x))
+    by_cases hz : z = x
+    · rw [if_pos hz]
+      show ((false || false) || false) = ((z == y) && !(y == x))
+      by_cases hy : y = x
+      · rw [show (y == x) = true from by rw [hy]; exact beqSelf x,
+            show (z == y) = true from by rw [hz, hy]; exact beqSelf x]
+        rfl
+      · rw [show (z == y) = false from
+          beq_eq_false_iff_ne.mpr (fun h => hy (hz.symm.trans h).symm)]
+        rfl
+    · rw [if_neg hz]
+      show (false || (z == y)) = ((z == y) && !(y == x))
+      by_cases hy : y = x
+      · rw [show (y == x) = true from by rw [hy]; exact beqSelf x,
+            show (z == y) = false from beq_eq_false_iff_ne.mpr (fun h => hz (h.trans hy))]
+        rfl
+      · rw [show (y == x) = false from beq_eq_false_iff_ne.mpr hy]
+        cases (z == y) <;> rfl
   | app a b iha ihb =>
     simp only [bracket, occurs, app2, iha, ihb]
     -- Boolean distribution: (p && c) || (q && c) = (p || q) && c
@@ -139,9 +167,13 @@ theorem bracket_closed {x : Nat} {t : TermV}
   by_cases hy : occurs y t = true
   · have := h y hy
     subst this
-    simp
-  · simp [Bool.not_eq_true] at hy
-    simp [hy]
+    rw [beqSelf]
+    cases occurs y t <;> rfl
+  · rw [show occurs y t = false from by
+      cases hocc : occurs y t
+      · rfl
+      · exact absurd hocc hy]
+    rfl
 
 /-- Packaging: any single-variable term is realized by a CLOSED combinator.
 (Multi-variable completeness is this theorem iterated — deliberately not
@@ -613,3 +645,246 @@ theorem steps_toTerm_subst {y : Nat} {M M' : Term} (h : M ⟶* M') : ∀ (C : Te
   | app a b iha ihb =>
       simp only [TermV.subst, toTerm]
       exact Steps.congApp iha ihb
+
+-- ## Stage 76: the N-ary abstraction — toward the any-alphabet tag theorem
+-- The tag `Simulation` (Stage 75) is for a two-symbol alphabet; known-universal tag systems need
+-- more symbols, and the ONLY alphabet-dependent piece of the whole construction is dispatch. The
+-- β-ladder above stops at arity 4; this section builds the list-indexed version — abstraction over
+-- `k` variables, application to `k` arguments, β in one theorem — plus the SELECTORS
+-- `λx₁…xₖ. xᵢ` that make an n-way dispatch, with their β, closed forms, and normality. All generic:
+-- nothing here mentions tag systems.
+
+/-- Apply a function to a list of arguments, left to right. -/
+def appArgs (f : Term) : List Term → Term
+  | [] => f
+  | a :: as => appArgs (Term.app f a) as
+
+theorem appArgs_congL : ∀ (args : List Term) {f f' : Term},
+    (f ⟶* f') → appArgs f args ⟶* appArgs f' args
+  | [], _, _, h => h
+  | _ :: as, _, _, h => appArgs_congL as (Steps.congL h)
+
+/-- Abstract the variables `k-1, …, 1, 0`, outermost first — the list-indexed `o1`/`o3`/`o4`. -/
+def absArgs : Nat → TermV → TermV
+  | 0, b => b
+  | k + 1, b => TermV.bracketOpt k (absArgs k b)
+
+/-- Substitute a list of arguments: the FIRST argument replaces the HIGHEST index, so the index of
+each substitution is the length of the remaining suffix. -/
+def substArgs : List Term → TermV → TermV
+  | [], b => b
+  | a :: as, b => substArgs as (TermV.subst as.length (ofTerm a) b)
+
+/-- Substitution from above commutes past the whole abstraction block. -/
+theorem subst_absArgs {j : Nat} (u : Term) : ∀ (k : Nat), k ≤ j → ∀ (b : TermV),
+    TermV.subst j (ofTerm u) (absArgs k b) = absArgs k (TermV.subst j (ofTerm u) b)
+  | 0, _, _ => rfl
+  | k + 1, hk, b => by
+      show TermV.subst j (ofTerm u) (TermV.bracketOpt k (absArgs k b)) = _
+      rw [bracketOpt_subst_ofTerm (by omega) u (absArgs k b),
+          subst_absArgs u k (by omega)]
+      rfl
+
+theorem substArgs_ofTerm : ∀ (args : List Term) (t : Term),
+    substArgs args (ofTerm t) = ofTerm t
+  | [], _ => rfl
+  | _ :: as, t => by
+      show substArgs as (TermV.subst as.length (ofTerm _) (ofTerm t)) = _
+      rw [subst_ofTerm]
+      exact substArgs_ofTerm as t
+
+/-- **N-ary β.** The `k`-variable abstraction applied to `k` arguments performs all `k`
+substitutions — `bracketOpt_beta2/3/4_Term`, for every arity at once. -/
+theorem absArgs_beta : ∀ (args : List Term) (b : TermV),
+    appArgs (toTerm (absArgs args.length b)) args ⟶* toTerm (substArgs args b)
+  | [], _ => Steps.refl _
+  | a :: as, b => by
+      show appArgs (Term.app (toTerm (absArgs (as.length + 1) b)) a) as ⟶* _
+      refine Steps.trans (appArgs_congL as ?_) (absArgs_beta as (TermV.subst as.length (ofTerm a) b))
+      have h := bracketOpt_beta_Term as.length (absArgs as.length b) a
+      rwa [subst_absArgs a as.length (Nat.le_refl _)] at h
+
+-- ### Selectors: `λx₁…xₖ. xᵢ`, the dispatch primitives
+
+/-- The argument at position `|pre|` has variable index `|post|` — substituting the whole list into
+that variable returns exactly that argument. -/
+theorem substArgs_select : ∀ (pre : List Term) (x : Term) (post : List Term),
+    substArgs (pre ++ x :: post) (.var post.length) = ofTerm x := by
+  intro pre
+  induction pre with
+  | nil =>
+      intro x post
+      show substArgs post (TermV.subst post.length (ofTerm x) (.var post.length)) = _
+      rw [show TermV.subst post.length (ofTerm x) (.var post.length) = ofTerm x from by
+        show (if post.length = post.length then ofTerm x else .var post.length) = ofTerm x
+        rw [if_pos rfl]]
+      exact substArgs_ofTerm post x
+  | cons p pre ih =>
+      intro x post
+      show substArgs (pre ++ x :: post)
+        (TermV.subst (pre ++ x :: post).length (ofTerm p) (.var post.length)) = _
+      have hne : post.length ≠ (pre ++ x :: post).length := by
+        simp only [List.length_append, List.length_cons]
+        omega
+      rw [show TermV.subst (pre ++ x :: post).length (ofTerm p) (.var post.length)
+          = .var post.length from by
+        show (if post.length = (pre ++ x :: post).length then ofTerm p else .var post.length) = _
+        rw [if_neg hne]]
+      exact ih x post
+
+/-- The `i`-th selector on `k` arguments. -/
+def selArgs (k i : Nat) : Term := toTerm (absArgs k (.var i))
+
+/-- **Selector β**: applied to any argument list, the selector with index `|post|` returns the
+argument sitting between `pre` and `post`. -/
+theorem selArgs_correct (pre : List Term) (x : Term) (post : List Term) :
+    appArgs (selArgs (pre ++ x :: post).length post.length) (pre ++ x :: post) ⟶* x := by
+  have h := absArgs_beta (pre ++ x :: post) (.var post.length)
+  rwa [substArgs_select, toTerm_ofTerm] at h
+
+-- ### Closed forms and normality
+-- A selector is `K`-wraps around an `S (K K)`-chain ending in `I` — every layer a shape the Stage
+-- 11 lemmas cover, so selectors are NORMAL, generically in `k` and `i`.
+
+/-- The occurs identity for the OPTIMISED algorithm — `occurs_bracket`'s twin. -/
+theorem occurs_bracketOpt (x y : Nat) (t : TermV) :
+    TermV.occurs y (TermV.bracketOpt x t) = (TermV.occurs y t && !(y == x)) := by
+  induction t with
+  | S => simp [TermV.bracketOpt, TermV.occurs]
+  | K => simp [TermV.bracketOpt, TermV.occurs]
+  | var z =>
+      show TermV.occurs y (if z = x then TermV.app2 .S .K .K else .app .K (.var z))
+        = (TermV.occurs y (.var z) && !(y == x))
+      by_cases hz : z = x
+      · rw [if_pos hz]
+        show ((false || false) || false) = ((z == y) && !(y == x))
+        by_cases hy : y = x
+        · rw [show (y == x) = true from by rw [hy]; exact TermV.beqSelf x,
+              show (z == y) = true from by rw [hz, hy]; exact TermV.beqSelf x]
+          rfl
+        · rw [show (z == y) = false from
+            beq_eq_false_iff_ne.mpr (fun h => hy (hz.symm.trans h).symm)]
+          rfl
+      · rw [if_neg hz]
+        show (false || (z == y)) = ((z == y) && !(y == x))
+        by_cases hy : y = x
+        · rw [show (y == x) = true from by rw [hy]; exact TermV.beqSelf x,
+              show (z == y) = false from beq_eq_false_iff_ne.mpr (fun h => hz (h.trans hy))]
+          rfl
+        · rw [show (y == x) = false from beq_eq_false_iff_ne.mpr hy]
+          cases (z == y) <;> rfl
+  | app a b iha ihb =>
+      by_cases hocc : TermV.occurs x (.app a b) = true
+      · have hocc' : (TermV.occurs x a || TermV.occurs x b) = true := by
+          simpa [TermV.occurs] using hocc
+        simp only [TermV.bracketOpt, TermV.occurs, hocc', if_true, TermV.app2, iha, ihb]
+        cases TermV.occurs y a <;> cases TermV.occurs y b <;> cases (y == x) <;> rfl
+      · have hf : TermV.occurs x a = false ∧ TermV.occurs x b = false := by
+          simpa [TermV.occurs, Bool.or_eq_false_iff] using hocc
+        have hcond : (TermV.occurs x a || TermV.occurs x b) = false := by
+          rw [hf.1, hf.2]; rfl
+        simp only [TermV.bracketOpt, TermV.occurs, hcond, Bool.false_eq_true, if_false]
+        by_cases hyx : y = x
+        · subst hyx
+          rw [hf.1, hf.2]
+          rfl
+        · rw [beq_eq_false_iff_ne.mpr hyx]
+          cases TermV.occurs y a <;> cases TermV.occurs y b <;> rfl
+
+/-- The optimised abstraction of a NON-OCCURRING variable is a bare `K`-protection, whatever the
+body's shape. -/
+theorem bracketOpt_not_occurs {x : Nat} {t : TermV} (h : TermV.occurs x t = false) :
+    TermV.bracketOpt x t = .app .K t := by
+  cases t with
+  | S => rfl
+  | K => rfl
+  | var y =>
+      show (if y = x then _ else _) = _
+      rw [if_neg (beq_eq_false_iff_ne.mp h)]
+  | app a b =>
+      show (if TermV.occurs x (a.app b) = true then _ else _) = _
+      rw [if_neg (fun hc => Bool.false_ne_true (h ▸ hc))]
+
+/-- A tower of `K`-wraps. -/
+def kTowerV : Nat → TermV → TermV
+  | 0, t => t
+  | k + 1, t => .app .K (kTowerV k t)
+
+theorem occurs_kTowerV (y : Nat) (t : TermV) : ∀ (k : Nat),
+    TermV.occurs y (kTowerV k t) = TermV.occurs y t
+  | 0 => rfl
+  | k + 1 => by
+      show (TermV.occurs y .K || TermV.occurs y (kTowerV k t)) = _
+      rw [occurs_kTowerV y t k]
+      rfl
+
+/-- The occurs-check, iterated through an abstraction block: variables at or above the block are
+untouched. -/
+theorem occurs_absArgs_var (i y : Nat) : ∀ (k : Nat), k ≤ y →
+    TermV.occurs y (absArgs k (.var i)) = (i == y)
+  | 0, _ => rfl
+  | k + 1, hy => by
+      show TermV.occurs y (TermV.bracketOpt k (absArgs k (.var i))) = _
+      rw [occurs_bracketOpt, occurs_absArgs_var i y k (by omega),
+          beq_eq_false_iff_ne.mpr (show y ≠ k by omega)]
+      cases i == y <;> rfl
+
+/-- Below the target variable, each abstraction layer is a bare `K`-wrap. -/
+theorem absArgs_var_ge : ∀ (k i : Nat), k ≤ i → absArgs k (.var i) = kTowerV k (.var i)
+  | 0, _, _ => rfl
+  | k + 1, i, hk => by
+      show TermV.bracketOpt k (absArgs k (.var i)) = .app .K (kTowerV k (.var i))
+      rw [absArgs_var_ge k i (by omega)]
+      exact bracketOpt_not_occurs (by
+        rw [occurs_kTowerV]
+        exact beq_eq_false_iff_ne.mpr (show i ≠ k by omega))
+
+/-- Abstracting the variable a `K`-tower guards yields the `S (K K)`-chain, which is NORMAL. -/
+theorem normalForm_bracketOpt_kTower (m : Nat) : ∀ (j : Nat),
+    NormalForm (toTerm (TermV.bracketOpt m (kTowerV j (.var m))))
+  | 0 => by
+      show NormalForm (toTerm (TermV.bracketOpt m (.var m)))
+      show NormalForm (toTerm (if m = m then TermV.app2 .S .K .K else .app .K (.var m)))
+      rw [if_pos rfl]
+      exact normalForm_I
+  | j + 1 => by
+      show NormalForm (toTerm (TermV.bracketOpt m (.app .K (kTowerV j (.var m)))))
+      have hocc : TermV.occurs m (TermV.app .K (kTowerV j (.var m))) = true := by
+        show (TermV.occurs m .K || TermV.occurs m (kTowerV j (.var m))) = true
+        have hself : TermV.occurs m (TermV.var m) = true := by
+          show (m == m) = true
+          first
+            | exact Nat.beq_refl m
+            | exact decide_eq_true rfl
+        rw [occurs_kTowerV, hself]
+        rfl
+      show NormalForm (toTerm (if TermV.occurs m (.app .K (kTowerV j (.var m))) = true
+        then TermV.app2 .S (TermV.bracketOpt m .K) (TermV.bracketOpt m (kTowerV j (.var m)))
+        else _))
+      rw [if_pos hocc]
+      exact normalForm_app_S_two (normalForm_app_K normalForm_K)
+        (normalForm_bracketOpt_kTower m j)
+
+/-- **Selectors are normal**, generically: safe to duplicate, safe to ship as symbols. -/
+theorem selArgs_normal : ∀ (k i : Nat), i < k → NormalForm (selArgs k i)
+  | k + 1, i, hik => by
+      by_cases hi : i = k
+      · subst hi
+        show NormalForm (toTerm (TermV.bracketOpt i (absArgs i (.var i))))
+        rw [absArgs_var_ge i i (Nat.le_refl i)]
+        exact normalForm_bracketOpt_kTower i i
+      · have hlt : i < k := by omega
+        show NormalForm (toTerm (TermV.bracketOpt k (absArgs k (.var i))))
+        rw [bracketOpt_not_occurs (by
+          rw [occurs_absArgs_var i k k (Nat.le_refl k)]
+          exact beq_eq_false_iff_ne.mpr (by omega))]
+        exact normalForm_app_K (selArgs_normal k i hlt)
+
+-- Anchors: the two-symbol dispatch of Stages 63–75 is the k = 2 instance, and the shapes are what
+-- the closed forms say.
+#guard selArgs 1 0 = I
+#guard selArgs 2 1 = app2 Term.S (Term.app Term.K Term.K) I
+#guard selArgs 2 0 = Term.app Term.K I
+#guard selArgs 3 0 = Term.app Term.K (Term.app Term.K I)
+#guard (List.range 5).all (fun i => leafCount (selArgs 5 i) < 20)
+
