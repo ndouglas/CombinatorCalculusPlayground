@@ -339,3 +339,257 @@ theorem tagFwd_of_step {F d d' : Term} (h : Term.app F d ⟶* d') :
 -- So the remaining work is four compositional lemmas and their assembly — real work, but ordinary, and of a
 -- kind this development has done many times. What it is NOT is a chain over hundreds of leaves, which is what
 -- I expected before writing the term down.
+
+-- ## Stage 64: the four lemmas, step-correctness, and `fwd`
+--
+-- One of Stage 63's four lemmas is FALSE AS STATED, and it is worth recording why before proving the fixed
+-- version. `CONCATf (mkWord u) (mkWord v) ⟶* mkWord (u ++ v)` cannot hold: the left side reduces to a
+-- compiled abstraction whose top spine is `S` applied to TWO arguments, and no reduction ever fires a
+-- top-level redex there again, while a nonempty `mkWord` is `S` applied to FOUR arguments at its spine. The
+-- two are observationally equal — which is exactly what Stage 63's two-observer guards checked — but SK has
+-- no extensionality, so observational equality is not reachability. The fix is the classic cons-directed
+-- concatenation `CAT = λL M. L CONS M`: folding the left word with `CONS` itself REBUILDS it, symbol by
+-- symbol, on top of the right word, so every intermediate stays in `mkWord` form. (It costs 14 more leaves
+-- than `CONCATf`, because it carries `CONSf` as a constant — reachability is what the extra leaves buy.)
+-- The mistake is the same species as Stage 60's — an unexamined representation assumption, this time
+-- "a fold-shaped combinator that computes the right list IS the right list."
+--
+-- Everything below is at the `Term` level via the β-ladder (`bracketOpt_beta*_Term`, Bracket.lean): first a
+-- β-lemma per compiled combinator, then the compositional lemmas over `mkWord`, then assembly.
+
+-- ### β: each compiled combinator applied to arguments reduces to its instantiated body
+
+/-- `[] c n ⟶* n`. -/
+theorem NILf_beta (c n : Term) : Term.app (Term.app NILf c) n ⟶* n := by
+  have h := bracketOpt_beta2_Term (V 0) c n
+  simpa [V, TermV.subst] using h
+
+/-- `cons x L c n ⟶* c x (L c n)`. -/
+theorem CONSf_beta (x L c n : Term) :
+    Term.app (Term.app (Term.app (Term.app CONSf x) L) c) n
+      ⟶* Term.app (Term.app c x) (Term.app (Term.app L c) n) := by
+  have h := bracketOpt_beta4_Term (TermV.app2 (V 1) (V 3) (TermV.app2 (V 2) (V 1) (V 0))) x L c n
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+/-- `head L ⟶* L K K`. -/
+theorem HEADf_beta (L : Term) : Term.app HEADf L ⟶* Term.app (Term.app L K) K := by
+  have h := bracketOpt_beta_Term 0 (TermV.app2 (V 0) .K .K) L
+  simpa [V, TermV.app2, TermV.subst, toTerm] using h
+
+/-- `pair a b s ⟶* s a b`. -/
+theorem PAIRf_beta (a b s : Term) :
+    Term.app (Term.app (Term.app PAIRf a) b) s ⟶* Term.app (Term.app s a) b := by
+  have h := bracketOpt_beta3_Term (TermV.app2 (V 0) (V 2) (V 1)) a b s
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+/-- `fst p ⟶* p K`. -/
+theorem FSTf_beta (p : Term) : Term.app FSTf p ⟶* Term.app p K := by
+  have h := bracketOpt_beta_Term 0 (TermV.app (V 0) .K) p
+  simpa [V, TermV.subst, toTerm] using h
+
+/-- `snd p ⟶* p (S K)`. -/
+theorem SNDf_beta (p : Term) : Term.app SNDf p ⟶* Term.app p (Term.app S K) := by
+  have h := bracketOpt_beta_Term 0 (TermV.app (V 0) (TermV.app .S .K)) p
+  simpa [V, TermV.subst, toTerm] using h
+
+theorem TAILSTEPf_beta (x p : Term) :
+    Term.app (Term.app TAILSTEPf x) p
+      ⟶* Term.app (Term.app PAIRf (Term.app (Term.app CONSf x) (Term.app FSTf p)))
+          (Term.app FSTf p) := by
+  have h := bracketOpt_beta2_Term (TermV.app2 (ofTerm PAIRf)
+    (TermV.app2 (ofTerm CONSf) (V 1) (TermV.app (ofTerm FSTf) (V 0)))
+    (TermV.app (ofTerm FSTf) (V 0))) x p
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+/-- The initial accumulator of `tail`'s fold: the pair `⟨[], []⟩`. -/
+def TAILZf : Term := Term.app (Term.app PAIRf NILf) NILf
+
+theorem TAILf_beta (L : Term) :
+    Term.app TAILf L ⟶* Term.app SNDf (Term.app (Term.app L TAILSTEPf) TAILZf) := by
+  have h := bracketOpt_beta_Term 0 (TermV.app (ofTerm SNDf)
+    (TermV.app2 (V 0) (ofTerm TAILSTEPf)
+      (TermV.app2 (ofTerm PAIRf) (ofTerm NILf) (ofTerm NILf)))) L
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm, TAILZf] using h
+
+/-- `rule s ⟶* s ruleOutA ruleOutB` — dispatch is application. -/
+theorem RULEf_beta (s : Term) :
+    Term.app RULEf s ⟶* Term.app (Term.app s ruleOutA) ruleOutB := by
+  have h := bracketOpt_beta_Term 0 (TermV.app2 (V 0) (ofTerm ruleOutA) (ofTerm ruleOutB)) s
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+-- ### The pair projections really project
+theorem FSTf_pair (a b : Term) :
+    Term.app FSTf (Term.app (Term.app PAIRf a) b) ⟶* a := by
+  refine Steps.trans (FSTf_beta _) ?_
+  refine Steps.trans (PAIRf_beta a b K) ?_
+  exact Steps.single (Step.K_red a b)
+
+theorem SNDf_pair (a b : Term) :
+    Term.app SNDf (Term.app (Term.app PAIRf a) b) ⟶* b := by
+  refine Steps.trans (SNDf_beta _) ?_
+  refine Steps.trans (PAIRf_beta a b (Term.app S K)) ?_
+  exact Steps.tail (Step.S_red K a b) (Steps.single (Step.K_red b (Term.app a b)))
+
+-- ### The four compositional lemmas
+
+/-- **Lemma 1 (head).** No induction at all: one β exposes `K x (…)` and the `K` fires. -/
+theorem HEADf_mkWord (x : Term) (xs : List Term) :
+    Term.app HEADf (mkWord (x :: xs)) ⟶* x := by
+  refine Steps.trans (HEADf_beta _) ?_
+  refine Steps.trans (CONSf_beta x (mkWord xs) K K) ?_
+  exact Steps.single (Step.K_red x (Term.app (Term.app (mkWord xs) K) K))
+
+/-- The fold underneath `tail` computes the pair `⟨word, its tail⟩` — and both components come out
+CONS-BUILT, because `TAILSTEPf` rebuilds them with the genuine `CONSf`. That is what makes the tail of a
+`mkWord` literally a `mkWord`. -/
+theorem mkWord_tailPair : ∀ (w : List Term),
+    Term.app (Term.app (mkWord w) TAILSTEPf) TAILZf
+      ⟶* Term.app (Term.app PAIRf (mkWord w)) (mkWord w.tail) := by
+  intro w
+  induction w with
+  | nil => exact NILf_beta TAILSTEPf TAILZf
+  | cons x xs ih =>
+      refine Steps.trans (CONSf_beta x (mkWord xs) TAILSTEPf TAILZf) ?_
+      refine Steps.trans (Steps.congR ih) ?_
+      refine Steps.trans (TAILSTEPf_beta x _) ?_
+      exact Steps.congApp (Steps.congR (Steps.congR (FSTf_pair _ _))) (FSTf_pair _ _)
+
+/-- **Lemma 2 (tail).** -/
+theorem TAILf_mkWord (x : Term) (xs : List Term) :
+    Term.app TAILf (mkWord (x :: xs)) ⟶* mkWord xs := by
+  refine Steps.trans (TAILf_beta _) ?_
+  refine Steps.trans (Steps.congR (mkWord_tailPair (x :: xs))) ?_
+  exact SNDf_pair _ _
+
+/-- Cons-directed concatenation: `λL M. L CONS M`. Folding the left word with `CONS` itself rebuilds it on
+top of the right word, so the output is cons-built — reachable, not merely observationally equal. -/
+def CATf : Term := toTerm (TermV.bracketOpt 1 (TermV.bracketOpt 0
+  (TermV.app2 (V 1) (ofTerm CONSf) (V 0))))
+
+theorem CATf_beta (u v : Term) :
+    Term.app (Term.app CATf u) v ⟶* Term.app (Term.app u CONSf) v := by
+  have h := bracketOpt_beta2_Term (TermV.app2 (V 1) (ofTerm CONSf) (V 0)) u v
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+theorem mkWord_fold_cons : ∀ (u : List Term) (v : List Term),
+    Term.app (Term.app (mkWord u) CONSf) (mkWord v) ⟶* mkWord (u ++ v) := by
+  intro u v
+  induction u with
+  | nil => exact NILf_beta CONSf (mkWord v)
+  | cons x u' ih =>
+      refine Steps.trans (CONSf_beta x (mkWord u') CONSf (mkWord v)) ?_
+      exact Steps.congR ih
+
+/-- **Lemma 3 (concat), on the corrected combinator.** -/
+theorem CATf_mkWord (u v : List Term) :
+    Term.app (Term.app CATf (mkWord u)) (mkWord v) ⟶* mkWord (u ++ v) :=
+  Steps.trans (CATf_beta _ _) (mkWord_fold_cons u v)
+
+/-- **Lemma 4 (dispatch), case `a`:** `K` selects the first rule output. -/
+theorem RULEf_symA : Term.app RULEf symA ⟶* mkWord [symB] := by
+  refine Steps.trans (RULEf_beta symA) ?_
+  exact Steps.single (Step.K_red ruleOutA ruleOutB)
+
+/-- **Lemma 4 (dispatch), case `b`:** `S K` selects the second. -/
+theorem RULEf_symB : Term.app RULEf symB ⟶* mkWord [symA, symB] := by
+  refine Steps.trans (RULEf_beta symB) ?_
+  exact Steps.tail (Step.S_red K ruleOutA ruleOutB)
+    (Steps.single (Step.K_red ruleOutB (Term.app ruleOutA ruleOutB)))
+
+-- ### The corrected step function, and the machine it simulates
+
+/-- `STEPf` with `CATf` in place of `CONCATf` — same shape, reachable output. -/
+def STEPc : Term := o1 (TermV.app2 (ofTerm CATf)
+  (TermV.app (ofTerm TAILf) (TermV.app (ofTerm TAILf) (V 0)))
+  (TermV.app (ofTerm RULEf) (TermV.app (ofTerm HEADf) (V 0))))
+
+theorem STEPc_beta (L : Term) :
+    Term.app STEPc L ⟶* Term.app (Term.app CATf (Term.app TAILf (Term.app TAILf L)))
+      (Term.app RULEf (Term.app HEADf L)) := by
+  have h := bracketOpt_beta_Term 0 (TermV.app2 (ofTerm CATf)
+    (TermV.app (ofTerm TAILf) (TermV.app (ofTerm TAILf) (V 0)))
+    (TermV.app (ofTerm RULEf) (TermV.app (ofTerm HEADf) (V 0)))) L
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+/-- The rule of the source machine, named so statements below stay in `List Bool` syntactically:
+`a := true ↦ [b]`, `b := false ↦ [a, b]`. -/
+def ruleAB (s : Bool) : List Bool := if s then [false] else [true, false]
+
+/-- The source machine, as data: two symbols, deletion number 2, `ruleAB`. -/
+def tagAB : TagSystem := ⟨Bool, 2, ruleAB⟩
+
+/-- Symbols to combinators, the Stage 50 dispatch encoding: `a ↦ K`, `b ↦ S K`. -/
+def encSym (s : Bool) : Term := if s then symA else symB
+
+/-- Words to fold-encoded lists of encoded symbols. -/
+def encWord (w : List Bool) : Term := mkWord (w.map encSym)
+
+/-- Dispatch computes the rule, uniformly over the alphabet. -/
+theorem RULEf_encSym (s : Bool) :
+    Term.app RULEf (encSym s) ⟶* encWord (ruleAB s) := by
+  cases s
+  · exact RULEf_symB
+  · exact RULEf_symA
+
+/-- **Step-correctness.** On any word long enough to tag-step, the compiled step function computes the tag
+step LITERALLY: drop two symbols, append the head's rule, all inside `mkWord`. This is the composition of
+the four lemmas, and it never mentions the 710-leaf compiled term. -/
+theorem STEPc_mkWord (s y : Bool) (rest : List Bool) :
+    Term.app STEPc (encWord (s :: y :: rest)) ⟶* encWord (rest ++ ruleAB s) := by
+  refine Steps.trans (STEPc_beta _) ?_
+  have htail : Term.app TAILf (Term.app TAILf (encWord (s :: y :: rest))) ⟶* encWord rest := by
+    refine Steps.trans (Steps.congR (TAILf_mkWord (encSym s) ((y :: rest).map encSym))) ?_
+    exact TAILf_mkWord (encSym y) (rest.map encSym)
+  have hrule : Term.app RULEf (Term.app HEADf (encWord (s :: y :: rest)))
+      ⟶* encWord (ruleAB s) := by
+    refine Steps.trans (Steps.congR (HEADf_mkWord (encSym s) ((y :: rest).map encSym))) ?_
+    exact RULEf_encSym s
+  refine Steps.trans (Steps.congApp (Steps.congR htail) hrule) ?_
+  rw [show encWord (rest ++ ruleAB s)
+      = mkWord (rest.map encSym ++ (ruleAB s).map encSym) by simp [encWord]]
+  exact CATf_mkWord (rest.map encSym) ((ruleAB s).map encSym)
+
+/-- **`fwd` for a genuine m = 2 tag system.** The driver advances for any step function (Stage 61's
+`selfRep_advances`), the step function computes the step (`STEPc_mkWord`), and `tagFwd_of_step` is their
+composition: every source step is simulated by actual SK reduction on the encoded word. -/
+theorem tagAB_fwd {w w' : List Bool} (h : (RS.Tag tagAB).step w w') :
+    Term.app (selfRep STEPc) (encWord w) ⟶* Term.app (selfRep STEPc) (encWord w') := by
+  obtain ⟨a, rest, hw, hlen, hw'⟩ := h
+  subst hw
+  cases rest with
+  | nil => simp [tagAB] at hlen
+  | cons y rest' =>
+      subst hw'
+      exact tagFwd_of_step (STEPc_mkWord a y rest')
+
+/-- The same statement in the `RS` language, where a future `Simulation (RS.Tag tagAB) RS.SK` will want
+it: this is that structure's `fwd` field, verbatim. -/
+theorem tagAB_fwd_SK {w w' : List Bool} (h : (RS.Tag tagAB).step w w') :
+    RS.SK.Steps (Term.app (selfRep STEPc) (encWord w)) (Term.app (selfRep STEPc) (encWord w')) :=
+  RS.SK_steps_iff.mpr (tagAB_fwd h)
+
+-- Anchors. The source machine really steps, and the compiled step function's output NORMALIZES to the same
+-- term as the encoded target word — a stronger check than Stage 63's two-observer agreement, available now
+-- because the output is reachable rather than merely observationally equal.
+example : (RS.Tag tagAB).step [true, true, false] [false, false] :=
+  ⟨true, [true, false], rfl, by decide, rfl⟩
+example : (RS.Tag tagAB).step [false, true] [true, false] :=
+  ⟨false, [true], rfl, by decide, rfl⟩
+#guard nfW (Term.app STEPc (encWord [true, true, false])) == nfW (encWord [false, false])
+#guard nfW (Term.app STEPc (encWord [false, true])) == nfW (encWord [true, false])
+#guard !(nfW (Term.app STEPc (encWord [true, true, false])) == nfW (encWord [true, false]))
+#guard (leafCount CATf, leafCount STEPc) = (82, 710)
+
+-- ## What this settles, and what remains
+-- SETTLED: piece (v)'s forward half, end to end. A genuine two-symbol, deletion-number-two tag system is
+-- driven inside SK: `selfRep STEPc` applied to an encoded word reduces to itself applied to the encoded
+-- successor word, for every source step. The proof is the four compositional lemmas composed — head is one
+-- β and a `K`-firing, tail and concat are one list induction each, dispatch is two firings — plus Stage
+-- 61's driver lemma. The compiled term's size never entered.
+--
+-- NOT SETTLED, and now the only thing between this development and `Simulation (RS.Tag tagAB) RS.SK`:
+-- a decoder (`dec`/`dec_enc`, mechanical) and adequacy (`bwd`) — the demanding half, as it was for the
+-- countdown, where it took Stages 45–48 (K-normal forms) and 49–58 (trajectory relation) to discharge.
+-- The structural difference this time: `enc`'s image contains the driver, which duplicates ITSELF at every
+-- step, so the Stage 11 result that machine code is safe to duplicate (`normalForm_bracket`) becomes
+-- load-bearing rather than reassuring.

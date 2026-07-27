@@ -479,3 +479,116 @@ theorem combinatory_completeness_opt (x : Nat) (t : TermV) (u : Term) :
 -- the evaluator aborts on and one it handles in a third of a second.
 #guard leafCount (toTerm (TermV.bracket 2 (TermV.bracket 1 (TermV.bracket 0 (.var 2))))) = 15
 #guard leafCount (toTerm (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 (.var 2))))) = 9
+
+-- ## Stage 64: substitution commutes with the optimised abstraction
+-- Multi-argument application of compiled code needs the fact the NAIVE algorithm got in
+-- `bracket_subst_applied` — substituting encoded data under an inner abstraction — but for `bracketOpt`.
+-- The optimised statement is stronger: an EQUALITY rather than "up to reduction", because encoded data is
+-- closed, so it can neither contain nor create an occurrence and the occurs check never changes its verdict.
+
+/-- Encoded data is invisible to the occurs check: substituting it changes no occurrence of any OTHER
+variable. (`y = x` is excluded — that occurrence is exactly what the substitution consumes.) -/
+theorem occurs_subst_ofTerm {x y : Nat} (hyx : y ≠ x) (p : Term) (t : TermV) :
+    TermV.occurs y (TermV.subst x (ofTerm p) t) = TermV.occurs y t := by
+  induction t with
+  | S => rfl
+  | K => rfl
+  | var z =>
+      by_cases hz : z = x
+      · subst hz
+        have hne : (z == y) = false := beq_eq_false_iff_ne.mpr (fun h => hyx h.symm)
+        simp [TermV.subst, TermV.occurs, closedV_ofTerm p y, hne]
+      · simp [TermV.subst, hz]
+  | app a b iha ihb => simp [TermV.subst, TermV.occurs, iha, ihb]
+
+/-- Abstracting a variable out of encoded data only protects it with `K`: the occurs check sees nothing. -/
+theorem bracketOpt_ofTerm (y : Nat) (p : Term) :
+    TermV.bracketOpt y (ofTerm p) = .app .K (ofTerm p) := by
+  cases p with
+  | S => rfl
+  | K => rfl
+  | app a b =>
+      have h : TermV.occurs y (ofTerm (Term.app a b)) = false := closedV_ofTerm _ y
+      simp only [ofTerm] at h ⊢
+      simp [TermV.bracketOpt, h]
+
+/-- **Substituting encoded data commutes with the optimised abstraction, as an equality.** This is what
+makes iterated application of multi-variable compiled code work: each argument's β-step leaves a genuine
+`bracketOpt` for the next argument to consume. -/
+theorem bracketOpt_subst_ofTerm {x y : Nat} (hxy : x ≠ y) (p : Term) (t : TermV) :
+    TermV.subst x (ofTerm p) (TermV.bracketOpt y t)
+      = TermV.bracketOpt y (TermV.subst x (ofTerm p) t) := by
+  induction t with
+  | S => rfl
+  | K => rfl
+  | var z =>
+      by_cases hzy : z = y
+      · subst hzy
+        -- `[y](var y) = S K K` is closed, and the substitution leaves `var y` alone since `y ≠ x`.
+        simp [TermV.bracketOpt, TermV.app2, TermV.subst, Ne.symm hxy]
+      · by_cases hzx : z = x
+        · subst hzx
+          -- the substitution fires; both sides are `K` protecting the data.
+          simp [TermV.bracketOpt, TermV.subst, hzy, bracketOpt_ofTerm]
+        · simp [TermV.bracketOpt, TermV.subst, hzy, hzx]
+  | app a b iha ihb =>
+      have hos : TermV.occurs y (TermV.subst x (ofTerm p) (.app a b)) = TermV.occurs y (.app a b) :=
+        occurs_subst_ofTerm (Ne.symm hxy) p _
+      by_cases hocc : TermV.occurs y (.app a b) = true
+      · have hocc' := hos.trans hocc
+        simp only [TermV.subst] at hocc' ⊢
+        simp only [TermV.bracketOpt, hocc, hocc', if_true]
+        simp only [TermV.app2, TermV.subst, iha, ihb]
+      · have hf : TermV.occurs y (TermV.app a b) = false := by simpa using hocc
+        have hf' := hos.trans hf
+        simp only [TermV.subst] at hf' ⊢
+        simp [TermV.bracketOpt, hf, hf', TermV.subst]
+
+-- ## The β-ladder at the `Term` level
+-- Stage 63's plan needs compiled combinators of one to four arguments reasoned about at the lambda level.
+-- Each rung applies one argument by `bracketOpt_beta`, then uses the commutation above to expose a genuine
+-- abstraction for the next argument. Variables are numbered outermost-first: an n-argument combinator is
+-- `[n-1](…([0] body))`.
+
+/-- One argument: `Term`-level β for the optimised abstraction. -/
+theorem bracketOpt_beta_Term (x : Nat) (t : TermV) (u : Term) :
+    Term.app (toTerm (TermV.bracketOpt x t)) u ⟶* toTerm (TermV.subst x (ofTerm u) t) := by
+  have h := steps_toTerm (TermV.bracketOpt_beta x t (ofTerm u))
+  simpa [toTerm] using h
+
+/-- Two arguments. -/
+theorem bracketOpt_beta2_Term (b : TermV) (u v : Term) :
+    Term.app (Term.app (toTerm (TermV.bracketOpt 1 (TermV.bracketOpt 0 b))) u) v
+      ⟶* toTerm (TermV.subst 0 (ofTerm v) (TermV.subst 1 (ofTerm u) b)) := by
+  have h1 : Term.app (toTerm (TermV.bracketOpt 1 (TermV.bracketOpt 0 b))) u
+      ⟶* toTerm (TermV.bracketOpt 0 (TermV.subst 1 (ofTerm u) b)) := by
+    have h := bracketOpt_beta_Term 1 (TermV.bracketOpt 0 b) u
+    rwa [bracketOpt_subst_ofTerm (by decide) u b] at h
+  exact Steps.trans (Steps.congL h1) (bracketOpt_beta_Term 0 _ v)
+
+/-- Three arguments. -/
+theorem bracketOpt_beta3_Term (b : TermV) (u v w : Term) :
+    Term.app (Term.app (Term.app
+        (toTerm (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 b)))) u) v) w
+      ⟶* toTerm (TermV.subst 0 (ofTerm w) (TermV.subst 1 (ofTerm v) (TermV.subst 2 (ofTerm u) b))) := by
+  have h1 : Term.app (toTerm (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 b)))) u
+      ⟶* toTerm (TermV.bracketOpt 1 (TermV.bracketOpt 0 (TermV.subst 2 (ofTerm u) b))) := by
+    have h := bracketOpt_beta_Term 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 b)) u
+    rwa [bracketOpt_subst_ofTerm (by decide) u (TermV.bracketOpt 0 b),
+         bracketOpt_subst_ofTerm (by decide) u b] at h
+  exact Steps.trans (Steps.congL (Steps.congL h1)) (bracketOpt_beta2_Term _ v w)
+
+/-- Four arguments — `CONS`'s arity, the largest the toolkit uses. -/
+theorem bracketOpt_beta4_Term (b : TermV) (u v w z : Term) :
+    Term.app (Term.app (Term.app (Term.app
+        (toTerm (TermV.bracketOpt 3 (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 b))))) u) v) w) z
+      ⟶* toTerm (TermV.subst 0 (ofTerm z) (TermV.subst 1 (ofTerm w)
+            (TermV.subst 2 (ofTerm v) (TermV.subst 3 (ofTerm u) b)))) := by
+  have h1 : Term.app (toTerm (TermV.bracketOpt 3
+        (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 b))))) u
+      ⟶* toTerm (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 (TermV.subst 3 (ofTerm u) b)))) := by
+    have h := bracketOpt_beta_Term 3 (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 b))) u
+    rwa [bracketOpt_subst_ofTerm (by decide) u (TermV.bracketOpt 1 (TermV.bracketOpt 0 b)),
+         bracketOpt_subst_ofTerm (by decide) u (TermV.bracketOpt 0 b),
+         bracketOpt_subst_ofTerm (by decide) u b] at h
+  exact Steps.trans (Steps.congL (Steps.congL (Steps.congL h1))) (bracketOpt_beta3_Term _ v w z)
