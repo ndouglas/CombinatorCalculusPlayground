@@ -3739,3 +3739,25 @@ what automation could and couldn't do. This file is a first-class deliverable
   general `RULEf_encSym`-analog — then the general step function, and the Stage 69–75 pipeline
   re-instantiated (it is already generic in everything but the dispatch). (2) rungs 2/3 via
   match-bounds. (3) C6, declined a sixty-fourth time.
+
+## 2026-07-27 — Stage 77: the one-line theorem
+
+- `dispatchT_correct` — dispatch-correctness for any alphabet — is `Steps.trans (dispatchT_beta _ _)
+  (selArgs_correct pre x post)`. One line, because Stage 76 stated selector-β in pre/post style
+  instead of with index arithmetic, and the dispatcher's statement inherits the shape. The rest of
+  the stage was three eight-line list lemmas and the injectivity dichotomy (K-wrap below the top,
+  S-headed at it). When a theorem comes out this small, the credit belongs to the statement of the
+  previous one; I want to keep noticing that statements are design surfaces, not just claims.
+- One tactic lesson for the file: `subst` on `i = k` eliminated the INDUCTION variable and orphaned
+  every later reference to `k` — Stage 59's which-name-survives lesson, in a new costume. `rw` at
+  the hypothesis is the deterministic form.
+- The symbol layer for any alphabet is now complete: normal (76), injective (77), dispatchable
+  (77). Everything downstream of dispatch in the Stages 63–75 pipeline is already generic — the
+  word toolkit and `wordNF` theory are over `List Term` with normal entries, the shell invariant is
+  generic in the step function, `DataW` needs only the canonical-input step theorems. The
+  any-alphabet `Simulation` is now genuinely assembly.
+- Ranking: (1) **the general machine**: the step function for an arbitrary `m = 2` rule table over
+  `Fin n` (guard and tails unchanged, `RULEf := dispatchT` over the encoded rule outputs), its
+  canonical-input suite, and the re-instantiated pipeline through to
+  `Simulation (RS.Tag T) RS.SK` for every two-symbol-consuming tag system. (2) rungs 2/3 via
+  match-bounds. (3) C6, declined a sixty-fifth time.

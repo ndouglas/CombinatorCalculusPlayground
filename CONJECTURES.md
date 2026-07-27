@@ -3543,3 +3543,22 @@ explicit (`beqSelf` supplies `(n == n) = true` by a provably clean route), the h
 **`Audit.lean` makes the claim BUILD-ENFORCED**: every headline theorem's exact axiom footprint is
 pinned with `#guard_msgs in #print axioms`, so any future leak — in new code or old — fails the
 build. Twelve theorems pinned, `confluence` and `nf_unique` at `[propext]` alone.
+
+### Stage 77: the any-alphabet dispatch
+
+The dispatcher `λs. s out₀ … out_{n-1}`, compiled generically in the output table, with its β and
+its correctness — and the pre/post idiom from Stage 76 made the headline theorem ONE LINE:
+
+| | |
+|---|---|
+| `appArgsV` / `toTerm_appArgsV` / `subst_appArgsV` / `map_subst_toTerm` | the three little list lemmas β needs |
+| `dispatchT` / `dispatchT_beta` | the compiled dispatcher and its β |
+| **`dispatchT_correct`** | the dispatcher applied to the selector at position `p` returns the output at position `p` — `dispatchT_beta` ∘ `selArgs_correct`, no index arithmetic anywhere |
+| `selArgs_succ_lt` / `selArgs_top_S` | the closed-form dichotomy: below the top index a layer is a `K`-wrap; the top selector is `S`-headed |
+| **`selArgs_injective`** | distinct symbols stay distinct — what the decoder and canonical-form pinning consume at the tag layer |
+
+With Stage 76's `selArgs_normal`, the symbol layer for ANY alphabet is complete: selectors are
+normal (safe to ship and duplicate), injective (decodable), and dispatchable (one β away from their
+rule outputs). What remains for the any-alphabet `Simulation` is assembly: the general step function
+over `Fin n`, its `wordNF`-suite, and the Stage 74–75 machinery re-instantiated — which is generic
+in everything but the dispatch this stage just supplied.
