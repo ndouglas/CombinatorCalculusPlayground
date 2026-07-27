@@ -1093,3 +1093,238 @@ theorem selfRepW_STEPg_not_normal : ¬ NormalForm (selfRepW STEPg) :=
 --     per-combinator "segment invariant" plan already intended;
 --   * the interesting number is not the state count but the SPECIES count, and the accounting above
 --     says it is ONE (words), after the Stage 68 rebuild.
+
+-- ## Stage 68: the accumulator rebuild — every live position in the shipped driver is a word
+--
+-- Stage 67's one fixable rigidity violation was `TAILf`'s accumulator: the body chunk
+-- `PAIRf NILf NILf` ships as a live redex, and the driver duplicates it every cycle. The fix is to
+-- compile the pair DIRECTLY — `TAILZn = λs. s [] []` — which is normal and β-identical. Rebuilding
+-- the stack on it (`TAILn`, `HASTWOn`, `STEPcn`, `STEPgn`) leaves exactly three live positions in the
+-- shipped step function, all of them rule-output words: code drift and data drift are now ONE
+-- species, build-enforced below.
+--
+-- A simplification falls out of the rebuild: stating the tail fold's invariant EXISTENTIALLY ("the
+-- fold reaches something that PROJECTS like the pair") lets `TAILn_mkWord` cover all words uniformly
+-- — the empty word needs no separate lemma, because `TAILZn` projects like `⟨[], []⟩` by β.
+
+/-- The accumulator, compiled rather than applied: `λs. s [] []`. Normal, unlike `PAIRf NILf NILf`. -/
+def TAILZn : Term := toTerm (TermV.bracketOpt 0
+  (TermV.app2 (V 0) (ofTerm NILf) (ofTerm NILf)))
+
+/-- `tail`, on the compiled accumulator. -/
+def TAILn : Term := o1 (TermV.app (ofTerm SNDf)
+  (TermV.app2 (V 0) (ofTerm TAILSTEPf) (ofTerm TAILZn)))
+
+/-- The guard, on the new tail. -/
+def HASTWOn : Term := o1 (TermV.app (ofTerm NONNILf) (TermV.app (ofTerm TAILn) (V 0)))
+
+/-- The unguarded step, on the new tail. -/
+def STEPcn : Term := o1 (TermV.app2 (ofTerm CATf)
+  (TermV.app (ofTerm TAILn) (TermV.app (ofTerm TAILn) (V 0)))
+  (TermV.app (ofTerm RULEf) (TermV.app (ofTerm HEADf) (V 0))))
+
+/-- **The driver's step function, final form**: guarded, and clean of non-word redexes. -/
+def STEPgn : Term := o1 (TermV.app2 (TermV.app (ofTerm HASTWOn) (V 0))
+  (TermV.app (ofTerm STEPcn) (V 0)) (V 0))
+
+-- ### β for the rebuilt pieces
+
+theorem TAILZn_beta (s : Term) :
+    Term.app TAILZn s ⟶* Term.app (Term.app s NILf) NILf := by
+  have h := bracketOpt_beta_Term 0 (TermV.app2 (V 0) (ofTerm NILf) (ofTerm NILf)) s
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+theorem TAILn_beta (L : Term) :
+    Term.app TAILn L ⟶* Term.app SNDf (Term.app (Term.app L TAILSTEPf) TAILZn) := by
+  have h := bracketOpt_beta_Term 0 (TermV.app (ofTerm SNDf)
+    (TermV.app2 (V 0) (ofTerm TAILSTEPf) (ofTerm TAILZn))) L
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+theorem HASTWOn_beta (L : Term) :
+    Term.app HASTWOn L ⟶* Term.app NONNILf (Term.app TAILn L) := by
+  have h := bracketOpt_beta_Term 0
+    (TermV.app (ofTerm NONNILf) (TermV.app (ofTerm TAILn) (V 0))) L
+  simpa [V, TermV.subst, subst_ofTerm, toTerm] using h
+
+theorem STEPcn_beta (L : Term) :
+    Term.app STEPcn L ⟶* Term.app (Term.app CATf (Term.app TAILn (Term.app TAILn L)))
+      (Term.app RULEf (Term.app HEADf L)) := by
+  have h := bracketOpt_beta_Term 0 (TermV.app2 (ofTerm CATf)
+    (TermV.app (ofTerm TAILn) (TermV.app (ofTerm TAILn) (V 0)))
+    (TermV.app (ofTerm RULEf) (TermV.app (ofTerm HEADf) (V 0)))) L
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+theorem STEPgn_beta (L : Term) :
+    Term.app STEPgn L ⟶* Term.app (Term.app (Term.app HASTWOn L) (Term.app STEPcn L)) L := by
+  have h := bracketOpt_beta_Term 0 (TermV.app2 (TermV.app (ofTerm HASTWOn) (V 0))
+    (TermV.app (ofTerm STEPcn) (V 0)) (V 0)) L
+  simpa [V, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+-- ### The compiled accumulator projects like the pair it replaced
+
+theorem FSTf_TAILZn : Term.app FSTf TAILZn ⟶* NILf := by
+  refine Steps.trans (FSTf_beta _) ?_
+  refine Steps.trans (TAILZn_beta K) ?_
+  exact Steps.single (Step.K_red NILf NILf)
+
+theorem SNDf_TAILZn : Term.app SNDf TAILZn ⟶* NILf := by
+  refine Steps.trans (SNDf_beta _) ?_
+  refine Steps.trans (TAILZn_beta (Term.app S K)) ?_
+  exact Steps.tail (Step.S_red K NILf NILf)
+    (Steps.single (Step.K_red NILf (Term.app NILf NILf)))
+
+/-- The tail fold, stated existentially: it reaches SOMETHING that projects like `⟨word, tail⟩`.
+This is the shape the old invariant should have had — the base case stops needing the accumulator to
+literally BE a `PAIRf`-application. -/
+theorem mkWord_tailPairN : ∀ (w : List Term),
+    ∃ p, (Term.app (Term.app (mkWord w) TAILSTEPf) TAILZn ⟶* p)
+      ∧ (Term.app FSTf p ⟶* mkWord w) ∧ (Term.app SNDf p ⟶* mkWord w.tail) := by
+  intro w
+  induction w with
+  | nil => exact ⟨TAILZn, NILf_beta _ _, FSTf_TAILZn, SNDf_TAILZn⟩
+  | cons x xs ih =>
+      obtain ⟨p', hp', hfst, _⟩ := ih
+      refine ⟨Term.app (Term.app PAIRf (Term.app (Term.app CONSf x) (mkWord xs))) (mkWord xs),
+        ?_, FSTf_pair _ _, SNDf_pair _ _⟩
+      refine Steps.trans (CONSf_beta x (mkWord xs) TAILSTEPf TAILZn) ?_
+      refine Steps.trans (Steps.congR hp') ?_
+      refine Steps.trans (TAILSTEPf_beta x p') ?_
+      exact Steps.congApp (Steps.congR (Steps.congR hfst)) hfst
+
+/-- **`tail`, uniformly over ALL words** — the nil case is no longer special. -/
+theorem TAILn_mkWord (w : List Term) : Term.app TAILn (mkWord w) ⟶* mkWord w.tail := by
+  obtain ⟨p, hp, _, hsnd⟩ := mkWord_tailPairN w
+  refine Steps.trans (TAILn_beta _) ?_
+  exact Steps.trans (Steps.congR hp) hsnd
+
+-- ### The guard's verdicts, on the new tail
+
+theorem HASTWOn_nil : Term.app HASTWOn (mkWord []) ⟶* symB := by
+  refine Steps.trans (HASTWOn_beta _) ?_
+  exact Steps.trans (Steps.congR (TAILn_mkWord [])) NONNILf_nil
+
+theorem HASTWOn_one (x : Term) : Term.app HASTWOn (mkWord [x]) ⟶* symB := by
+  refine Steps.trans (HASTWOn_beta _) ?_
+  exact Steps.trans (Steps.congR (TAILn_mkWord [x])) NONNILf_nil
+
+theorem HASTWOn_long (x y : Term) (ys : List Term) :
+    Term.app HASTWOn (mkWord (x :: y :: ys)) ⟶* symA := by
+  refine Steps.trans (HASTWOn_beta _) ?_
+  exact Steps.trans (Steps.congR (TAILn_mkWord (x :: y :: ys))) (NONNILf_cons y ys)
+
+-- ### Step-correctness and the stuck case, re-proved on the clean stack
+
+theorem STEPcn_mkWord (s y : Bool) (rest : List Bool) :
+    Term.app STEPcn (encWord (s :: y :: rest)) ⟶* encWord (rest ++ ruleAB s) := by
+  refine Steps.trans (STEPcn_beta _) ?_
+  have htail : Term.app TAILn (Term.app TAILn (encWord (s :: y :: rest))) ⟶* encWord rest := by
+    refine Steps.trans (Steps.congR (TAILn_mkWord (encSym s :: encSym y :: rest.map encSym))) ?_
+    exact TAILn_mkWord (encSym y :: rest.map encSym)
+  have hrule : Term.app RULEf (Term.app HEADf (encWord (s :: y :: rest)))
+      ⟶* encWord (ruleAB s) := by
+    refine Steps.trans (Steps.congR (HEADf_mkWord (encSym s) ((y :: rest).map encSym))) ?_
+    exact RULEf_encSym s
+  refine Steps.trans (Steps.congApp (Steps.congR htail) hrule) ?_
+  rw [show encWord (rest ++ ruleAB s)
+      = mkWord (rest.map encSym ++ (ruleAB s).map encSym) by simp [encWord]]
+  exact CATf_mkWord (rest.map encSym) ((ruleAB s).map encSym)
+
+theorem STEPgn_mkWord (s y : Bool) (rest : List Bool) :
+    Term.app STEPgn (encWord (s :: y :: rest)) ⟶* encWord (rest ++ ruleAB s) := by
+  refine Steps.trans (STEPgn_beta _) ?_
+  refine Steps.trans (Steps.congL (Steps.congL
+    (HASTWOn_long (encSym s) (encSym y) (rest.map encSym)))) ?_
+  refine Steps.trans (Steps.single (Step.K_red _ _)) ?_
+  exact STEPcn_mkWord s y rest
+
+theorem STEPgn_stuck : ∀ {w : List Bool}, w.length < 2 →
+    Term.app STEPgn (encWord w) ⟶* encWord w := by
+  intro w hw
+  match w with
+  | [] =>
+      refine Steps.trans (STEPgn_beta _) ?_
+      refine Steps.trans (Steps.congL (Steps.congL HASTWOn_nil)) ?_
+      exact Steps.tail (Step.S_red K _ _) (Steps.single (Step.K_red _ _))
+  | [s] =>
+      refine Steps.trans (STEPgn_beta _) ?_
+      refine Steps.trans (Steps.congL (Steps.congL (HASTWOn_one (encSym s)))) ?_
+      exact Steps.tail (Step.S_red K _ _) (Steps.single (Step.K_red _ _))
+  | _ :: _ :: _ => exact absurd hw (by simp)
+
+-- ### The driver, final form
+
+/-- The encoder a `Simulation` will carry: guarded step function, word-only drift. -/
+def encTagN (w : List Bool) : Term := Term.app (selfRep STEPgn) (encWord w)
+
+theorem tagABn_fwd {w w' : List Bool} (h : (RS.Tag tagAB).step w w') :
+    encTagN w ⟶* encTagN w' := by
+  obtain ⟨a, rest, hw, hlen, hw'⟩ := h
+  subst hw
+  cases rest with
+  | nil => simp [tagAB] at hlen
+  | cons y rest' =>
+      subst hw'
+      exact tagFwd_of_step (STEPgn_mkWord a y rest')
+
+theorem tagABn_fwd_SK {w w' : List Bool} (h : (RS.Tag tagAB).step w w') :
+    RS.SK.Steps (encTagN w) (encTagN w') :=
+  RS.SK_steps_iff.mpr (tagABn_fwd h)
+
+theorem encTagN_stuck_returns {w : List Bool} (hw : w.length < 2) :
+    Term.app (selfRep STEPgn) (Term.app STEPgn (encWord w)) ⟶* encTagN w :=
+  Steps.congR (STEPgn_stuck hw)
+
+def decTagN (t : Term) : Option (List Bool) :=
+  match t with
+  | Term.app d w => if d = selfRep STEPgn then decWord w else none
+  | _ => none
+
+theorem decTagN_encTagN (u : List Bool) : decTagN (encTagN u) = some u := by
+  show (if selfRep STEPgn = selfRep STEPgn then decWord (encWord u) else none) = some u
+  rw [if_pos rfl]
+  exact decWord_encWord u
+
+theorem encTagN_injective {u u' : List Bool} (h : encTagN u = encTagN u') : u = u' := by
+  have h1 := decTagN_encTagN u
+  rw [h, decTagN_encTagN] at h1
+  exact (Option.some.inj h1).symm
+
+theorem tagABn_path {w w' : List Bool} (h : (RS.Tag tagAB).Steps w w') :
+    RS.SK.Steps (encTagN w) (encTagN w') :=
+  h.rec (fun a => @RS.Steps.refl RS.SK (encTagN a))
+    (fun s _ ih => RS.Steps.trans (tagABn_fwd_SK s) ih)
+
+/-- **The `PathEncoding`, final form** — guarded step, word-only drift. This is the encoding the
+`bwd` work targets from here on. -/
+def tagABnPathEncoding : PathEncoding (RS.Tag tagAB) RS.SK where
+  enc := encTagN
+  inj := encTagN_injective
+  path := tagABn_path
+
+-- ### The rigidity dividend, build-enforced
+-- The rebuilt tail chain is NORMAL — Stage 67's three accumulator copies are gone...
+theorem TAILZn_normal : NormalForm TAILZn := stepOnce_none_normal rfl
+theorem TAILn_normal : NormalForm TAILn := stepOnce_none_normal rfl
+theorem HASTWOn_normal : NormalForm HASTWOn := stepOnce_none_normal rfl
+#guard ([TAILZn, TAILn, HASTWOn].map (fun t => (succs t).length)) = [0, 0, 0]
+-- ...and the step function's ONLY live positions are the three rule-output words, through every
+-- layer up to the wrapper the driver duplicates.
+#guard ([STEPcn, STEPgn, selfRepW STEPgn].map (fun t => (succs t).length)) = [3, 3, 3]
+-- Sizes, for the record.
+#guard (leafCount TAILZn, leafCount TAILn, leafCount HASTWOn, leafCount STEPgn) = (15, 170, 189, 870)
+-- The machine still computes: a long word steps, a stuck word is fixed, and the Stage 65 bug stays
+-- dead on the final stack.
+#guard nfW (Term.app STEPgn (encWord [true, true, false])) == nfW (encWord [false, false])
+#guard nfW (Term.app STEPgn (encWord [false, true])) == nfW (encWord [true, false])
+#guard nfW (Term.app STEPgn (encWord [false])) == nfW (encWord [false])
+#guard !(nfW (Term.app STEPgn (encWord [false])) == nfW (encWord [true, false]))
+#guard decTagN (encTagN [true, false]) = some [true, false]
+#guard decTagN (encTagG [true, false]) = none
+
+-- ## Where this leaves `bwd`
+-- The stack is final: `enc`/`dec`/`dec_enc`/`fwd` proved, stuck words idle, and the shipped code's
+-- drift is confined to embedded WORDS — the same species as the data in flight, characterised once
+-- and used everywhere. The remaining obligation is unchanged in name and now minimal in kind: the
+-- word-drift family (reducts of `mkWord w`, parameterized over independent copy drift), then the
+-- machine phases composed over it, then the third abstraction. Everything else that `bwd` was
+-- waiting on has been either proved, repaired, or reduced to that one family.
