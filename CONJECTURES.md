@@ -3277,3 +3277,29 @@ inside a `#guard`. Enumerative invariants at this scale are not merely unwritabl
 measurable. The drift families must be parameterized (Tower's `half` constructor generalised), which
 the per-combinator plan already intended — and the useful number is not the state count but the
 species count, which is one.
+
+### Stage 68: the accumulator rebuild — every live position in the shipped driver is a word
+
+Stage 67's fix, built and proved. `TAILZn = λs. s [] []` compiled directly (15 leaves, NORMAL) replaces
+the applied pair `PAIRf NILf NILf` (37 leaves, live redex), and the stack rebuilds on it: `TAILn`
+(170), `HASTWOn` (189), `STEPcn`, `STEPgn` (870 — smaller than `STEPg`'s 936; rigidity turned out to
+be a discount, not a cost).
+
+| | |
+|---|---|
+| `TAILZn_normal` / `TAILn_normal` / `HASTWOn_normal` | the rebuilt tail chain is NORMAL — Stage 67's three accumulator copies are gone |
+| build-enforced | `STEPcn`, `STEPgn`, `selfRepW STEPgn` each carry exactly **3** live positions — the rule-output words, nothing else |
+| `mkWord_tailPairN` | the tail fold's invariant, EXISTENTIAL: the fold reaches something that *projects* like `⟨word, tail⟩` |
+| **`TAILn_mkWord`** | `tail` uniformly over ALL words — the nil case stops being special, because `TAILZn` projects like `⟨[],[]⟩` by β |
+| `STEPgn_mkWord` / `STEPgn_stuck` | step-correctness and stuck-fixity, re-proved on the clean stack |
+| `tagABn_fwd` / `decTagN_encTagN` / **`tagABnPathEncoding`** | the driver, final form — the encoding all `bwd` work targets from here |
+
+The existential restatement of the fold invariant is the small methodological catch of the stage: the
+old invariant demanded the accumulator literally BE a `PAIRf`-application, which is why replacing the
+accumulator looked like it would ripple. Stated as "reaches something that projects correctly", the
+base case is two β-lemmas and the ripple vanishes — and `TAILn_mkWord` comes out UNIFORM over all
+words, subsuming what used to be two lemmas.
+
+**Where `bwd` stands**: `enc`/`dec`/`dec_enc`/`fwd` proved, stuck words idle, code drift = word drift,
+one species. The remaining obligation is the word-drift family (reducts of `mkWord w`, parameterized
+over independent copy drift), the machine phases composed over it, and the third abstraction.

@@ -123,6 +123,16 @@ retargeted (`tagABgPathEncoding`), and Stage 65's falsifier repaired
 (`encTagG_stuck_returns`). `bwd` is now open rather than false; the
 reachable-set characterisation is the whole of the remaining distance.
 
+**Stages 67–68: the rigidity audit and the clean rebuild.** Shipped code was
+NOT normal (Stage 11's `normalForm_bracket` does not cover `bracketOpt` over
+bodies embedding applied constants); the audit accounted for every live
+position and the rebuild (`TAILZn`/`TAILn`/`HASTWOn`/`STEPgn`, 870 leaves —
+smaller than before) removed all non-word redexes, build-enforced. The final
+encoding is `encTagN` / `tagABnPathEncoding`. Code drift now equals data
+drift: ONE species, the reducts of `mkWord w`. That word-drift family, the
+machine phases composed over it, and the third abstraction are what remain
+for `bwd`.
+
 **Calibration criteria, from the spec.** (b) discharged in Stage 3. (c)
 discharged by the definitions ledger plus the `PathEncoding` scoping. (a) — see
 Stage 16 in the ledger — is **unsatisfiable as written**, because its

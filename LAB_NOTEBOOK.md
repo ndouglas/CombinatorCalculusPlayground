@@ -3464,3 +3464,31 @@ what automation could and couldn't do. This file is a first-class deliverable
   only live positions are words. (2) The word-drift family: characterise the reducts of `mkWord w`,
   parameterized — the one species. (3) rungs 2/3 via match-bounds. (4) C6, declined a fifty-fifth
   time.
+
+## 2026-07-27 — Stage 68: rigidity turned out to be a discount
+
+- The rebuild went through in one sitting and the driver came out SMALLER: 870 leaves against 936.
+  The compiled accumulator is 15 leaves where the applied pair was 37, saved three times over. I had
+  been thinking of normality as a property to pay for; here the clean version is cheaper because
+  compiling `λs. s [] []` IS the normal form of applying `PAIR` to two nils — the redex I was
+  shipping was precisely the work the compiler could have done once, at compile time. That reframing
+  — a shipped redex is deferred compilation — feels like the general form of Stage 67's finding.
+- The part I expected to ripple did not, and the reason is a better invariant. The old tail-fold
+  invariant said the fold reaches `PAIRf (mkWord w) (mkWord w.tail)` — LITERALLY a `PAIRf`
+  application, which the new accumulator's base case cannot produce. Stated existentially — the fold
+  reaches SOMETHING whose projections behave — the base case is two β-lemmas (`FSTf_TAILZn`,
+  `SNDf_TAILZn`) and everything else is untouched. And the uniform `TAILn_mkWord` subsumes the old
+  cons-only lemma plus the separate nil lemma. The lesson is one this development keeps meeting from
+  different sides: state obligations by BEHAVIOUR, not by shape, unless shape is the theorem. Stage
+  64 needed shape (reachability IS shape); the fold's accumulator never did.
+- Build-enforced now: `STEPcn`, `STEPgn`, and the wrapper the driver duplicates each carry exactly
+  three live positions, all rule-output words. Code drift and data drift are one species, as Stage 67
+  predicted, and the guards will catch any future edit that reintroduces a non-word redex.
+- Everything re-proved on the clean stack without a single new induction — `mkWord_tailPairN` is the
+  same induction restated. Third stage in a row where the Stage 64 lemma library absorbed the work.
+- Ranking: (1) **the word-drift family**: characterise the reducts of `mkWord w` — an inductive
+  family with independent per-copy drift, Tower's `half` generalised. This is now the ONLY species of
+  drift in the whole machine, so it is the entire base layer of `bwd`. Start with the single-cell
+  word and the question "what does `CONSf x M` reach when `x` is a symbol and `M` is in the family?"
+  (2) the machine phases over it. (3) rungs 2/3 via match-bounds. (4) C6, declined a fifty-sixth
+  time.
