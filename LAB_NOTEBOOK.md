@@ -3350,3 +3350,42 @@ what automation could and couldn't do. This file is a first-class deliverable
   Stage 11's `normalForm_bracket` becomes load-bearing. Start by checking whether the K-normal-form
   abstraction (45–48) or the trajectory relation (49–58) transplants. (2) rungs 2/3 via match-bounds.
   (3) C6, declined a fifty-second time.
+
+## 2026-07-27 — Stage 65: the proof attempt that found the driver wrong
+
+- Proceeded to `dec` and `bwd`. The decoder was as mechanical as predicted — syntactic peel, `dec_enc`
+  by one induction, `[propext]` only — and it immediately paid for itself twice: injectivity comes free,
+  and with Stage 64's `fwd` that registers `tagABPathEncoding`. The class this program's refutations
+  quantify over is now inhabited by a genuine dispatch machine, which is a calibration symmetry I did
+  not plan and am glad to have.
+- Then `bwd`, and the honest first move was to check whether either countdown template transplants.
+  Neither does, and both failures became theorems rather than impressions. Route two died in five
+  minutes of running the machine on paper: `[b,a,b] ↦ [b,a,b]` is a fixed point of the source, and
+  `OnSegment`'s "not yet past `w`" clause is unsatisfiable at any self-loop, for every encoder — an
+  acyclicity assumption about the SOURCE that sat hidden in the relation because the countdown only
+  ever counts down. Route one died at the driver's first host step: the self-application's K-normal
+  form is a mid-step term with the wrong head, provably no encoding.
+- The real finding came while asking what an abstraction should assign to a STUCK word's states: it
+  would have to track `STEPc (encWord [b])` — and `STEPc` happily computes on it. `tail (tail [b]) = []`,
+  `head [b] = b`, append `[a,b]`: the host walks `encTag [b] ⟶* encTag [a,b]` where the source has no
+  step. **`bwd` is not hard for this encoding; it is false** (`tagAB_bwd_false`). The tag step is
+  partial, the compiled step function is total, and I never wrote the totality mismatch down as a
+  claim, so no stage ever tested it.
+- That is the second consecutive stage where the gap between "validated" and "true" surfaced only when
+  a proof was attempted. Stage 64's lesson was that a test only vouches for the equivalence it tests;
+  this one is that a test only vouches for the INPUTS it exercises — every Stage 63 test word was long
+  enough to step. The question that would have caught it ("what does the step function do to a word
+  that cannot step?") is a specification question, askable before any proof, and I did not ask it.
+- Also worth recording: the order of work this stage was right in a way Stage 55–58 taught. Refute the
+  templates and probe `bwd`'s truth BEFORE building the big reachable-set invariant — because the
+  invariant for the unguarded driver would have been effort spent proving the unprovable. The cheap
+  checks earned their keep exactly as the expensive one would have wasted it.
+- Infrastructure that outlives the stage: K-normality is now DECIDED (`hasKRedex` +
+  `kNormalForm_of_no_kredex`), so machine-code K-normality obligations are `by decide` instead of
+  shape-lemma chains; and `RS.NormalForm.steps_eq` is the generic twin of the Term-level fact, axiom-free.
+- Ranking: (1) **Stage 66: the guarded driver.** A constant-size fold observer for "has at least two
+  symbols" (same idiom as `HEADf`), dispatch on it, identity on stuck words — then re-prove `fwd` (the
+  four Stage 64 lemmas reuse as-is) plus "stuck words self-loop in the host". (2) The third
+  abstraction and the driver's reachable-set characterisation — the analogue of `Tower` for a
+  1450-leaf machine, now correctly targeted at a driver whose `bwd` is at least not false. (3) rungs
+  2/3 via match-bounds. (4) C6, declined a fifty-third time.

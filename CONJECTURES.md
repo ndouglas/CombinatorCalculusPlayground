@@ -3174,3 +3174,47 @@ two-observer agreement, available now because the output is reachable rather tha
 the demanding half, as it was for the countdown (Stages 45–48, 49–58). One structural difference to face:
 `enc`'s image contains the driver, which duplicates ITSELF at every step, so Stage 11's `normalForm_bracket`
 (machine code is safe to duplicate) becomes load-bearing rather than reassuring.
+
+### Stage 65: the decoder, a `PathEncoding` — and `bwd` is FALSE for this encoding
+
+Proceeding to `dec` and `bwd`. The decoder is done, and checking `bwd` produced the stage's real
+output: three refutation theorems, one fatal and two that survive any fix to it.
+
+| | |
+|---|---|
+| `decTag` / `decTag_encTag` | the decoder, syntactic, with `dec_enc` proved — `[propext]` only |
+| `encTag_injective` | injectivity, free from `dec_enc` |
+| **`tagABPathEncoding`** | **the m = 2 tag system PATH-ENCODES into SK** — the class every refutation is stated over, now inhabited by a genuine inspect-dispatch-append machine |
+| **`tagAB_bwd_false`** | **`bwd` is false outright for `encTag`** — not hard: false |
+| `onSegment_habs_fails_of_selfLoop` | route two's hidden acyclicity assumption, exposed (axiom-free, any source, any encoder) |
+| `tagDriver_knf_hstep_fails` | route one's `hstep`, refuted at the driver's very first host step |
+| `isKRedex` / `hasKRedex` / `kNormalForm_of_no_kredex` | K-normality DECIDED — every K-normality obligation on machine code is now `by decide` |
+
+**The central finding.** A tag step is PARTIAL — it requires `m ≤ |w|` — but `STEPc` is TOTAL. On the
+stuck word `[b]` (a tag normal form): `tail (tail [b]) = []`, `head [b] = b`, append `[a,b]` — so the
+host walks `encTag [b] ⟶* encTag [a,b]` where the source has no step at all (`STEPc_stuck`,
+`encTag_outruns`). `bwd` is therefore false, and since the adequacy machinery PROVES `bwd` from its
+hypotheses, no abstraction whatsoever can be instantiated for this encoding. The driver must change:
+dispatch on "has at least two symbols" (a constant-size fold observer, same idiom as `HEADf`) and
+return stuck words unchanged, so they SELF-LOOP in the host. That is a Stage 66 design item.
+
+Stage 63's validation could not have caught this: every test word was long enough to step. Second
+stage in a row where the gap between "validated" and "true" was found only by attempting the proof —
+Stage 64's version was "a test only vouches for the equivalence it tests"; this stage's is "a test
+only vouches for the inputs it exercises."
+
+**The two templates, refuted for reasons that survive the guard fix.** Route two (trajectory
+relation): `OnSegment`'s "not yet past `w`" clause is an assumption about the SOURCE — no state may
+recur on its own trajectory — and `tagAB` has a fixed point, `[b,a,b] ↦ [b,a,b]` (`tagAB_selfLoop`).
+`habs` fails for every encoder before any host behaviour is consulted. The countdown never noticed
+the assumption because it only ever counts down. Route one (K-normal form): the first host step out
+of ANY encoded state fires the driver's self-application, and its K-normal form `(X W) STEPc d` is a
+mid-step term, provably not an encoding (head `≠` driver, one `decide`). Stage 49 predicted route
+one's constraint; this is its concrete bite, and it applies to any `selfRep`-driven encoding.
+
+**What remains, correctly targeted now.** Stage 66: the guarded driver, re-proving `fwd` (the four
+Stage 64 lemmas are reusable) plus "stuck words self-loop". After that, `bwd` needs a THIRD
+abstraction — mid-step-aware and loop-tolerant — and the genuine obstacle is characterising the
+driver's reachable set, the analogue of Stage 56's `Tower` for a 1450-leaf machine. Attempting that
+on the unguarded driver would have been effort spent proving the unprovable, which is what makes the
+refutation-first order this stage followed the right one.

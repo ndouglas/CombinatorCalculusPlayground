@@ -97,9 +97,24 @@ proved (Stages 59–64).** `STEPc` computes one step of a genuine two-symbol
 m = 2 tag system (`a ↦ [b]`, `b ↦ [a,b]`) literally on fold-encoded words
 (`STEPc_mkWord`), and `tagAB_fwd` gives `fwd` end to end: every source step is
 simulated by actual SK reduction on the encoded word, via Stage 61's
-fixpoint-free driver. What is still missing for a
-`Simulation (RS.Tag tagAB) RS.SK` is the decoder (mechanical) and `bwd` —
-adequacy, the demanding half, as it was for the countdown.
+fixpoint-free driver.
+
+**Stage 65: the decoder is done (`decTag_encTag`), and the tag system
+PATH-ENCODES into SK, machine-checked (`tagABPathEncoding`)** — the weaker
+certificate class, but the one every refutation here is stated over, now
+inhabited by a genuine dispatch machine. For the full `Simulation`, `bwd`
+remains — and Stage 65 proved it is **false for the current encoding**
+(`tagAB_bwd_false`): the tag step is partial, the compiled step function is
+total, so the host keeps computing where the source has halted
+(`encTag [b] ⟶* encTag [a,b]` with `[b]` a tag normal form). The driver needs
+a length guard (Stage 66 design item). Both of the countdown's adequacy
+templates are also provably inapplicable, for reasons that survive the guard:
+the trajectory relation assumes a loop-free source and `tagAB` has a fixed
+point (`onSegment_habs_fails_of_selfLoop`); the K-normal-form abstraction
+demands intermediates that K-normalise to encodings, and the driver's first
+self-application step already violates that (`tagDriver_knf_hstep_fails`).
+A third abstraction, plus a characterisation of the guarded driver's
+reachable set, is the remaining research obligation.
 
 **Calibration criteria, from the spec.** (b) discharged in Stage 3. (c)
 discharged by the definitions ledger plus the `PathEncoding` scoping. (a) — see
