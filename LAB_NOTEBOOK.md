@@ -3553,3 +3553,33 @@ what automation could and couldn't do. This file is a first-class deliverable
   perturbed by drift in word slots), using `encWord_drift_pins` and `steps_toTerm_subst`; if even the
   one-segment version resists, measure WHERE. (2) rungs 2/3 via match-bounds. (3) C6, declined a
   fifty-eighth time.
+
+## 2026-07-27 — Stage 71: the objection that taught the structure
+
+- I nearly recorded the segment theorem as false. The argument felt airtight: drift is irreversible —
+  a reduct of `mkWord w` never returns to `mkWord`-form — so a drifted state cannot reach a literal
+  encoding. What it missed is that the machine never transports the word-term; it FOLDS it, and the
+  fold consumes exactly the part that drifts. The machinery carries the drift, application spends the
+  machinery, and the rebuild uses only ingredients that cannot drift — normal symbols, normal code
+  (Stage 68's dividend, load-bearing again). So literalness is RESTORED at every fold, and the
+  objection inverted into the proof strategy: complete the input to `wordNF`, compute on the
+  canonical form, watch literal `mkWord`s come out.
+- The near-miss is worth a note to self: I have now twice this week almost believed a false
+  impossibility (`bwd` "unprovable" before checking the driver, drift "permanent" before checking
+  what consumes it). Both times the error was reasoning about a TERM'S trajectory when the question
+  was about a COMPUTATION'S — the term does not survive, so its irreversibilities do not transfer.
+  The dual error to Stages 63–65's, where I trusted computations and missed term-level facts.
+- The proofs themselves were the Stage 64 suite replayed with `wordCode_beta` in place of
+  `CONSf_beta` — same inductions, same shapes, one sitting, everything `[propext, Quot.sound]`.
+  Fourth consecutive stage in which the lemma library absorbed the new layer whole. The canonical
+  form even computes MORE cleanly than the literal one (its β is one lemma, not a distribution).
+- Stuck words complete to the CANONICAL stuck state (`wordNF`-data) and stay there — so the phase
+  relation's stuck cells have a canonical representative after all, just not the literal encoding.
+  That asymmetry (running words re-anchor to literal encodings, stuck words to canonical forms) is
+  now precise and proved, and the future segment relation should bake it in.
+- Ranking: (1) **the segment interior**: reducts of `encTagN w` where the driver itself is
+  mid-unfolding. Plan of attack: the driver's cycle has finitely many CANONICAL phase checkpoints
+  (post-`selfRep`-unfold, post-guard, post-dispatch, post-fold); prove each checkpoint's basin
+  completes forward to the next checkpoint, then chain. The unknown is whether "basin" can be
+  characterised by completion the way words were, or needs the case analysis the countdown's
+  `sk_square` did. (2) rungs 2/3 via match-bounds. (3) C6, declined a fifty-ninth time.

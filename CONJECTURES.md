@@ -3360,3 +3360,29 @@ statement, recorded for the next attempt:
 — forward drift-completion through the driver's phases, with `encWord_drift_pins` handling the data
 slots. That single statement, once proved, IS `bwd`'s tracking argument; proving it is the remaining
 research content.
+
+### Stage 71: the fold restores literalness — forward completion for the driver's data slot
+
+The ranked segment ("driver applied to a drifted word") looked FALSE on first analysis: word drift is
+irreversible, so a drifted state can seemingly never reach a literal encoding. The analysis was wrong
+for a structural reason now on record: **the machine never passes the word-term through — it folds
+it.** Drift lives in cell machinery; application consumes machinery; symbols and code are normal; so
+every fold REBUILDS its output as literal cons-cells. Drift is erased at each fold and does not
+compound across cycles.
+
+The recipe: complete the drifted input to `wordNF` (Stage 69), then prove the machine suite on
+CANONICAL input — outputs come out literally `mkWord`-shaped:
+
+| | |
+|---|---|
+| `wordCode_beta` | the canonical form COMPUTES: `wordCode x M c n ⟶* c x (M c n)` |
+| `HEADf_wordNF` / `wordNF_tailPair` / `TAILn_wordNF` / `wordNF_fold_cons` / `CATf_wordNF` | the Stage 64 suite replayed on `wordNF`-input — literal `mkWord` outputs, the same inductions |
+| `STEPcn_wordNF` / `STEPgn_wordNF` / `STEPgn_wordNF_stuck` | the step function on canonical input: literal encoded output; stuck canonical words are fixed |
+| **`STEPgn_drift`** | drift-input step-correctness: ANY reduct of `encWord w` in the data slot still computes the tag step, literally |
+| **`encTagN_drift_fwd`** | **the one-segment forward-completion theorem** — every "driver + drifted word" state reaches the LITERAL `encTagN w'`; Stage 70's candidate statement, proved for this phase family |
+
+Axioms `[propext, Quot.sound]`, zero warnings, and the anchors show the evaluator agrees.
+
+**What remains of `bwd`**: the segment INTERIOR — reducts where the DRIVER has partially unfolded
+(mid-`selfRep`, mid-dispatch, mid-fold) rather than only the data having drifted. The endpoints
+re-anchor themselves (this stage); the interior is the remaining case analysis.
