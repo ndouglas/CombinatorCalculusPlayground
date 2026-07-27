@@ -317,3 +317,137 @@ theorem driver_interior_invariant (w : List Bool) {t : Term} (h : encTagN w ⟶*
     Sh STEPgn (fun d => encWord w ⟶* d) (fun _ => True) ShK.drv t :=
   Sh.closed_steps (fun hd hs => Steps.trans hd (Steps.single hs))
     (fun _ _ => trivial) (fun _ _ => trivial) h (Sh.start (Steps.refl _))
+
+-- ## Stage 75: the data layer instantiated — and `bwd` falls
+--
+-- The right data predicate is SEMANTIC: a slot term denotes the source-reachable word whose
+-- canonical form it still reaches. Step-closure is then free (confluence joins, normality of
+-- `wordNF` pins — Stage 69's argument, reused as an interface discharge), the hand-off axiom is the
+-- Stage 71 suite behind one confluence square, and the instantiated invariant says: every term
+-- reachable from `encTagN w` is shell machinery whose EVERY data slot denotes a source-reachable
+-- word. Then `bwd` is an inversion: a literal endpoint `encTagN w'` puts `encWord w'` in a data
+-- slot, its denotation `u` satisfies `wordNF u = wordNF w'` by uniqueness of normal forms, and
+-- injectivity gives `u = w'`. The order was in the slots all along.
+
+/-- The applicative spine length — a cheap shape discriminator: machinery-wrapped slots have spine
+3, the empty word 1, a cons cell 4. -/
+def spineLen : Term → Nat
+  | Term.app a _ => spineLen a + 1
+  | _ => 0
+
+/-- The semantic data layer: `t` denotes some word source-reachable from `w`. -/
+def DataW (w : List Bool) (t : Term) : Prop :=
+  ∃ u, (RS.Tag tagAB).Steps w u ∧ (t ⟶* wordNF (u.map encSym))
+
+/-- Step-closed, for free: confluence joins, normality pins. -/
+theorem DataW_step {w : List Bool} {d d' : Term} (h : DataW w d) (hs : d ⟶ d') :
+    DataW w d' := by
+  obtain ⟨u, hu, hp⟩ := h
+  obtain ⟨s, h1, h2⟩ := confluence (Steps.single hs) hp
+  exact ⟨u, hu, ((wordNF_normal (encWord_entries_normal u)).steps_eq h2).symm ▸ h1⟩
+
+/-- The step function on a canonical word advances the source by a step — or holds it, stuck. -/
+theorem STEPgn_wordNF_all (u : List Bool) :
+    ∃ u', (RS.Tag tagAB).Steps u u' ∧
+      (Term.app STEPgn (wordNF (u.map encSym)) ⟶* wordNF (u'.map encSym)) := by
+  match u with
+  | [] => exact ⟨[], RS.Steps.refl _, STEPgn_wordNF_stuck (by simp)⟩
+  | [s] => exact ⟨[s], RS.Steps.refl _, STEPgn_wordNF_stuck (by simp)⟩
+  | s :: y :: rest =>
+      refine ⟨rest ++ ruleAB s, RS.Steps.single ⟨s, y :: rest, rfl, by simp [tagAB], rfl⟩, ?_⟩
+      exact Steps.trans (STEPgn_wordNF s y rest) (mkWord_to_wordNF _)
+
+/-- **Applying (any reduct of) the step function to a data term yields a data term** — the hand-off,
+discharged: complete the slot, run the canonical step, join the drifted application by confluence. -/
+theorem DataW_app {w : List Bool} {t f : Term} (h : DataW w t) (hf : STEPgn ⟶* f) :
+    DataW w (Term.app f t) := by
+  obtain ⟨u, hu, hp⟩ := h
+  obtain ⟨u', hu', hred⟩ := STEPgn_wordNF_all u
+  have hjoin : Term.app f (wordNF (u.map encSym)) ⟶* wordNF (u'.map encSym) := by
+    obtain ⟨s, h1, h2⟩ := confluence (Steps.congL hf) hred
+    exact ((wordNF_normal (encWord_entries_normal u')).steps_eq h2).symm ▸ h1
+  exact ⟨u', RS.Steps.trans hu hu',
+    Steps.trans (Steps.congR hp) hjoin⟩
+
+/-- The hand-off for machinery-wrapped slots, by induction over the `kfd` fragment. -/
+theorem Sh.kfd_data {w : List Bool} : ∀ {k t},
+    Sh STEPgn (DataW w) (DataW w) k t → k = ShK.kfd →
+      ∀ {f}, (STEPgn ⟶* f) → DataW w (Term.app f t) := by
+  intro k t h
+  induction h
+  case kfd_dat hd =>
+      intro _ f hf
+      exact DataW_app hd hf
+  case kfd_app hd =>
+      intro _ f hf
+      exact DataW_app hd hf
+  case kfd_pend f' u'' t'' hf' hu ht ihu iht =>
+      intro _ f hf
+      have h1 : DataW w (Term.app f' t'') := iht rfl hf'
+      obtain ⟨u', hu', hp⟩ := DataW_app h1 hf
+      refine ⟨u', hu', ?_⟩
+      refine Steps.trans (Steps.congR (Steps.single (Step.appL (Step.K_red f' u'')))) hp
+  all_goals exact fun hk => nomatch hk
+
+/-- **The interior invariant, nothing abstract**: every reduct of `encTagN w` is shell machinery
+whose every data slot denotes a source-reachable word. -/
+theorem driver_interior_invariant_data (w : List Bool) {t : Term} (h : encTagN w ⟶* t) :
+    Sh STEPgn (DataW w) (DataW w) ShK.drv t := by
+  refine Sh.closed_steps (fun hd hs => DataW_step hd hs) (fun hd hs => DataW_step hd hs)
+    (fun hf ht => Sh.kfd_data ht rfl hf) h (Sh.start ?_)
+  exact ⟨w, RS.Steps.refl _, mkWord_to_wordNF _⟩
+
+/-- A denoting slot that IS a literal encoded word pins its source word exactly. -/
+theorem DataW_pins {w w' : List Bool} (h : DataW w (encWord w')) :
+    (RS.Tag tagAB).Steps w w' := by
+  obtain ⟨u, hu, hp⟩ := h
+  have heq : wordNF (u.map encSym) = wordNF (w'.map encSym) :=
+    nf_unique hp (mkWord_to_wordNF _)
+      (wordNF_normal (encWord_entries_normal u)) (wordNF_normal (encWord_entries_normal w'))
+  exact (map_encSym_injective (wordNF_injective heq)) ▸ hu
+
+/-- **`bwd`, at last.** A host path between literal encodings forces a source path: the endpoint's
+data slot is `encWord w'`, the invariant says it denotes a source-reachable word, and denotation
+pins the word. Ten stages after Stage 65 proved the unguarded version FALSE. -/
+theorem tagABn_bwd {w w' : List Bool}
+    (h : RS.SK.Steps (encTagN w) (encTagN w')) : (RS.Tag tagAB).Steps w w' := by
+  have hinv := driver_interior_invariant_data w (RS.SK_steps_iff.mp h)
+  have key : ∀ {t}, Sh STEPgn (DataW w) (DataW w) ShK.kfd t → t = encWord w' →
+      (RS.Tag tagAB).Steps w w' := by
+    intro t ht
+    cases ht with
+    | kfd_dat hd => exact fun heq => DataW_pins (heq ▸ hd)
+    | kfd_app hd => exact fun heq => DataW_pins (heq ▸ hd)
+    | kfd_pend hf' hu ht' =>
+        intro heq
+        exfalso
+        cases w' with
+        | nil =>
+            have h2 : (3 : Nat) = 1 := congrArg spineLen heq
+            exact absurd h2 (by decide)
+        | cons s w'' =>
+            have h2 : (3 : Nat) = 4 := congrArg spineLen heq
+            exact absurd h2 (by decide)
+  cases hinv with
+  | drv hy ht => exact key ht rfl
+
+/-- **THE SIMULATION.** A genuine two-symbol, deletion-number-two tag system — inspect, dispatch,
+append, guarded on its halting condition — certifiably hosted inside SK, in the demanding encoding
+class: encoder, decoder, `fwd`, and `bwd`, all machine-checked. Spec piece (v), complete. -/
+def tagABInSK : Simulation (RS.Tag tagAB) RS.SK where
+  enc := encTagN
+  dec := decTagN
+  dec_enc := decTagN_encTagN
+  fwd := tagABn_fwd_SK
+  bwd := tagABn_bwd
+
+/-- The taxonomy certifies it: SK hosts the tag system, in the pinned, calibrated sense. -/
+theorem universalReach_tagAB_SK : UniversalReach (RS.Tag tagAB) RS.SK :=
+  ⟨tagABInSK⟩
+
+-- Anchors: the Simulation is not the diagonal, not an inclusion, and really runs.
+example : (RS.Tag tagAB).step [true, true, false] [false, false] :=
+  ⟨true, [true, false], rfl, by decide, rfl⟩
+example : RS.SK.Steps (encTagN [true, true, false]) (encTagN [false, false]) :=
+  tagABInSK.fwd ⟨true, [true, false], rfl, by decide, rfl⟩
+#guard decTagN (encTagN [true, false]) = some [true, false]
