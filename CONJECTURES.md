@@ -3562,3 +3562,26 @@ normal (safe to ship and duplicate), injective (decodable), and dispatchable (on
 rule outputs). What remains for the any-alphabet `Simulation` is assembly: the general step function
 over `Fin n`, its `wordNF`-suite, and the Stage 74–75 machinery re-instantiated — which is generic
 in everything but the dispatch this stage just supplied.
+
+### Stage 78: the general tag machine — any m = 2 system, given a dispatch
+
+**`tagTInSK : Simulation (RS.Tag T) RS.SK`** for ANY tag system `T` with deletion number 2, given a
+symbol encoding and dispatcher satisfying a four-hypothesis interface:
+
+    hNorm : symbols normal      hInj  : symbols injective
+    hRULE : dispatch correct    hdecS : symbols decodable
+
+The whole Stages 63–75 pipeline, re-built once, parametrically (`TagGeneral.lean`): step function
+over the abstract dispatch, canonical-input suite, drift versions, driver, decoder, semantic data
+layer, shell-invariant instantiation, `bwd`, and the assembled `Simulation` plus
+`universalReach_tagT`. Two structural notes:
+
+- `fwd` routes through drift-completion (Stage 71), so the literal-input step suite never needed
+  restating — the general file is SHORTER per theorem than the two-symbol original;
+- the two-symbol `tagAB` is re-derived as an instance in one `example`, every hypothesis discharged
+  by a lemma that already existed — the calibration that the interface is the right one.
+
+**Every concrete known-universal 2-tag system is now an instance away.** What remains is the
+`Fin n` discharge of the interface via Stage 76–77's selectors (`selArgs_normal` ✓,
+`selArgs_injective` ✓, `dispatchT_correct` ✓ — plus the rule-table bookkeeping), and then citing any
+universal table from the literature is construction, not mechanism.

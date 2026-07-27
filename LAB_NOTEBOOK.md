@@ -3761,3 +3761,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   canonical-input suite, and the re-instantiated pipeline through to
   `Simulation (RS.Tag T) RS.SK` for every two-symbol-consuming tag system. (2) rungs 2/3 via
   match-bounds. (3) C6, declined a sixty-fifth time.
+
+## 2026-07-27 — Stage 78: the pipeline, re-run as a function
+
+- The general theorem exists: any deletion-number-2 tag system whose symbols encode normally,
+  injectively, decodably, and dispatchably is certifiably hosted inside SK. The proof of that
+  sentence is four hundred lines of transcription and zero new ideas — which is the finding. Ten
+  stages ago, `bwd` for ONE two-symbol system was open research; today the entire argument re-ran
+  against abstract parameters in a single sitting, because every layer had been forced to state its
+  actual dependencies: the word toolkit over `List Term`, the shell invariant over an abstract `F`,
+  the data layer over an abstract alphabet. Generality was not designed in; it PRECIPITATED from
+  honest interfaces.
+- Two mechanical notes. First, Stage 71's drift-completion turned out to subsume the literal-input
+  step suite entirely — `fwd` completes the word to canonical form and computes there, so the
+  general file proves fewer theorems than the two-symbol original needed. Second, Lean's
+  section-variable inclusion rules (body-uses need `include`) pushed me to explicit hypothesis
+  binders throughout, which reads heavier but made every theorem's true dependencies visible —
+  several needed fewer hypotheses than I would have `include`d.
+- The instance anchor is the stage's quiet satisfaction: `tagAB` re-derived from the general theorem
+  in five lines, every hypothesis discharged by an existing lemma, `rfl` for `hm`, `cases s <;> rfl`
+  for the decoder. When the general theorem's interface is right, the motivating instance should
+  fall out trivially — and it did.
+- Ranking: (1) **the `Fin n` discharge**: symbols as selectors, the dispatcher over an encoded rule
+  table, and the interface's four hypotheses from Stage 76–77's lemmas — the take/drop bookkeeping
+  connecting `dispatchT_correct`'s pre/post form to table positions is the only real work. That
+  yields `Simulation (RS.Tag T) RS.SK` for every 2-tag system over `Fin n`, subsuming all concrete
+  universal instances at once. (2) rungs 2/3 via match-bounds. (3) C6, declined a sixty-sixth time.
