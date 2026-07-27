@@ -1830,3 +1830,115 @@ theorem decWord_wordCode (x M : Term) : decWord (wordCode x M) = none := by
 -- foreign literal encoding? No falsifier found: literal `mkWord` output arises only from the fold
 -- rebuild, the fold rebuilds only `tail² ++ rule` words, and doomed branches are discarded whole,
 -- unreduced. The design proceeds on `bwd` true, with the question kept open until `hstep` closes it.
+
+-- ## Stage 73: the cheap test, and two more mechanisms off the table
+--
+-- The ranked task was to test `habs` and `hfun` for the Stage 72 segment relation before building
+-- its engine. The test FAILS the relation as a first proof — and catches another error in Stage
+-- 72's comment, which called `habs` "immediate". It is not: its clause demands, for every proper
+-- successor `v` of `u`, that `encTagN v ⟶* encTagN u` imply a source RETURN from `v` to `u` — an
+-- encoding-ORDER fact, the very thing under proof. `hfun` reduces to the same. The countdown's
+-- trajectory relation had exactly this shape and survived by leaning on the FIRST proof's completed
+-- `bwd` (`itower_steps_le` is proved from `countdownInSK.bwd`). Segment relations are inherently
+-- SECOND proofs. Below: the relation, the two honest instances of `habs` (stuck words, where the
+-- clause is vacuous; the fixed point, where the return is `refl`), and the formal reduction showing
+-- everything else is order.
+--
+-- And the second finding, closing the landscape: the countdown's OTHER engine — bounded-region
+-- decidability (`stepsDecidableWithin`, Stages 56–58) — is PROVABLY inapplicable to the driver. The
+-- shell pre-unfolds future cycles without bound (`selfRep F ⟶* S (K (S (K (…)) F)) F`, arbitrarily
+-- deep), so the reachable set of `encTagN w` contains terms of every size and no bound exists
+-- (`driver_region_unbounded`). Census died at this machine in Stage 67; now decidability provably
+-- dies too. What remains for a first proof is exactly one route: a per-step tracking abstraction
+-- whose facts come from the interior factorization — the invariant is now forced by FOUR independent
+-- refutations (KNF `hstep`, `OnSegment` `habs`, segment-relation bootstrapping, bounded regions).
+
+/-- The Stage 72 candidate, as a definition. -/
+def SegRel (t : Term) (u : List Bool) : Prop :=
+  (encTagN u ⟶* t) ∧
+    ∀ v, (RS.Tag tagAB).step u v → (encTagN v ⟶* t) → (RS.Tag tagAB).Steps v u
+
+/-- `habs` at stuck words: the clause is vacuous. -/
+theorem segRel_enc_stuck {u : List Bool} (hu : (RS.Tag tagAB).NormalForm u) :
+    SegRel (encTagN u) u :=
+  ⟨Steps.refl _, fun v hv _ => absurd ⟨v, hv⟩ hu⟩
+
+/-- `habs` at the fixed point: the only successor is `u` itself, and the return is `refl`. -/
+theorem segRel_enc_fixedPoint : SegRel (encTagN [false, true, false]) [false, true, false] := by
+  refine ⟨Steps.refl _, ?_⟩
+  intro v hv _
+  obtain ⟨a, rest, hw, _, hv'⟩ := hv
+  injection hw with ha hrest
+  subst ha; subst hrest; subst hv'
+  exact RS.Steps.refl _
+
+/-- **Everything else is order**: at any state, `habs` for the segment relation IS the no-return
+fact about encodings — there is nothing cheaper hiding in it. -/
+theorem segRel_habs_iff (u : List Bool) :
+    SegRel (encTagN u) u ↔
+      ∀ v, (RS.Tag tagAB).step u v → (encTagN v ⟶* encTagN u) → (RS.Tag tagAB).Steps v u :=
+  ⟨fun h => h.2, fun h => ⟨Steps.refl _, h⟩⟩
+
+-- ### The unbounded shell, and the death of the decidability route
+
+/-- The driver's shell, pre-unfolded `k` cycles deep. -/
+def shellNest (F : Term) : Nat → Term
+  | 0 => selfRep F
+  | k + 1 => app2 S (Term.app K (shellNest F k)) F
+
+/-- The shell reaches every depth: unfold once (`selfRepW_unfold`), then keep unfolding INSIDE the
+`K` — the driver may run arbitrarily far ahead of its data. -/
+theorem selfRep_nests (F : Term) : ∀ k, selfRep F ⟶* shellNest F k := by
+  intro k
+  induction k with
+  | zero => exact Steps.refl _
+  | succ n ih =>
+      refine Steps.trans (selfRepW_unfold F) ?_
+      exact Steps.congL (Steps.congR (Steps.congR ih))
+
+theorem shellNest_leafCount (F : Term) :
+    ∀ k, leafCount (shellNest F k) = leafCount (selfRep F) + k * (leafCount F + 2) := by
+  intro k
+  induction k with
+  | zero =>
+      show leafCount (selfRep F) = leafCount (selfRep F) + 0 * (leafCount F + 2)
+      omega
+  | succ n ih =>
+      show 1 + (1 + leafCount (shellNest F n)) + leafCount F
+        = leafCount (selfRep F) + (n + 1) * (leafCount F + 2)
+      rw [ih, Nat.succ_mul]
+      omega
+
+/-- The reachable set of the driver contains terms of every size... -/
+theorem encTagN_reach_unbounded (w : List Bool) (B : Nat) :
+    ∃ t, (encTagN w ⟶* t) ∧ B < leafCount t := by
+  refine ⟨Term.app (shellNest STEPgn (B + 1)) (encWord w),
+    Steps.congL (selfRep_nests STEPgn (B + 1)), ?_⟩
+  have h := shellNest_leafCount STEPgn (B + 1)
+  have h2 : B + 1 ≤ (B + 1) * (leafCount STEPgn + 2) :=
+    Nat.le_mul_of_pos_right _ (by omega)
+  show B < leafCount (shellNest STEPgn (B + 1)) + leafCount (encWord w)
+  omega
+
+/-- **...so no bound covers it, and the bounded-region mechanism — the engine of the countdown's
+second adequacy proof — provably cannot apply to the driver.** The self-reproduction that makes the
+machine run is exactly what makes its region unbounded. -/
+theorem driver_region_unbounded (w : List Bool) :
+    ¬ ∃ B, ∀ t, (encTagN w ⟶* t) → leafCount t ≤ B := by
+  rintro ⟨B, hB⟩
+  obtain ⟨t, ht, hlt⟩ := encTagN_reach_unbounded w B
+  exact absurd (hB t ht) (by omega)
+
+-- ## The landscape, closed
+-- Four mechanisms, four refutations, all machine-checked:
+--   * K-normal-form `hstep` — false at the driver's first step (Stage 65);
+--   * `OnSegment` `habs` — unsatisfiable at the source's fixed point (Stage 65);
+--   * segment-relation bootstrapping — `habs`/`hfun` ARE encoding-order facts (`segRel_habs_iff`),
+--     so the relation can only ever be a second proof;
+--   * bounded-region decidability — the region is unbounded (`driver_region_unbounded`).
+-- What remains is one route, now forced rather than preferred: a per-step tracking abstraction whose
+-- stutter-or-advance facts are supplied by the interior factorization — shell contexts (which the
+-- unbounded nesting says must be an INDUCTIVE family, closed under `shellNest`-style growth, not an
+-- enumeration) over data holes (Stages 69–71), with hand-off where holes are consumed. The
+-- factorization stopped being one option among several; it is the theorem `bwd` has been waiting
+-- for since Stage 65, and every alternative is now a refutation with a name.
