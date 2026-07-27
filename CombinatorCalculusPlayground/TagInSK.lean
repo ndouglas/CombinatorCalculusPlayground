@@ -1328,3 +1328,172 @@ theorem HASTWOn_normal : NormalForm HASTWOn := stepOnce_none_normal rfl
 -- word-drift family (reducts of `mkWord w`, parameterized over independent copy drift), then the
 -- machine phases composed over it, then the third abstraction. Everything else that `bwd` was
 -- waiting on has been either proved, repaired, or reduced to that one family.
+
+-- ## Stage 69: the word-drift family, characterised by behaviour — no enumeration
+--
+-- The ranking asked for an inductive family over the reducts of `mkWord w`, Tower's `half`
+-- generalised. Attempting the single cell showed that even it is an interleaved two-layer
+-- distribution machine — dozens of drift-parameterized constructors — and Stage 67 already
+-- established that such state spaces are beyond measuring, let alone hand enumeration. Stage 68's
+-- lesson ("state obligations by behaviour, not by shape") applies one level up, and it DISSOLVES the
+-- enumeration: give each word a CANONICAL NORMAL FORM `wordNF w`, prove the word reaches it, and
+-- confluence does the rest —
+--
+--     every reduct of `mkWord w`, however far it has drifted, still reduces to `wordNF w`,
+--
+-- (`mkWord_drift_complete`). Drift never needs to be described, because it can always be COMPLETED:
+-- the family "reducts of `mkWord w`" is exactly the set of terms between `mkWord w` and `wordNF w`,
+-- and the second endpoint is canonical because it is normal. Two drifted copies of the same word can
+-- never disagree (`mkWord_drift_functional`). This is the entire base layer `bwd`'s abstraction
+-- needs about words: identity survives drift.
+
+/-- The code-form of a cons cell: `λc n. c x (M c n)` compiled, with the tail `M` already a term.
+This is what a cell β-reduces to once both its arguments have distributed. -/
+def wordCode (x M : Term) : Term :=
+  toTerm (TermV.bracketOpt 1 (TermV.bracketOpt 0
+    (TermV.app2 (.var 1) (ofTerm x) (TermV.app2 (ofTerm M) (.var 1) (.var 0)))))
+
+/-- **The canonical normal form of a word**: code-forms all the way down. -/
+def wordNF : List Term → Term
+  | [] => NILf
+  | x :: xs => wordCode x (wordNF xs)
+
+/-- The compiled cell, written out. The `x`- and `M`-holes each occur exactly once, `K`-protected —
+which is what makes the congruence and normality arguments below one-line-per-node. -/
+theorem wordCode_explicit (x M : Term) :
+    wordCode x M
+      = app2 S
+          (app2 S (Term.app K S) (app2 S (Term.app K K) (app2 S I (Term.app K x))))
+          (app2 S
+            (app2 S (Term.app K S) (app2 S (Term.app K K) (app2 S (Term.app K M) I)))
+            (Term.app K I)) := by
+  -- `simp` alone closes this — and drags `Classical.choice` in through the `BEq` layer, the same
+  -- trap Stage 9 recorded. So the decidable literals are supplied by hand and `simp only` does the
+  -- assembly; the audit stays at `[propext]`.
+  have hx : ∀ y, TermV.occurs y (ofTerm x) = false := closedV_ofTerm x
+  have hM : ∀ y, TermV.occurs y (ofTerm M) = false := closedV_ofTerm M
+  have b00 : ((0 : Nat) == 0) = true := rfl
+  have b10 : ((1 : Nat) == 0) = false := rfl
+  have b11 : ((1 : Nat) == 1) = true := rfl
+  have p10 : ((1 : Nat) = 0) = False := eq_false (by decide)
+  simp only [wordCode, TermV.bracketOpt, TermV.occurs, TermV.app2, hx, hM, bracketOpt_ofTerm,
+    b00, b10, b11, p10, Bool.or_false, Bool.or_true, Bool.false_eq_true, if_true, if_false,
+    toTerm, toTerm_ofTerm, I, _root_.app2]
+
+/-- Code-forms of normal data are NORMAL — assembled from the Stage 11 shape lemmas. -/
+theorem wordCode_normal {x M : Term} (hx : NormalForm x) (hM : NormalForm M) :
+    NormalForm (wordCode x M) := by
+  rw [wordCode_explicit]
+  exact normalForm_app_S_two
+    (normalForm_app_S_two (normalForm_app_K normalForm_S)
+      (normalForm_app_S_two (normalForm_app_K normalForm_K)
+        (normalForm_app_S_two normalForm_I (normalForm_app_K hx))))
+    (normalForm_app_S_two
+      (normalForm_app_S_two (normalForm_app_K normalForm_S)
+        (normalForm_app_S_two (normalForm_app_K normalForm_K)
+          (normalForm_app_S_two (normalForm_app_K hM) normalForm_I)))
+      (normalForm_app_K normalForm_I))
+
+theorem wordNF_normal : ∀ {w : List Term}, (∀ x ∈ w, NormalForm x) → NormalForm (wordNF w) := by
+  intro w
+  induction w with
+  | nil => exact fun _ => NILf_normal
+  | cons x xs ih =>
+      intro h
+      exact wordCode_normal (h x (by simp)) (ih (fun y hy => h y (by simp [hy])))
+
+/-- Reduction inside the tail hole. -/
+theorem wordCode_congR (x : Term) {M M' : Term} (h : M ⟶* M') :
+    wordCode x M ⟶* wordCode x M' := by
+  rw [wordCode_explicit, wordCode_explicit]
+  exact Steps.congR (Steps.congL (Steps.congR (Steps.congR (Steps.congR
+    (Steps.congL (Steps.congR (Steps.congR h)))))))
+
+private def bodyCONS : TermV := TermV.app2 (V 1) (V 3) (TermV.app2 (V 2) (V 1) (V 0))
+
+/-- A cons cell distributes its two arguments and lands on the code-form — partial application β,
+by the Stage 64 ladder's method. -/
+theorem consCell_to_code (x M : Term) :
+    Term.app (Term.app CONSf x) M ⟶* wordCode x M := by
+  have h1 : Term.app CONSf x
+      ⟶* toTerm (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0
+          (TermV.subst 3 (ofTerm x) bodyCONS)))) := by
+    have h := bracketOpt_beta_Term 3
+      (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0 bodyCONS))) x
+    rwa [bracketOpt_subst_ofTerm (by decide) x (TermV.bracketOpt 1 (TermV.bracketOpt 0 bodyCONS)),
+         bracketOpt_subst_ofTerm (by decide) x (TermV.bracketOpt 0 bodyCONS),
+         bracketOpt_subst_ofTerm (by decide) x bodyCONS] at h
+  have h2 := bracketOpt_beta_Term 2
+    (TermV.bracketOpt 1 (TermV.bracketOpt 0 (TermV.subst 3 (ofTerm x) bodyCONS))) M
+  rw [bracketOpt_subst_ofTerm (by decide) M
+        (TermV.bracketOpt 0 (TermV.subst 3 (ofTerm x) bodyCONS)),
+      bracketOpt_subst_ofTerm (by decide) M (TermV.subst 3 (ofTerm x) bodyCONS)] at h2
+  have heq : toTerm (TermV.bracketOpt 1 (TermV.bracketOpt 0
+      (TermV.subst 2 (ofTerm M) (TermV.subst 3 (ofTerm x) bodyCONS)))) = wordCode x M := by
+    simp [bodyCONS, wordCode, TermV.subst, subst_ofTerm, TermV.app2, V]
+  exact Steps.trans (Steps.congL h1) (heq ▸ h2)
+
+/-- **Every word reaches its canonical normal form.** -/
+theorem mkWord_to_wordNF : ∀ (w : List Term), mkWord w ⟶* wordNF w := by
+  intro w
+  induction w with
+  | nil => exact Steps.refl _
+  | cons x xs ih =>
+      refine Steps.trans (consCell_to_code x (mkWord xs)) ?_
+      exact wordCode_congR x ih
+
+/-- **THE DRIFT-COMPLETION THEOREM.** Every reduct of a word — however its copies have drifted —
+still reduces to the word's canonical normal form. Confluence supplies the join; normality of
+`wordNF` pins the join point. The word-drift family never needs to be enumerated, because membership
+comes with a completion. -/
+theorem mkWord_drift_complete {w : List Term} (hw : ∀ x ∈ w, NormalForm x)
+    {t : Term} (h : mkWord w ⟶* t) : t ⟶* wordNF w := by
+  obtain ⟨s, h1, h2⟩ := confluence h (mkWord_to_wordNF w)
+  exact ((wordNF_normal hw).steps_eq h2).symm ▸ h1
+
+/-- **Drift cannot conflate words**: two drifted copies with a common reduct came from words with
+the same canonical form. (With injectivity of `wordNF` — next on the ranking — this is "the same
+word".) -/
+theorem mkWord_drift_functional {u v : List Term}
+    (hu : ∀ x ∈ u, NormalForm x) (hv : ∀ x ∈ v, NormalForm x) {t : Term}
+    (h1 : mkWord u ⟶* t) (h2 : mkWord v ⟶* t) : wordNF u = wordNF v :=
+  nf_unique (mkWord_drift_complete hu h1) (mkWord_drift_complete hv h2)
+    (wordNF_normal hu) (wordNF_normal hv)
+
+-- ### Instantiation for the tag alphabet
+theorem encSym_normal (s : Bool) : NormalForm (encSym s) := by
+  cases s
+  · exact normalForm_app_S_one normalForm_K
+  · exact normalForm_K
+
+theorem encWord_entries_normal (w : List Bool) : ∀ x ∈ w.map encSym, NormalForm x := by
+  intro x hx
+  simp only [List.mem_map] at hx
+  obtain ⟨s, _, rfl⟩ := hx
+  exact encSym_normal s
+
+/-- The drift-completion theorem, on encoded tag words. -/
+theorem encWord_drift_complete {w : List Bool} {t : Term} (h : encWord w ⟶* t) :
+    t ⟶* wordNF (w.map encSym) :=
+  mkWord_drift_complete (encWord_entries_normal w) h
+
+-- Anchors: the canonical form is what the evaluator computes, and the sizes are linear in the word.
+#guard nfW (mkWord [symA, symB]) == some (wordNF [symA, symB])
+#guard nfW (mkWord [symB]) == some (wordNF [symB])
+#guard nfW (encWord [true, false, false]) == some (wordNF ([true, false, false].map encSym))
+#guard (leafCount (wordNF []), leafCount (wordNF [symA]), leafCount (wordNF [symA, symB])) = (4, 33, 63)
+
+-- ## What this buys `bwd`, and what is still owed
+-- BOUGHT: the base layer. Words in flight are duplicated and drift independently, and the
+-- abstraction must not lose track of which word a copy denotes. It cannot: any reduct completes to
+-- `wordNF w` (`mkWord_drift_complete`), and two words' completions collide only if their canonical
+-- forms do (`mkWord_drift_functional`). No shape family, no enumeration — the characterisation is
+-- "still reaches the canonical form", which is closed under reduction BY CONSTRUCTION.
+--
+-- STILL OWED: (i) injectivity of `wordNF` on encoded words, making "same canonical form" into "same
+-- word" — syntactic, next on the ranking; (ii) the same treatment for the machine's PHASES — the
+-- states between `encTagN w` and `encTagN (step w)` — where the driver's shell is the context and
+-- words are the holes. The phase layer has what the word layer had: canonical checkpoints (the
+-- encodings) and confluence. What it does NOT have is normality of the checkpoints — `encTagN w` is
+-- never normal — so the completion argument needs the driver's own structure, not just `nf_unique`.
+-- That is the next real problem.

@@ -592,3 +592,24 @@ theorem bracketOpt_beta4_Term (b : TermV) (u v w z : Term) :
          bracketOpt_subst_ofTerm (by decide) u (TermV.bracketOpt 0 b),
          bracketOpt_subst_ofTerm (by decide) u b] at h
   exact Steps.trans (Steps.congL (Steps.congL (Steps.congL h1))) (bracketOpt_beta3_Term _ v w z)
+
+-- ## Stage 69: reduction is congruent under substitution contexts
+-- The word-drift work needs to reduce INSIDE a hole of a compiled term: if the data in a
+-- substitution position advances, the whole substituted term advances. Generic, one induction.
+
+/-- If `M ⟶* M'`, then substituting `M` and substituting `M'` into the same context are related by
+reduction — the context contributes only congruence steps, one path per occurrence of the hole. -/
+theorem steps_toTerm_subst {y : Nat} {M M' : Term} (h : M ⟶* M') : ∀ (C : TermV),
+    toTerm (TermV.subst y (ofTerm M) C) ⟶* toTerm (TermV.subst y (ofTerm M') C) := by
+  intro C
+  induction C with
+  | S => exact Steps.refl _
+  | K => exact Steps.refl _
+  | var z =>
+      by_cases hz : z = y
+      · simpa [TermV.subst, hz] using h
+      · simp [TermV.subst, hz]
+        exact Steps.refl _
+  | app a b iha ihb =>
+      simp only [TermV.subst, toTerm]
+      exact Steps.congApp iha ihb
