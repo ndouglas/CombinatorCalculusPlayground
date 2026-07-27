@@ -3615,3 +3615,35 @@ what automation could and couldn't do. This file is a first-class deliverable
   engine, and they will say whether the relation's shape is right (Stage 53 did exactly this for the
   countdown and it caught the design early). (2) The factorization engine. (3) rungs 2/3.
   (4) C6, declined a sixtieth time.
+
+## 2026-07-27 — Stage 73: the test that closed the landscape
+
+- The cheap test did its job twice over. First: `habs` for the segment relation is not immediate —
+  I wrote that it was in Stage 72's design comment, and formalising the relation showed its clause
+  IS the encoding-order fact, reduced to an iff (`segRel_habs_iff`) so nothing cheaper can hide in
+  it. The two honest instances (stuck words, the fixed point) are exactly the states where order is
+  degenerate. Looking back at the countdown with this lens: its trajectory relation's `habs` leaned
+  on `itower_steps_le`, which is proved FROM the first Simulation's `bwd`. Route two was always a
+  second proof; I had catalogued that fact in Stage 53's notes and not seen its consequence until a
+  formal test forced it.
+- Second: while asking what a first proof could still use, the bounded-region route died on paper in
+  five minutes and in Lean in twenty: the shell pre-unfolds future cycles without bound
+  (`selfRep_nests`, axiom-free — a pleasing little induction: unfold once, then keep unfolding
+  inside the `K`), so the reachable set has terms of every size (`driver_region_unbounded`). The
+  countdown's region was bounded because `Itower` never self-applies; self-reproduction is
+  UNBOUNDEDNESS, definitionally. Census died here in Stage 67; decidability dies here today; the
+  invariant family survives because induction handles regular unboundedness — `shellNest` is one
+  constructor, not infinitely many.
+- The landscape is now closed, and I want to state what that means soberly. Four mechanisms are
+  refuted with machine-checked witnesses; the remaining route — per-step tracking over the interior
+  factorization — is forced, not chosen. Forced is better than chosen: three days ago the plan space
+  was fog, and every stage since has either built an ingredient (identity layer, completion suite,
+  layer-shedding) or eliminated a road. The factorization now has a precise job description: an
+  inductive family of shell contexts closed under nesting, data holes handled by the Stage 69–71
+  suite, hand-off at consumption, and per-step stutter-or-advance-by-path as its output — with
+  Stage 54's path-advancing interface, built for the countdown's K-discards, waiting for exactly
+  the multi-step advances that shed layers produce.
+- Ranking: (1) **the factorization family** — begin with the shell alone: contexts as an inductive
+  family over one data hole, closure under Step for the SHELL cases only, hand-off left abstract.
+  Even that fragment would be the first genuine interior invariant. (2) rungs 2/3 via match-bounds.
+  (3) C6, declined a sixty-first time.

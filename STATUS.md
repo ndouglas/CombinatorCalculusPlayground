@@ -142,6 +142,20 @@ What remains for `bwd`: injectivity of `wordNF` (syntactic), and the phase
 layer — where the checkpoints are not normal, so completion must come from
 the driver's structure instead of `nf_unique`.
 
+**Stages 70–73: the identity layer is done and the route is forced.**
+Injectivity (`encWord_drift_pins`, Stage 70); drift-input step-correctness
+with literal outputs — the fold restores literalness (`STEPgn_drift`,
+`encTagN_drift_fwd`, Stage 71); the corrected frame — completion cannot see
+order, so `bwd` needs a per-step tracking relation (Stage 72); and the
+landscape closed by two more machine-checked refutations (Stage 73):
+segment relations are inherently second proofs (`segRel_habs_iff`), and the
+driver's region is UNBOUNDED (`driver_region_unbounded` — the shell
+pre-unfolds future cycles, `selfRep_nests`), killing bounded-region
+decidability. Four mechanisms refuted in total; the one remaining route is
+a per-step tracking abstraction over the interior factorization: an
+inductive family of shell contexts (closed under nesting) over data holes
+(handled by the Stage 69–71 suite).
+
 **Calibration criteria, from the spec.** (b) discharged in Stage 3. (c)
 discharged by the definitions ledger plus the `PathEncoding` scoping. (a) — see
 Stage 16 in the ledger — is **unsatisfiable as written**, because its

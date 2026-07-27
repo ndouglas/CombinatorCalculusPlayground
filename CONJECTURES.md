@@ -3419,3 +3419,33 @@ Stage 65's question was asked again, as it now must be: is `bwd` false once more
 found — literal `mkWord` output arises only from the fold rebuild, the rebuild produces only
 `tail² ++ rule` words, and doomed branches are discarded whole. The question stays open until
 `hstep` closes it.
+
+### Stage 73: the cheap test, and two more mechanisms off the table
+
+The ranked test — `habs`/`hfun` for the segment relation before its engine — FAILED the relation as
+a first proof, and caught another Stage 72 error ("habs immediate": it is not). The obligations ARE
+encoding-order facts, formally (`segRel_habs_iff`): the relation holds honestly only at stuck words
+(clause vacuous) and the fixed point (return by `refl`); everywhere else it presupposes the order
+under proof. The countdown's trajectory relation had this same shape and survived by leaning on the
+FIRST proof's completed `bwd` — segment relations are inherently SECOND proofs.
+
+And the second finding closes the landscape: **the driver's reachable region is unbounded**
+(`driver_region_unbounded`). The shell pre-unfolds future cycles to any depth — `selfRep_nests`,
+AXIOM-FREE: `selfRep F ⟶* shellNest F k` with `leafCount` growing linearly in `k` — so no size bound
+covers `Reach(encTagN w)` and `stepsDecidableWithin`, the engine of the countdown's second adequacy
+proof, provably cannot apply. The self-reproduction that makes the machine run is exactly what makes
+its region unbounded.
+
+| | |
+|---|---|
+| `SegRel` / `segRel_enc_stuck` / `segRel_enc_fixedPoint` | the candidate relation and its two honest `habs` instances |
+| **`segRel_habs_iff`** | everything else IS the order — nothing cheaper hides in the relation |
+| `shellNest` / **`selfRep_nests`** | the driver runs arbitrarily far ahead of its data (axiom-free) |
+| **`driver_region_unbounded`** | no bound covers the reachable set — bounded-region decidability refuted |
+
+**Four mechanisms, four machine-checked refutations**: KNF `hstep` (65), `OnSegment` `habs` (65),
+segment-relation bootstrapping (73), bounded regions (73). One route remains, forced rather than
+preferred: a per-step tracking abstraction over the interior factorization — shell contexts as an
+INDUCTIVE family (the unbounded nesting rules out enumeration) over data holes (Stages 69–71). The
+factorization is the theorem `bwd` has been waiting for since Stage 65, and every alternative now
+ends in a refutation with a name.
