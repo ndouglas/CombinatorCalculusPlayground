@@ -3518,3 +3518,28 @@ Cocke–Minsky universal CLASS, but this particular two-symbol instance is not i
 universal — that claim was never made and is not made now. What is discharged is spec piece (v) in
 full: a real tag-step driver, hosted by a real `Simulation`. Scaling the alphabet is construction,
 not mechanism.
+
+### Stage 76: the N-ary abstraction, a pre-existing leak, and the audit made build-enforced
+
+Toward the any-alphabet tag theorem, whose only alphabet-dependent piece is dispatch. The β-ladder
+stopped at arity 4; now it is list-indexed and total:
+
+| | |
+|---|---|
+| `appArgs` / `absArgs` / `substArgs` | application to, abstraction over, substitution of an argument LIST |
+| **`absArgs_beta`** | β at every arity in one theorem — `bracketOpt_beta2/3/4_Term` retired as special cases |
+| `selArgs` / **`selArgs_correct`** | the selectors `λx₁…xₖ. xᵢ` and their β, stated pre/post-style with no index arithmetic |
+| `bracketOpt_not_occurs` / `absArgs_var_ge` | closed forms: a selector is `K`-wraps around an `S (K K)`-chain |
+| **`selArgs_normal`** | selectors are NORMAL, generically in `k` and `i` — safe to ship as symbols for any alphabet size |
+
+**The sixth `Classical.choice` leak — and this one was PRE-EXISTING.** The new `occurs_bracketOpt`
+imitated `occurs_bracket`'s `grind`, the per-stage audit fired on the imitation, and the trail led
+back: `occurs_bracket` had been leaking since it was written, with `bracket_closed` and the Goal 1
+headline **`combinatory_completeness`** downstream. The global "no `Classical.choice`" claim was
+false for an unknown span — the per-stage audit never re-checks old theorems. Both lemmas are now
+explicit (`beqSelf` supplies `(n == n) = true` by a provably clean route), the headline is back to
+`[propext, Quot.sound]`, and:
+
+**`Audit.lean` makes the claim BUILD-ENFORCED**: every headline theorem's exact axiom footprint is
+pinned with `#guard_msgs in #print axioms`, so any future leak — in new code or old — fails the
+build. Twelve theorems pinned, `confluence` and `nf_unique` at `[propext]` alone.

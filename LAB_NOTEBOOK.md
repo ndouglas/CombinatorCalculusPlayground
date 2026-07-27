@@ -3712,3 +3712,30 @@ what automation could and couldn't do. This file is a first-class deliverable
   (2) The known-universal instance: generalize the driver to n-symbol alphabets (dispatch via nested
   pairs) — construction over understood mechanism. (3) rungs 2/3 via match-bounds. (4) C6, declined
   a sixty-third time.
+
+## 2026-07-27 — Stage 76: the leak that was older than the audit
+
+- The infrastructure went to plan: the list-indexed abstraction with β at every arity
+  (`absArgs_beta` — one induction, and the arity-2/3/4 ladders of Stage 64 become corollaries),
+  selectors with β stated pre/post-style so no index arithmetic survives into proofs, closed forms
+  (`K`-wraps around an `S (K K)`-chain), and generic normality. The dispatch foundation for any
+  alphabet size exists; the two-symbol dispatch of Stages 63–75 is the `k = 2` instance.
+- The finding is the leak. My new `occurs_bracketOpt` imitated `occurs_bracket`'s `grind`; the
+  per-stage audit fired; and when I went to fix MY lemma I checked the one I had imitated —
+  `occurs_bracket` had been carrying `Classical.choice` since it was written, with the Goal 1
+  headline `combinatory_completeness` downstream. The global claim in STATUS was false for an
+  unknown number of weeks. Sixth leak, first PRE-EXISTING one, and the lesson is sharp: a per-stage
+  audit certifies stages, not the tree. Claims about the tree need tree-level enforcement.
+- So the tree got it: `Audit.lean` pins the exact axiom footprint of twelve headline theorems with
+  `#guard_msgs in #print axioms` — any drift, anywhere, in any future stage, fails the build. This
+  should have existed since Stage 9's first leak; it took a leak INSIDE the leak-detection story to
+  see that the detector itself had a blind spot. Also pleasant: the pinning revealed `confluence`
+  and `nf_unique` are `[propext]` alone, cleaner than the blanket claim.
+- The fix itself held a small trap worth recording: `(n == n) = true` — the exact fact from Stage
+  9's trap — has TOOLCHAIN-DEPENDENT clean routes (`Nat.beq_refl` vs `decide_eq_true rfl`), so
+  `beqSelf` tries both and the audit pins the result. Six leaks, six times through the same door;
+  the door is now instrumented.
+- Ranking: (1) **the any-alphabet dispatch**: `RULEf` for `Fin n` symbols via `selArgs`, with the
+  general `RULEf_encSym`-analog — then the general step function, and the Stage 69–75 pipeline
+  re-instantiated (it is already generic in everything but the dispatch). (2) rungs 2/3 via
+  match-bounds. (3) C6, declined a sixty-fourth time.

@@ -10,7 +10,9 @@ Everything below is machine-checked in Lean 4 with **no dependencies** (no
 Mathlib, no Batteries), **no `sorry`**, **no `native_decide`**, and **no
 `Classical.choice`**. Axiom footprint is `[propext, Quot.sound]` or less
 throughout — `Quot.sound` rides core tactic machinery (`omega`/`simp`), a trail
-inherited since Stage 0.
+inherited since Stage 0. As of Stage 76 this claim is **build-enforced**:
+`Audit.lean` pins the headline theorems' exact footprints with `#guard_msgs`,
+so any drift fails the build.
 
 At time of writing: 52 build targets, ~344 theorems, ~238 build-enforced
 `#guard`s, ~7,900 lines of Lean.
@@ -196,9 +198,14 @@ version is the claim.
 plainly: *"if Stage 5 never terminates, the notebook is the result."*
 `LAB_NOTEBOOK.md` is that deliverable. Its most transferable content:
 
-- **Five `Classical.choice` leaks** (the fifth in Stage 69 — Stage 9's `BEq`
-  trap again, sixty stages later, in a file that quotes it), all caught by a
-  per-stage `#print axioms`
+- **Six `Classical.choice` leaks** (the fifth in Stage 69 — Stage 9's `BEq`
+  trap again, sixty stages later, in a file that quotes it; the SIXTH in
+  Stage 76 was PRE-EXISTING — `occurs_bracket`'s `grind` had leaked since it
+  was written, tainting `combinatory_completeness`, and was found only when
+  new code imitated the old tactic). Five caught by a per-stage
+  `#print axioms`; the sixth showed per-stage auditing certifies stages, not
+  the tree — so the claim is now BUILD-ENFORCED (`Audit.lean` pins every
+  headline theorem's exact footprint with `#guard_msgs`)
   audit and none by review, all originating in core's `BEq`/instance layer or in
   `omega` discharging a non-arithmetic goal. Three were fixed by rewriting; the
   fourth was resolved by *weakening a decorative claim* rather than paying the
