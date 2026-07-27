@@ -1591,3 +1591,168 @@ example : encSym true ≠ encSym false := fun h => by cases encSym_injective h
 -- — forward drift-completion, with `encWord_drift_pins` handling the data slots. Proving it needs
 -- what no stage has yet built: a completion argument through the driver's own phases. That is the
 -- remaining research content of `bwd`, now with its base layer done.
+
+-- ## Stage 71: the fold restores literalness — forward drift-completion for the driver's data
+--
+-- The ranked segment was "driver applied to a drifted word". It looked FALSE on first analysis:
+-- word drift is irreversible (a reduct never returns to `mkWord`-form), so how can a drifted state
+-- reach the literal next encoding? The answer is a structural fact worth stating before the
+-- theorems: THE MACHINE NEVER PASSES THE WORD-TERM THROUGH — it folds it. Drift lives in cell
+-- MACHINERY, and application consumes machinery; the symbols are normal (never drift) and the code
+-- is normal (Stage 68), so the fold rebuilds its output as LITERAL cons-cells. Drift does not
+-- accumulate across cycles; it is erased at every fold.
+--
+-- The proof recipe drops out of Stage 69: complete the drifted input to `wordNF` (drift-completion),
+-- then prove each machine lemma on `wordNF`-INPUT — and watch the outputs come out literally
+-- `mkWord`-shaped. One β-lemma for the code-form cell, then the Stage 64 suite replayed.
+
+/-- β for the code-form cell: `wordCode x M c n ⟶* c x (M c n)` — the canonical form COMPUTES. -/
+theorem wordCode_beta (x M c n : Term) :
+    Term.app (Term.app (wordCode x M) c) n
+      ⟶* Term.app (Term.app c x) (Term.app (Term.app M c) n) := by
+  have h := bracketOpt_beta2_Term
+    (TermV.app2 (.var 1) (ofTerm x) (TermV.app2 (ofTerm M) (.var 1) (.var 0))) c n
+  simpa [TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+/-- `head` on the canonical form. -/
+theorem HEADf_wordNF (x : Term) (xs : List Term) :
+    Term.app HEADf (wordNF (x :: xs)) ⟶* x := by
+  refine Steps.trans (HEADf_beta _) ?_
+  refine Steps.trans (wordCode_beta x (wordNF xs) K K) ?_
+  exact Steps.single (Step.K_red x _)
+
+/-- The tail fold on the canonical form — and both projections come out LITERAL `mkWord`s: the fold
+rebuilds with the genuine `CONSf` and the normal symbols, so canonical input reifies to literal
+output. -/
+theorem wordNF_tailPair : ∀ (w : List Term),
+    ∃ p, (Term.app (Term.app (wordNF w) TAILSTEPf) TAILZn ⟶* p)
+      ∧ (Term.app FSTf p ⟶* mkWord w) ∧ (Term.app SNDf p ⟶* mkWord w.tail) := by
+  intro w
+  induction w with
+  | nil => exact ⟨TAILZn, NILf_beta _ _, FSTf_TAILZn, SNDf_TAILZn⟩
+  | cons x xs ih =>
+      obtain ⟨p', hp', hfst, _⟩ := ih
+      refine ⟨Term.app (Term.app PAIRf (Term.app (Term.app CONSf x) (mkWord xs))) (mkWord xs),
+        ?_, FSTf_pair _ _, SNDf_pair _ _⟩
+      refine Steps.trans (wordCode_beta x (wordNF xs) TAILSTEPf TAILZn) ?_
+      refine Steps.trans (Steps.congR hp') ?_
+      refine Steps.trans (TAILSTEPf_beta x p') ?_
+      exact Steps.congApp (Steps.congR (Steps.congR hfst)) hfst
+
+/-- `tail` on the canonical form, literal `mkWord` out, uniformly over all words. -/
+theorem TAILn_wordNF (w : List Term) : Term.app TAILn (wordNF w) ⟶* mkWord w.tail := by
+  obtain ⟨p, hp, _, hsnd⟩ := wordNF_tailPair w
+  refine Steps.trans (TAILn_beta _) ?_
+  exact Steps.trans (Steps.congR hp) hsnd
+
+/-- Concatenation with a canonical left word, literal `mkWord` out. -/
+theorem wordNF_fold_cons : ∀ (u v : List Term),
+    Term.app (Term.app (wordNF u) CONSf) (mkWord v) ⟶* mkWord (u ++ v) := by
+  intro u v
+  induction u with
+  | nil => exact NILf_beta CONSf (mkWord v)
+  | cons x u' ih =>
+      refine Steps.trans (wordCode_beta x (wordNF u') CONSf (mkWord v)) ?_
+      exact Steps.congR ih
+
+theorem CATf_wordNF (u v : List Term) :
+    Term.app (Term.app CATf (wordNF u)) (mkWord v) ⟶* mkWord (u ++ v) :=
+  Steps.trans (CATf_beta _ _) (wordNF_fold_cons u v)
+
+-- ### The step function on canonical input: LITERAL encoded output
+
+theorem STEPcn_wordNF (s y : Bool) (rest : List Bool) :
+    Term.app STEPcn (wordNF ((s :: y :: rest).map encSym)) ⟶* encWord (rest ++ ruleAB s) := by
+  refine Steps.trans (STEPcn_beta _) ?_
+  have htail : Term.app TAILn (Term.app TAILn (wordNF ((s :: y :: rest).map encSym)))
+      ⟶* encWord rest := by
+    refine Steps.trans (Steps.congR (TAILn_wordNF (encSym s :: encSym y :: rest.map encSym))) ?_
+    exact TAILn_mkWord (encSym y :: rest.map encSym)
+  have hrule : Term.app RULEf (Term.app HEADf (wordNF ((s :: y :: rest).map encSym)))
+      ⟶* encWord (ruleAB s) := by
+    refine Steps.trans (Steps.congR (HEADf_wordNF (encSym s) ((y :: rest).map encSym))) ?_
+    exact RULEf_encSym s
+  refine Steps.trans (Steps.congApp (Steps.congR htail) hrule) ?_
+  rw [show encWord (rest ++ ruleAB s)
+      = mkWord (rest.map encSym ++ (ruleAB s).map encSym) by simp [encWord]]
+  exact CATf_mkWord (rest.map encSym) ((ruleAB s).map encSym)
+
+theorem STEPgn_wordNF (s y : Bool) (rest : List Bool) :
+    Term.app STEPgn (wordNF ((s :: y :: rest).map encSym)) ⟶* encWord (rest ++ ruleAB s) := by
+  refine Steps.trans (STEPgn_beta _) ?_
+  have hguard : Term.app HASTWOn (wordNF ((s :: y :: rest).map encSym)) ⟶* symA := by
+    refine Steps.trans (HASTWOn_beta _) ?_
+    refine Steps.trans (Steps.congR (TAILn_wordNF (encSym s :: encSym y :: rest.map encSym))) ?_
+    exact NONNILf_cons (encSym y) (rest.map encSym)
+  refine Steps.trans (Steps.congL (Steps.congL hguard)) ?_
+  refine Steps.trans (Steps.single (Step.K_red _ _)) ?_
+  exact STEPcn_wordNF s y rest
+
+/-- Stuck canonical words are fixed, like their literal counterparts. -/
+theorem STEPgn_wordNF_stuck : ∀ {w : List Bool}, w.length < 2 →
+    Term.app STEPgn (wordNF (w.map encSym)) ⟶* wordNF (w.map encSym) := by
+  intro w hw
+  match w with
+  | [] =>
+      refine Steps.trans (STEPgn_beta _) ?_
+      refine Steps.trans (Steps.congL (Steps.congL HASTWOn_nil)) ?_
+      exact Steps.tail (Step.S_red K _ _) (Steps.single (Step.K_red _ _))
+  | [s] =>
+      have hguard : Term.app HASTWOn (wordNF [encSym s]) ⟶* symB := by
+        refine Steps.trans (HASTWOn_beta _) ?_
+        exact Steps.trans (Steps.congR (TAILn_wordNF [encSym s])) NONNILf_nil
+      refine Steps.trans (STEPgn_beta _) ?_
+      refine Steps.trans (Steps.congL (Steps.congL hguard)) ?_
+      exact Steps.tail (Step.S_red K _ _) (Steps.single (Step.K_red _ _))
+  | _ :: _ :: _ => exact absurd hw (by simp)
+
+-- ### The segment theorems: ANY drift of the data slot completes forward, literally
+
+/-- **Drift-input step-correctness.** However far the word in the data slot has drifted, the step
+function still computes the tag step and its output is the LITERAL next encoded word: complete the
+drift (Stage 69), then compute on the canonical form (above). -/
+theorem STEPgn_drift {s y : Bool} {rest : List Bool} {t : Term}
+    (ht : encWord (s :: y :: rest) ⟶* t) :
+    Term.app STEPgn t ⟶* encWord (rest ++ ruleAB s) := by
+  refine Steps.trans (Steps.congR (encWord_drift_complete ht)) ?_
+  exact STEPgn_wordNF s y rest
+
+/-- ...and on stuck words the drifted slot completes to the CANONICAL stuck state, where it stays. -/
+theorem STEPgn_drift_stuck {w : List Bool} (hw : w.length < 2) {t : Term}
+    (ht : encWord w ⟶* t) :
+    Term.app STEPgn t ⟶* wordNF (w.map encSym) := by
+  refine Steps.trans (Steps.congR (encWord_drift_complete ht)) ?_
+  exact STEPgn_wordNF_stuck hw
+
+/-- **THE ONE-SEGMENT FORWARD-COMPLETION THEOREM.** Every state of the form "driver applied to a
+drift of `encWord w`" — the whole first phase family — reaches the LITERAL encoding of the next
+source state. The candidate statement from Stage 70, proved for this segment. -/
+theorem encTagN_drift_fwd {w w' : List Bool} (hstep : (RS.Tag tagAB).step w w')
+    {t : Term} (ht : encWord w ⟶* t) :
+    Term.app (selfRep STEPgn) t ⟶* encTagN w' := by
+  obtain ⟨a, rest, hw, hlen, hw'⟩ := hstep
+  subst hw
+  cases rest with
+  | nil => simp [tagAB] at hlen
+  | cons y rest' =>
+      subst hw'
+      exact tagFwd_of_step (STEPgn_drift ht)
+
+-- Anchors: canonical input, literal output — visible to the evaluator too.
+#guard nfW (Term.app STEPgn (wordNF ([true, true, false].map encSym)))
+  == nfW (encWord [false, false])
+#guard nfW (Term.app STEPgn (wordNF ([false].map encSym))) == nfW (encWord [false])
+
+-- ## Where forward completion stands
+-- PROVED for the first phase family: `app (selfRep STEPgn) t` with `t` any reduct of `encWord w`
+-- completes forward to the literal `encTagN w'` (or, stuck, to the canonical stuck state). The
+-- structural insight doing the work: drift is erased at every fold, because the machinery that
+-- carries it is consumed and the rebuild uses only normal ingredients. So drift does NOT compound
+-- across cycles — the segment endpoints re-anchor themselves.
+--
+-- NOT YET COVERED: the segment INTERIOR — reducts of `encTagN w` where the DRIVER has partially
+-- unfolded (mid-`selfRep`, mid-dispatch, mid-fold) rather than only the data having drifted. Those
+-- states interleave machinery of the step in progress with drift of the word copies, and completing
+-- them forward is the remaining case analysis: each phase's pending computation must finish
+-- canonically while its doomed branches are discarded. The endpoints and the data slots are done;
+-- the interior is what is left of `bwd`.
