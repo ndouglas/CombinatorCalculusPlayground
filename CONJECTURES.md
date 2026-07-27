@@ -3064,3 +3064,38 @@ self-application carries `F`, and `F` is where the encoding's discipline lives.
 
 What remains is assembling the step function itself — head extraction, dispatch, append, and the `m = 2`
 double deletion — from parts that are individually understood.
+
+### Stage 62: the occurs check, added when it finally paid
+
+Assembling the tag step needs `head`, `tail`, `cons`, `nil` and pairs on fold-encoded words. All are fixed
+combinators — the traversal in `tail` is performed **by the data's own fold**, not by driver recursion.
+
+Compiled with the tree's naive `bracket` they are **unusable**: `TAIL` came out at **14,100 leaves** and
+`normalize` **aborted** on it (SIGABRT, not a timeout). That is the concrete cost of a decision
+`Bracket.lean` documents honestly — *"no occurs-check optimization… for calibration the proofs win (YAGNI)."*
+Right for calibration, fatal for a driver.
+
+| | |
+|---|---|
+| `TermV.subst_of_not_occurs` | `subst` is the identity when the variable is absent |
+| `TermV.bracketOpt` | bracket abstraction **with** the occurs check |
+| `TermV.bracketOpt_beta` | same beta property as `bracket`; the extra branch needs the lemma above |
+| `NILf CONSf HEADf PAIRf FSTf SNDf TAILf` | the toolkit, recompiled |
+
+```
+CONS      414 →  66
+TAILSTEP 4593 → 139
+TAIL    14100 → 192      a 73× reduction
+```
+
+The difference between a term the evaluator aborts on and one it handles in a third of a second. The
+optimisation is negligible on toys (15 vs 9 leaves for a three-abstraction constant function) and decisive on
+real code, because it **compounds with nesting**.
+
+Verified, not merely measured: `head [S,K] = S`, and `tail [S,K]` agrees with `[K]` under **two different
+observers**, so the agreement is not by collapse.
+
+**Where the driver stands.** Every component now exists and runs — `head`/`tail` here, `APPEND` (Stage 60),
+dispatch free (Stage 50), self-reproduction (Stage 61). What remains is writing the `m = 2` step function as
+one term and proving `fwd`: assembly rather than design, and a long proof, because `fwd` must be a reduction
+chain over a term in the hundreds of leaves.

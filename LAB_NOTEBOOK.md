@@ -3255,3 +3255,34 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **assemble the step function** for a two-symbol m = 2 tag system — head, double tail, dispatch,
   append — and prove `fwd` for it. By hand where the terms are small enough to reason about. (2) rungs 2/3 via
   match-bounds. (3) C6, declined a forty-ninth time.
+
+## 2026-07-27 — Stage 62: a YAGNI that came due
+
+- The toolkit design was right and the compilation was fatal. `head`, `tail`, `cons`, pairs — all fixed
+  combinators, with `tail`'s traversal done by the data's own fold rather than by driver recursion. Compiled
+  with the tree's naive bracket abstraction, `TAIL` came out at 14100 leaves and the evaluator did not time
+  out on it, it ABORTED. With the occurs check it is 192 leaves and runs in a third of a second.
+- What I like about this one is that the decision that caused it is documented in the file, in my own words
+  from Stage 9: "no occurs-check optimization. Terms come out bigger, proofs come out smaller; for calibration
+  the proofs win (YAGNI)." That was correct. Calibration needed small proofs and never needed to RUN anything
+  large. The judgement only became wrong when the work changed, and the note is what let me see immediately
+  what to do instead of wondering why my terms were enormous.
+- So the lesson is not "don't YAGNI". It is that a YAGNI is a loan, and the note in the file is what makes it
+  repayable. I have been writing that kind of note fairly consistently and this is the first time one has been
+  called in.
+- Worth recording that the optimisation looks worthless at small scale — 15 leaves versus 9 on a
+  three-abstraction constant function — and is 73× on real code, because it compounds with nesting. If I had
+  benchmarked it on a toy before deciding, I would have concluded it was not worth having. Stage 41's lesson
+  about probes and parameters, in a new costume: the measurement has to be taken at the size the work actually
+  uses.
+- The verification used two observers again, and I now consider that automatic for anything that compares
+  encoded data — a single collapsing observer makes any two lists agree.
+- **Where piece (v) is.** Every component exists and runs. What is left is genuinely assembly: write the m = 2
+  step as one term, then prove `fwd`. I want to be honest that the proof is the hard part and not the writing
+  — `fwd` has to be a reduction chain over a term in the hundreds of leaves, and Stage 61's trick (hand
+  abstraction to keep the chain short) will not scale to the whole step function. That is the next real
+  problem, and it is a proof-engineering problem rather than a design one.
+- Ranking: (1) **write the m = 2 step function and validate it by evaluation** before attempting `fwd` —
+  the same order that has worked for twelve stages, and it will also tell me how big the assembled term is,
+  which determines whether `fwd` is provable by chain or needs a different technique. (2) rungs 2/3 via
+  match-bounds. (3) C6, declined a fiftieth time.
