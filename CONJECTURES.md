@@ -3134,3 +3134,43 @@ CONCATf (mkWord u) (mkWord v)    ⟶*  mkWord (u ++ v)
 
 Each is an induction over a list, not a walk through a large term. The remaining work is four compositional
 lemmas and their assembly — real work, but ordinary.
+
+### Stage 64: the four lemmas, step-correctness, and `fwd` — and one of the four was false
+
+**`fwd` for a genuine two-symbol, m = 2 tag system is PROVED** (`tagAB_fwd`, `tagAB_fwd_SK`): for every
+step `w → w'` of the system `a ↦ [b]`, `b ↦ [a,b]`, the encoded word actually reduces —
+`selfRep STEPc (encWord w) ⟶* selfRep STEPc (encWord w')`, genuine SK reduction, axiom footprint
+`[propext, Quot.sound]`. This is the forward half of piece (v), end to end, on a machine that is not a
+countdown in disguise.
+
+| | |
+|---|---|
+| `bracketOpt_subst_ofTerm` | substituting closed data under an optimised abstraction commutes **as an equality** — the naive algorithm's version (Stage 12) held only up to reduction |
+| `bracketOpt_beta*_Term` | the β-ladder to arity 4: compiled combinators reasoned about at the lambda level |
+| `HEADf_mkWord` | `head (mkWord (x::xs)) ⟶* x` — **no induction at all**: one β and a `K`-firing |
+| `TAILf_mkWord` | one list induction (`mkWord_tailPair`: the fold computes `⟨word, tail⟩` cons-built) |
+| `CATf_mkWord` | one list induction (`mkWord_fold_cons`) — on the **corrected** concatenation |
+| `RULEf_encSym` | dispatch: two firings per symbol |
+| **`STEPc_mkWord`** | **step-correctness, literally**: `STEPc (encWord (s::y::rest)) ⟶* encWord (rest ++ ruleAB s)` |
+| **`tagAB_fwd`** | their composition with Stage 61's driver |
+
+**The finding: Stage 63's concat lemma was FALSE as stated.** `CONCATf (mkWord u) (mkWord v)` can never
+reduce to `mkWord (u ++ v)`. The left side β-reduces to a compiled abstraction whose top spine is `S`
+applied to TWO arguments — and no reduction ever fires a top-level redex there again, while a nonempty
+`mkWord` has `S` applied to FOUR at its spine. The two are observationally equal, which is exactly what
+Stage 63's two-observer guards certified; but SK has no extensionality, and `fwd` needs REACHABILITY. The
+fix is the classic cons-directed concatenation `CAT = λL M. L CONS M` (82 leaves — 14 more than `CONCATf`,
+the price of carrying `CONSf` as a constant), under which every intermediate stays cons-built. `STEPc`
+(710 leaves) is `STEPf` with that one substitution.
+
+The validated-but-wrong combinator is the instructive part: the two-observer discipline, adopted in Stage 50
+precisely to avoid vacuous agreement, certifies observational equality — and observational equality is not
+the property `fwd` consumes. Validation can only vouch for the equivalence it tests.
+
+New anchors are literal-normal-form guards — `nf (STEPc (encWord w)) = nf (encWord w')` — stronger than
+two-observer agreement, available now because the output is reachable rather than merely equal-under-tests.
+
+**What remains for `Simulation (RS.Tag tagAB) RS.SK`:** `dec`/`dec_enc` (mechanical) and `bwd` — adequacy,
+the demanding half, as it was for the countdown (Stages 45–48, 49–58). One structural difference to face:
+`enc`'s image contains the driver, which duplicates ITSELF at every step, so Stage 11's `normalForm_bracket`
+(machine code is safe to duplicate) becomes load-bearing rather than reassuring.

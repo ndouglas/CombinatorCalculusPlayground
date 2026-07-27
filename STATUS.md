@@ -90,8 +90,16 @@ SK** — plus `RS.bwd_of_abstraction_path`, which lets an abstraction advance by
 source *path* rather than a single step.
 
 Its limit, stated plainly: the countdown is **not** universal, so this
-discharges the *mechanism* criterion (a) was blocked on, not criterion (a). A
-tag-step driver — spec piece (v) — is still unwritten.
+discharges the *mechanism* criterion (a) was blocked on, not criterion (a).
+
+**The tag-step driver — spec piece (v) — now exists and its forward half is
+proved (Stages 59–64).** `STEPc` computes one step of a genuine two-symbol
+m = 2 tag system (`a ↦ [b]`, `b ↦ [a,b]`) literally on fold-encoded words
+(`STEPc_mkWord`), and `tagAB_fwd` gives `fwd` end to end: every source step is
+simulated by actual SK reduction on the encoded word, via Stage 61's
+fixpoint-free driver. What is still missing for a
+`Simulation (RS.Tag tagAB) RS.SK` is the decoder (mechanical) and `bwd` —
+adequacy, the demanding half, as it was for the countdown.
 
 **Calibration criteria, from the spec.** (b) discharged in Stage 3. (c)
 discharged by the definitions ledger plus the `PathEncoding` scoping. (a) — see

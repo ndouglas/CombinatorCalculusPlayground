@@ -3313,3 +3313,40 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **prove the four compositional lemmas** — head, tail, concat, dispatch — over `mkWord`, then
   assemble step-correctness and `fwd`. That is the last thing between this development and a `Simulation` from
   a two-symbol m = 2 tag system into SK. (2) rungs 2/3 via match-bounds. (3) C6, declined a fifty-first time.
+
+## 2026-07-27 — Stage 64: the lemma that validation could not have caught
+
+- `fwd` is proved. A genuine two-symbol, deletion-number-two tag system — `a ↦ [b]`, `b ↦ [a,b]` — is
+  driven inside SK: every source step becomes actual reduction on the encoded word (`tagAB_fwd`), axioms
+  `[propext, Quot.sound]`. The proof went the way Stage 63 predicted: β at the lambda level, then four
+  compositional lemmas, then composition. Head needed no induction at all; tail and concat one list
+  induction each; dispatch is two firings. The 710-leaf compiled term never appears in any proof.
+- Except that one of the four lemmas was false. `CONCATf (mkWord u) (mkWord v) ⟶* mkWord (u ++ v)` cannot
+  hold: the fold-concatenation β-reduces to a compiled abstraction whose top spine is `S` applied to two
+  arguments, and no reduction ever fires at that spine again, while a nonempty `mkWord` carries `S` applied
+  to four. Writing the first induction is what surfaced it — the goal was plainly unprovable before any
+  tactic ran. The fix is the classic cons-directed concatenation `λL M. L CONS M`: folding the left word
+  with `CONS` itself rebuilds it on top of the right word, so every intermediate stays cons-built. Fourteen
+  leaves bigger than `CONCATf`; reachability is what the extra leaves buy.
+- The instructive part is WHY the false lemma felt safe: `CONCATf` was validated, four steps, two observers
+  each, negative control. All of that was real and all of it certifies observational equality — and `fwd`
+  consumes reachability, which is strictly stronger in a calculus with no extensionality. The two-observer
+  discipline was adopted in Stage 50 exactly to avoid vacuous agreement, and it did its job; I then let
+  "validated" stand in for "correct for the property the proof needs." A test can only vouch for the
+  equivalence it tests. That is Stage 63's estimate error in a new place: size vs structure there,
+  observational vs reachable here — both substitute an adjacent property for the one in play.
+- Also the third representation assumption in five stages, after "append needs a traversal" (60) and
+  "self-reproduction needs a fixpoint" (61): "a combinator that computes the right list IS the right list."
+  All three dissolved the moment the requirement was written down formally. The habit I keep not having is
+  to write the claim before building the artifact; this stage got it for free because the artifact already
+  existed and the claim came due.
+- The infrastructure was cheap and is general: substituting closed data under `bracketOpt` commutes as an
+  EQUALITY (`bracketOpt_subst_ofTerm` — the naive algorithm only ever had it up to reduction), and a
+  β-ladder to arity four at the `Term` level. Anything compiled from lambda bodies is now provable this way.
+- New anchors are literal-normal-form guards, `nf (STEPc (encWord w)) = nf (encWord w')` — stronger than
+  observer agreement, and available only because the output is now reachable.
+- Ranking: (1) **the `Simulation` itself**: `dec` is mechanical; `bwd` is the demanding half, as it was for
+  the countdown. The new structural fact to face is that the driver duplicates ITSELF every step, so
+  Stage 11's `normalForm_bracket` becomes load-bearing. Start by checking whether the K-normal-form
+  abstraction (45–48) or the trajectory relation (49–58) transplants. (2) rungs 2/3 via match-bounds.
+  (3) C6, declined a fifty-second time.
