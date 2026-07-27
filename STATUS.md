@@ -62,6 +62,7 @@ substantive rather than bookkeeping.
 | `bwd` from a stuttering abstraction (adequacy) | `RS.bwd_of_abstraction`, `Simulation.ofAbstraction` |
 | a `Simulation` whose source is known-universal | `universalReach_extend` |
 | **a `Simulation` of a genuine multi-step machine INSIDE SK** | `countdownInSK` |
+| **a `Simulation` of a genuine TAG SYSTEM inside SK — the open item, closed** | `tagABInSK`, `universalReach_tagAB_SK` |
 
 **Negative controls** — what the definitions would collapse to if loosened:
 `bareEncNorm_trivial` (an oracle encoder witnesses unpinned normalization-based
@@ -384,10 +385,31 @@ erasure-freeness is *not* what keeps pure S acyclic, since `{S,I}` erases nothin
 either and still cycles. Higher rungs need positive constructions or new
 mechanisms.
 
-## The open item
+## The open item — CLOSED (Stage 75)
 
-**Does SK certifiably host a known-universal system?** Concretely: is there a
+**Does SK certifiably host a genuine tag system?** Concretely: is there a
 `Simulation (RS.Tag T) RS.SK`?
+
+**YES — `tagABInSK : Simulation (RS.Tag tagAB) RS.SK`** (`DriverShell.lean`,
+Stage 75): a genuine two-symbol, deletion-number-two tag system —
+inspect, dispatch, append, guarded on its halting condition — hosted inside
+SK in the demanding encoding class, encoder/decoder/`fwd`/`bwd` all
+machine-checked, axioms `[propext, Quot.sound]`. The route, Stages 65–75:
+`bwd` proved FALSE for the unguarded driver (65); the guard (66); the
+rigidity audit and clean rebuild (67–68); the word-drift layer by
+completion — canonical forms, injectivity, literalness restoration
+(69–71); the frame corrections (72–73, four mechanisms refuted); the shell
+factorization invariant (74); and the semantic data layer, under which
+`bwd` is an INVERSION rather than a tracking argument (75) — the order was
+in the slots, not the steps.
+
+Honest scope, unchanged in kind since Stage 16: `tagAB` belongs to the
+Cocke–Minsky universal CLASS (m = 2), but this two-symbol instance is not
+itself proven universal and no such claim is made. Spec piece (v) — a
+tag-step driver with a real `Simulation` — is discharged in full; scaling
+the alphabet to a known-universal instance is construction, not mechanism.
+
+The original framing follows, for the record.
 
 This is the one substantive thing left, and Stage 29 upgraded it from
 "research-blocked" to a **stated structural obstruction**: the two candidate

@@ -3481,3 +3481,40 @@ expressions of Stages 69–71, as a family), then read the tracking abstraction 
 shape — the shed-layer count is the source-steps-ahead, the data slot decodes the word — then
 `hstep`. The order argument finally has a floor to stand on: the shell alone can never produce a
 literal encoding, because encodings live in the data slots.
+
+### Stage 75: the data layer instantiated — and `bwd` falls. THE SIMULATION EXISTS.
+
+**`tagABInSK : Simulation (RS.Tag tagAB) RS.SK`** — a genuine two-symbol, deletion-number-two tag
+system, inspect-dispatch-append, guarded on its halting condition, certifiably hosted inside SK in
+the demanding encoding class: encoder, decoder, `fwd`, and `bwd`, all machine-checked, axioms
+`[propext, Quot.sound]`, no `sorry`, no `Classical.choice`. The open item standing since Stage 8 —
+"is there a `Simulation (RS.Tag T) RS.SK`?" — is CLOSED, ten stages after Stage 65 proved the first
+attempt's `bwd` false.
+
+The stage's discovery: the data layer's right instantiation is SEMANTIC, and once chosen, `bwd` is
+an inversion rather than a tracking argument.
+
+| | |
+|---|---|
+| `DataW w t` | the semantic data layer: `t` denotes a source-reachable word — `∃ u, Tag.Steps w u ∧ t ⟶* wordNF u` |
+| `DataW_step` | Step-closed FOR FREE: confluence joins, normality of `wordNF` pins — no shape analysis |
+| `STEPgn_wordNF_all` / `DataW_app` | the hand-off discharged: applying any step-function reduct to a data term yields a data term denoting the NEXT word — Stage 71's suite behind one confluence square |
+| `Sh.kfd_data` | machinery-wrapped slots denote too, by induction over the `kfd` fragment |
+| **`driver_interior_invariant_data`** | the interior invariant with NOTHING abstract: every reduct of `encTagN w` is shell machinery whose every data slot denotes a source-reachable word |
+| `DataW_pins` | a denoting slot that IS a literal encoded word pins its source word — `nf_unique` + `wordNF_injective` |
+| **`tagABn_bwd`** | **`bwd`**: the endpoint's data slot is `encWord w'`, the invariant says it denotes, denotation pins |
+| **`tagABInSK`** / `universalReach_tagAB_SK` | the `Simulation`, and the taxonomy's certificate |
+
+**Where the order was hiding.** Stage 72 established that completion cannot see order and predicted
+a per-step tracking relation with stutter-or-advance bookkeeping. That prediction was WRONG in an
+instructive direction: the order was never in the steps — it was in the SLOTS. The shell invariant
+separates machinery from data; the semantic layer makes every slot carry its source-reachability
+witness; and a literal endpoint forces its slot's witness to be its own word. No segment relation,
+no `hstep`, no stutter-or-advance — the four refuted mechanisms were all attempts to recover from
+host steps what the factorization carries in its holes.
+
+**Honest scope, as always**: `tagAB` is a genuine m = 2 tag system and m = 2 tag systems are the
+Cocke–Minsky universal CLASS, but this particular two-symbol instance is not itself proven
+universal — that claim was never made and is not made now. What is discharged is spec piece (v) in
+full: a real tag-step driver, hosted by a real `Simulation`. Scaling the alphabet is construction,
+not mechanism.

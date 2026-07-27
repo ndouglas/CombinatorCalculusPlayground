@@ -3679,3 +3679,36 @@ what automation could and couldn't do. This file is a first-class deliverable
   (2) The tracking abstraction over the factored states: shed-layer count = source-steps-ahead,
   data slot decodes the word; then `hstep`. (3) rungs 2/3 via match-bounds. (4) C6, declined a
   sixty-second time.
+
+## 2026-07-27 — Stage 75: the order was in the slots
+
+- `Simulation (RS.Tag tagAB) RS.SK` exists. Machine-checked, `[propext, Quot.sound]`, no sorry. The
+  open item since Stage 8; false at first attempt in Stage 65; closed today. I want to write down
+  how the last step actually happened, because it was not the plan.
+- The plan said: instantiate the data layer, then build a per-step tracking relation with
+  stutter-or-advance bookkeeping, then `hstep`. While choosing the instantiation I took the semantic
+  option — a slot denotes the source-reachable word whose canonical form it still reaches — mostly
+  because its Step-closure is free (confluence joins, `wordNF`'s normality pins; Stage 69's argument
+  as an interface discharge). Then, checking what the instantiated invariant says at a literal
+  endpoint, the whole of `bwd` fell out: the endpoint's slot is `encWord w'`; the invariant says the
+  slot denotes some reachable `u`; `nf_unique` forces `wordNF u = wordNF w'`; injectivity forces
+  `u = w'`. No tracking relation. No `hstep`. Stage 72's prediction — per-step order bookkeeping —
+  was wrong in the best way: the order was never in the steps; it was in the slots, and the
+  factorization had been carrying it since Stage 74.
+- Every refuted mechanism now reads as the same mistake from four directions: trying to recover from
+  the DYNAMICS (K-normal forms, segments, decidable regions, stutter-or-advance) what the STATICS —
+  the factored shape of reachable states — carries outright. The countdown never taught this because
+  its states were too small to need factoring.
+- What made today one sitting instead of ten: every piece was already on the shelf. `wordNF` and
+  drift-completion (69), injectivity (70), the canonical-input step suite (71), confluence-pinning
+  as a habit (69), the shell family with its data holes abstract in exactly the right way (74). The
+  final file is 150 lines and contains one genuinely new idea — `DataW` — plus assembly.
+- Honest scope, recorded with the theorem: `tagAB` is a genuine m = 2 tag system — the Cocke–Minsky
+  universal class — but this instance is not itself proven universal, and that claim is not made.
+  Spec piece (v) is discharged in full: inspect, dispatch, append, guard, encode, decode, `fwd`,
+  `bwd`. Scaling the alphabet to a known-universal instance is construction, not mechanism.
+- Ranking: (1) **update STATUS and the spec accounting** — the open item closes, Goal 2's table
+  gains its row, and criterion (a)'s satisfiable restatement now has a second, stronger witness.
+  (2) The known-universal instance: generalize the driver to n-symbol alphabets (dispatch via nested
+  pairs) — construction over understood mechanism. (3) rungs 2/3 via match-bounds. (4) C6, declined
+  a sixty-third time.
