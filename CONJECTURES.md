@@ -3249,3 +3249,31 @@ abstraction must be blind to them (which is exactly what both Stage 65 refutatio
 already demanded: mid-step-aware, loop-tolerant, doomed-blind). The remaining distance to
 `Simulation (RS.Tag tagAB) RS.SK` is unchanged in kind: characterise the guarded driver's reachable
 set — Stage 56's `Tower`, for a machine three orders larger.
+
+### Stage 67: the rigidity audit — shipped code is not normal, and its drift is one species
+
+The ranking said to start the reachable-set characterisation with `HEADf`. The audit of that plan's
+central prerequisite — code is rigid when duplicated — came first, and it FAILS: Stage 11's
+`normalForm_bracket` covered the naive algorithm on pure bodies, and the real toolkit is `bracketOpt`
+over bodies embedding APPLIED constants, which ship as K-protected chunks with their redexes live.
+
+| | |
+|---|---|
+| `*_normal` (11 theorems) | every pure-body compilation IS normal: `NILf CONSf HEADf PAIRf FSTf SNDf TAILSTEPf CATf constTf NONNILf selfRepX` — one line each via `stepOnce_none_normal` |
+| `*_not_normal` (6) | everything embedding an applied constant is NOT: `TAILf RULEf HASTWOf STEPc STEPg`, and `selfRepW STEPg` — **the term the driver duplicates every cycle** |
+| build-enforced counts | live redex positions compose additively: 1 (TAILf) + 3 (RULEf) → 5 (STEPc) → 6 (STEPg); drift distance 168 LO-steps for STEPg; words carry one live redex PER CONS CELL and quiesce to compact code-forms (2-symbol word: 72 steps, 63 leaves) |
+
+**The accounting is the finding.** Of `STEPg`'s six live positions: three are the rule outputs — but
+those are WORDS, and words are non-normal BY DESIGN (`mkWord` is a chain of `CONSf`-applications;
+that is what made Stage 64's literal reachability work), so their drift is word drift, owed anyway
+for every word in flight. The other three are copies of ONE internal constant, `TAILf`'s accumulator
+`PAIRf NILf NILf` — not data, and fixable: ship the compiled pair `λs. s [] []` instead (normal,
+β-identical). After that one rebuild, **code drift and data drift collapse into one species**, and
+the reachable-set characterisation owes exactly one drift family: the reducts of `mkWord w`.
+
+**The census ceiling, recorded plainly.** `boundedClosure` on bare `TAILf` — one live chunk — did not
+saturate in twenty-five minutes where the countdown's entire reachable set (183 states) saturates
+inside a `#guard`. Enumerative invariants at this scale are not merely unwritable; they are not even
+measurable. The drift families must be parameterized (Tower's `half` constructor generalised), which
+the per-combinator plan already intended — and the useful number is not the state count but the
+species count, which is one.

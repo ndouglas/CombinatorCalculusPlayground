@@ -3427,3 +3427,40 @@ what automation could and couldn't do. This file is a first-class deliverable
   might be too. If the first per-combinator invariant (start with `HEADf`, the smallest) turns out
   unwritable, that is the finding. (2) rungs 2/3 via match-bounds. (3) C6, declined a fifty-fourth
   time.
+
+## 2026-07-27 — Stage 67: the audit that shrank the problem
+
+- The ranking said to start `HEADf`'s segment invariant. Before writing constructors I audited the
+  assumption every invariant would lean on — code is rigid when duplicated — and it is false for the
+  machine actually being run. Stage 11's `normalForm_bracket` is about the naive algorithm on pure
+  bodies; `bracketOpt` K-protects x-free APPLICATION chunks as they stand, redexes included. Eleven
+  pure-body combinators are normal (one-line proofs each); `TAILf`, `RULEf`, `HASTWOf`, `STEPc`,
+  `STEPg` and — the one that matters — `selfRepW STEPg`, the term duplicated every driver cycle, are
+  not. I nearly started building invariants on top of a false premise, and the check cost one hour.
+- The useful part is the accounting, not the verdict. `STEPg` ships six live positions and every one
+  is identified: three are rule-output WORDS — and words are non-normal by design, `mkWord` IS an
+  application chain, that is what literal reachability bought in Stage 64 — and three are copies of a
+  single internal constant, `TAILf`'s accumulator pair. The first three are data drift, owed anyway.
+  The last three are fixable by shipping the accumulator pre-normalised (`λs. s [] []` compiled,
+  β-identical). One small rebuild and code drift IS data drift — one species, one family to
+  characterise: the reducts of `mkWord w`.
+- I also learned where the census tooling's ceiling is, by hitting it. `boundedClosure` on bare
+  `TAILf` did not saturate in twenty-five minutes of interpreter time; the countdown's whole machine
+  saturates inside a `#guard`. I killed the runs and switched to single-path measurements, which is
+  what still computes: drift distances (STEPg is 168 LO-steps from quiescence) and live-position
+  counts (which compose additively, a small pleasant surprise worth having on record). The
+  methodological note: when the probe stops answering, the probe's SILENCE is the measurement — the
+  state spaces here are beyond enumeration, so parameterized families were forced regardless of what
+  the exact counts would have said.
+- Two stages ago the mountain was "characterise the reachable set of a 1450-leaf machine." Today it
+  is "characterise the reducts of `mkWord w`, then compose through machinery whose non-word drift is
+  zero." The mountain did not get smaller by climbing; it got smaller by two audits — bwd's falsity
+  (Stage 65), code's rigidity (this stage) — each of which was a question, not a proof. I want to
+  keep noticing that the cheapest tool in this development has been the well-aimed question about an
+  unexamined premise.
+- Ranking: (1) **Stage 68: the accumulator rebuild** — `TAILZn := compiled λs. s [] []`, rebuild
+  `TAILf`/`HASTWOf`/`STEPc`/`STEPg` on it, re-prove the touched lemmas (the pair-projection lemmas
+  adapt; everything else should carry), and add the build-enforced fact that the new step function's
+  only live positions are words. (2) The word-drift family: characterise the reducts of `mkWord w`,
+  parameterized — the one species. (3) rungs 2/3 via match-bounds. (4) C6, declined a fifty-fifth
+  time.
