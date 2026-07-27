@@ -3336,3 +3336,27 @@ Stage 9's exact trap, eleven weeks later. Fix: supply the decidable literals by 
 NOT normal, so the completion argument needs the driver's structure rather than bare `nf_unique`.
 That asymmetry — words have normal canonical forms, machine states never do — is the precise shape of
 the remaining problem.
+
+### Stage 70: drift pins the word — the identity layer is complete
+
+The small stage the ranking promised. Injectivity of the canonical form, then the corollary chain
+down to the tag alphabet:
+
+| | |
+|---|---|
+| `wordNF_injective` | equal canonical forms are equal words — injection chains through the fixed skeleton, `[propext]` only |
+| **`mkWord_drift_pins`** | two words whose arbitrarily-drifted copies share a reduct are THE SAME word — `hfun` at the data level, with no shape analysis anywhere |
+| `encSym_injective` / `map_encSym_injective` | the alphabet does not collide |
+| **`encWord_drift_pins`** | an encoded tag word in flight — duplicated, drifted, reduced on any schedule — determines its source word uniquely |
+
+**The phase layer, scoped while the identity layer is fresh.** The word layer's recipe was canonical
+form + confluence + injectivity. The phase layer has canonical checkpoints (the encodings) and
+injectivity (`encTagN_injective`) but NOT normality — `encTagN w` always carries its driver redex —
+so join points cannot be pinned by `nf_unique`, and completion can only be FORWARD. The candidate
+statement, recorded for the next attempt:
+
+    every reduct of `encTagN w` reaches `encTagN w'` for some `w'` with `Tag.Steps w w'`
+
+— forward drift-completion through the driver's phases, with `encWord_drift_pins` handling the data
+slots. That single statement, once proved, IS `bwd`'s tracking argument; proving it is the remaining
+research content.

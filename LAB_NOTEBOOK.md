@@ -3526,3 +3526,30 @@ what automation could and couldn't do. This file is a first-class deliverable
   `mkWord_drift_functional` from "equal canonical forms" to "equal words". (2) The phase layer:
   segments between consecutive encodings, with drift-completion relative to the driver's structure
   in place of normality. (3) rungs 2/3 via match-bounds. (4) C6, declined a fifty-seventh time.
+
+## 2026-07-27 — Stage 70: the small stage that closes a layer
+
+- Injectivity went through as predicted — syntactic, one induction, injection chains through the
+  skeleton `wordCode_explicit` fixed in place two stages ago. `wordNF_injective` costs `[propext]`
+  alone. The corollary chain ends at `encWord_drift_pins`: an encoded word in flight, duplicated and
+  drifted on any reduction schedule the host chooses, still determines its source word uniquely.
+  The identity layer of the future abstraction is done, and it is three theorems rather than a
+  constructor family.
+- Worth noticing how the last three stages compose: Stage 68 made the skeleton explicit for
+  NORMALITY, Stage 69 reused it for CONGRUENCE, this stage for INJECTIVITY. One explicit term, three
+  load-bearing uses. The habit worth extracting: when a compiled artifact must be reasoned about
+  more than once, pay once to write it out.
+- The phase layer is now scoped precisely, and I want the asymmetry on record in the form the next
+  attempt will meet it. Words complete BACKWARD-agnostically: any reduct rejoins the one canonical
+  form, because that form is normal and confluence has nowhere else to send the join. Machine states
+  can only complete FORWARD: `encTagN w` is never normal, its reducts flow toward LATER encodings,
+  and the candidate theorem is exactly that — every reduct of `encTagN w` reaches `encTagN w'` for
+  some source-reachable `w'`. If that holds, `bwd` follows by the path-advancing tracking machinery
+  with the segment relation; the entire remaining difficulty is that one forward-completion, and it
+  must thread the driver's phases: mid-dispatch, mid-fold, mid-append states all completing to the
+  next encoding while their doomed branches are discarded.
+- Ranking: (1) **forward drift-completion for the driver** — start by proving it for ONE phase
+  segment (the states between `encTagN w` and `encTagN (step w)` along the canonical `fwd` path,
+  perturbed by drift in word slots), using `encWord_drift_pins` and `steps_toTerm_subst`; if even the
+  one-segment version resists, measure WHERE. (2) rungs 2/3 via match-bounds. (3) C6, declined a
+  fifty-eighth time.
