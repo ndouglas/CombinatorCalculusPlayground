@@ -274,3 +274,68 @@ private def LK : Term := Term.app (Term.app CONSf K) NILf
 -- Stage 61. What remains is to write the m = 2 step function as one term and prove `fwd` for it, which is
 -- assembly rather than design — and which will be a long proof, because `fwd` has to be a reduction chain
 -- and the assembled term will be in the hundreds of leaves.
+
+-- ## Stage 63: the m = 2 step function, assembled and validated
+-- Every piece is constant-size, including the rule append — concatenating two folds is
+-- `λL M c n. L c (M c n)`, which is cheaper than Stage 60's single-element append and handles rules of any
+-- length. The system below is a genuine two-symbol, deletion-number-two tag system: `a ↦ [b]`, `b ↦ [a,b]`.
+
+/-- Symbols as booleans, so dispatch is application (Stage 50). -/
+def symA : Term := K
+def symB : Term := Term.app S K
+
+/-- Fold concatenation: `λL M c n. L c (M c n)`. -/
+def CONCATf : Term := o4 (TermV.app2 (V 3) (V 1) (TermV.app2 (V 2) (V 1) (V 0)))
+
+/-- The word `[b]`, and the word `[a,b]` — the two rule outputs. -/
+def ruleOutA : Term := Term.app (Term.app CONSf symB) NILf
+def ruleOutB : Term := Term.app (Term.app CONSf symA) (Term.app (Term.app CONSf symB) NILf)
+
+/-- `λs. s ruleOutA ruleOutB` — the dispatch. -/
+def RULEf : Term := o1 (TermV.app2 (V 0) (ofTerm ruleOutA) (ofTerm ruleOutB))
+
+/-- **The step function.** `λL. CONCAT (TAIL (TAIL L)) (RULE (HEAD L))` — drop two, append the head's rule. -/
+def STEPf : Term := o1 (TermV.app2 (ofTerm CONCATf)
+  (TermV.app (ofTerm TAILf) (TermV.app (ofTerm TAILf) (V 0)))
+  (TermV.app (ofTerm RULEf) (TermV.app (ofTerm HEADf) (V 0))))
+
+/-- Words as fold-encoded lists. -/
+def mkWord : List Term → Term
+  | [] => NILf
+  | x :: xs => Term.app (Term.app CONSf x) (mkWord xs)
+
+#guard (leafCount CONCATf, leafCount RULEf, leafCount STEPf) = (68, 218, 696)
+
+private def nfW (t : Term) : Option Term := (normalize 300000 t).map (·.1)
+private def agrees (w w' : List Term) : Bool :=
+  (nfW (obs (Term.app STEPf (mkWord w)) I S) == nfW (obs (mkWord w') I S)) &&
+  (nfW (obs (Term.app STEPf (mkWord w)) K S) == nfW (obs (mkWord w') K S))
+
+-- Four steps of the system, each checked under two observers so agreement cannot be by collapse.
+#guard agrees [symA, symA, symB] [symB, symB]          -- drop 2 = [b], append [b]
+#guard agrees [symB, symA, symA] [symA, symA, symB]    -- drop 2 = [a], append [a,b]
+#guard agrees [symA, symB] [symB]                      -- drop 2 = [],  append [b]
+#guard agrees [symB, symB] [symA, symB]                -- drop 2 = [],  append [a,b]
+-- ...and a wrong target really does fail, so the checks are not vacuous.
+#guard !(agrees [symA, symA, symB] [symA, symB])
+
+/-- **`fwd` follows from step-correctness alone.** The driver half is already proved for any `F`
+(`selfRep_advances`), so all that a tag simulation needs is that the step function computes the step. -/
+theorem tagFwd_of_step {F d d' : Term} (h : Term.app F d ⟶* d') :
+    Term.app (selfRep F) d ⟶* Term.app (selfRep F) d' :=
+  Steps.trans (selfRep_advances F d) (Steps.congR h)
+
+-- ## What remains, and a correction to Stage 62's outlook
+-- Stage 62 said proving `fwd` would be "a reduction chain over a term in the hundreds of leaves" and called
+-- that a proof-engineering problem. Assembling the thing shows a better route, and it was available all along.
+--
+-- `tagFwd_of_step` reduces `fwd` to `STEPf (mkWord w) ⟶* mkWord w'`, and THAT does not have to be proved by
+-- chasing the compiled 696-leaf term. `TermV.bracketOpt_beta` says an abstraction applied to an argument
+-- reduces to the substituted body, so the compiled pieces can be reasoned about at the LAMBDA level and
+-- composed: `HEADf (mkWord (x :: xs)) ⟶* x`, `TAILf (mkWord (x :: xs)) ⟶* mkWord xs`,
+-- `CONCATf (mkWord u) (mkWord v) ⟶* mkWord (u ++ v)`, and the two-case dispatch. Each is an induction over a
+-- list, not a walk through a large term.
+--
+-- So the remaining work is four compositional lemmas and their assembly — real work, but ordinary, and of a
+-- kind this development has done many times. What it is NOT is a chain over hundreds of leaves, which is what
+-- I expected before writing the term down.
