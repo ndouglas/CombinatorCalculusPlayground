@@ -1015,3 +1015,81 @@ def tagABgPathEncoding : PathEncoding (RS.Tag tagAB) RS.SK where
 -- loop-tolerant) over a characterisation of the guarded driver's reachable set. That characterisation
 -- — the `Tower` analogue for this machine — is the whole of the remaining distance to
 -- `Simulation (RS.Tag tagAB) RS.SK`.
+
+-- ## Stage 67: the rigidity audit — shipped code is not normal, and what its drift actually is
+--
+-- The ranking said to start the reachable-set characterisation with `HEADf`. Before writing any
+-- invariant, audit its central prerequisite: that machine CODE is rigid — a normal form, hence
+-- drift-free when the driver duplicates it. Stage 11 proved exactly that (`normalForm_bracket`) — but
+-- for the NAIVE algorithm on pure bodies. The real toolkit is `bracketOpt` over bodies that embed
+-- APPLIED constants, and there the property fails: an x-free application chunk is K-protected AS IT
+-- STANDS, live redexes included. The audit below finds every violation and — the useful part —
+-- accounts for each one.
+--
+-- THE ACCOUNTING (each number build-enforced below). `STEPg` ships SIX live redex positions:
+--   * three are the rule outputs inside `RULEf` — but those are WORDS, and words in this encoding
+--     are non-normal BY DESIGN: `mkWord` IS a chain of `CONSf`-applications, which is what made
+--     Stage 64's literal reachability work. Their drift is WORD drift, which any `bwd` abstraction
+--     already owes for every word in flight. Not a new obligation.
+--   * three are copies of ONE internal constant — `TAILf`'s initial accumulator `PAIRf NILf NILf`
+--     (twice via `STEPc`'s two `TAILf`s, once via `HASTWOf`'s). That chunk is NOT data; it is the one
+--     genuinely fixable violation. Pre-normalise it — ship the compiled pair `λs. s [] []` directly,
+--     which is normal and β-identical — and every remaining live position in shipped code is a word.
+--
+-- So after one small rebuild (Stage 68), CODE DRIFT AND DATA DRIFT COLLAPSE INTO ONE SPECIES, and the
+-- reachable-set characterisation owes exactly one drift family: the reducts of `mkWord w`.
+
+-- ### The verdicts, one line each: pure-body compilations are normal...
+theorem NILf_normal : NormalForm NILf := stepOnce_none_normal rfl
+theorem CONSf_normal : NormalForm CONSf := stepOnce_none_normal rfl
+theorem HEADf_normal : NormalForm HEADf := stepOnce_none_normal rfl
+theorem PAIRf_normal : NormalForm PAIRf := stepOnce_none_normal rfl
+theorem FSTf_normal : NormalForm FSTf := stepOnce_none_normal rfl
+theorem SNDf_normal : NormalForm SNDf := stepOnce_none_normal rfl
+theorem TAILSTEPf_normal : NormalForm TAILSTEPf := stepOnce_none_normal rfl
+theorem CATf_normal : NormalForm CATf := stepOnce_none_normal rfl
+theorem constTf_normal : NormalForm constTf := stepOnce_none_normal rfl
+theorem NONNILf_normal : NormalForm NONNILf := stepOnce_none_normal rfl
+theorem selfRepX_normal : NormalForm selfRepX := stepOnce_none_normal rfl
+
+-- ### ...and everything that embeds an applied constant is NOT.
+theorem TAILf_not_normal : ¬ NormalForm TAILf := fun hn => hn ⟨_, stepOnce_sound rfl⟩
+theorem RULEf_not_normal : ¬ NormalForm RULEf := fun hn => hn ⟨_, stepOnce_sound rfl⟩
+theorem HASTWOf_not_normal : ¬ NormalForm HASTWOf := fun hn => hn ⟨_, stepOnce_sound rfl⟩
+theorem STEPc_not_normal : ¬ NormalForm STEPc := fun hn => hn ⟨_, stepOnce_sound rfl⟩
+theorem STEPg_not_normal : ¬ NormalForm STEPg := fun hn => hn ⟨_, stepOnce_sound rfl⟩
+/-- The wrapper the driver DUPLICATES at every cycle is itself non-normal — Stage 11's safety
+theorem does not cover the machine actually being run. -/
+theorem selfRepW_STEPg_not_normal : ¬ NormalForm (selfRepW STEPg) :=
+  fun hn => hn ⟨_, stepOnce_sound rfl⟩
+
+-- ### The measurements, build-enforced
+-- Live redex positions: 1 in TAILf (the accumulator chunk), 3 in RULEf (all rule-output words),
+-- and they compose additively — 5 in STEPc (2 TAILf copies + RULEf's 3), 6 in STEPg (+ HASTWOf's
+-- TAILf copy), 6 in the duplicated wrapper.
+#guard ([TAILf, RULEf, HASTWOf, STEPc, STEPg, selfRepW STEPg].map (fun t => (succs t).length))
+  = [1, 3, 1, 5, 6, 6]
+-- Drift distance: steps for the shipped code to quiesce under leftmost-outermost, and the normal
+-- form's size. STEPg sits 168 steps from quiescence.
+#guard ((normalize 100000 TAILf).map (fun p => (p.2, leafCount p.1))).getD (0, 0) = (20, 170)
+#guard ((normalize 100000 RULEf).map (fun p => (p.2, leafCount p.1))).getD (0, 0) = (108, 104)
+#guard ((normalize 100000 STEPg).map (fun p => (p.2, leafCount p.1))).getD (0, 0) = (168, 756)
+-- Words: non-normal by design — one live redex PER CONS CELL — and they quiesce to compact
+-- code-forms. (The empty word is the one normal word.)
+#guard ([mkWord [], mkWord [symA], mkWord [symA, symB]].map (fun t => (succs t).length)) = [0, 1, 2]
+#guard ((normalize 100000 (mkWord [symA, symB])).map (fun p => (p.2, leafCount p.1))).getD (0, 0)
+  = (72, 63)
+
+-- ### What the census tooling could and could not do
+-- The state-count question — "how many terms does the drift graph of one shipped combinator hold?" —
+-- turned out to be beyond the tree's census tooling: `boundedClosure` on BARE `TAILf` (one live
+-- chunk, 192 leaves) did not saturate in twenty-five minutes of interpreter time, where the
+-- countdown's ENTIRE reachable set (183 states, ≤ 22 leaves) saturates inside a `#guard`. The listed
+-- measurements above are single-path (leftmost-outermost) precisely because single paths are what
+-- still computes at this scale. Two consequences, recorded plainly:
+--   * an ENUMERATIVE invariant — Tower's four constructors, scaled up — is not writable for these
+--     machines, and not even measurable; the drift families must be PARAMETERIZED (Tower's `half`
+--     constructor generalised: independent copies, each anywhere in a sub-family), which is what the
+--     per-combinator "segment invariant" plan already intended;
+--   * the interesting number is not the state count but the SPECIES count, and the accounting above
+--     says it is ONE (words), after the Stage 68 rebuild.
