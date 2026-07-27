@@ -156,6 +156,14 @@ a per-step tracking abstraction over the interior factorization: an
 inductive family of shell contexts (closed under nesting) over data holes
 (handled by the Stage 69–71 suite).
 
+**Stage 74: the interior factorization EXISTS** (`DriverShell.lean`): a
+12-kind inductive family, generic in the step function, proved closed under
+reduction (`Sh.closed`), with `driver_interior_invariant` instantiating it
+for the tag driver — every reduct of `encTagN w` is shell machinery over
+data holes. The data layer is abstract behind two Step-closed predicates;
+instantiating it, then reading the tracking abstraction off the factored
+shape, is what remains for `bwd`.
+
 **Calibration criteria, from the spec.** (b) discharged in Stage 3. (c)
 discharged by the definitions ledger plus the `PathEncoding` scoping. (a) — see
 Stage 16 in the ledger — is **unsatisfiable as written**, because its

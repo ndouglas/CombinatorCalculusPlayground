@@ -3647,3 +3647,35 @@ what automation could and couldn't do. This file is a first-class deliverable
   family over one data hole, closure under Step for the SHELL cases only, hand-off left abstract.
   Even that fragment would be the first genuine interior invariant. (2) rungs 2/3 via match-bounds.
   (3) C6, declined a sixty-first time.
+
+## 2026-07-27 — Stage 74: the family that became writable
+
+- The interior factorization exists. Twelve kinds, twenty-four constructors, one closure induction,
+  `[propext, Quot.sound]`, start state axiom-free. Every term reachable from the driver applied to
+  data is now, by theorem, shell machinery over data holes — with the data layer behind two
+  Step-closed predicates and one hand-off axiom, exactly the abstraction boundary the ranking asked
+  for. Generic in the step function: this is driver theory, not tag-system theory.
+- Stage 67 measured that such families were beyond writing, and it was right THEN. What changed is
+  that five stages deleted the drift species before enumeration began: Stage 68 made code normal
+  (no code-drift kinds), Stages 69–71 packaged data drift behind predicates (no data kinds beyond
+  two), Stage 72's layer-shedding predicted the premature-application states before tracing found
+  them. Twelve kinds against Tower's four. The lesson I want stated precisely: the cost of an
+  invariant is set by the number of DRIFT SPECIES, not the size of the machine — and drift species
+  can be eliminated by design before they are ever enumerated.
+- Tracing found two states I had not predicted: the premature application (a half-built layer
+  consuming data early — the family is FALSE without `ydat`), and the mid-flight discard (`ydat`'s
+  K-fire killing a duplicated data copy). Both were then absorbed by single constructors. The
+  compression trick that kept the family small: absorb cross-kind flows into the kinds themselves
+  (`zw_done` swallows engines, `ydat_done` swallows continuations), so closure is kind-preserving
+  and the induction needs no disjunctions.
+- Lean's index unification did perhaps a third of the proof: every impossible root-fire dies on a
+  constructor clash inside `cases`, and the build's "alternative not needed" errors were the
+  machine telling me my impossibility analysis was too cautious in nine places and wrong in one
+  (the drv-level pair fire, which appL had already covered). A proof assistant that complains when
+  you handle too MANY cases is doing exactly its job.
+- Ranking: (1) **instantiate the data layer**: define the data-expression family — words in flight,
+  step-function applications, completions, the Stage 69–71 results as constructors — and discharge
+  `Sh`'s `D`/`DA`/`hApp` interface with it, giving the interior invariant with nothing abstract.
+  (2) The tracking abstraction over the factored states: shed-layer count = source-steps-ahead,
+  data slot decodes the word; then `hstep`. (3) rungs 2/3 via match-bounds. (4) C6, declined a
+  sixty-second time.

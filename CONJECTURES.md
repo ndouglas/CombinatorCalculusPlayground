@@ -3449,3 +3449,35 @@ preferred: a per-step tracking abstraction over the interior factorization — s
 INDUCTIVE family (the unbounded nesting rules out enumeration) over data holes (Stages 69–71). The
 factorization is the theorem `bwd` has been waiting for since Stage 65, and every alternative now
 ends in a refutation with a name.
+
+### Stage 74: the shell invariant — the interior factorization exists
+
+The theorem four stages of refutations forced, built in one sitting: `DriverShell.lean` defines a
+12-kind, 24-constructor inductive family `Sh F D DA k t` describing every term reachable from
+`app (selfRep F) d` — the driver applied to data — as SHELL MACHINERY over abstract data holes, and
+proves it CLOSED UNDER REDUCTION (`Sh.closed`), generic in the step function `F`.
+
+| | |
+|---|---|
+| kinds | `wcopy iw kf ks kk zw yw xw eng kfd ydat drv` — one per machinery stage of the engine `W W` |
+| `Sh.closed` | one host step never leaves the family, kind by kind — a single induction, every impossible root discharged by index unification |
+| `Sh.start` | the driver's start state is in the family (AXIOM-FREE) |
+| **`driver_interior_invariant`** | **every reduct of `encTagN w` factors as shell machinery over data holes** — instantiated with `D := reducts of encWord w`, `DA := True` (the data layer stays abstract, as ranked) |
+
+Design facts found by tracing and now encoded: finished `I`-towers reassemble into NESTED engines
+(Stage 73's unbounded pre-unfolding — one constructor, `eng_pair`, not infinitely many); a half-built
+layer `S y f` can consume data EARLY, so the premature-application states (`ydat`) are real and the
+family is false without them; the mid-flight data discard (`ydat`'s `K`-fire) is where a duplicated
+data copy dies.
+
+Why this was writable when Stage 67 said such families were not: five stages of preparation deleted
+the drift species before enumeration began. Normal code (Stage 68) removed every code-drift kind;
+the word layer (Stages 69–71) let data hide behind two Step-closed predicates; layer-shedding
+(Stage 72) predicted the premature states. Twelve kinds against Tower's four — a factor of six, not
+the two orders of magnitude the raw machine suggested.
+
+**What remains**: instantiate `D`/`DA` with the actual data layer (the word and step-function
+expressions of Stages 69–71, as a family), then read the tracking abstraction off the factored
+shape — the shed-layer count is the source-steps-ahead, the data slot decodes the word — then
+`hstep`. The order argument finally has a floor to stand on: the shell alone can never produce a
+literal encoding, because encodings live in the data slots.
