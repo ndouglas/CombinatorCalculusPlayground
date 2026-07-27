@@ -3286,3 +3286,30 @@ what automation could and couldn't do. This file is a first-class deliverable
   the same order that has worked for twelve stages, and it will also tell me how big the assembled term is,
   which determines whether `fwd` is provable by chain or needs a different technique. (2) rungs 2/3 via
   match-bounds. (3) C6, declined a fiftieth time.
+
+## 2026-07-27 — Stage 63: writing it down changed what the proof costs
+
+- The step function exists and runs. 696 leaves, four steps of a real two-symbol m = 2 tag system validated
+  under two observers each, with a negative control that fails as it should. Assembly took one sitting because
+  every component had already been built and measured separately, which is what twelve stages of narrowing
+  bought.
+- The finding is a correction to my own outlook from yesterday. I said `fwd` would be a reduction chain over
+  hundreds of leaves and called it proof engineering. That was wrong, and writing the term down is what showed
+  it. `tagFwd_of_step` — three lines — reduces `fwd` to step-correctness, because `selfRep_advances` already
+  covers the driver for ANY step function. And step-correctness does not need the compiled term at all:
+  `bracketOpt_beta` lets each compiled piece be reasoned about at the lambda level, so what is left is four
+  list inductions and their composition.
+- So the cost estimate was off by a lot, and the reason is instructive. I estimated the proof from the SIZE OF
+  THE ARTIFACT rather than from its STRUCTURE. 696 leaves sounds like a hard proof; four compositional lemmas
+  over a fold encoding does not. The artifact is large because bracket abstraction is verbose, not because the
+  argument is complicated, and those are independent.
+- I have made the mirror-image error before and recorded it: Stage 39 assumed a heavily-constrained shape was
+  important because it was tractable. Here I assumed a large term meant a hard proof. Both are estimating one
+  property from an unrelated one, and I do not yet have a habit that catches it. The nearest thing is what
+  worked today by accident: build the object, then look at what the proof would have to touch.
+- Also worth noting for the record: concatenation of folds turned out cheaper than Stage 60's single-element
+  append and strictly more general. I built the special case first because the tag rule appends "a word", and
+  I read that as "a symbol at a time" without checking. The general operation was simpler than the special one.
+- Ranking: (1) **prove the four compositional lemmas** — head, tail, concat, dispatch — over `mkWord`, then
+  assemble step-correctness and `fwd`. That is the last thing between this development and a `Simulation` from
+  a two-symbol m = 2 tag system into SK. (2) rungs 2/3 via match-bounds. (3) C6, declined a fifty-first time.

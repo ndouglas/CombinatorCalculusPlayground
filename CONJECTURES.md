@@ -3099,3 +3099,38 @@ observers**, so the agreement is not by collapse.
 dispatch free (Stage 50), self-reproduction (Stage 61). What remains is writing the `m = 2` step function as
 one term and proving `fwd`: assembly rather than design, and a long proof, because `fwd` must be a reduction
 chain over a term in the hundreds of leaves.
+
+### Stage 63: the m = 2 tag step function, assembled and validated
+
+A genuine **two-symbol, deletion-number-two** tag system: `a ↦ [b]`, `b ↦ [a,b]`. Every piece is
+constant-size, including the rule append — concatenating two folds is `λL M c n. L c (M c n)`, cheaper than
+Stage 60's single-element append and it handles rules of any length.
+
+| | |
+|---|---|
+| `symA` / `symB` | symbols as booleans, so dispatch is application (Stage 50) |
+| `CONCATf` | 68 leaves |
+| `RULEf` | 218 leaves, the two-way dispatch |
+| **`STEPf`** | **696 leaves** — `λL. CONCAT (TAIL (TAIL L)) (RULE (HEAD L))` |
+| `tagFwd_of_step` | **`fwd` follows from step-correctness alone**, since the driver half is already proved for any `F` by `selfRep_advances` |
+
+Validated on four steps of the system, each under **two observers** so agreement cannot be by collapse, plus
+a negative control that must and does fail.
+
+**A correction to Stage 62's outlook.** I said proving `fwd` would be *"a reduction chain over a term in the
+hundreds of leaves"* and called it a proof-engineering problem. Assembling the thing shows a better route
+that was available all along.
+
+`tagFwd_of_step` reduces `fwd` to `STEPf (mkWord w) ⟶* mkWord w'`, and that does **not** need chasing the
+compiled 696-leaf term. `TermV.bracketOpt_beta` says an abstraction applied to an argument reduces to the
+substituted body, so the compiled pieces can be reasoned about at the **lambda level** and composed:
+
+```
+HEADf   (mkWord (x :: xs))       ⟶*  x
+TAILf   (mkWord (x :: xs))       ⟶*  mkWord xs
+CONCATf (mkWord u) (mkWord v)    ⟶*  mkWord (u ++ v)
+        plus the two-case dispatch
+```
+
+Each is an induction over a list, not a walk through a large term. The remaining work is four compositional
+lemmas and their assembly — real work, but ordinary.
