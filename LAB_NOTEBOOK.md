@@ -3492,3 +3492,37 @@ what automation could and couldn't do. This file is a first-class deliverable
   word and the question "what does `CONSf x M` reach when `x` is a symbol and `M` is in the family?"
   (2) the machine phases over it. (3) rungs 2/3 via match-bounds. (4) C6, declined a fifty-sixth
   time.
+
+## 2026-07-27 — Stage 69: the enumeration that dissolved
+
+- The ranking said to build the word-drift family as an inductive shape family, Tower's `half`
+  generalised. I started by writing out what the single cons cell's constructors would have to be and
+  stopped: a cell is an interleaved two-layer distribution machine, dozens of drift-parameterized
+  states, and Stage 67 already measured that these spaces outrun the census tooling. The correct move
+  was Stage 68's lesson applied one level up — characterise by BEHAVIOUR. Give each word a canonical
+  normal form (`wordNF`, code-forms all the way down), prove the word reaches it, and confluence turns
+  every drifted copy into a completion: `mkWord_drift_complete`. The family never gets described; it
+  gets completed. Closure under reduction is free BY CONSTRUCTION, which is precisely the property the
+  hand-enumerated family would have needed hundreds of cases to prove.
+- What made this work is a fact I had not consciously registered: words HAVE normal forms even though
+  the machine never computes them. The driver always applies words before they quiesce; but the
+  canonical form exists as a mathematical anchor regardless of whether any execution visits it. The
+  anchor does the work Tower's constructors did for the countdown, at zero constructors.
+- The fifth `Classical.choice` leak, and the audit caught it exactly like the first four. The big
+  `simp` in `wordCode_explicit` closed the goal and quietly routed through the `BEq` layer — Stage 9's
+  trap, eleven weeks and sixty stages later, in a file that QUOTES that trap. The fix is the same
+  shape as always: supply the decidable literals as `rfl`/`decide` facts, let `simp only` assemble.
+  I will keep running `#print axioms` per stage until the toolchain changes, and evidently not a stage
+  earlier.
+- One genuinely reusable piece fell out: `steps_toTerm_subst` — reduction is congruent under
+  substitution contexts. It is the lemma that lets a hole's contents advance inside compiled code,
+  and the phase layer will lean on it hard.
+- The asymmetry that defines the next problem, stated while it is fresh: words have normal canonical
+  forms; machine states never do (`encTagN w` always carries its driver redex). So the phase layer
+  cannot reuse `nf_unique` — its checkpoints are canonical for a DIFFERENT reason (the driver's own
+  structure), and finding the right formulation of "canonical without normal" is the research content
+  of `bwd` from here.
+- Ranking: (1) **injectivity of `wordNF`** on encoded words — syntactic, small, and it upgrades
+  `mkWord_drift_functional` from "equal canonical forms" to "equal words". (2) The phase layer:
+  segments between consecutive encodings, with drift-completion relative to the driver's structure
+  in place of normality. (3) rungs 2/3 via match-bounds. (4) C6, declined a fifty-seventh time.

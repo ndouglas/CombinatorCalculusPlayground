@@ -133,6 +133,15 @@ drift: ONE species, the reducts of `mkWord w`. That word-drift family, the
 machine phases composed over it, and the third abstraction are what remain
 for `bwd`.
 
+**Stage 69: the word-drift family is DONE, by behaviour rather than
+enumeration.** Every word reaches a canonical normal form
+(`wordNF`/`mkWord_to_wordNF`), and every drifted copy still reaches it
+(`mkWord_drift_complete` — confluence joins, normality pins), so drift can
+always be completed and never conflates words (`mkWord_drift_functional`).
+What remains for `bwd`: injectivity of `wordNF` (syntactic), and the phase
+layer — where the checkpoints are not normal, so completion must come from
+the driver's structure instead of `nf_unique`.
+
 **Calibration criteria, from the spec.** (b) discharged in Stage 3. (c)
 discharged by the definitions ledger plus the `PathEncoding` scoping. (a) — see
 Stage 16 in the ledger — is **unsatisfiable as written**, because its
@@ -164,7 +173,9 @@ version is the claim.
 plainly: *"if Stage 5 never terminates, the notebook is the result."*
 `LAB_NOTEBOOK.md` is that deliverable. Its most transferable content:
 
-- **Four `Classical.choice` leaks**, all caught by a per-stage `#print axioms`
+- **Five `Classical.choice` leaks** (the fifth in Stage 69 — Stage 9's `BEq`
+  trap again, sixty stages later, in a file that quotes it), all caught by a
+  per-stage `#print axioms`
   audit and none by review, all originating in core's `BEq`/instance layer or in
   `omega` discharging a non-arithmetic goal. Three were fixed by rewriting; the
   fourth was resolved by *weakening a decorative claim* rather than paying the

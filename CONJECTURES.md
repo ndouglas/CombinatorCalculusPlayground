@@ -3303,3 +3303,36 @@ words, subsuming what used to be two lemmas.
 **Where `bwd` stands**: `enc`/`dec`/`dec_enc`/`fwd` proved, stuck words idle, code drift = word drift,
 one species. The remaining obligation is the word-drift family (reducts of `mkWord w`, parameterized
 over independent copy drift), the machine phases composed over it, and the third abstraction.
+
+### Stage 69: the word-drift family, characterised by behaviour — no enumeration
+
+The ranking asked for an inductive drift family over the reducts of `mkWord w`. Attempting the single
+cell showed even it is an interleaved two-layer distribution machine, and Stage 67 had already shown
+such state spaces are beyond measuring. Stage 68's lesson — behaviour, not shape — applied one level
+up DISSOLVES the enumeration:
+
+| | |
+|---|---|
+| `wordCode x M` | the code-form of a cons cell, `λc n. c x (M c n)` compiled; `wordCode_explicit` writes it out |
+| `wordNF w` | **the canonical normal form of a word** — code-forms all the way down; `wordNF_normal` |
+| `mkWord_to_wordNF` | every word reaches its canonical form (partial-application β + `steps_toTerm_subst`, the new generic congruence-under-substitution lemma) |
+| **`mkWord_drift_complete`** | **THE DRIFT-COMPLETION THEOREM**: every reduct of a word, however far its copies have drifted, still reduces to `wordNF w` — confluence supplies the join, normality of `wordNF` pins it |
+| `mkWord_drift_functional` | drift cannot conflate words: common reducts force equal canonical forms |
+| `encWord_drift_complete` | the instantiation on encoded tag words |
+
+The family "reducts of `mkWord w`" is exactly the terms between `mkWord w` and `wordNF w`, and the
+second endpoint is canonical BECAUSE it is normal. Membership is closed under reduction by
+construction, and never needs to be described — only completed. Sizes: `wordNF` of a 2-symbol word is
+63 leaves, matching what the evaluator computes (`nfW` anchors).
+
+**The fifth `Classical.choice` leak**, caught by the per-stage audit like the first four:
+`wordCode_explicit`'s original `simp` closed the goal and dragged choice in through the `BEq` layer —
+Stage 9's exact trap, eleven weeks later. Fix: supply the decidable literals by hand (`rfl` and
+`decide` facts) and let `simp only` do assembly; the audit lands on `[propext]` for the lemma and
+`[propext, Quot.sound]` for the chain.
+
+**What is still owed for `bwd`**: (i) injectivity of `wordNF` on encoded words — syntactic, next;
+(ii) the same completion treatment for the machine's PHASES, where the checkpoints (`encTagN w`) are
+NOT normal, so the completion argument needs the driver's structure rather than bare `nf_unique`.
+That asymmetry — words have normal canonical forms, machine states never do — is the precise shape of
+the remaining problem.
