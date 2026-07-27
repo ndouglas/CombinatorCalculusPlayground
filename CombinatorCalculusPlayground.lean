@@ -25,6 +25,7 @@ import CombinatorCalculusPlayground.AdequacyProbe
 import CombinatorCalculusPlayground.Countdown
 import CombinatorCalculusPlayground.TagInSK
 import CombinatorCalculusPlayground.DriverShell
+import CombinatorCalculusPlayground.TagGeneral
 import CombinatorCalculusPlayground.Audit
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
