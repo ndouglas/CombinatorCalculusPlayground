@@ -383,7 +383,10 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   (`sc_stepsN_facts`, `sc_cycle_needs_root_length`), so MINIMAL CYCLES ARE ROOT
   CYCLES exactly (`sc_minimal_cycle_is_root`), no step is a self-loop
   (`scStep_irrefl`), and minimal cycles have length ≥ 2
-  (`sc_cycle_length_ge_two`). Termination routes are provably dead
+  (`sc_cycle_length_ge_two`). Second purchase (Stage 94): a root fire is never
+  undone in one step (`sc_no_root_two_cycle` — the live branch dies on the frozen
+  left), so there are no 2-cycles and MINIMAL CYCLE LENGTH ≥ 3
+  (`sc_cycle_length_ge_three`). Termination routes are provably dead
   (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
   the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
   is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine

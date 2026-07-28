@@ -4185,3 +4185,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   against exact-length localization — the target is either a shorter cycle from the projection
   fires or a shape contradiction. (2) The third-level shape analysis of `app h r` reachability.
   (3) C6, declined an eighty-first time.
+
+## 2026-07-28 — Stage 94: the case blast that stayed civilized
+
+- The first kill from descend-vs-minimality, and a validation of the whole stack in miniature:
+  localization-with-lengths reduced "no 2-cycles" to "a root fire is never undone in one step,"
+  and the frozen left — proved two stages before there was any sign it would be needed at length
+  one — closed the only branch that size arguments could not. Eleven branches total, and the
+  discipline that kept them civilized was converting everything to equations first
+  (`scRootStep_inv` as the equational mirror of `SCRootStep`): no `cases` on
+  concretely-indexed hypotheses, hence no dependent-elimination surprises, just injections and
+  two named absorption lemmas.
+- Honest assessment of the numeric ladder: length ≥ 3 is a real pinned fact, but climbing it
+  rung by rung (kill 3-cycles, kill 4-cycles, ...) costs multiplicatively more per step and
+  proves nothing in the limit. The 2-cycle proof's transferable content is the CONSTRAINT ON THE
+  RETURN'S FIRST STEP: immediately after a root fire, the term's shape pins what any single step
+  can do, and most possibilities are absorption-dead. The general statement — the return
+  dichotomies with lengths, giving exact budgets on a minimal root cycle — is mechanical from
+  Stage 93's pattern and turns any future k-cycle question into arithmetic over branch budgets
+  instead of a bespoke blast.
+- Four bookkeeping errors in the first build of the big proof, all of one kind: rewrite
+  directions (`←` renaming the wrong variable, absorb lemmas fed mirror-image equations). The
+  fix pattern is now reflexive: read the error's stated type, not the plan's intended one.
+- Ranking: (1) **the length-indexed return dichotomies**: sc_root_S/C_return2 in StepsN form
+  with exact budget accounting (k_L + k_R = return length, sandwich positions), stated on a
+  minimal root cycle — the general form of the 2-cycle proof's constraint. (2) The 3-cycle kill
+  as a corollary test of that machinery. (3) C6, declined an eighty-second time.

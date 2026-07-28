@@ -3958,3 +3958,33 @@ routes through choice. The lesson sharpens from "give omega arithmetic goals onl
 contradictory-hypothesis branches INVITE the leak, because the goal there is whatever the theorem
 concludes, and omega will happily close it. `subst` + `absurd` + a targeted `Nat` lemma is the
 clean form.
+
+### Stage 94: no two-cycles — the first kill
+
+Stage 93's exact-length localization makes short cycles concrete enough to attack directly: a
+2-cycle yields a root cycle of length ≤ 2, which is a root fire followed by AT MOST ONE step
+straight back. The zero-step return dies on `scStep_irrefl`; the one-step return is the theorem
+**a root fire is never undone in one step** (`sc_no_root_two_cycle`), by exhausting what that one
+step can be against the fired shape. Eleven branches: nine die on absorption (a term equalling
+itself under an application — the recurring size kill, now named `sc_ne_absorb_left/right`), one
+on bookkeeping, and the single live-looking branch — an `appL` return over a root C-fire, which
+forces `y = z` and the step `x z ⟶ (C x) z` — dies because its own projection demands the step
+`x ⟶ C x`, forbidden by the frozen left. Stage 87's theorem, proved for the multi-step relation,
+earns its keep at length one.
+
+| | |
+|---|---|
+| `scRootStep_inv` | root steps as equations — axiom-free, and the method note below |
+| `sc_ne_absorb_left` / `sc_ne_absorb_right` | absorption is impossible: `s ≠ s r`, `s ≠ r s` |
+| **`sc_no_root_two_cycle`** | **a root fire is never undone in one step** — pinned |
+| `sc_no_two_cycle` | no `{S,C}` cycle has length 2 |
+| **`sc_cycle_length_ge_three`** | **minimal cycle length ≥ 3** — pinned |
+
+Method note, earned across three build failures avoided: every hypothesis was converted to an
+equation BEFORE analysis (`scRootStep_inv`, `scStep_cases`) rather than case-split in place. Cases
+on a hypothesis whose indices are concrete terms risks dependent-elimination failures; equations
+never do, and the whole proof is injections, two named absorption lemmas, and one frozen-left
+call. The numeric ladder (no 1-cycles, no 2-cycles) is not the road to the rung — each length
+costs multiplicatively more — but the 2-cycle proof surfaced the reusable pattern: the return's
+FIRST step is already heavily constrained by the fired shape. The general form of that constraint
+is the next thing worth stating.
