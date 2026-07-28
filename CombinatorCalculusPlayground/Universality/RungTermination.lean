@@ -1122,3 +1122,137 @@ theorem scCycle_second_redex {t v : SCTerm} (hs : SCStep t v) (hback : RS.SC.Ste
   obtain ⟨a, b, hr, hcyc⟩ := sc_cycle_needs_root hs hback
   obtain ⟨p, q, hr', hreach⟩ := scRootCycle_second_redex hr hcyc
   exact ⟨a, b, hr, hcyc, p, q, hr', hreach⟩
+
+-- ## Stage 89: collapse under the shape lens — the last escape narrows
+-- Stage 82 named COLLAPSE TO ARGUMENT (`u v ⟶* v`) the load-bearing escape; the shape lens now
+-- takes two bites out of it. First: leaves are NORMAL (every step source is an application), so a
+-- leaf-headed term `ℓ v` is left-rigid — everything it reaches is `ℓ w` with `v ⟶* w` — and
+-- leaf-headed collapse dies by size descent, unconditionally. Second: for arbitrary `u`, the path
+-- dichotomy on a collapse has its trivial branch dead on size and its projection branch forcing
+-- `v = F' X'` with `v ⟶* X'` — the SAME collapse shape one level down `v`'s right spine. The
+-- descent bottoms out only in the root branch: **every collapse fires a root redex, launched from
+-- a right-nested subterm of the collapsing term**. Plugged into Stage 88's S-side survivor (whose
+-- extra datum `g x ⟶* x` is exactly a collapse): a root S-cycle either returns through a
+-- whole-term root step, or BOTH its projections carry root fires of their own.
+
+/-- Every step SOURCE is an application: leaves are normal. -/
+theorem scStep_source_isApp {t u : SCTerm} (h : SCStep t u) : ∃ a b, t = .app a b := by
+  cases h with
+  | S_red f g x => exact ⟨_, _, rfl⟩
+  | C_red x y z => exact ⟨_, _, rfl⟩
+  | appL h => exact ⟨_, _, rfl⟩
+  | appR h => exact ⟨_, _, rfl⟩
+
+/-- Root sources are app-app-headed. -/
+theorem scRootStep_source {t u : SCTerm} (h : SCRootStep t u) :
+    ∃ p q r, t = .app (.app p q) r := by
+  cases h with
+  | S_red f g x => exact ⟨_, _, _, rfl⟩
+  | C_red x y z => exact ⟨_, _, _, rfl⟩
+
+/-- Left-leaf rigidity: from `ℓ v` (`ℓ` a leaf) only the right side can ever move. -/
+theorem scSteps_from_leafLeft {ℓ : SCTerm} (hℓ : ∀ a b, ℓ ≠ SCTerm.app a b) :
+    ∀ {t u : SCTerm}, RS.SC.Steps t u → ∀ v, t = SCTerm.app ℓ v →
+      ∃ w, u = SCTerm.app ℓ w ∧ RS.SC.Steps v w := by
+  intro t u h
+  refine h.rec (motive := fun t u _ => ∀ v, t = SCTerm.app ℓ v →
+      ∃ w, u = SCTerm.app ℓ w ∧ RS.SC.Steps v w) ?_ ?_
+  · intro a v heq
+    exact ⟨v, heq, @RS.Steps.refl RS.SC v⟩
+  · intro a b c s rest ih v heq
+    subst heq
+    rcases scStep_cases s with hroot | ⟨f, x, f', heq1, heq2, hs⟩ | ⟨f, x, x', heq1, heq2, hs⟩
+    · obtain ⟨p, q, r, heqs⟩ := scRootStep_source hroot
+      injection heqs with h1 h2
+      exact absurd h1 (hℓ p q)
+    · injection heq1 with h1 h2
+      subst h1; subst h2
+      obtain ⟨p, q, hpq⟩ := scStep_source_isApp hs
+      exact absurd hpq (hℓ p q)
+    · injection heq1 with h1 h2
+      subst h1; subst h2
+      obtain ⟨w, hb, hw⟩ := ih x' heq2
+      exact ⟨w, hb, RS.Steps.tail hs hw⟩
+
+/-- Leaf-headed collapse is dead: `ℓ v` never reduces to `v`. -/
+theorem sc_no_leaf_collapse_aux (ℓ : SCTerm) (hℓ : ∀ a b, ℓ ≠ SCTerm.app a b) :
+    ∀ (n : Nat) (v : SCTerm), v.leafCount ≤ n → ¬ RS.SC.Steps (SCTerm.app ℓ v) v := by
+  intro n
+  induction n with
+  | zero =>
+      intro v hle _
+      exact absurd hle (by have := scLeaf_pos v; omega)
+  | succ n ih =>
+      intro v hle h
+      obtain ⟨w, hv, hvw⟩ := scSteps_from_leafLeft hℓ h v rfl
+      rw [hv] at hvw
+      have hw : w.leafCount ≤ n := by
+        have hc : v.leafCount = ℓ.leafCount + w.leafCount := by rw [hv]; rfl
+        have := scLeaf_pos ℓ
+        omega
+      exact ih w hw hvw
+
+/-- The packaged form. -/
+theorem sc_no_leaf_collapse {ℓ v : SCTerm} (hℓ : ∀ a b, ℓ ≠ SCTerm.app a b) :
+    ¬ RS.SC.Steps (SCTerm.app ℓ v) v :=
+  sc_no_leaf_collapse_aux ℓ hℓ v.leafCount v (Nat.le_refl _)
+
+example (v : SCTerm) : ¬ RS.SC.Steps (SCTerm.app SCTerm.S v) v :=
+  sc_no_leaf_collapse (fun _ _ h => SCTerm.noConfusion h)
+
+example (v : SCTerm) : ¬ RS.SC.Steps (SCTerm.app SCTerm.C v) v :=
+  sc_no_leaf_collapse (fun _ _ h => SCTerm.noConfusion h)
+
+/-- Right-nested subterms: the term itself, its right child, that one's right child, ... -/
+inductive SCRightNested : SCTerm → SCTerm → Prop
+  | refl (t : SCTerm) : SCRightNested t t
+  | tail {x a b : SCTerm} : SCRightNested x b → SCRightNested x (.app a b)
+
+/-- **Collapse cannot be rootless**: a collapse-to-argument fires a root redex, launched from a
+right-nested subterm of the collapsing term. The projection branch forces the same collapse shape
+one level down the right spine; the descent bottoms out only in the root branch. -/
+theorem sc_collapse_needs_root_aux : ∀ (n : Nat) (u v : SCTerm), v.leafCount ≤ n →
+    RS.SC.Steps (SCTerm.app u v) v →
+    ∃ w a b, SCRightNested w (SCTerm.app u v) ∧ SCRootStep a b ∧ RS.SC.Steps w a := by
+  intro n
+  induction n with
+  | zero =>
+      intro u v hle _
+      exact absurd hle (by have := scLeaf_pos v; omega)
+  | succ n ih =>
+      intro u v hle h
+      rcases sc_path_facts h with ⟨a, b, hr, h1, h2⟩ | heq | ⟨F, X, F', X', heq1, heq2, pf, px, _⟩
+      · exact ⟨_, a, b, SCRightNested.refl _, hr, h1⟩
+      · have hc := congrArg SCTerm.leafCount heq
+        have := scLeaf_pos u
+        exact absurd hc (by
+          show ¬(u.leafCount + v.leafCount = v.leafCount)
+          omega)
+      · injection heq1 with h1 h2
+        subst h1; subst h2
+        rw [heq2] at px
+        have hx : X'.leafCount ≤ n := by
+          have hc : v.leafCount = F'.leafCount + X'.leafCount := by rw [heq2]; rfl
+          have := scLeaf_pos F'
+          omega
+        obtain ⟨w, a, b, hnest, hr, hreach⟩ := ih F' X' hx px
+        rw [← heq2] at hnest
+        exact ⟨w, a, b, SCRightNested.tail hnest, hr, hreach⟩
+
+/-- The packaged form. -/
+theorem sc_collapse_needs_root {u v : SCTerm} (h : RS.SC.Steps (SCTerm.app u v) v) :
+    ∃ w a b, SCRightNested w (SCTerm.app u v) ∧ SCRootStep a b ∧ RS.SC.Steps w a :=
+  sc_collapse_needs_root_aux v.leafCount u v (Nat.le_refl _) h
+
+/-- Plugged into Stage 88's S-side survivor: a root S-cycle either returns through a whole-term
+root step, or BOTH its projections carry root fires — the left self-embedding's (Stage 88) and
+the right collapse's (this stage). -/
+theorem sc_root_S_return3 {f g x : SCTerm}
+    (hback : RS.SC.Steps (.app (.app f x) (.app g x)) (.app (.app (.app .S f) g) x)) :
+    (∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app (.app f x) (.app g x)) a
+      ∧ RS.SC.Steps b (.app (.app (.app .S f) g) x))
+    ∨ ((∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app f x) a ∧ RS.SC.Steps b (.app (.app .S f) g))
+        ∧ (∃ w a b, SCRightNested w (.app g x) ∧ SCRootStep a b ∧ RS.SC.Steps w a)) := by
+  rcases sc_root_S_return2 hback with h | ⟨h1, h2⟩
+  · exact Or.inl h
+  · exact Or.inr ⟨h1, sc_collapse_needs_root h2⟩

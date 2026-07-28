@@ -64,3 +64,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scCycle_second_redex' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scCycle_second_redex
+
+/-- info: 'sc_no_leaf_collapse' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_no_leaf_collapse
+
+/-- info: 'sc_collapse_needs_root' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_collapse_needs_root
