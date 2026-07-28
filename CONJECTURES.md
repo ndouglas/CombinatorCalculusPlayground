@@ -4049,3 +4049,31 @@ What this settles, and how it reads back through the arc:
 - **What survives as open**: whether `{S,C}` HOSTS SK is untouched — the refutation mechanism is
   gone, but no Simulation of SK into `{S,C}` exists either. Like rung 1, cyclicity makes `{S,C}` a
   candidate host rather than a refuted one.
+
+### Stage 97: the program review — the settled state after the ladder closed
+
+A documentation stage, triggered by the rule Stage 86 set: the review is rankable and lands
+whenever a goal-level result does. Stage 96 was one. The refreshed accounting:
+
+- **Scale**: 32 modules, ~770 theorems, ~412 build-enforced `#guard`s plus 35 pinned axiom
+  footprints, ~15,200 lines — the growth since Stage 86 is the shape-lens arc (87–96), eleven
+  stages from "no term reduces to itself under a leaf" to the rung-3 cycle.
+- **Goals 1–3**: unchanged (DONE / DONE / CLOSED).
+- **Goal 4** (methodology): richer by an eighth `Classical.choice` leak (mechanism seven
+  recurring — contradictory-hypothesis branches invite `omega` onto non-arithmetic goals), the
+  equations-before-analysis discipline for indexed case blasts, and the review's new procedural
+  entry: **step 4′ of the rung procedure** — when the impossibility machinery stalls with one
+  surviving branch under exact accounting, instantiate the branch; unification either kills it or
+  builds the witness. Rung 3 fell to step 4′.
+- **The ladder**: COMPLETE. Rung 0 acyclic, rung 1 cyclic, rung 2 acyclic (not an SK host),
+  rung 3 CYCLIC (acyclicity-refutation permanently inapplicable). The two two-combinator bases
+  split in opposite directions. Six necessary conditions on `{S,C}` cycles survive as the
+  sharpest description of its cycle space, verified against the witness.
+- **STATUS header, ladder table, rung-3 bullet, and rung procedure** all rewritten to the settled
+  state; the census caveat now carries its sharpest example (missed the 9-leaf cycle by three).
+
+What remains live in the original spec: C6 (declined eighty-four times), and the questions the
+ladder's completion OPENS rather than closes — `{S,C}` and `{S,I}` as candidate SK hosts, where
+the refutation mechanism cannot reach and no Simulation exists either. The headline sentence is
+unchanged and now rests on a finished instrument: **if S alone is universal, its encoding must be
+non-injective or must fail to preserve reduction paths.**

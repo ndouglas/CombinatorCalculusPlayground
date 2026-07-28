@@ -4271,3 +4271,33 @@ what automation could and couldn't do. This file is a first-class deliverable
   the moment a goal-level result lands. (2) **{S,C} as host**: probe whether the rung-1 upward-
   closure argument (a definable I inherits cycles) has an analogue — does {S,C} define an
   I-like combinator, and does SK path-encode into {S,C}? (3) C6, declined an eighty-fourth time.
+
+## 2026-07-28 — Stage 97: the accounting after the summit
+
+- Stage 86 made the review a rankable item that recurs when the ranking empties; Stage 96 taught
+  the better trigger: review WHENEVER A GOAL-LEVEL RESULT LANDS, because that is when summary
+  documents rot fastest. Eleven stages of shape-lens work read very differently before and after
+  the witness — what was "the frontier of an acyclicity proof" is now "the description of a cycle
+  space" — and every STATUS paragraph written in the former voice needed the latter.
+- The numbers: ~770 theorems (up 70 since Stage 86), 35 pinned footprints (up 19 — the shape-lens
+  arc pinned nearly every stage headline), ~15,200 lines. The arc's cost profile is worth
+  recording: eleven stages, ten of them one-sitting, most first-try green. The measure era
+  averaged more failures per result; the difference was working IN the object language (shapes,
+  budgets) instead of ABOVE it (measures, homomorphisms).
+- The procedural yield of the whole rung-3 story, now in STATUS as step 4′: exact accounting
+  turns impossibility machinery into a search procedure. Bounds (`≤`) keep branches foggy;
+  budgets (`=`) collapse them to assignments that are either contradictory or inhabited. I
+  suspect this generalizes well beyond this program.
+- What the completion opens: {S,C} and {S,I} both sit outside the refutation mechanism's reach
+  with no positive certification either — candidate hosts. The natural probe order for {S,C}:
+  (a) is an I-like combinator definable (the {S,B} analogue was censused to 7 leaves and found
+  empty — but {S,C} permutes, so intuition transfers poorly); (b) if yes, rung 1's upward-closure
+  machinery (`siInSK`-style) gives {S,I} ⊆ {S,C} and the host question inherits structure.
+  Separately, the witness suggests a uniqueness question: the budgets forced ONE assignment for
+  S-rooted 3-cycles — is the witness the unique minimal cycle up to basepoint? That would be the
+  first CLASSIFICATION theorem of a cycle space in the program.
+- Ranking: (1) **I-definability in {S,C}**: bounded search for `t` with `t x ⟶* x` on a fresh
+  variable (TermV machinery exists), then either the upward-closure transport or a no-I census
+  with the {S,B} tooling. (2) **3-cycle uniqueness**: classify all root 3-cycles via the Stage 95
+  budgets — the S-rooted case is one unification from done; the C-rooted case needs its own
+  blast. (3) C6, declined an eighty-fifth time.

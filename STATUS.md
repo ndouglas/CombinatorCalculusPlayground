@@ -14,11 +14,14 @@ inherited since Stage 0. As of Stage 76 this claim is **build-enforced**:
 `Audit.lean` pins the headline theorems' exact footprints with `#guard_msgs`,
 so any drift fails the build.
 
-At time of writing (Stage 86 review): 32 modules, ~700 theorems, ~377
-build-enforced `#guard`s plus 16 `#guard_msgs`-pinned axiom footprints, ~14,100
-lines of Lean. (The previous accounting here — 52 targets, ~344 theorems — was
-forty stages stale; the program roughly doubled during the tag-Simulation and
-ladder arcs, Stages 59–85.)
+At time of writing (Stage 97 review): 32 modules, ~770 theorems, ~412
+build-enforced `#guard`s plus 35 `#guard_msgs`-pinned axiom footprints, ~15,200
+lines of Lean. Since the Stage 86 review: the acyclicity ladder was COMPLETED
+(rung 2 acyclic at Stage 83, rung 3 CYCLIC at Stage 96 -- the `{S,C}` 3-cycle
+`S (C h) C h`, `h = C S C`, found by chasing the impossibility hunt's last
+surviving branch), and the shape-lens arc (Stages 87-96) added the frozen-left
+theorem, cycle anatomies, rotate-or-descend, length-indexed paths with a
+choice-free descent engine, and exact cycle budgets.
 
 ---
 
@@ -277,6 +280,9 @@ program*: "classify universality of bases between {S} and {S,K} — e.g., {S,I},
 universality is lost." Sixteen stages engaged only with the first; the ladder was
 opened in Stage 17.
 
+**THE LADDER IS COMPLETE** (Stage 96): every rung settled, the two two-combinator
+bases split in opposite directions.
+
 **WHAT THIS LADDER ANSWERS, AND WHAT IT DOES NOT.** The spec says "classify
 **universality** of bases." What this program can answer per rung is
 **acyclicity** — and acyclicity only bounds *refutability*: an acyclic basis can
@@ -448,6 +454,16 @@ Order is load-bearing. Rung one ran this before it was written down.
 impossible. At rung one that ordering saved the expensive step entirely — by
 luck rather than design, which is why it is written down now. Steps 1 and 3 are
 independent and can run together.
+
+**Stage 96 postscript — step 3 has a second form.** The census (bounded cycle
+hunt) is step 3's cheap form and it can miss: rung 3's cycle sits at 9 leaves,
+three above where the census stopped. The expensive form is PROOF-GUIDED
+SEARCH: run step 4's impossibility machinery with EXACT accounting (budgets,
+not bounds), and when a branch refuses to die, its constraints are a
+construction recipe -- unification either kills the branch or builds the
+witness. Rung 3 fell to that form: sixteen stages of necessary conditions
+specified the cycle up to one assignment. The procedure gains a step 4-prime:
+if step 4 stalls with one surviving branch, instantiate it.
 
 **What rung 1 establishes.** The program's entire negative apparatus routes
 through one mechanism, `RS.Acyclic.of_strict_measure` — and that mechanism
