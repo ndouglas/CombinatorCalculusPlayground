@@ -3604,3 +3604,27 @@ audit was built.** And it came through a NEW door: `omega` closing a NON-ARITHME
 existential, from contradictory hypotheses) routes through `Classical.choice` — six leaks came via
 `BEq`/`simp`, this one via `omega`'s exfalso path. Fix: `absurd hs (Nat.not_lt_zero s)`. The audit
 file paid for itself before its first birthday.
+
+### Stage 80: the ranked route, typechecked at last
+
+"Rungs 2/3 via match-bounds" sat in the ranking for THIRTY-FIVE STAGES and was never typechecked.
+Match-bounds are TERMINATION certificates; termination implies acyclicity; but the full rung systems
+have divergent terms — C1(a)'s witness is K-free, embeds B-freely (resp. C-freely), and diverges in
+`{S,B}` and `{S,C}` exactly as it does in pure S. Machine-checked:
+
+| | |
+|---|---|
+| `RS.SB` / `RS.SC` | the FULL rung systems as rewriting systems — the fragments each had one; the wholes, oddly, did not |
+| `sbOfTerm` / `scOfTerm` | pure S embedded with an injective junk-map (`K ↦ B`/`K ↦ C`, never exercised on K-free terms) |
+| `sbOfTerm_step` / `_step_back` / `sb_steps_back` | a full bisimulation on the K-free image — the backward path lemma is AXIOM-FREE |
+| **`SB_not_normalizing`** / **`SC_not_normalizing`** | both rungs' full systems are not even weakly normalizing |
+
+**So acyclicity-via-termination is CLOSED for both rungs**: no termination proof — by match-bounds,
+by any measure, by any method — exists to imply it. The route as recorded was not hard; it was
+type-incorrect, and the error survived thirty-five rankings because it was never written as a claim
+(Stage 61's lesson, at the level of the ranking itself). The corrected open problem, impossibility
+half machine-checked: certify LOOP-FREENESS of a non-terminating system — a relative/transformed
+match-bound whose termination is EQUIVALENT to cycle-absence (the transformation is the research
+content), or the unbounded well-founded measure Stage 44 named. The ledger's necessary conditions
+(a cycle needs a B-duplicating S-step on a τ-heavy, ≥3-leaf argument) are inputs any such
+certificate may consume.

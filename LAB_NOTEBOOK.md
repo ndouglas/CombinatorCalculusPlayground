@@ -3813,3 +3813,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   + finite-alphabet instantiation); update the accounting and consider what remains of the program's
   original spec — rungs 2/3 and C6 are the only live items. (2) rungs 2/3 via match-bounds. (3) C6,
   declined a sixty-seventh time.
+
+## 2026-07-27 — Stage 80: the ranking entry that was never a claim
+
+- Thirty-five stages of "rungs 2/3 via match-bounds", and the first session that finally faced it
+  found a type error in the first hour: match-bounds certify termination, and both rungs' full
+  systems provably have none — C1(a)'s divergent term is K-free and embeds straight into `{S,B}`
+  and `{S,C}`. `SB_not_normalizing` and `SC_not_normalizing` are now theorems, the embedding is a
+  full bisimulation on the K-free image (backward path lemma axiom-free), and every
+  termination-shaped route to the rungs is closed at once.
+- The uncomfortable part is WHY the error lived so long: a ranking entry is not a claim. Stage 61
+  taught that assumptions survive precisely when they are never written down as claims; Stage 44
+  even wrote, correctly, that match-bounds were "a much bigger build" — and still filed them as the
+  route, because feasibility got assessed and TYPE-correctness did not. The extracted rule: when a
+  route sits in the ranking for more than a few stages, its first session should typecheck the
+  route's conclusion against the theorem it is supposed to produce, before any machinery.
+- What the rungs' open problem now is, precisely: certify loop-freeness of a non-terminating
+  system. Termination tools are unavailable (today's theorems); single monotone measures are
+  unavailable (`no_monotone_counting_measure`, Stage 44's `no_decreasing_measure_of_infinite`);
+  bounded invariants cannot finish (Stage 44). The live shapes: a TRANSFORMED system whose
+  termination is equivalent to cycle-absence — finding the transformation is the research content —
+  or an unbounded well-founded measure. Both are genuine research, and the program's honest posture
+  is that they may outlive it.
+- Ranking: (1) **the transformed-system design probe** for rung 2: one session, on paper first —
+  what known loop-freeness transformations exist (unfoldings, semantic labeling, sound-for-loops
+  restrictions), and whether the ledger's necessary conditions make any of them finite here. If
+  nothing survives the hour, record that and re-rank. (2) C6, declined a sixty-eighth time.
