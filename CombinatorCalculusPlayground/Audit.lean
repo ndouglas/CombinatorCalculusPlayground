@@ -61,3 +61,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_no_leaf_self_embed' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_no_leaf_self_embed
+
+/-- info: 'scCycle_second_redex' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scCycle_second_redex

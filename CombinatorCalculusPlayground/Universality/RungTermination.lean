@@ -1036,3 +1036,89 @@ example (x : SCTerm) : ¬ RS.SC.Steps x (SCTerm.app SCTerm.C x) :=
 
 example (x : SCTerm) : ¬ RS.SC.Steps x (SCTerm.app SCTerm.S x) :=
   sc_no_leaf_self_embed (fun _ _ h => SCTerm.noConfusion h)
+
+-- ## Stage 88: the second fire — every root cycle's return path reaches another root redex
+-- Stage 82's dichotomies left each root cycle two escapes: the return path carries a root step of
+-- its own, or it projects into the redex's components, with the LEFT projection performing a
+-- self-embedding — `f x ⟶* (S f) g` and `x z ⟶* (C x) y`, both of shape `f x ⟶* (ℓ f) g` for a
+-- leaf `ℓ`. Running the path dichotomy on THAT path, its trivial branch dies on size and its
+-- projection branch is exactly `f ⟶* ℓ f` — the frozen-left theorem. So the self-embedding itself
+-- needs a root step, and lifting through left congruence: **every root cycle's return path
+-- reaches a second root redex, at the root or immediately left of it** — rung 3's sixth necessary
+-- condition, and its first POSITIONAL one in tree terms: cycles cannot avoid the top-left spine.
+
+/-- The left self-embedding `f x ⟶* (ℓ f) g` (`ℓ` a leaf) cannot happen rootlessly: the trivial
+branch dies on size, the projection branch on the frozen left. -/
+theorem sc_left_self_embed_needs_root {ℓ f x g : SCTerm} (hℓ : ∀ a b, ℓ ≠ SCTerm.app a b)
+    (h : RS.SC.Steps (.app f x) (.app (.app ℓ f) g)) :
+    ∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app f x) a ∧ RS.SC.Steps b (.app (.app ℓ f) g) := by
+  rcases sc_path_facts h with hroot | heq | ⟨F, X, F', X', heq1, heq2, pf, px, _⟩
+  · exact hroot
+  · exfalso
+    injection heq with h1 h2
+    have hc := congrArg SCTerm.leafCount h1
+    have hp := scLeaf_pos ℓ
+    exact absurd hc (by
+      show ¬(f.leafCount = ℓ.leafCount + f.leafCount)
+      omega)
+  · exfalso
+    injection heq1 with hF hX
+    injection heq2 with hF' hX'
+    subst hF; subst hX; subst hF'; subst hX'
+    exact sc_no_leaf_self_embed hℓ pf
+
+/-- Second-level dichotomy for a root S-cycle: the return carries a root step, or its left
+projection `f x ⟶* (S f) g` does. -/
+theorem sc_root_S_return2 {f g x : SCTerm}
+    (hback : RS.SC.Steps (.app (.app f x) (.app g x)) (.app (.app (.app .S f) g) x)) :
+    (∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app (.app f x) (.app g x)) a
+      ∧ RS.SC.Steps b (.app (.app (.app .S f) g) x))
+    ∨ ((∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app f x) a ∧ RS.SC.Steps b (.app (.app .S f) g))
+        ∧ RS.SC.Steps (.app g x) x) := by
+  rcases sc_root_S_return hback with h | ⟨h1, h2⟩
+  · exact Or.inl h
+  · exact Or.inr ⟨sc_left_self_embed_needs_root (fun _ _ hab => SCTerm.noConfusion hab) h1, h2⟩
+
+/-- ...and for a root C-cycle: the return carries a root step, or its left projection
+`x z ⟶* (C x) y` does. -/
+theorem sc_root_C_return2 {x y z : SCTerm}
+    (hback : RS.SC.Steps (.app (.app x z) y) (.app (.app (.app .C x) y) z)) :
+    (∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app (.app x z) y) a
+      ∧ RS.SC.Steps b (.app (.app (.app .C x) y) z))
+    ∨ ((∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app x z) a ∧ RS.SC.Steps b (.app (.app .C x) y))
+        ∧ RS.SC.Steps y z) := by
+  rcases sc_root_C_return hback with h | ⟨h1, h2⟩
+  · exact Or.inl h
+  · exact Or.inr ⟨sc_left_self_embed_needs_root (fun _ _ hab => SCTerm.noConfusion hab) h1, h2⟩
+
+/-- Left congruence, lifted to paths. -/
+theorem scSteps_appL {f f' : SCTerm} (x : SCTerm) (h : RS.SC.Steps f f') :
+    RS.SC.Steps (SCTerm.app f x) (SCTerm.app f' x) := by
+  refine h.rec (motive := fun a b _ => RS.SC.Steps (SCTerm.app a x) (SCTerm.app b x)) ?_ ?_
+  · intro a
+    exact @RS.Steps.refl RS.SC (SCTerm.app a x)
+  · intro a b c s h' ih
+    exact RS.Steps.tail (SCStep.appL s) ih
+
+/-- **THE SIXTH CONDITION: every root cycle's return path reaches a second root redex** — at the
+root, or immediately left of it. -/
+theorem scRootCycle_second_redex {t u : SCTerm} (hr : SCRootStep t u) (hback : RS.SC.Steps u t) :
+    ∃ a b, SCRootStep a b ∧ (RS.SC.Steps u a ∨ ∃ c, RS.SC.Steps u (SCTerm.app a c)) := by
+  cases hr with
+  | S_red f g x =>
+      rcases sc_root_S_return2 hback with ⟨a, b, hr', h1, _⟩ | ⟨⟨a, b, hr', h1, _⟩, _⟩
+      · exact ⟨a, b, hr', Or.inl h1⟩
+      · exact ⟨a, b, hr', Or.inr ⟨.app g x, scSteps_appL _ h1⟩⟩
+  | C_red x y z =>
+      rcases sc_root_C_return2 hback with ⟨a, b, hr', h1, _⟩ | ⟨⟨a, b, hr', h1, _⟩, _⟩
+      · exact ⟨a, b, hr', Or.inl h1⟩
+      · exact ⟨a, b, hr', Or.inr ⟨y, scSteps_appL _ h1⟩⟩
+
+/-- Composed with localization: every `{S,C}` cycle produces a root cycle whose return path
+reaches a second root redex. -/
+theorem scCycle_second_redex {t v : SCTerm} (hs : SCStep t v) (hback : RS.SC.Steps v t) :
+    ∃ a b, SCRootStep a b ∧ RS.SC.Steps b a ∧
+      ∃ p q, SCRootStep p q ∧ (RS.SC.Steps b p ∨ ∃ c, RS.SC.Steps b (SCTerm.app p c)) := by
+  obtain ⟨a, b, hr, hcyc⟩ := sc_cycle_needs_root hs hback
+  obtain ⟨p, q, hr', hreach⟩ := scRootCycle_second_redex hr hcyc
+  exact ⟨a, b, hr, hcyc, p, q, hr', hreach⟩
