@@ -5,7 +5,7 @@
 -- theorems. The global "no Classical.choice" claim was false for an unknown span. This file makes
 -- the claim BUILD-ENFORCED: every headline theorem's exact axiom footprint is pinned with
 -- `#guard_msgs`, so any future leak — in new code or old — fails the build.
-import CombinatorCalculusPlayground.DriverShell
+import CombinatorCalculusPlayground.TagGeneral
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
 import CombinatorCalculusPlayground.Universality.OneRule
@@ -45,3 +45,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'selArgs_normal' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms selArgs_normal
+
+/-- info: 'finTagInSK' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms finTagInSK
+
+/-- info: 'universalReach_finTag' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms universalReach_finTag

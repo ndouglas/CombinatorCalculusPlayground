@@ -354,3 +354,126 @@ end GeneralTag
 example : Simulation (RS.Tag tagAB) RS.SK :=
   tagTInSK encSym RULEf decSym RULEf_encSym encSym_normal rfl
     (fun s => by cases s <;> rfl) (fun {s s'} h => encSym_injective h)
+
+-- ## Stage 79: the `Fin n` discharge — every finite-alphabet 2-tag system, hosted
+-- The four-hypothesis interface, discharged for `Fin n` alphabets by Stage 76–77's selectors:
+-- symbols are `selArgs n (n-1-s)` (so the rule table reads in natural order), the dispatcher is
+-- `dispatchT` over the encoded rule table, and the decoder just COUNTS `K`-WRAPS — the closed forms
+-- make the wrap-depth of a selector exactly its symbol index, and off-image garbage is harmless
+-- because `dec_enc` is the only specification.
+
+section FinTag
+
+variable {n : Nat} (rule : Fin n → List (Fin n))
+
+/-- Symbols as selectors, table-ordered. -/
+def finEncS (s : Fin n) : Term := selArgs n (n - 1 - s.val)
+
+theorem finEncS_normal (s : Fin n) : NormalForm (finEncS s) :=
+  selArgs_normal n (n - 1 - s.val) (by omega)
+
+theorem finEncS_injective {s s' : Fin n} (h : finEncS s = finEncS s') : s = s' := by
+  have hv : n - 1 - s.val = n - 1 - s'.val :=
+    selArgs_injective (by omega) (by omega) h
+  have : s.val = s'.val := by omega
+  cases s; cases s'
+  simp only [Fin.mk.injEq]
+  exact this
+
+/-- The wrap-depth of a term: how many leading `K`-applications. -/
+def kDepth : Term → Nat
+  | Term.app Term.K u => kDepth u + 1
+  | _ => 0
+
+/-- A selector's wrap-depth is its distance from the top index. -/
+theorem kDepth_selArgs (j : Nat) : ∀ (k : Nat), j < k →
+    kDepth (selArgs k (k - 1 - j)) = j := by
+  induction j with
+  | zero =>
+      intro k hk
+      cases k with
+      | zero => omega
+      | succ k =>
+          obtain ⟨A, B, hAB⟩ := selArgs_top_S k
+          show kDepth (selArgs (k + 1) k) = 0
+          rw [hAB]
+          rfl
+  | succ j ih =>
+      intro k hk
+      cases k with
+      | zero => omega
+      | succ k =>
+          have he : (k + 1) - 1 - (j + 1) = k - 1 - j := by omega
+          rw [he, selArgs_succ_lt (show k - 1 - j < k by omega)]
+          show kDepth (selArgs k (k - 1 - j)) + 1 = j + 1
+          rw [ih k (by omega)]
+
+/-- The decoder: count wraps, bounds-check. Garbage off-image, exact on it. -/
+def finDecS (t : Term) : Option (Fin n) :=
+  if h : kDepth t < n then some ⟨kDepth t, h⟩ else none
+
+theorem finDecS_encS (s : Fin n) : finDecS (finEncS s) = some s := by
+  show (if h : kDepth (finEncS s) < n then some (⟨kDepth (finEncS s), h⟩ : Fin n) else none)
+    = some s
+  rw [show kDepth (finEncS s) = s.val from kDepth_selArgs s.val n s.isLt]
+  rw [dif_pos s.isLt]
+
+-- ### The rule table and its dispatch
+
+/-- The encoded rule output for table position `p`. -/
+def ruleOut (p : Nat) : Term :=
+  if h : p < n then mkWord ((rule ⟨p, h⟩).map (finEncS)) else Term.S
+
+def ruleTable : List Term := (List.range n).map (ruleOut rule)
+
+/-- Any table position splits the table into pre/post of the right lengths. -/
+theorem table_decomp (f : Nat → Term) : ∀ (m s : Nat), s < m →
+    ∃ pre post, (List.range m).map f = pre ++ f s :: post
+      ∧ pre.length = s ∧ post.length = m - 1 - s := by
+  intro m
+  induction m with
+  | zero => intro s hs; exact absurd hs (Nat.not_lt_zero s)
+  | succ m ih =>
+      intro s hs
+      by_cases hsm : s = m
+      · refine ⟨(List.range m).map f, [], ?_, ?_, ?_⟩
+        · rw [List.range_succ, List.map_append, hsm]
+          rfl
+        · rw [List.length_map, List.length_range, hsm]
+        · simp only [List.length_nil]
+          omega
+      · obtain ⟨pre, post, hd, hp, hq⟩ := ih s (by omega)
+        refine ⟨pre, post ++ [f m], ?_, hp, ?_⟩
+        · rw [List.range_succ, List.map_append, hd, List.append_assoc]
+          rfl
+        · rw [List.length_append, hq, show ([f m] : List Term).length = 1 from rfl]
+          omega
+
+theorem finRULE (s : Fin n) :
+    Term.app (dispatchT (ruleTable rule)) (finEncS s)
+      ⟶* mkWord ((rule s).map (finEncS)) := by
+  obtain ⟨pre, post, hd, hp, hq⟩ := table_decomp (ruleOut rule) n s.val s.isLt
+  have hout : ruleOut rule s.val = mkWord ((rule s).map (finEncS)) := by
+    show (if h : s.val < n then mkWord ((rule ⟨s.val, h⟩).map (finEncS)) else Term.S) = _
+    rw [dif_pos s.isLt]
+  have h := dispatchT_correct pre (ruleOut rule s.val) post
+  rw [← hd, show ((List.range n).map (ruleOut rule)).length = n from by
+        rw [List.length_map, List.length_range],
+      hq, hout] at h
+  exact h
+
+-- ### The theorem
+
+/-- **Every deletion-number-2 tag system over a finite alphabet is certifiably hosted inside SK.**
+Each concrete known-universal 2-tag system from the literature is an instance. -/
+def finTagInSK (n : Nat) (rule : Fin n → List (Fin n)) :
+    Simulation (RS.Tag ⟨Fin n, 2, rule⟩) RS.SK :=
+  tagTInSK finEncS (dispatchT (ruleTable rule)) finDecS
+    (finRULE rule) finEncS_normal rfl finDecS_encS
+    (fun {_ _} h => finEncS_injective h)
+
+theorem universalReach_finTag (n : Nat) (rule : Fin n → List (Fin n)) :
+    UniversalReach (RS.Tag ⟨Fin n, 2, rule⟩) RS.SK :=
+  ⟨finTagInSK n rule⟩
+
+end FinTag
