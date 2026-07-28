@@ -3649,3 +3649,28 @@ The rungs' open problem shrinks to a shape question: can `(f x)(g x)` rebuild `S
 `x (y z)` rebuild `B x y z`? The ledger's measure-based conditions now apply AT the root redex —
 the root S-step's duplicated argument must contain a `B` and be τ-heavy — so the two condition
 families finally compose at a single, maximally constrained site.
+
+### Stage 82: what a root cycle's return path must do
+
+Stage 81's dichotomy, applied to the root cycles it isolated. Each root cycle's return path either
+carries a root step OF ITS OWN, or projects into the redex's two sides — and the projections are
+exotic:
+
+| | |
+|---|---|
+| **`sb_root_S_return`** | a root S-cycle's return: another root step, or `f x ⟶* S f g` AND `g x ⟶* x` |
+| **`sb_root_B_return`** | a root B-cycle's return: another root step, or `x ⟶* B x y` AND `y z ⟶* z` |
+| `sc_root_S_return` / `sc_root_C_return` | rung three at parity — the C-case projects to `x z ⟶* C x y` and `y ⟶* z`, its degenerate branch dying on `x = C x` |
+
+The degenerate branches all die on size; the projections name two phenomena:
+
+- **COLLAPSE TO ARGUMENT** (`u v ⟶* v`) — in BOTH rules' branches. The rung systems are non-erasing
+  except for the fired combinator leaf itself, so a collapse must destroy all of `u` one
+  combinator-fire at a time while rebuilding `v` exactly. Ruling it out is the new named sub-target,
+  and it is a plausible theorem.
+- **SELF-EMBEDDING UNDER APPLICATION** (`f x ⟶* S f g`, `x ⟶* B x y`) — the open-term cousin of
+  Stages 39–42's ground self-embedding machinery.
+
+If collapse falls, every root cycle's return path must contain an inner root step, and whether THAT
+regress terminates becomes the whole of the rungs — a single well-shaped question where thirty
+stages ago there was fog.

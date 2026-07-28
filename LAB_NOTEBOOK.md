@@ -3863,3 +3863,28 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **root-cycle head analysis** for rung 2: what must `head(f)` be for `(f x)(g x) ⟶*
   S f g x`, and does iterating localization inside the return path force an infinite regress on
   some rank? (2) C6, declined a sixty-ninth time.
+
+## 2026-07-27 — Stage 82: the return path, interrogated
+
+- Four dichotomy theorems, one sitting, no new machinery: Stage 81's path dichotomy applied to the
+  root cycles it isolated. The pattern I want to note is how the stages compose now — 80 typechecked
+  the route, 81 built the projection engine, 82 pointed the engine at its own output. Each stage's
+  theorem was the previous stage's obvious next question, and none needed more than an afternoon.
+  The rungs have gone from "open, with a type-incorrect route" to a two-branch tree whose leaves are
+  named phenomena, in three stages.
+- The phenomena themselves are worth staring at. Collapse to argument — `u v ⟶* v` — appears in
+  both rules' projection branches, so one theorem kills every non-root branch at once. And the rung
+  systems are non-erasing in a precise sense: the only leaf a step deletes is the fired combinator
+  itself. A collapse must therefore disassemble `u` combinator by combinator while leaving exactly
+  `v` — every S-fire pays one S but duplicates an argument, every B-fire pays one B. The accounting
+  smells like a weighted-count theorem: something must go negative. That is the next probe, and it
+  is the first rung question in thirty stages that looks like it might be an AFTERNOON theorem
+  rather than a research program.
+- Self-embedding under application (`f x ⟶* S f g`) connects to the Stage 39–42 ground
+  self-embedding machinery, whose open-term version the notebook has carried as a live pointer since
+  Stage 42. If the collapse branch falls first, this branch dies with it (both projections are
+  required jointly), so collapse is strictly the better target.
+- Ranking: (1) **no-collapse for the rungs**: prove `¬(u v ⟶* v)` in `{S,B}` and `{S,C}` — try the
+  weighted-leaf accounting first (each fire deletes exactly its own leaf; S-fires duplicate), and if
+  a measure resists, probe small cases with the census tooling before believing either answer.
+  (2) C6, declined a seventieth time.
