@@ -169,3 +169,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scTraversal_step_true' does not depend on any axioms -/
 #guard_msgs in #print axioms scTraversal_step_true
+
+/-- info: 'scRun' does not depend on any axioms -/
+#guard_msgs in #print axioms scRun
+
+/-- info: 'tailInSC' does not depend on any axioms -/
+#guard_msgs in #print axioms tailInSC

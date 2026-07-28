@@ -3294,3 +3294,93 @@ theorem scArm_normal (P : SCTerm) (hP : ¬ ∃ u, SCStep P u) :
         exact hst2⟩
     · injection l1 with l3 l4
       exact hP ⟨X₂', by rw [l4]; exact hst2⟩
+
+-- ## Stage 107: payload regeneration — the driver closes, and {S,C} hosts its first machine
+-- The single remaining obligation, discharged by a five-leaf term. The reframe: the acting arm
+-- need not copy ITSELF — it can copy the PARKED arm. `scDup = S (C C) (C C)` does it in one
+-- S-fire and one C-fire: the S-fire lands the parked arm `o` in BOTH slots of a fresh
+-- re-launcher, which the C-fire assembles exactly — `scDup o r ⟶* r o o`. With BOTH arms equal
+-- to `scDup`, every traversal step regenerates the arm pair: `(scDup, scDup) → (scDup, scDup)`,
+-- forever. The machine walks ANY word to its end marker (`scRun`), and the traversal is a
+-- genuine PathEncoding: the tail machine — unboundedly many states, arbitrarily long runs — is
+-- HOSTED INSIDE `{S,C}` (`tailInSC`), the first positive hosting certificate for rung 3.
+-- Note the seed: `scDup = w (C C)` where `w = S (C C)` powers the second 3-cycle — the cycle
+-- engine, repurposed as the duplicator.
+
+/-- The self-duplicating arm: `S (C C) (C C)`. -/
+def scDup : SCTerm := .app (.app .S (.app .C .C)) (.app .C .C)
+
+/-- `scDup o r ⟶* r o o`: the parked arm is duplicated into both slots of a re-launcher. -/
+theorem scDup_step (o r : SCTerm) :
+    RS.SC.Steps (.app (.app scDup o) r) (.app (.app r o) o) :=
+  RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) o))
+    (RS.Steps.tail (SCStep.appL (SCStep.C_red .C o (.app (.app .C .C) o)))
+      (scRelaunch_beta o o r))
+
+/-- One full traversal step with the duplicating arm on both sides — either symbol. -/
+theorem scRun_step (E : SCTerm) (c : Bool) (w : List Bool) :
+    RS.SC.Steps (.app (.app (scWord E (c :: w)) scDup) scDup)
+      (.app (.app (scWord E w) scDup) scDup) := by
+  cases c with
+  | false =>
+      exact RS.Steps.trans (scWord_step_false E w scDup scDup)
+        (scDup_step scDup (scWord E w))
+  | true =>
+      exact RS.Steps.trans (scWord_step_true E w scDup scDup)
+        (scDup_step scDup (scWord E w))
+
+/-- **UNBOUNDED TRAVERSAL**: the machine walks any two-symbol word to its end marker. -/
+theorem scRun (E : SCTerm) : ∀ w : List Bool,
+    RS.SC.Steps (.app (.app (scWord E w) scDup) scDup) (.app (.app E scDup) scDup)
+  | [] => @RS.Steps.refl RS.SC _
+  | c :: w => RS.Steps.trans (scRun_step E c w) (scRun E w)
+
+-- ### The first machine hosted inside {S,C}
+
+/-- The tail machine: two-symbol words, stepping by consuming the head symbol. -/
+def RS.TailB : RS := ⟨List Bool, fun w w' => ∃ c, w = c :: w'⟩
+
+/-- Words over the leaf end marker `S` are pairwise-distinct encodings. -/
+theorem scWordS_inj : ∀ {w w' : List Bool}, scWord .S w = scWord .S w' → w = w'
+  | [], [], _ => rfl
+  | [], false :: _, h => by
+      exact SCTerm.noConfusion (show SCTerm.S = _ from h)
+  | [], true :: _, h => by
+      exact SCTerm.noConfusion (show SCTerm.S = _ from h)
+  | false :: _, [], h => by
+      exact SCTerm.noConfusion (show _ = SCTerm.S from h)
+  | true :: _, [], h => by
+      exact SCTerm.noConfusion (show _ = SCTerm.S from h)
+  | false :: w, false :: w', h => by
+      injection h with h1 h2
+      rw [scWordS_inj h2]
+  | true :: w, true :: w', h => by
+      injection h with h1 h2
+      injection h2 with h3 h4
+      rw [scWordS_inj h4]
+  | false :: w, true :: w', h => by
+      injection h with h1 h2
+      exact SCTerm.noConfusion h1
+  | true :: w, false :: w', h => by
+      injection h with h1 h2
+      exact SCTerm.noConfusion h1
+
+/-- **`{S,C}` HOSTS THE TAIL MACHINE** — the first positive hosting certificate for rung 3. -/
+def tailInSC : PathEncoding RS.TailB RS.SC where
+  enc := fun w => .app (.app (scWord .S w) scDup) scDup
+  inj := by
+    intro w w' h
+    injection h with h1 h2
+    injection h1 with h3 h4
+    exact scWordS_inj h3
+  path := by
+    intro w w' h
+    refine h.rec (motive := fun w w' _ =>
+      RS.SC.Steps (.app (.app (scWord .S w) scDup) scDup)
+        (.app (.app (scWord .S w') scDup) scDup)) ?_ ?_
+    · intro a
+      exact @RS.Steps.refl RS.SC _
+    · intro a b c s rest ih
+      obtain ⟨cb, hcb⟩ := s
+      subst hcb
+      exact RS.Steps.trans (scRun_step .S cb b) ih
