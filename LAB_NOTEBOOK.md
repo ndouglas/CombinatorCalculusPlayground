@@ -4077,3 +4077,28 @@ what automation could and couldn't do. This file is a first-class deliverable
   whose head argument is a leaf, then inventory what shapes of root cycle remain unkilled — the
   deliverable is the sharpest statement yet of what a rung-3 cycle must look like. (2) C6,
   declined a seventy-seventh time.
+
+## 2026-07-28 — Stage 90: the anatomy, assembled from parts already on the bench
+
+- The shortest stage of the arc — every lemma was one composition of Stage 88's and Stage 89's
+  parts, and the build went green on the first attempt with nothing but `rcases`, `.elim`, and
+  constructor applications. The contradiction (root sources are app-app-headed; leaf-headed terms
+  are left-rigid) had been sitting in the file for a day, each half proved for a different
+  purpose. I found it while writing prose, not while proving — the CONJECTURES entry for Stage 89
+  ended with a sentence that was, on inspection, a theorem statement. Writing the notebook is not
+  overhead; it is where compositions get noticed.
+- The anatomies are the sharpest frontier statements rung 3 has had: leaf-headed-argument root
+  cycles must return through whole-term root steps, and the general dichotomy is rotate-or-descend
+  — a whole-term root fire on the return (which closes a cycle through that fire: rotation at the
+  same size), or an app-headed head argument with projections firing on strictly smaller terms
+  (descent, but onto fires not yet known to cycle). Neither branch alone is a contradiction; the
+  open question is whether anything survives both riders indefinitely.
+- Notable non-move: I did not try to prove the rotation lemma this stage (SCRootStep → SCStep and
+  the cycle re-basing are both trivial), because the stage was already a complete thought. The
+  discipline of one idea per stage has paid for itself every time the notebook needed to explain
+  why a proof exists.
+- Ranking: (1) **formalize the rotation**: SCRootStep is a step; a root cycle's return-path root
+  fire closes a root cycle of its own; then state the ROTATE-OR-DESCEND dichotomy as a single
+  theorem on root cycles — the branch tree becomes an honest coinductive-flavored invariant, and
+  whether it can be driven to a contradiction (or to a minimal-cycle normal form) is the next
+  genuine research question. (2) C6, declined a seventy-eighth time.

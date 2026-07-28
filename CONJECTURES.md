@@ -3851,3 +3851,30 @@ in this stage's own lemmas: root sources are app-app-headed while leaf-headed te
 so when a redex's head argument is a leaf (`f` in `S f g x`, `x` in `C x y z`), the left projection
 can never reach a root redex at all — Stage 88's second-level sandwich becomes absurd, and the
 projection escape closes entirely for leaf-headed-argument root cycles.
+
+### Stage 90: the leaf-argument kill — cycle anatomy
+
+Stages 88 and 89 had already proved the two halves of a contradiction without composing them: root
+sources are app-app-headed (`scRootStep_source`), and leaf-headed terms are left-rigid
+(`scSteps_from_leafLeft`). Together: **a leaf-headed term can never reach a root redex**
+(`sc_leafLeft_no_root_reach`, axiom-free). Stage 88's second-level sandwich lives inside the left
+projections `f x ⟶* (S f) g` and `x z ⟶* (C x) y`, whose sources are leaf-headed exactly when the
+fired redex's HEAD ARGUMENT is a leaf — so for those root cycles the projection escape is absurd,
+and the return must carry a whole-term root step. Folding in Stage 89's collapse fire gives each
+rule its sharpest cycle statement yet:
+
+| | |
+|---|---|
+| `sc_leaf_or_app` / `sc_leafLeft_no_root_reach` | the dichotomy and the composition — axiom-free |
+| `sc_root_S_return_leaf` / `sc_root_C_return_leaf` | leaf-headed-argument root cycles must return through a whole-term root step |
+| **`sc_root_S_anatomy`** | **a root S-cycle returns through a whole-term root step, or `f` is an application AND both projections carry root fires** — pinned |
+| **`sc_root_C_anatomy`** | **a root C-cycle returns through a whole-term root step, or `x` is an application, the left projection fires, and `y ⟶* z`** — pinned |
+
+The anatomies are the current frontier statement of rung 3: any `{S,C}` cycle localizes to a root
+cycle (Stage 81), and that root cycle's return path either fires a whole-term root redex — in
+which case the cycle passes through ANOTHER root redex, since `b ⟶* t → u ⟶* a` closes a cycle
+through `a` — or the redex's head argument is an application and the projections carry root fires
+on strictly smaller terms. The first branch is a rotation, not a descent; the second branch
+descends but lands on fires not yet known to cycle. Making the rotation formal (every root cycle
+yields a root cycle at each of its return's root fires) is cheap and would close the branch tree
+into a genuine dichotomy: rotate at the same size, or descend into projections.
