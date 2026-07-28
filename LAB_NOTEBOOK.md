@@ -4047,3 +4047,33 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **no-collapse for `{S,C}` via the shape lens**: point the path dichotomy and the
   frozen-left invariant at `u v ⟶* v`; even a conditional kill (leaf-headed `u`, say) would
   narrow the last escape. (2) C6, declined a seventy-sixth time.
+
+## 2026-07-28 — Stage 89: two bites out of collapse
+
+- The shape lens's third stage, and the pattern is now unmistakable: ask what a reduction is
+  FORCED to look like, and the path dichotomy plus a size argument does the rest. Collapse
+  `u v ⟶* v` resisted the whole measure era (it fell to ρ only for `{S,B}`, where ρ is monotone);
+  under the shape lens it yielded two theorems in one sitting: leaf-headed collapse is dead
+  (left-leaf rigidity: leaves are normal, so `ℓ v` reaches only `ℓ w` — the collapse target would
+  need `v = ℓ w` with `w` collapsing again, and the sizes descend), and every collapse fires a
+  root redex from a right-nested subterm (the projection branch of the dichotomy IS a collapse of
+  `v` into its own right child — the descent's only exit is the root branch).
+- The recursion in `sc_collapse_needs_root` is worth a note: it descends the TARGET's right spine,
+  not the source's — each level's collapse is `v = F' X' ⟶* X'`, and the witness `SCRightNested`
+  tracks where the firing subterm sits. A new two-constructor inductive was cheaper than any
+  encoding via `rightDepthC`; the file's first subterm relation, and it earns its place by making
+  the theorem statement honest about WHERE the root fire launches.
+- `sc_root_S_return3` composes Stages 88 and 89: a root S-cycle without a whole-term root return
+  step now carries root fires in BOTH projections. The C-side has no matching third theorem —
+  `y ⟶* z` is not a collapse — and I am deliberately not forcing one; asymmetry between the rules
+  is information, not untidiness.
+- Next lever, spotted while writing the CONJECTURES entry: `scRootStep_source` (root sources are
+  app-app-headed) and `scSteps_from_leafLeft` (leaf-headed terms are left-rigid) together mean a
+  LEAF-headed-argument redex's left projection can never reach a root redex — so Stage 88's
+  second-level sandwich is absurd there, and leaf-`f` root S-cycles / leaf-`x` root C-cycles must
+  return through a whole-term root step. That is a one-sitting corollary and it prunes the cycle
+  space at its smallest instances, exactly where a census would start.
+- Ranking: (1) **the leaf-argument corollaries**: close the projection escape for root cycles
+  whose head argument is a leaf, then inventory what shapes of root cycle remain unkilled — the
+  deliverable is the sharpest statement yet of what a rung-3 cycle must look like. (2) C6,
+  declined a seventy-seventh time.

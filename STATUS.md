@@ -360,7 +360,12 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   (`sc_acyclic_of_no_root_cycle`, Stage 81); any cycle fires a FLATTENING `C`
   (`scCycle_needs_flat_C`, Stage 84); and any root cycle's return path reaches a
   SECOND root redex, at the root or immediately left of it
-  (`scCycle_second_redex`, Stage 88 — cycles cannot avoid the top-left spine). Termination routes are provably dead
+  (`scCycle_second_redex`, Stage 88 — cycles cannot avoid the top-left spine). The
+  collapse escape is narrowed (Stage 89): leaf-headed collapse is dead
+  (`sc_no_leaf_collapse`) and every collapse fires a root redex from a right-nested
+  subterm (`sc_collapse_needs_root`), so a root S-cycle either returns through a
+  whole-term root step or both its projections carry root fires
+  (`sc_root_S_return3`). Termination routes are provably dead
   (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
   the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
   is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine

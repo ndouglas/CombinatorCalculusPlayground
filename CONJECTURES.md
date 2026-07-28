@@ -3821,3 +3821,33 @@ argument, S-side) and `y ⟶* z` (C-side) — and the second root redex reached 
 to cycle, so the regress does not yet iterate. Collapse-to-argument remains the named sub-target:
 killing it would force every root cycle's return to carry a WHOLE-TERM root step, and the shape
 lens (ask what is forced, not what is counted) has not yet been pointed at it.
+
+### Stage 89: collapse cannot be rootless
+
+Stage 82 named collapse-to-argument (`u v ⟶* v`) the load-bearing escape, and predicted it was "a
+plausible theorem" to kill outright. The shape lens got two pieces of it — not the whole kill, but
+enough to change the regress picture. First bite: every step SOURCE is an application, so leaves
+are normal, so a leaf-headed term `ℓ v` is LEFT-RIGID — everything it reaches has shape `ℓ w` with
+`v ⟶* w` — and leaf-headed collapse dies unconditionally by size descent through the rigidity.
+Second bite: the path dichotomy on an arbitrary collapse has its trivial branch dead on size and
+its projection branch forcing `v = F' X'` with `v ⟶* X'` — the *same collapse shape one level down
+`v`'s right spine* — so the descent bottoms out only in the root branch:
+
+| | |
+|---|---|
+| `scStep_source_isApp` / `scRootStep_source` | leaves are normal; root sources are app-app-headed — axiom-free |
+| `scSteps_from_leafLeft` | left-leaf rigidity: from `ℓ v`, only the right side can ever move — axiom-free |
+| **`sc_no_leaf_collapse`** | **leaf-headed collapse is dead: `ℓ v` never reduces to `v`** — pinned |
+| `SCRightNested` | the right-nesting subterm relation |
+| **`sc_collapse_needs_root`** | **every collapse fires a root redex, launched from a right-nested subterm of the collapsing term** — pinned |
+| `sc_root_S_return3` | plugged into Stage 88: a root S-cycle either returns through a whole-term root step, or BOTH its projections carry root fires |
+
+The regress picture after three stages of the shape lens: a root S-cycle's return path carries a
+root fire at the top, or root fires in *both* projections; a root C-cycle's return carries one at
+the top, or one in its left projection plus the unconstrained datum `y ⟶* z`. Root activity is
+inescapable and increasingly localized — what is still missing is a *descent*: none of the fires
+reached is yet known to cycle, so the regress does not iterate. The next lever is already visible
+in this stage's own lemmas: root sources are app-app-headed while leaf-headed terms are left-rigid,
+so when a redex's head argument is a leaf (`f` in `S f g x`, `x` in `C x y z`), the left projection
+can never reach a root redex at all — Stage 88's second-level sandwich becomes absurd, and the
+projection escape closes entirely for leaf-headed-argument root cycles.
