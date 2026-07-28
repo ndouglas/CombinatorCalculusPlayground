@@ -3214,3 +3214,83 @@ theorem scWord_normal (E : SCTerm) (hE : ¬ ∃ u, SCStep E u) :
             exact SCTerm.noConfusion hpq
           · injection j1 with j3 j4
             exact cellB _ ih ⟨Y', by rw [j4]; exact hst⟩
+
+-- ## Stage 106: the re-launcher and the recycling arm — the driver, one gap from closed
+-- The driver probe. Two compositions close most of the remaining distance:
+--
+-- THE RE-LAUNCHER: `C (C C β₂) β₁` applied to `rest` re-interrogates it — three C-fires walk
+-- `rest` from the machine's interior into head position with both arms as its arguments. So
+-- "apply the continuation word to two arms" is a NORMAL, storable gadget.
+--
+-- THE RECYCLING ARM: an arm that IS a partial re-launcher, `scArm P = C (C C P)`, receives the
+-- dispatch's two arguments — the parked other-arm `o` and the rest `r` — as exactly the
+-- re-launcher's missing slots: `scArm P o r ⟶* r o P`. The parked arm is not garbage: it is
+-- REUSED as the next first arm, and the payload `P` becomes the next second arm. One traversal
+-- step therefore consumes ONE payload, not two — the self-reference gap is halved to a single
+-- payload-regeneration obligation (S-duplication plumbing, named in the ledger).
+
+/-- The re-launcher: `scRelaunch β₁ β₂ ⋅ r ⟶* r β₁ β₂`. -/
+def scRelaunch (β₁ β₂ : SCTerm) : SCTerm := .app (.app .C (.app (.app .C .C) β₂)) β₁
+
+theorem scRelaunch_beta (β₁ β₂ r : SCTerm) :
+    RS.SC.Steps (.app (scRelaunch β₁ β₂) r) (.app (.app r β₁) β₂) :=
+  RS.Steps.tail (SCStep.C_red (.app (.app .C .C) β₂) β₁ r)
+    (RS.Steps.tail (SCStep.appL (SCStep.C_red .C β₂ r))
+      (RS.Steps.tail (SCStep.C_red r β₂ β₁) (@RS.Steps.refl RS.SC _)))
+
+/-- The recycling arm: a partial re-launcher awaiting the parked arm and the rest. -/
+def scArm (P : SCTerm) : SCTerm := .app .C (.app (.app .C .C) P)
+
+/-- `scArm P o r ⟶* r o P`: the parked arm `o` is recycled as the next FIRST arm; the payload
+`P` becomes the next SECOND arm. -/
+theorem scArm_step (P o r : SCTerm) :
+    RS.SC.Steps (.app (.app (scArm P) o) r) (.app (.app r o) P) :=
+  scRelaunch_beta o P r
+
+/-- **The full self-perpetuating traversal step** (σ₁-cell): interrogating a word whose first
+arm is a recycling arm hands the REST of the word straight to the next interrogation, with the
+old second arm promoted to first and the payload installed as second. -/
+theorem scTraversal_step_false (E P β₂ : SCTerm) (w : List Bool) :
+    RS.SC.Steps (.app (.app (scWord E (false :: w)) (scArm P)) β₂)
+      (.app (.app (scWord E w) β₂) P) :=
+  RS.Steps.trans (scWord_step_false E w (scArm P) β₂) (scArm_step P β₂ (scWord E w))
+
+/-- The σ₂-cell version: the SECOND arm acts; if it is a recycling arm, the step completes the
+same way with the roles mirrored. -/
+theorem scTraversal_step_true (E P β₁ : SCTerm) (w : List Bool) :
+    RS.SC.Steps (.app (.app (scWord E (true :: w)) β₁) (scArm P))
+      (.app (.app (scWord E w) β₁) P) :=
+  RS.Steps.trans (scWord_step_true E w β₁ (scArm P)) (scArm_step P β₁ (scWord E w))
+
+/-- Recycling arms are normal — storable data. -/
+theorem scArm_normal (P : SCTerm) (hP : ¬ ∃ u, SCStep P u) :
+    ¬ ∃ u, SCStep (scArm P) u := by
+  rintro ⟨u, h⟩
+  rcases scStep_cases h with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+  · rcases scRootStep_inv hroot with ⟨p, q, r, hb, _⟩ | ⟨p, q, r, hb, _⟩
+    · injection hb with h1 h2
+      exact SCTerm.noConfusion h1
+    · injection hb with h1 h2
+      exact SCTerm.noConfusion h1
+  · injection j1 with j3 j4
+    obtain ⟨p, q, hpq⟩ := scStep_source_isApp hst
+    rw [← j3] at hpq
+    exact SCTerm.noConfusion hpq
+  · injection j1 with j3 j4
+    rcases scStep_cases (show SCStep (SCTerm.app (SCTerm.app .C .C) P) X' from by
+        rw [j4]; exact hst) with
+      hroot2 | ⟨F₂, X₂, F₂', l1, l2, hst2⟩ | ⟨F₂, X₂, X₂', l1, l2, hst2⟩
+    · rcases scRootStep_inv hroot2 with ⟨p, q, r, hb, _⟩ | ⟨p, q, r, hb, _⟩
+      · injection hb with h1 h2
+        injection h1 with h3 h4
+        exact SCTerm.noConfusion h3
+      · injection hb with h1 h2
+        injection h1 with h3 h4
+        exact SCTerm.noConfusion h3
+    · injection l1 with l3 l4
+      exact scTag_normal.2 ⟨F₂', by
+        show SCStep (SCTerm.app .C .C) F₂'
+        rw [l3]
+        exact hst2⟩
+    · injection l1 with l3 l4
+      exact hP ⟨X₂', by rw [l4]; exact hst2⟩

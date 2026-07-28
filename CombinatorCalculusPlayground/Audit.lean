@@ -163,3 +163,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scWord_normal' does not depend on any axioms -/
 #guard_msgs in #print axioms scWord_normal
+
+/-- info: 'scTraversal_step_false' does not depend on any axioms -/
+#guard_msgs in #print axioms scTraversal_step_false
+
+/-- info: 'scTraversal_step_true' does not depend on any axioms -/
+#guard_msgs in #print axioms scTraversal_step_true
