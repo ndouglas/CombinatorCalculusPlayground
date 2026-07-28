@@ -154,3 +154,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scTagB_dispatch' does not depend on any axioms -/
 #guard_msgs in #print axioms scTagB_dispatch
+
+/-- info: 'scWord_step_false' does not depend on any axioms -/
+#guard_msgs in #print axioms scWord_step_false
+
+/-- info: 'scWord_step_true' does not depend on any axioms -/
+#guard_msgs in #print axioms scWord_step_true
+
+/-- info: 'scWord_normal' does not depend on any axioms -/
+#guard_msgs in #print axioms scWord_normal

@@ -3125,3 +3125,92 @@ theorem scTag_normal : (¬ ∃ u, SCStep scTagA u) ∧ (¬ ∃ u, SCStep scTagB 
       exact SCTerm.noConfusion hab
 
 example : scTagA ≠ scTagB := fun h => SCTerm.noConfusion h
+
+-- ## Stage 105: the word layer — {S,C} words with uniform traversal
+-- Word chaining, closed. The naive protocol (cell = gadget applied to tag and rest, arms
+-- supplied at interrogation) needs a 4-ary permuter `M t r x y ⟶* t x y r`, and no such machine
+-- exists up to 9 leaves (census). The working protocol stores `rest` INSIDE the tag application:
+--
+--     a-cell  `C rest`:      (C rest) β₁ β₂  ⟶  rest β₂ β₁     — recurse, arms SWAPPED
+--     b-cell  `C C rest`:    (C C rest) β₁ β₂ ⟶* β₁ β₂ rest    — DISPATCH first arm
+--
+-- Encoding σ₁ := b and σ₂ := a·b, every symbol block ends in a dispatch whose arm is selected
+-- by swap PARITY, and both dispatches deliver the SAME calling convention: the chosen arm heads,
+-- receives the other arm (parked garbage), then the remaining word. Every cell is a partial
+-- application, so words are NORMAL — stable data. The mkWord discipline survives translation to
+-- rotation-land.
+
+/-- Cell A recurses with swapped arms — one C-fire. -/
+theorem scCellA_step (rest β₁ β₂ : SCTerm) :
+    RS.SC.Steps (.app (.app (.app .C rest) β₁) β₂) (.app (.app rest β₂) β₁) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.C_red rest β₁ β₂)
+
+/-- Cell B dispatches the first arm, handing it the second arm and the rest — two C-fires. -/
+theorem scCellB_step (rest β₁ β₂ : SCTerm) :
+    RS.SC.Steps (.app (.app (.app (.app .C .C) rest) β₁) β₂) (.app (.app β₁ β₂) rest) :=
+  RS.Steps.tail (SCStep.appL (SCStep.C_red .C rest β₁))
+    (RS.Steps.tail (SCStep.C_red β₁ rest β₂) (@RS.Steps.refl RS.SC _))
+
+/-- Two-symbol words over end marker `E`: `false` (σ₁) is a b-cell, `true` (σ₂) an a-cell over a
+b-cell. -/
+def scWord (E : SCTerm) : List Bool → SCTerm
+  | [] => E
+  | false :: w => .app (.app .C .C) (scWord E w)
+  | true :: w => .app .C (.app (.app .C .C) (scWord E w))
+
+/-- Traversing a σ₁-cell: the FIRST arm acts, receiving the second arm and the rest. -/
+theorem scWord_step_false (E : SCTerm) (w : List Bool) (β₁ β₂ : SCTerm) :
+    RS.SC.Steps (.app (.app (scWord E (false :: w)) β₁) β₂)
+      (.app (.app β₁ β₂) (scWord E w)) :=
+  scCellB_step (scWord E w) β₁ β₂
+
+/-- Traversing a σ₂-cell: the SECOND arm acts, receiving the first arm and the rest. -/
+theorem scWord_step_true (E : SCTerm) (w : List Bool) (β₁ β₂ : SCTerm) :
+    RS.SC.Steps (.app (.app (scWord E (true :: w)) β₁) β₂)
+      (.app (.app β₂ β₁) (scWord E w)) :=
+  RS.Steps.trans
+    (scCellA_step (.app (.app .C .C) (scWord E w)) β₁ β₂)
+    (scCellB_step (scWord E w) β₂ β₁)
+
+/-- Cells preserve normality: words over a normal end marker are NORMAL — stable data. -/
+theorem scWord_normal (E : SCTerm) (hE : ¬ ∃ u, SCStep E u) :
+    ∀ w : List Bool, ¬ ∃ u, SCStep (scWord E w) u := by
+  intro w
+  induction w with
+  | nil => exact hE
+  | cons c w ih =>
+      have cellB : ∀ X, (¬ ∃ u, SCStep X u) →
+          ¬ ∃ u, SCStep (SCTerm.app (SCTerm.app .C .C) X) u := by
+        intro X hX
+        rintro ⟨u, h⟩
+        rcases scStep_cases h with hroot | ⟨F, Y, F', j1, j2, hst⟩ | ⟨F, Y, Y', j1, j2, hst⟩
+        · rcases scRootStep_inv hroot with ⟨p, q, r, hb, _⟩ | ⟨p, q, r, hb, _⟩
+          · injection hb with h1 h2
+            injection h1 with h3 h4
+            exact SCTerm.noConfusion h3
+          · injection hb with h1 h2
+            injection h1 with h3 h4
+            exact SCTerm.noConfusion h3
+        · injection j1 with j3 j4
+          exact scTag_normal.2 ⟨F', by
+            show SCStep (SCTerm.app .C .C) F'
+            rw [j3]
+            exact hst⟩
+        · injection j1 with j3 j4
+          exact hX ⟨Y', by rw [j4]; exact hst⟩
+      cases c with
+      | false => exact cellB _ ih
+      | true =>
+          rintro ⟨u, h⟩
+          rcases scStep_cases h with hroot | ⟨F, Y, F', j1, j2, hst⟩ | ⟨F, Y, Y', j1, j2, hst⟩
+          · rcases scRootStep_inv hroot with ⟨p, q, r, hb, _⟩ | ⟨p, q, r, hb, _⟩
+            · injection hb with h1 h2
+              exact SCTerm.noConfusion h1
+            · injection hb with h1 h2
+              exact SCTerm.noConfusion h1
+          · injection j1 with j3 j4
+            obtain ⟨p, q, hpq⟩ := scStep_source_isApp hst
+            rw [← j3] at hpq
+            exact SCTerm.noConfusion hpq
+          · injection j1 with j3 j4
+            exact cellB _ ih ⟨Y', by rw [j4]; exact hst⟩
