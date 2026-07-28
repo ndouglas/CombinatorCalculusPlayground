@@ -4034,7 +4034,7 @@ applications — the whole cycle is AXIOM-FREE (`SC_cycle`, `SC_not_acyclic`, pi
 What this settles, and how it reads back through the arc:
 
 - **The ladder is finished.** Rung 0 acyclic, rung 1 cyclic, rung 2 acyclic, rung 3 CYCLIC — the
-  two three-combinator... two two-combinator bases split in opposite directions, exactly the
+  two two-combinator bases `{S,B}` and `{S,C}` split in opposite directions, exactly the
   "structurally unlike" the ledger called at Stage 27. `PathEncoding.refute_of_acyclic` can never
   apply to `{S,C}`: the acyclicity route to refuting SK-hosting there is permanently closed.
 - **The impossibility hunt was a search procedure.** Every failed measure, every fragment
