@@ -3674,3 +3674,29 @@ The degenerate branches all die on size; the projections name two phenomena:
 If collapse falls, every root cycle's return path must contain an inner root step, and whether THAT
 regress terminates becomes the whole of the rungs — a single well-shaped question where thirty
 stages ago there was fog.
+
+### Stage 83: RUNG 2 IS CLOSED — {S,B} is acyclic, and cannot host SK
+
+The no-collapse probe found something stronger than no-collapse: **the right-spine depth
+`ρ(app a b) = ρ(b) + 1` never decreases along any `{S,B}` step** — both rules bury the last argument
+one application deeper right — **and strictly increases at every root step**. Composed with Stage
+81's localization (every cycle yields a cycle through a root step): contradiction in two lines.
+
+| | |
+|---|---|
+| `rightDepth` / `sbStep_rightDepth_le` | ρ is weakly monotone along ALL steps — an induction of four two-line cases |
+| `sbRoot_rightDepth_lt` | root steps strictly raise it |
+| **`SB_acyclic`** | **RUNG 2: `{S,B}` is acyclic** — subsuming `sbLight_acyclic`, `sbSOnly_acyclic`, `sbNoBDup_acyclic`, and every census bound at once |
+| **`no_pathEncoding_SK_SB`** | **the rung's purpose: `{S,B}` cannot host SK** — the ladder's one refutation mechanism, now applicable |
+| `sb_no_collapse` | the question that started the stage, now a corollary |
+
+**Why every measure hunt since Stage 20 missed it**: ρ is not a counting measure — the ledger's
+impossibility results (`no_monotone_counting_measure`) do not cover positional measures — and bare ρ
+proves NOTHING without strictness on some step of every cycle, which only Stage 81's localization
+supplies. The proof needed both halves, and the halves were built twenty months of stages apart in
+the wrong order to notice. Six stages of fragment results (τ-machinery, three-level squeezes,
+census hunts to eight leaves) are all subsumed by a measure a first-year student could check.
+
+**Why rung 3 does not fall the same way**, exactly as the ledger's "structurally UNLIKE" predicted:
+`C x y z → x z y` moves `z` OFF the right spine (Δρ = ρ(y) − ρ(z), either sign). Inherited free:
+any `{S,C}` cycle must contain a right-spine C-reduction whose `y` is right-shallower than its `z`.

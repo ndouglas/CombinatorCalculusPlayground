@@ -3888,3 +3888,38 @@ what automation could and couldn't do. This file is a first-class deliverable
   weighted-leaf accounting first (each fire deletes exactly its own leaf; S-fires duplicate), and if
   a measure resists, probe small cases with the census tooling before believing either answer.
   (2) C6, declined a seventieth time.
+
+## 2026-07-28 — Stage 83: the measure a student could check
+
+- Rung 2 is closed. `{S,B}` is acyclic (`SB_acyclic`), and therefore cannot host SK
+  (`no_pathEncoding_SK_SB`) — the ladder's first full rung beyond `{S}` and ι, the question open
+  since Stage 17, the one five fragment theorems and three census campaigns circled. The proof is
+  four lemmas about the right-spine depth plus Stage 81's localization, and the measure is so simple
+  it is embarrassing: both rules bury the last argument deeper right, so ρ never decreases; root
+  steps raise it strictly; a cycle through a root step (which localization guarantees) is a number
+  strictly less than itself.
+- I want to dissect the miss honestly, because six stages of serious work aimed at this exact
+  theorem and produced fragments. Three causes, compounding. FIRST: every measure hunt searched
+  counting measures and their lexicographic stacks, because the impossibility results we kept
+  proving were about counting measures — the refutations quietly narrowed the search space in our
+  heads to the class they covered. ρ is positional; no theorem in the tree ever excluded it.
+  SECOND: bare ρ proves nothing — without strictness on some step of every cycle, weak monotonicity
+  is vacuous — so anyone who tried ρ before Stage 81 existed would have discarded it as useless,
+  correctly. The proof needed localization FIRST, and localization came from a different question
+  (the loop-freeness transformation survey). THIRD: the fragment results kept paying just enough to
+  feel like progress along the measure axis, so the axis was never questioned. The lesson, stated
+  for reuse: when impossibility results accumulate over a CLASS of tools, write down what is
+  OUTSIDE the class — the refutations were a map of where not to dig, and we read them as a map of
+  where digging was hard.
+- Also recorded with appropriate humility: pure S's C2 (the three-level squeeze, and Waldmann's
+  cited external result) plausibly admits the same two-piece proof — ρ is monotone for pure S too.
+  I have not re-derived it; the squeeze stands and is not wrong, merely no longer forced. And
+  no-collapse — the stage's ranked target — fell out as a corollary (`sb_no_collapse`) without ever
+  being attacked.
+- Rung 3 inherits a new constraint for free (a cycle needs a right-spine C-step with `y`
+  right-shallower than `z`) and does NOT fall to ρ — the ledger's "structurally unlike" was
+  precisely right, which is worth a moment of respect for Stage 27's analysis.
+- Ranking: (1) **rung 3 via the ρ-lens**: formalize the inherited constraint, then hunt a
+  second positional measure for `{S,C}` — the C-rule preserves the MULTISET of right-spine depths
+  of arguments in some form; look for the invariant OUTSIDE counting measures this time.
+  (2) C6, declined a seventy-first time.
