@@ -2098,3 +2098,121 @@ example (t w : SCTerm) : ¬ SCStep t (SCTerm.app w t) :=
 example (t : SCTerm) : ¬ SCStep t (SCTerm.app .C (SCTerm.app .C t)) :=
   fun h => sc_no_step_right_embed h
     (SCRightNested.tail (SCRightNested.tail (SCRightNested.refl t)))
+
+-- ## Stage 100: the hosting question, scoped — rung 3 path-encodes into the top
+-- With the ladder settled, the live question is hosting: does SK path-encode into `{S,C}`? This
+-- stage pins the DIRECTION ASYMMETRY. The easy direction is now a theorem: `{S,C} ≤ SK` in the
+-- weak certificate class, via the bracket-abstraction implementation of `C` (`cImpl x y z ⟶* x z y`
+-- from the Stage 76 toolkit) and siInSK's injectivity technique (the image's only bare `K`s live
+-- inside `cImpl` copies, whose right component is `K`-headed — no image is `K`, so the collision
+-- cascade stops at depth one). The hard direction (SK ≤ {S,C}) is scoped in the ledger: the
+-- program's one refutation mechanism is inapplicable (Stage 96 — {S,C} is cyclic, which is
+-- exactly the necessary condition a host must satisfy), the leaf/WN mismatches do not transport
+-- along path encodings, and cycles are abundant in both systems (the pump below) — so neither a
+-- refutation nor a certificate exists yet, and any refutation needs a genuinely new transportable
+-- invariant.
+
+/-- `C` as an SK term, from the bracket toolkit: `λ x y z. x z y`. -/
+def cImpl : Term :=
+  toTerm (TermV.bracketOpt 2 (TermV.bracketOpt 1 (TermV.bracketOpt 0
+    (TermV.app2 (.var 2) (.var 0) (.var 1)))))
+
+theorem cImpl_beta (x y z : Term) :
+    Term.app (Term.app (Term.app cImpl x) y) z ⟶* Term.app (Term.app x z) y := by
+  have h := bracketOpt_beta3_Term (TermV.app2 (.var 2) (.var 0) (.var 1)) x y z
+  simpa [cImpl, TermV.app2, TermV.subst, subst_ofTerm, toTerm] using h
+
+/-- The shape fact injectivity needs: `cImpl`'s right component is `K`-headed, its left is not
+`K`. -/
+theorem cImpl_shape : ∃ c₁ w, cImpl = Term.app c₁ (Term.app Term.K w) ∧ c₁ ≠ Term.K :=
+  ⟨_, _, rfl, fun h => Term.noConfusion h⟩
+
+/-- Send `S` to `S` and the primitive `C` to its SK implementation. -/
+def encSC : SCTerm → Term
+  | .S => Term.S
+  | .C => cImpl
+  | .app a b => Term.app (encSC a) (encSC b)
+
+/-- No image is the bare leaf `K`. -/
+theorem encSC_ne_K : ∀ t : SCTerm, encSC t ≠ Term.K
+  | .S => fun h => Term.noConfusion h
+  | .C => fun h => by
+      obtain ⟨c₁, w, hsh, _⟩ := cImpl_shape
+      rw [show encSC .C = cImpl from rfl, hsh] at h
+      exact Term.noConfusion h
+  | .app _ _ => fun h => Term.noConfusion h
+
+/-- No image is `K`-headed. -/
+theorem encSC_ne_headK : ∀ (b : SCTerm) (w : Term), encSC b ≠ Term.app Term.K w
+  | .S, _ => fun h => Term.noConfusion h
+  | .C, _ => fun h => by
+      obtain ⟨c₁, w', hsh, hne⟩ := cImpl_shape
+      rw [show encSC .C = cImpl from rfl, hsh] at h
+      injection h with h1 h2
+      exact hne h1
+  | .app b₁ _, _ => fun h => by
+      injection h with h1 h2
+      exact encSC_ne_K b₁ h1
+
+theorem encSC_inj : ∀ {t u : SCTerm}, encSC t = encSC u → t = u
+  | .S, .S, _ => rfl
+  | .C, .C, _ => rfl
+  | .S, .C, h => by
+      obtain ⟨c₁, w, hsh, _⟩ := cImpl_shape
+      rw [show encSC .C = cImpl from rfl, hsh] at h
+      exact Term.noConfusion h
+  | .C, .S, h => by
+      obtain ⟨c₁, w, hsh, _⟩ := cImpl_shape
+      rw [show encSC .C = cImpl from rfl, hsh] at h
+      exact Term.noConfusion h
+  | .S, .app _ _, h => Term.noConfusion h
+  | .app _ _, .S, h => Term.noConfusion h
+  | .C, .app a b, h => by
+      obtain ⟨c₁, w', hsh, hne⟩ := cImpl_shape
+      rw [show encSC .C = cImpl from rfl, hsh] at h
+      injection h with h1 h2
+      exact absurd h2.symm (encSC_ne_headK b w')
+  | .app a b, .C, h => by
+      obtain ⟨c₁, w', hsh, hne⟩ := cImpl_shape
+      rw [show encSC .C = cImpl from rfl, hsh] at h
+      injection h with h1 h2
+      exact absurd h2 (encSC_ne_headK b w')
+  | .app a b, .app c d, h => by
+      injection h with h1 h2
+      rw [encSC_inj h1, encSC_inj h2]
+
+/-- Each `{S,C}` step becomes an SK reduction: `S_red` in one step, `C_red` via `cImpl_beta`. -/
+theorem encSC_step : ∀ {t u : SCTerm}, SCStep t u → encSC t ⟶* encSC u := by
+  intro t u h
+  induction h with
+  | S_red f g x => exact Steps.single (Step.S_red _ _ _)
+  | C_red x y z => exact cImpl_beta _ _ _
+  | appL _ ih => exact Steps.congL ih
+  | appR _ ih => exact Steps.congR ih
+
+theorem encSC_steps : ∀ {t u : SCTerm}, RS.SC.Steps t u →
+    RS.SK.Steps (encSC t) (encSC u) := by
+  intro t u h
+  exact h.rec (fun _ => RS.Steps.refl _)
+    (fun s _ ih => RS.Steps.trans (RS.SK_steps_iff.mpr (encSC_step s)) ih)
+
+/-- **Rung 3 path-encodes into the top: `{S,C} ≤ SK`** in the weak certificate class. -/
+def scInSK : PathEncoding RS.SC RS.SK where
+  enc := encSC
+  inj := encSC_inj
+  path := encSC_steps
+
+/-- Cycles pump through left congruence, in length-indexed form. -/
+theorem scStepsN_appL {n : Nat} {f f' : SCTerm} (x : SCTerm) (h : RS.SC.StepsN n f f') :
+    RS.SC.StepsN n (SCTerm.app f x) (SCTerm.app f' x) := by
+  refine h.rec (motive := fun n a b _ => RS.SC.StepsN n (SCTerm.app a x) (SCTerm.app b x)) ?_ ?_
+  · intro a
+    exact @RS.StepsN.refl RS.SC (SCTerm.app a x)
+  · intro m a b c s rest ih
+    exact RS.StepsN.tail (SCStep.appL s) ih
+
+/-- `{S,C}` has infinitely many cycle terms — `app scCycA u` cycles for EVERY `u`, so no
+finite-cycle-space refutation of hosting can exist. -/
+theorem sc_cycle_pump (u : SCTerm) :
+    RS.SC.StepsN 3 (SCTerm.app scCycA u) (SCTerm.app scCycA u) :=
+  scStepsN_appL u SC_cycle

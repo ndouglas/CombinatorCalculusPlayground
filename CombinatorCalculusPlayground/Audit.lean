@@ -127,3 +127,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_no_step_right_embed' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_no_step_right_embed
+
+/-- info: 'scInSK' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scInSK
+
+/-- info: 'sc_cycle_pump' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_cycle_pump
