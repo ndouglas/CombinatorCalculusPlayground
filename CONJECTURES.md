@@ -4077,3 +4077,30 @@ ladder's completion OPENS rather than closes — `{S,C}` and `{S,I}` as candidat
 the refutation mechanism cannot reach and no Simulation exists either. The headline sentence is
 unchanged and now rests on a finished instrument: **if S alone is universal, its encoding must be
 non-injective or must fail to preserve reduction paths.**
+
+### Stage 98: no I-like combinator — the census bound becomes a theorem, without a search
+
+The ranked probe was "bounded search for `t` with `t x ⟶* x`"; the shape lens answered before any
+search started. Both `{S,B}` and `{S,C}` rules drop exactly their own fired combinator leaf and
+never PROJECT an argument — so every step result is an application (Stage 87's
+`scStep_result_isApp`, now mirrored as `sbStep_result_isApp`). An I-like combinator must in
+particular satisfy `t S ⟶* S`: the path cannot be empty (`t S = S` is absorption) and cannot be
+nonempty (it would end at a leaf, and leaves are unreachable — `sc_steps_to_leaf` /
+`sb_steps_to_leaf`). Dead, at every size:
+
+| | |
+|---|---|
+| `sbStep_result_isApp` / `sb_steps_to_leaf` | the `{S,B}` mirrors of Stage 87's lemmas — axiom-free |
+| `sc_no_I_on_S` / `sb_no_I_on_S` | even the single instance `t S ⟶* S` fails |
+| **`sc_no_I_like`** / **`sb_no_I_like`** | **no I-like combinator at any size** — both pinned |
+
+Two readings. Methodological: `{S,B}`'s "no I-like up to 7 leaves" was a Stage-era census result;
+the unconditional theorem was always one composition away from "every step result is an app," and
+nobody asked until the transport question came up — bounded evidence has a way of looking like
+the best available long after it stops being so. Structural: the contrast with `{S,K}` and
+`{S,I}` is exactly PROJECTION — `K x y ⟶ x` and `I x ⟶ x` can return a bare argument, which is
+how those bases host leaves-from-apps and why the ladder's cyclic-by-inheritance argument worked
+there. `{S,B}` and `{S,C}` are projection-free, so the define-I transport is closed
+unconditionally for both, and any SK-hosting certificate for them must survive without it: SK's
+erasing steps must land on encoded terms (applications), which the leaf argument does not forbid.
+The hosting question stays open in both directions, now with one fewer route on each side.

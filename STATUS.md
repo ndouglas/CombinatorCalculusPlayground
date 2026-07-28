@@ -298,7 +298,7 @@ against in Stage 16.
 | 0 | `{S}` | **acyclic** (`no_pure_S_cycle`); hence refuted as a host of SK |
 | 1 | `{S,I}` | **cyclic** (`omegaSI_cycle`). NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) — so the mechanism is not merely unhelpful here, it is provably inapplicable |
 | 2 | `{S,B}` | **CLOSED — ACYCLIC (Stage 83: `SB_acyclic`), hence CANNOT HOST SK (`no_pathEncoding_SK_SB`).** The right-spine depth never decreases along any step and strictly increases at root steps; Stage 81's localization supplies the root step on every cycle. Subsumes all fragment results and census bounds. The route: 80 typechecked (termination dead), 81 localized (root steps forced), 82 dichotomized, 83 closed | No counting measure is monotone (`no_monotone_counting_measure`). No cycle under **any** strategy up to 8 leaves within a 30-leaf cap, cap-insensitive to 120 (`onCycleAny`); the cap is not liftable by brute force. **τ strictly drops on every B-reduction and every τ-light S-reduction, so the τ-light fragment is ACYCLIC** (`sbLight_acyclic`) — hence any cycle must fire an S-reduction duplicating a τ-**heavy** argument (`sbCycle_needs_heavy_S`) |
-| 3 | `{S,C}` | **CLOSED — CYCLIC (Stage 96: `SC_cycle`, `SC_not_acyclic`, axiom-free witness).** With `h = C S C`: `S (C h) C h ⟶ C h h (C h) ⟶ h (C h) h ⟶ S (C h) C h` — a 3-cycle, 9 leaves, found by CHASING THE SURVIVING BRANCH of the impossibility hunt (Stage 95's budgets forced any S-rooted 3-cycle to carry two fires; the one consistent assignment is inhabited). Minimal cycle length is EXACTLY 3 (`sc_minimal_cycle_length`). So `{S,C}` closes OPPOSITE to `{S,B}`, and `PathEncoding.refute_of_acyclic` can never apply — the acyclicity route to refuting `{S,C}` as an SK host is permanently closed. Every necessary condition of Stages 81–95 is satisfied by the witness (both C-fires flat, root fires present, second fire present). The census stopped at 6 leaves; the witness sits at 9 |
+| 3 | `{S,C}` | **CLOSED — CYCLIC (Stage 96: `SC_cycle`, `SC_not_acyclic`, axiom-free witness).** With `h = C S C`: `S (C h) C h ⟶ C h h (C h) ⟶ h (C h) h ⟶ S (C h) C h` — a 3-cycle, 9 leaves, found by CHASING THE SURVIVING BRANCH of the impossibility hunt (Stage 95's budgets forced any S-rooted 3-cycle to carry two fires; the one consistent assignment is inhabited). Minimal cycle length is EXACTLY 3 (`sc_minimal_cycle_length`). So `{S,C}` closes OPPOSITE to `{S,B}`, and `PathEncoding.refute_of_acyclic` can never apply — the acyclicity route to refuting `{S,C}` as an SK host is permanently closed. Every necessary condition of Stages 81–95 is satisfied by the witness (both C-fires flat, root fires present, second fire present). The census stopped at 6 leaves; the witness sits at 9. No I-like combinator at any size (`sc_no_I_like`, Stage 98), so the define-I transport route is closed; hosting SK remains open in both directions |
 | top | `{S,K}` | **cyclic** — by the Ω ↔ M cycle, and independently by inheritance from rung one (`SK_not_acyclic_via_rung1`) |
 
 **A standing caveat on census evidence here.** Cycle hunts based on a single
@@ -346,7 +346,9 @@ has delivered.
   - the **S-only fragment is ACYCLIC** (`sbSOnly_acyclic`), so a cycle must contain a
     **B-reduction** (`sbCycle_needs_B`) — C2's squeeze transplanted, since S-only
     {S,B} is pure S over a two-symbol alphabet;
-  - no I-like combinator up to 7 leaves, closing the transport route;
+  - no I-like combinator AT ANY SIZE (`sb_no_I_like`, Stage 98 — upgraded from the
+    7-leaf census: every step result is an application, so `t S ⟶* S` is a nonempty
+    path ending at a leaf, impossible), closing the transport route unconditionally;
   - censused clean to 8 leaves under *any* strategy, cap-insensitive to 120.
 
   - the **no-B-duplication fragment is ACYCLIC** (`sbNoBDup_acyclic`) — a three-level

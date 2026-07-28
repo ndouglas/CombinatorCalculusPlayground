@@ -4301,3 +4301,30 @@ what automation could and couldn't do. This file is a first-class deliverable
   with the {S,B} tooling. (2) **3-cycle uniqueness**: classify all root 3-cycles via the Stage 95
   budgets — the S-rooted case is one unification from done; the C-rooted case needs its own
   blast. (3) C6, declined an eighty-fifth time.
+
+## 2026-07-28 — Stage 98: the search that never needed to run
+
+- The ranking said "bounded search with the TermV machinery"; the stage took twenty minutes and
+  ran no search. Writing down what the search would look for — `t S ⟶* S` as the easiest
+  instance — collided immediately with `sc_steps_to_leaf`: nonempty paths end at applications.
+  The {S,B} mirror lemmas took ten lines. This is the second time (after Stage 96) that
+  formulating the probe precisely dissolved it; the lesson compounds: BEFORE building search
+  tooling, state the exact sentence the search would decide, and check it against the standing
+  shape lemmas.
+- A small embarrassment worth recording: `{S,B}`'s "no I-like up to 7 leaves" has sat in STATUS
+  since the rung-2 era as a census result, and the unconditional theorem was derivable from
+  "step results are apps" the whole time — a one-line composition nobody wrote because the
+  census had already "answered" the question. Bounded evidence anesthetizes: it makes the
+  unconditional question feel closed when it is merely quiet.
+- The structural content: PROJECTION is the dividing line. `K` and `I` can hand back a bare
+  argument; `B` and `C` cannot — every `{S,B}`/`{S,C}` step result is an application. That one
+  bit separates the bases where define-I transport works ({S,I} ⊆ SK) from those where it is
+  now provably closed, and it reframes the hosting question: an SK-Simulation into `{S,C}` must
+  encode K's erasure without ever producing a leaf, which is possible in principle (encodings
+  land on apps) but means the erasing structure must live entirely inside the encoding's shape.
+- Ranking: (1) **3-cycle uniqueness**: classify all root 3-cycles via the Stage 95 budgets — the
+  S-rooted case collapsed to one assignment in Stage 96's derivation; formalizing that
+  classification (every S-rooted 3-cycle IS the witness family) would be the program's first
+  cycle-space classification theorem, and the C-rooted case completes it. (2) **SK-into-{S,C}
+  hosting**: scope what a Simulation would need (K-erasure inside app-shaped encodings) and
+  probe the smallest obstruction. (3) C6, declined an eighty-sixth time.
