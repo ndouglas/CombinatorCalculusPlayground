@@ -691,3 +691,180 @@ theorem sb_no_collapse {u v : SBTerm} (h : RS.SB.Steps (.app u v) v) : False := 
   have := sbSteps_rightDepth_le h
   have : rightDepth v + 1 ≤ rightDepth v := this
   omega
+
+-- ## Stage 84: rung 3 through the ρ-lens — the tame fragment is acyclic
+-- `C x y z → x z y` moves `z` off the right spine, so ρ is not monotone for `{S,C}` and rung 3
+-- does not fall to Stage 83's argument — the measure hunt on paper confirms the ledger's
+-- "structurally unlike" from every direction (sums, maxima, and exponentials of right-depths all
+-- break on one rule or the other). What IS true: if C only ever fires when it STRICTLY DEEPENS the
+-- right spine (`ρ(z) < ρ(y)`), both root rules are ρ-strict and the Stage 83 argument goes through
+-- verbatim. So the strictly-tame fragment is acyclic, and — in the ledger's standard phrasing —
+-- **every `{S,C}` cycle must fire a C-reduction with `ρ(y) ≤ ρ(z)`**: a flattening C. Rung 3's
+-- fourth necessary condition, and its first positional one.
+
+def rightDepthC : SCTerm → Nat
+  | .app _ b => rightDepthC b + 1
+  | _ => 0
+
+/-- The strictly-tame fragment: `C` may fire only when the argument it swaps inward is
+right-deeper than the one it swaps outward. -/
+inductive SCTameStep : SCTerm → SCTerm → Prop
+  | S_red (f g x : SCTerm) :
+      SCTameStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | C_red (x y z : SCTerm) : rightDepthC z < rightDepthC y →
+      SCTameStep (.app (.app (.app .C x) y) z) (.app (.app x z) y)
+  | appL {t t' u : SCTerm} : SCTameStep t t' → SCTameStep (.app t u) (.app t' u)
+  | appR {t u u' : SCTerm} : SCTameStep u u' → SCTameStep (.app t u) (.app t u')
+
+def RS.SCTame : RS := ⟨SCTerm, SCTameStep⟩
+
+inductive SCTameRoot : SCTerm → SCTerm → Prop
+  | S_red (f g x : SCTerm) :
+      SCTameRoot (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | C_red (x y z : SCTerm) : rightDepthC z < rightDepthC y →
+      SCTameRoot (.app (.app (.app .C x) y) z) (.app (.app x z) y)
+
+theorem scTameStep_rightDepth_le {t u : SCTerm} (h : SCTameStep t u) :
+    rightDepthC t ≤ rightDepthC u := by
+  induction h with
+  | S_red f g x =>
+      show rightDepthC x + 1 ≤ (rightDepthC x + 1) + 1
+      omega
+  | C_red x y z hc =>
+      show rightDepthC z + 1 ≤ rightDepthC y + 1
+      omega
+  | @appL t t' u _ _ =>
+      show rightDepthC u + 1 ≤ rightDepthC u + 1
+      exact Nat.le_refl _
+  | @appR t u u' _ ih =>
+      show rightDepthC u + 1 ≤ rightDepthC u' + 1
+      omega
+
+theorem scTameRoot_rightDepth_lt {t u : SCTerm} (h : SCTameRoot t u) :
+    rightDepthC t < rightDepthC u := by
+  cases h with
+  | S_red f g x =>
+      show rightDepthC x + 1 < (rightDepthC x + 1) + 1
+      omega
+  | C_red x y z hc =>
+      show rightDepthC z + 1 < rightDepthC y + 1
+      omega
+
+theorem scTameSteps_rightDepth_le : ∀ {t u : SCTerm}, RS.SCTame.Steps t u →
+    rightDepthC t ≤ rightDepthC u := by
+  intro t u h
+  exact h.rec (fun _ => Nat.le_refl _)
+    (fun s _ ih => Nat.le_trans (scTameStep_rightDepth_le s) ih)
+
+-- The localization engine, for the tame relation (the condition is local, so it survives
+-- projection — exactly why whole-term-Δρ fragments would NOT have worked here).
+
+theorem scTameStep_cases {t w : SCTerm} (h : SCTameStep t w) :
+    SCTameRoot t w
+    ∨ (∃ f x f', t = .app f x ∧ w = .app f' x ∧ SCTameStep f f')
+    ∨ (∃ f x x', t = .app f x ∧ w = .app f x' ∧ SCTameStep x x') := by
+  cases h with
+  | S_red f g x => exact Or.inl (SCTameRoot.S_red f g x)
+  | C_red x y z hc => exact Or.inl (SCTameRoot.C_red x y z hc)
+  | appL h => exact Or.inr (Or.inl ⟨_, _, _, rfl, rfl, h⟩)
+  | appR h => exact Or.inr (Or.inr ⟨_, _, _, rfl, rfl, h⟩)
+
+def SCTamePlus (a b : SCTerm) : Prop := ∃ c, SCTameStep a c ∧ RS.SCTame.Steps c b
+
+theorem scTame_path_facts : ∀ {t u : SCTerm}, RS.SCTame.Steps t u →
+    (∃ a b, SCTameRoot a b ∧ RS.SCTame.Steps t a ∧ RS.SCTame.Steps b u)
+    ∨ t = u
+    ∨ (∃ f x f' x', t = .app f x ∧ u = .app f' x' ∧ RS.SCTame.Steps f f' ∧ RS.SCTame.Steps x x'
+        ∧ (SCTamePlus f f' ∨ SCTamePlus x x')) := by
+  intro t u h
+  exact h.rec
+    (motive := fun t u _ =>
+      (∃ a b, SCTameRoot a b ∧ RS.SCTame.Steps t a ∧ RS.SCTame.Steps b u)
+      ∨ t = u
+      ∨ (∃ f x f' x', t = .app f x ∧ u = .app f' x' ∧ RS.SCTame.Steps f f' ∧ RS.SCTame.Steps x x'
+          ∧ (SCTamePlus f f' ∨ SCTamePlus x x')))
+    (fun a => Or.inr (Or.inl rfl))
+    (fun {a c b} s rest ih => by
+      rcases scTameStep_cases s with hroot | ⟨f, x, f', heq, rfl, hs⟩ | ⟨f, x, x', heq, rfl, hs⟩
+      · exact Or.inl ⟨a, c, hroot, @RS.Steps.refl RS.SCTame a, rest⟩
+      · subst heq
+        rcases ih with ⟨p, q, hr, h1, h2⟩ | heq2 | ⟨g, y, g', y', heqc, hequ, pf, px, _⟩
+        · exact Or.inl ⟨p, q, hr, RS.Steps.tail s h1, h2⟩
+        · exact Or.inr (Or.inr ⟨f, x, f', x, rfl, heq2 ▸ rfl, @RS.Steps.single RS.SCTame _ _ hs,
+            @RS.Steps.refl RS.SCTame x, Or.inl ⟨f', hs, @RS.Steps.refl RS.SCTame f'⟩⟩)
+        · injection heqc with hg hy
+          subst hg; subst hy
+          exact Or.inr (Or.inr ⟨f, x, g', y', rfl, hequ, RS.Steps.tail hs pf, px,
+            Or.inl ⟨f', hs, pf⟩⟩)
+      · subst heq
+        rcases ih with ⟨p, q, hr, h1, h2⟩ | heq2 | ⟨g, y, g', y', heqc, hequ, pf, px, _⟩
+        · exact Or.inl ⟨p, q, hr, RS.Steps.tail s h1, h2⟩
+        · exact Or.inr (Or.inr ⟨f, x, f, x', rfl, heq2 ▸ rfl, @RS.Steps.refl RS.SCTame f,
+            @RS.Steps.single RS.SCTame _ _ hs, Or.inr ⟨x', hs, @RS.Steps.refl RS.SCTame x'⟩⟩)
+        · injection heqc with hg hy
+          subst hg; subst hy
+          exact Or.inr (Or.inr ⟨f, x, g', y', rfl, hequ, pf, RS.Steps.tail hs px,
+            Or.inr ⟨x', hs, px⟩⟩))
+
+theorem scTame_plus_facts {t u : SCTerm} (h : SCTamePlus t u) :
+    (∃ a b, SCTameRoot a b ∧ RS.SCTame.Steps t a ∧ RS.SCTame.Steps b u)
+    ∨ (∃ f x f' x', t = .app f x ∧ u = .app f' x' ∧ RS.SCTame.Steps f f' ∧ RS.SCTame.Steps x x'
+        ∧ (SCTamePlus f f' ∨ SCTamePlus x x')) := by
+  obtain ⟨c, s, rest⟩ := h
+  rcases scTameStep_cases s with hroot | ⟨f, x, f', heq, rfl, hs⟩ | ⟨f, x, x', heq, rfl, hs⟩
+  · exact Or.inl ⟨t, c, hroot, @RS.Steps.refl RS.SCTame t, rest⟩
+  · subst heq
+    rcases scTame_path_facts rest with ⟨p, q, hr, h1, h2⟩ | heq2 | ⟨g, y, g', y', heqc, hequ, pf, px, _⟩
+    · exact Or.inl ⟨p, q, hr, RS.Steps.tail s h1, h2⟩
+    · exact Or.inr ⟨f, x, f', x, rfl, heq2 ▸ rfl, @RS.Steps.single RS.SCTame _ _ hs,
+        @RS.Steps.refl RS.SCTame x, Or.inl ⟨f', hs, @RS.Steps.refl RS.SCTame f'⟩⟩
+    · injection heqc with hg hy
+      subst hg; subst hy
+      exact Or.inr ⟨f, x, g', y', rfl, hequ, RS.Steps.tail hs pf, px, Or.inl ⟨f', hs, pf⟩⟩
+  · subst heq
+    rcases scTame_path_facts rest with ⟨p, q, hr, h1, h2⟩ | heq2 | ⟨g, y, g', y', heqc, hequ, pf, px, _⟩
+    · exact Or.inl ⟨p, q, hr, RS.Steps.tail s h1, h2⟩
+    · exact Or.inr ⟨f, x, f, x', rfl, heq2 ▸ rfl, @RS.Steps.refl RS.SCTame f,
+        @RS.Steps.single RS.SCTame _ _ hs, Or.inr ⟨x', hs, @RS.Steps.refl RS.SCTame x'⟩⟩
+    · injection heqc with hg hy
+      subst hg; subst hy
+      exact Or.inr ⟨f, x, g', y', rfl, hequ, pf, RS.Steps.tail hs px, Or.inr ⟨x', hs, px⟩⟩
+
+theorem scTame_cycle_root_aux : ∀ (n : Nat) (t v : SCTerm), t.leafCount ≤ n →
+    SCTameStep t v → RS.SCTame.Steps v t →
+    ∃ a b, SCTameRoot a b ∧ RS.SCTame.Steps b a := by
+  intro n
+  induction n with
+  | zero =>
+      intro t v hle _ _
+      exact absurd hle (by have := scLeaf_pos t; omega)
+  | succ n ih =>
+      intro t v hle hs hback
+      rcases scTame_plus_facts ⟨v, hs, hback⟩ with
+        ⟨a, b, hr, h1, h2⟩ | ⟨f, x, f', x', heq1, heq2, pf, px, hne⟩
+      · exact ⟨a, b, hr, RS.Steps.trans h2 h1⟩
+      · subst heq1
+        injection heq2 with h1 h2
+        subst h1; subst h2
+        have hsz : f.leafCount + x.leafCount ≤ n + 1 := hle
+        rcases hne with ⟨fm, hsf, hpf⟩ | ⟨xm, hsx, hpx⟩
+        · exact ih f fm (by have := scLeaf_pos x; omega) hsf hpf
+        · exact ih x xm (by have := scLeaf_pos f; omega) hsx hpx
+
+/-- **The strictly-tame fragment of `{S,C}` is ACYCLIC**: both its root rules strictly deepen the
+right spine, and localization forces every cycle through a root. -/
+theorem scTame_acyclic : RS.Acyclic RS.SCTame := by
+  intro t v hs hback
+  obtain ⟨a, b, hr, hcyc⟩ :=
+    scTame_cycle_root_aux t.leafCount t v (Nat.le_refl _) hs hback
+  have h1 := scTameRoot_rightDepth_lt hr
+  have h2 := scTameSteps_rightDepth_le hcyc
+  omega
+
+/-- **Any `{S,C}` cycle must fire a FLATTENING `C`** — one whose swapped-in argument is not
+right-deeper than the one it displaces (`ρ(y) ≤ ρ(z)`). Rung three's fourth necessary condition,
+and its first positional one. -/
+theorem scCycle_needs_flat_C {t : SCTerm}
+    (hcyc : ∃ u, SCTameStep t u ∧ RS.SCTame.Steps u t) : False := by
+  obtain ⟨u, h1, h2⟩ := hcyc
+  exact scTame_acyclic h1 h2
