@@ -4172,3 +4172,30 @@ erasure encoded inside app-shaped `{S,C}` terms, where the tag pipeline's Simula
 the template but the non-erasing host must simulate erasure by parking garbage — the exact
 inverse of the problem `bwd` solved for the tag driver (there the host computed too much; here it
 cannot forget at all). That inversion is the sharpest statement of why the question is hard.
+
+### Stage 101: the classification — the conjecture discharged at scale
+
+Stage 99's conjecture is now a theorem, and it is the program's first complete classification of
+a cycle space: **every root 3-cycle of `{S,C}` is exactly the h-cycle at basepoint A, the h-cycle
+at basepoint B, or the w-cycle** (`sc_root_three_cycle_classified`, pinned), and composed with
+localization, **every 3-cycle passes through a known cycle** (`sc_three_cycles_are_known`,
+pinned). The proof is the Stage-94 method at ~45 leaf branches: an S-rooted return cannot project
+(the budget 1 + 2 exceeds 2), so it carries consecutive fires, and only S-then-C survives — into
+the h-cycle at basepoint A; a C-rooted return's sandwich survives only as step-then-fire into
+basepoint B, and its projection survives only as the w-cycle, found through either placement of
+its double fire.
+
+What made ~45 branches tractable, recorded as method: (1) EQUATIONS FIRST — every hypothesis
+injected to atoms before any analysis; (2) LINEAR ARITHMETIC AS THE UNIVERSAL KILL — each
+injected equation becomes a linear fact over leaf counts via a defeq-ascribed `congrArg`, and
+`absurd _ (by omega)` combines them, so dead branches need no rewrite-direction judgment at all;
+(3) the three step-shaped kills (`sc_no_step_collapse`, `sc_no_step_right_embed`,
+`scStep_result_isApp`) for what counting cannot see. The three live branches pin every variable
+by unification and close by `rfl` — the same collapse-to-one-assignment that FOUND both cycles.
+
+The audit caught the NINTH `Classical.choice` leak, and it is a new variant of the omega door:
+`omega` proving a CONJUNCTION-INSIDE-DISJUNCTION goal (`k₁ = 0 ∧ k₂ = 1 ∨ k₁ = 1 ∧ k₂ = 0`)
+routes through choice, while plain disjunctions of equalities are clean — verified by a minimal
+experiment before fixing. The budget-splitting idiom the length arc introduced at Stage 93 is
+exactly where such goals arise, so the clean form (plain-disjunction omega, per-branch arithmetic
+`have`s) is now the recorded idiom.

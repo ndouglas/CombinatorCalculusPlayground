@@ -4383,3 +4383,32 @@ what automation could and couldn't do. This file is a first-class deliverable
   parking**: sketch what a K-erasure encoding into a non-erasing host would even look like on the
   two-cell tag alphabet — a design probe, not a construction. (3) C6, declined an
   eighty-eighth time.
+
+## 2026-07-28 — Stage 101: forty-five branches, one afternoon
+
+- The blast the ledger priced at "Stage 94 × 4" came in on budget, and the pricing held because
+  the method scaled: equations first, then a UNIFORM kill. The discovery of the stage is that
+  uniformity: converting every injected equation to a linear leaf-count fact and letting omega
+  combine them removes the single largest error source of Stage 94 (rewrite-direction judgment).
+  My first draft guessed directions and produced four errors in three branches; the second draft
+  had two errors across forty-five, both mine (a mis-derived kill, two forgotten sub-branches),
+  neither directional.
+- The classification confirms the search was complete: the case tree's three survivors are
+  exactly the two cycles Stages 96 and 99 found by instantiating surviving branches — nothing
+  else was hiding. The w-cycle appearing TWICE in the tree (once per placement of its double
+  fire) is the sandwich decomposition's non-uniqueness made visible, and both branches converge
+  on the same pair, as they must.
+- The ninth leak is the most instructive since the sixth: omega on `_ ∧ _ ∨ _ ∧ _` goals uses
+  choice; on `_ ∨ _` goals it does not. I would not have predicted the boundary, and I did not
+  try — a three-line experiment answered it before the fix. The leak catalogue now has three
+  omega variants, all of one family: GIVE OMEGA ATOMIC ARITHMETIC GOALS — equalities,
+  inequalities, negations thereof, plain disjunctions at most — and derive structure yourself.
+- Where this leaves rung 3's cycle space: minimal length exactly 3; the length-3 stratum is
+  EXACTLY two cycles; length 4 is unexplored (the budgets make it a bounded analysis of the same
+  kind, roughly 3× this stage's tree — possible but not obviously worth a stage); the general
+  stratification is genuine research. The hosting question (Stage 100's scope) remains the
+  program's live frontier.
+- Ranking: (1) **the garbage-parking design probe** (Stage 100's deferred second item): sketch
+  K-erasure into a non-erasing host on the two-cell tag alphabet — the deliverable is a design
+  document in the ledger, not code. (2) The 4-cycle stratum, only if the parking probe stalls.
+  (3) C6, declined an eighty-ninth time.
