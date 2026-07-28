@@ -3001,3 +3001,80 @@ theorem sc_unbounded_convergence :
     ∀ n, RS.SC.Steps (cTower (n + 2)) (cTower 2)
       ∧ (cTower (n + 2)).leafCount = n + 3 :=
   fun n => ⟨cTower_shreds n, cTower_leafCount (n + 2)⟩
+
+-- ## Stage 103: the pairing probe — rotation yes, selection no
+-- The ledger's named question, split three ways by a search and two theorems. SEARCH: no
+-- {S,C} machine `P` with `P a b s ⟶* s a b` exists up to 9 machine leaves (census, unverified
+-- tooling as always). THEOREM (negative): the ONE-application selector `λas. s a` is outright
+-- impossible — no reduction ever produces `s a` for opaque `s`, `a`, because every fire result
+-- carries TWO spine arguments (`(x z) y`, `(f x)(g x)`) and congruence would need a step landing
+-- on a variable. THEOREM (positive): the CYCLIC ROTATOR exists — `C C u v w ⟶* v w u` — so
+-- pairing is definable UP TO ARGUMENT ROTATION: a consumer arriving in the middle slot can be
+-- applied to both fields. The hosting design consequence goes to the ledger.
+
+/-- `{S,C}` terms over opaque variables — the pairing question needs genuinely inert arguments,
+which closed terms are not. -/
+inductive SCV : Type
+  | S : SCV
+  | C : SCV
+  | var : Nat → SCV
+  | app : SCV → SCV → SCV
+deriving DecidableEq, Repr
+
+inductive SCVStep : SCV → SCV → Prop
+  | S_red (f g x : SCV) :
+      SCVStep (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x))
+  | C_red (x y z : SCV) :
+      SCVStep (.app (.app (.app .C x) y) z) (.app (.app x z) y)
+  | appL {t t' u : SCV} : SCVStep t t' → SCVStep (.app t u) (.app t' u)
+  | appR {t u u' : SCV} : SCVStep u u' → SCVStep (.app t u) (.app t u')
+
+def RS.SCV : RS := ⟨_root_.SCV, SCVStep⟩
+
+theorem scvStep_result_isApp {t u : SCV} (h : SCVStep t u) : ∃ a b, u = .app a b := by
+  cases h with
+  | S_red f g x => exact ⟨_, _, rfl⟩
+  | C_red x y z => exact ⟨_, _, rfl⟩
+  | appL h => exact ⟨_, _, rfl⟩
+  | appR h => exact ⟨_, _, rfl⟩
+
+/-- No step lands on `var i applied to var j`: fire results carry two spine arguments, and
+congruence would need a step producing a bare variable. -/
+theorem scv_no_step_to_varApp {W : SCV} {i j : Nat}
+    (h : SCVStep W (.app (.var i) (.var j))) : False := by
+  cases h with
+  | appL h =>
+      obtain ⟨a, b, hab⟩ := scvStep_result_isApp h
+      exact SCV.noConfusion hab
+  | appR h =>
+      obtain ⟨a, b, hab⟩ := scvStep_result_isApp h
+      exact SCV.noConfusion hab
+
+/-- Peel the LAST step off a path, generically. -/
+theorem RS.steps_last {A : RS} {t u : A.Carrier} (h : A.Steps t u) :
+    t = u ∨ ∃ w, A.Steps t w ∧ A.step w u := by
+  induction h with
+  | refl => exact Or.inl rfl
+  | tail s rest ih =>
+      rcases ih with heq | ⟨w, hw, hs'⟩
+      · exact Or.inr ⟨_, @RS.Steps.refl A _, heq ▸ s⟩
+      · exact Or.inr ⟨w, RS.Steps.tail s hw, hs'⟩
+
+/-- **The one-application selector is impossible in `{S,C}`**: no machine `T`, however large,
+reduces `T a s` to `s a` on opaque arguments — the target is never even the RESULT of a step,
+so the path would have to be empty, and it is not. -/
+theorem scv_no_single_selector (T : SCV) :
+    ¬ RS.SCV.Steps (.app (.app T (.var 0)) (.var 1)) (.app (.var 1) (.var 0)) := by
+  intro h
+  rcases RS.steps_last h with heq | ⟨w, _, hs⟩
+  · injection heq with h1 h2
+    exact SCV.noConfusion h1
+  · exact scv_no_step_to_varApp hs
+
+/-- **The cyclic rotator exists**: `C C u v w ⟶* v w u`, for arbitrary `{S,C}` terms. Pairing is
+definable UP TO ARGUMENT ROTATION: a consumer arriving in the middle slot gets applied to both
+fields. -/
+theorem scRot_beta (u v w : SCTerm) :
+    RS.SC.Steps (.app (.app (.app (.app .C .C) u) v) w) (.app (.app v w) u) :=
+  RS.Steps.tail (SCStep.appL (SCStep.C_red .C u v))
+    (RS.Steps.tail (SCStep.C_red v u w) (@RS.Steps.refl RS.SC _))

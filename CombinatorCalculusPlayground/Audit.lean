@@ -142,3 +142,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_unbounded_convergence' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_unbounded_convergence
+
+/-- info: 'scv_no_single_selector' does not depend on any axioms -/
+#guard_msgs in #print axioms scv_no_single_selector
+
+/-- info: 'scRot_beta' does not depend on any axioms -/
+#guard_msgs in #print axioms scRot_beta
