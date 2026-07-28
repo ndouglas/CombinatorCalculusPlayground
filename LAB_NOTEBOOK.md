@@ -4565,3 +4565,28 @@ what automation could and couldn't do. This file is a first-class deliverable
   constancy conjecture with evidence. (2) The program review — Stage 107 is a goal-level result
   (first rung-3 hosting certificate) and the review rule triggers. (3) C6, declined a
   ninety-fifth time.
+
+## 2026-07-28 — Stage 108: stop solving the hard version
+
+- The catalyst search came back empty to 9 leaves, and the homogenization argument says arm-level
+  differentiation is a quine problem — the third time this thread has walked into that wall
+  (selector, arrival-order pair, now catalysts). The productive move was noticing the wall is
+  load-bearing only if differentiation must happen at RUNTIME. It does not: the word is built by
+  `enc`, `enc` knows each symbol, and a cell can carry its symbol's production as a literal.
+  Encoding-time information is free; I keep forgetting that because the SK pipeline never needed
+  the reminder — it had selectors and could afford runtime dispatch.
+- scRelaunch is now three tools in one term: rotator, recycling arm, production cell. Seven
+  leaves, found while proving something else, reused every stage since. The program's whole
+  {S,C} machine kit is essentially four terms: the tags, scRelaunch, scDup — and scDup is the
+  w-cycle seed applied to a tag. There is something real here about minimal generating sets of
+  BEHAVIORS (not combinators) that the eventual writeup should make explicit.
+- The driver protocol crystallized: D p rest acc, with the accumulator riding what I had been
+  calling the junk-passenger position. Twice now the design's 'waste products' (parked arms,
+  cascade passengers) turned out to be exactly the next component's inputs. Non-erasing calculi
+  punish waste, so surviving designs are the ones where nothing IS waste — the constraint is
+  doing the architecture.
+- Ranking: (1) **the driver**: runtime cons (assembly-with-passenger, absorbing into the
+  accumulator position) plus spare-duplication regeneration — the deliverable is a one-tag-step
+  theorem: D applied to an encoded tag state performs read-append-advance; if it closes, a full
+  tag simulation into {S,C} is assembly. (2) The program review (two goal-level results now
+  pending it). (3) C6, declined a ninety-sixth time.

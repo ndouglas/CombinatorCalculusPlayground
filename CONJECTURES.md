@@ -4393,3 +4393,33 @@ The seed observation deserves its own line: the w-cycle (Stage 99) and the dupli
 one application. Cycles and computation in `{S,C}` run on the same engine — self-application of
 `S (C C)` — which is the concrete form of the intuition, standing since the ladder opened, that
 cyclicity and hosting power travel together.
+
+### Stage 108: differentiation moves into the word
+
+The differentiated-queue probe, resolved by relocation. Negative results first, both worth their
+census lines: the CATALYST route — an arm `X` with `X o r ⟶* r o X`, which is exactly
+leaf-balanced for any parked arm and would preserve both identities by pure swapping — has no
+witness up to 9 machine leaves; and every arm-level scheme built from the two proved primitives
+(parked-copying, payload-burning) provably homogenizes the arm pair in a few steps. Arm-level
+differentiation is a quine problem, and `{S,C}` keeps refusing quines.
+
+The resolution costs nothing: per-symbol differences belong at ENCODING TIME, in the cells. And
+the gadget already existed — `scRelaunch`, in its THIRD reading (Stage 103: rotator; Stage 106:
+recycling arm; now): a production-carrying cell.
+
+| | |
+|---|---|
+| `scPCell p rest := scRelaunch p rest` | a cell holding its symbol's production and the rest of the word |
+| `scPCell_step` | `scPCell p rest ⋅ D ⟶* D p rest` — one-slot interrogation delivers both |
+| **`scPCell_step_acc`** | the same fires under an accumulator: **the three-argument driver protocol `D p rest acc`** — production, remaining word, write-slot — from pure cell machinery, with the accumulator riding the passenger position — pinned |
+| `scPCell_normal` | cells are storable data |
+
+All axiom-free. The tag-machine architecture this fixes: words are chains of production cells;
+interrogation is single-slot (`W D`); the accumulator (the produced future word) rides the
+protocol's third position; and the driver's per-symbol work is UNIFORM — read `p`, cons it to
+`acc`, re-interrogate `rest`. The two remaining obligations, both driver-internal: (a) runtime
+CONS of a production onto the accumulator (assembly-with-passenger, where the passenger position
+is again available to absorb); (b) driver regeneration — and the scDup transposition applies:
+the driver duplicates an ARRIVING spare carried in the accumulator pair, never itself. Neither
+has an identified obstruction; both are the same genre as the five compositions that closed
+Stages 104–107.
