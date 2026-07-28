@@ -1583,3 +1583,135 @@ theorem sc_minimal_cycle_is_root {n : Nat} {t : SCTerm} (h1 : 1 ≤ n)
   have hcyc' : RS.SC.StepsN (k + 1) a a := RS.StepsN.tail (scRootStep_step hr) hret
   have := hmin (k + 1) a (by omega) hcyc'
   exact ⟨a, b, k, hr, hret, by omega⟩
+
+-- ## Stage 94: no two-cycles — the first kill from descend-vs-minimality
+-- Stage 93's localization makes short cycles very concrete: a 2-cycle yields a root cycle of
+-- length ≤ 2, i.e. a root fire followed by AT MOST ONE step straight back. Working the return
+-- step against the fired shape kills every branch: most die on size (a term absorbing itself
+-- under an application) or occurs-check; the one live-looking branch — an `appL` return over a
+-- root C-fire — needs the step `x ⟶ C x`, which the frozen left forbids. So `{S,C}` has no
+-- cycles of length 2, and with Stage 93's no-self-loops the minimal cycle length rises to 3.
+
+/-- Root steps, as equations. -/
+theorem scRootStep_inv {s t : SCTerm} (h : SCRootStep s t) :
+    (∃ f g x, s = SCTerm.app (SCTerm.app (SCTerm.app SCTerm.S f) g) x
+      ∧ t = SCTerm.app (SCTerm.app f x) (SCTerm.app g x))
+    ∨ (∃ x y z, s = SCTerm.app (SCTerm.app (SCTerm.app SCTerm.C x) y) z
+      ∧ t = SCTerm.app (SCTerm.app x z) y) := by
+  cases h with
+  | S_red f g x => exact Or.inl ⟨f, g, x, rfl, rfl⟩
+  | C_red x y z => exact Or.inr ⟨x, y, z, rfl, rfl⟩
+
+private theorem sc_ne_absorb_left {s r : SCTerm} (h : s = SCTerm.app s r) : False := by
+  have hc := congrArg SCTerm.leafCount h
+  have := scLeaf_pos r
+  exact absurd hc (by
+    show ¬(s.leafCount = s.leafCount + r.leafCount)
+    omega)
+
+private theorem sc_ne_absorb_right {s r : SCTerm} (h : s = SCTerm.app r s) : False := by
+  have hc := congrArg SCTerm.leafCount h
+  have := scLeaf_pos r
+  exact absurd hc (by
+    show ¬(s.leafCount = r.leafCount + s.leafCount)
+    omega)
+
+/-- A root fire is never undone in one step. -/
+theorem sc_no_root_two_cycle {a b : SCTerm} (hr : SCRootStep a b) (hs : SCStep b a) : False := by
+  cases hr with
+  | S_red f g x =>
+      rcases scStep_cases hs with hroot
+        | ⟨F, X, F', heq1, heq2, hstep⟩ | ⟨F, X, X', heq1, heq2, hstep⟩
+      · rcases scRootStep_inv hroot with ⟨p, q, r, hb, ha⟩ | ⟨p, q, r, hb, ha⟩
+        · injection hb with hb1 hb2
+          injection hb1 with hb3 hb4
+          injection ha with ha1 ha2
+          rw [← hb4] at ha2
+          exact sc_ne_absorb_left ha2
+        · injection hb with hb1 hb2
+          injection ha with ha1 ha2
+          injection ha1 with ha3 ha4
+          rw [← ha4] at hb2
+          exact sc_ne_absorb_left hb2.symm
+      · injection heq1 with hF hX
+        injection heq2 with hF' hX2
+        rw [← hX2] at hX
+        exact sc_ne_absorb_right hX.symm
+      · injection heq1 with hF hX
+        injection heq2 with hF2 hX'
+        rw [← hF] at hF2
+        injection hF2 with hSf hg
+        exact sc_ne_absorb_right hSf.symm
+  | C_red x y z =>
+      rcases scStep_cases hs with hroot
+        | ⟨F, X, F', heq1, heq2, hstep⟩ | ⟨F, X, X', heq1, heq2, hstep⟩
+      · rcases scRootStep_inv hroot with ⟨p, q, r, hb, ha⟩ | ⟨p, q, r, hb, ha⟩
+        · injection hb with hb1 hb2
+          injection hb1 with hb3 hb4
+          injection ha with ha1 ha2
+          rw [← hb4] at ha2
+          exact sc_ne_absorb_left ha2
+        · injection hb with hb1 hb2
+          injection hb1 with hb3 hb4
+          injection ha with ha1 ha2
+          injection ha1 with ha3 ha4
+          rw [← ha3] at hb3
+          have hc := congrArg SCTerm.leafCount hb3
+          exact absurd hc (by
+            show ¬(x.leafCount = 1 + (1 + x.leafCount))
+            omega)
+      · -- the live-looking branch: an appL return forces y = z and the step `x z ⟶ (C x) z`
+        injection heq1 with hF hX
+        injection heq2 with hF' hX2
+        rw [← hX2] at hX
+        rw [hX] at hF'
+        rw [← hF, ← hF'] at hstep
+        rcases scStep_cases hstep with hroot2
+          | ⟨P, Q, P', k1, k2, hst2⟩ | ⟨P, Q, Q', k1, k2, hst2⟩
+        · rcases scRootStep_inv hroot2 with ⟨p, q, r, h1, h2⟩ | ⟨p, q, r, h1, h2⟩
+          · injection h1 with i1 i2
+            injection h2 with j1 j2
+            rw [← i2] at j2
+            exact sc_ne_absorb_right j2
+          · injection h1 with i1 i2
+            injection h2 with j1 j2
+            injection j1 with jC jx
+            rw [← jC] at i1
+            rw [← j2] at i1
+            have hxz : x = z := jx.trans i2.symm
+            rw [hxz] at i1
+            exact sc_ne_absorb_right i1
+        · injection k1 with i1 i2
+          injection k2 with j1 j2
+          rw [← i1] at hst2
+          rw [← j1] at hst2
+          exact sc_no_leaf_self_embed (fun _ _ h => SCTerm.noConfusion h)
+            (@RS.Steps.single RS.SC _ _ hst2)
+        · injection k1 with i1 i2
+          injection k2 with j1 j2
+          rw [← i1] at j1
+          exact sc_ne_absorb_right j1.symm
+      · injection heq1 with hF hX
+        injection heq2 with hF2 hX'
+        rw [← hF] at hF2
+        injection hF2 with hCx hy
+        exact sc_ne_absorb_right hCx.symm
+
+/-- No `{S,C}` cycle has length 2. -/
+theorem sc_no_two_cycle {t : SCTerm} (h : RS.SC.StepsN 2 t t) : False := by
+  obtain ⟨a, b, k, hr, hret, hk⟩ := sc_cycle_needs_root_length (by omega) h
+  rcases (by omega : k = 0 ∨ k = 1) with rfl | rfl
+  · have heq : b = a := RS.stepsN_zero_eq hret
+    subst heq
+    exact scStep_irrefl b (scRootStep_step hr)
+  · exact sc_no_root_two_cycle hr (RS.stepsN_one_step hret)
+
+/-- **Minimal cycle length is at least 3.** -/
+theorem sc_cycle_length_ge_three {n : Nat} {t : SCTerm} (h1 : 1 ≤ n)
+    (hcyc : RS.SC.StepsN n t t) : 3 ≤ n := by
+  have h2 := sc_cycle_length_ge_two h1 hcyc
+  rcases Nat.lt_or_ge n 3 with h3 | h3
+  · have hn : n = 2 := by omega
+    subst hn
+    exact (sc_no_two_cycle hcyc).elim
+  · exact h3

@@ -91,3 +91,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_cycle_length_ge_two' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_cycle_length_ge_two
+
+/-- info: 'sc_no_root_two_cycle' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_no_root_two_cycle
+
+/-- info: 'sc_cycle_length_ge_three' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_cycle_length_ge_three
