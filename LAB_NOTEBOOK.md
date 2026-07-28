@@ -3839,3 +3839,27 @@ what automation could and couldn't do. This file is a first-class deliverable
   what known loop-freeness transformations exist (unfoldings, semantic labeling, sound-for-loops
   restrictions), and whether the ledger's necessary conditions make any of them finite here. If
   nothing survives the hour, record that and re-rank. (2) C6, declined a sixty-eighth time.
+
+## 2026-07-27 — Stage 81: the probe that found a projection
+
+- The ranked design probe was supposed to survey loop-freeness transformations and report which, if
+  any, could be finite here. The survey instead surfaced something better and simpler: a cycle with
+  no root step projects to a strictly smaller cycle, so minimal cycles pass through root redexes —
+  and both rungs reduce to ruling out root-redex cycles (`sb_acyclic_of_no_root_cycle`,
+  `sc_acyclic_of_no_root_cycle`, parity maintained). Every prior condition on rung cycles came from
+  measures; this one comes from projection, and the two species now compose at one site: a root
+  S-redex whose duplicated argument carries a `B` and is τ-heavy, or a root B-redex, returning to
+  themselves.
+- The proof is the countdown of proof-shapes this development keeps meeting: a dichotomy lemma
+  stated for nonempty paths (the trivial disjunct must be excluded at the STATEMENT, or the main
+  induction meets an uninformative case — the same lesson as Stage 69's behaviour-vs-shape, at the
+  level of disjunctions), plus strong induction on size. One genuine bug caught by the elaborator:
+  prepending a PROJECTED step where the app-level step belonged.
+- What the reduction buys, concretely: the root-cycle question is about terms of exactly two shapes,
+  and the return path's FIRST obligation is visible — `(f x)(g x)` must rebuild an S-headed
+  three-argument spine, `x (y z)` a B-headed one. Head-spine dynamics under root steps are
+  trackable; iterating the localization inside the return path may yield "cycles need a root
+  S-step" or stronger. That is the next probe, and unlike match-bounds, it typechecks.
+- Ranking: (1) **root-cycle head analysis** for rung 2: what must `head(f)` be for `(f x)(g x) ⟶*
+  S f g x`, and does iterating localization inside the return path force an infinite regress on
+  some rank? (2) C6, declined a sixty-ninth time.

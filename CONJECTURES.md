@@ -3628,3 +3628,24 @@ match-bound whose termination is EQUIVALENT to cycle-absence (the transformation
 content), or the unbounded well-founded measure Stage 44 named. The ledger's necessary conditions
 (a cycle needs a B-duplicating S-step on a τ-heavy, ≥3-leaf argument) are inputs any such
 certificate may consume.
+
+### Stage 81: cycle localization — a minimal cycle passes through a ROOT redex
+
+The design probe's survivor, and a necessary condition of a NEW SPECIES: every prior rung constraint
+came from measures; this one comes from projection. A cycle whose steps all happen inside arguments
+projects to a strictly smaller cycle on one argument, so a minimal cycle must fire a redex at the
+root — and therefore, to prove the rungs acyclic, it SUFFICES to rule out cycles through root
+redexes.
+
+| | |
+|---|---|
+| `SBRootStep` / `SCRootStep` | root reduction, no congruence |
+| `sbStep_cases` | every step is a root step or a one-sided projection |
+| `sb_path_facts` / `sb_plus_facts` | the path dichotomy: contains a root step, or projects into the two sides with one projection nonempty |
+| **`sb_cycle_needs_root`** / **`sc_cycle_needs_root`** | any cycle yields a cycle through a root redex — strong induction on size |
+| **`sb_acyclic_of_no_root_cycle`** / **`sc_...`** | **the reduction**: `{S,B}` (resp. `{S,C}`) is acyclic iff no term of shape `S f g x` / `B x y z` / `C x y z` reduces back to itself |
+
+The rungs' open problem shrinks to a shape question: can `(f x)(g x)` rebuild `S f g x`? Can
+`x (y z)` rebuild `B x y z`? The ledger's measure-based conditions now apply AT the root redex —
+the root S-step's duplicated argument must contain a `B` and be τ-heavy — so the two condition
+families finally compose at a single, maximally constrained site.
