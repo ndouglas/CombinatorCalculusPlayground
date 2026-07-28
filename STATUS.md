@@ -373,7 +373,11 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   (`scCycle_rotate_or_descend`, Stage 91): every cycle carries a root cycle that
   either contains another root cycle on itself (through its return's whole-term
   root fire) or has an app-headed head argument whose `app head last` projection
-  fires a root redex on a strictly smaller term. Termination routes are provably dead
+  fires a root redex on a strictly smaller term. The well-foundedness scaffold is in
+  place (Stage 92): length-indexed paths (`RS.StepsN`), a choice-free descent engine
+  (`RS.acyclic_of_cycle_descent` — strictly-shortening cycle surgery proves
+  acyclicity), and the conservation fact that rotation preserves total cycle length
+  (`scRootCycle_rotate_same_length`) — rotation cannot escape a length descent. Termination routes are provably dead
   (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
   the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
   is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine

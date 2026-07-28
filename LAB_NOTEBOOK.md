@@ -4127,3 +4127,32 @@ what automation could and couldn't do. This file is a first-class deliverable
   well-foundedness scaffold, not yet the theorem. (2) The third-level shape analysis (what a root
   redex reachable from `app h r`, `h` an application, forces) — the alternative continuation if
   the scaffold stalls. (3) C6, declined a seventy-ninth time.
+
+## 2026-07-28 — Stage 92: infrastructure, built when the theorem asked for it
+
+- The program's rewriting layer has carried eleven acyclicity results without ever knowing how
+  long a path is. That was the right YAGNI for thirty stages — and Stage 91's closing sentence is
+  what finally made lengths load-bearing: "finitely many rotations" is a cardinality claim, and
+  Prop-level `Steps` cannot host it. Building `StepsN` cost one sitting; building it at Stage 60
+  "for later" would have been dead weight through the entire tag arc.
+- The descent engine's design is the stage's real content: `no_cycle_of_descent` never chooses a
+  minimal cycle. The naive formalization ("take a minimal counterexample") needs `Nat.find`, which
+  needs decidability the infinite carrier cannot give, or classical choice the program bans. The
+  bounded-induction form — descend from the given cycle's own length, carrying `n ≤ bound` — needs
+  neither, and its proof is six lines. The choice-free discipline keeps producing better proofs
+  than the classical instinct would have: this is the third time a banned shortcut forced a
+  cleaner argument (leak #5's hand-supplied literals, the anatomy's rw-not-subst, now this).
+- `scRootCycle_rotate_same_length` is the conservation law the scaffold exists for: rotation
+  spends no length. Combined with the engine, the strategic map of rung 3 is now one sentence —
+  find any cycle surgery that strictly shortens, and the rung closes. The descend branch's fires
+  are on strictly smaller TERMS; what is missing is that they belong to CYCLES. The gap between
+  "fires" and "cycles" is the precise residue of the problem.
+- One pothole, now familiar in a new costume: `StepsN` constructors at a concrete instance need
+  `@RS.StepsN.refl RS.SC` — the same explicit-instance idiom as `RS.Steps.refl` since Stage 81.
+  Recorded here so the next indexed family doesn't cost a build cycle.
+- Ranking: (1) **the fires-to-cycles gap**: probe whether the descend branch's root fire, on a
+  minimal-length cycle, can be forced to recur — the rotation conservation law plus minimality
+  should constrain where the fired term can go; even a partial result (the fire's target cannot
+  rejoin the cycle above a certain position) would be the first strict-shortening surgery.
+  (2) The third-level shape analysis of `app h r` reachability, as the fallback. (3) C6, declined
+  an eightieth time.

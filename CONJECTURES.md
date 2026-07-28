@@ -3904,3 +3904,28 @@ and carries no length, so "finitely many rotations" is not yet a theorem. Length
 `StepsN n`, minimal-length cycles, rotation preserving total length while shifting basepoint —
 are the missing infrastructure, and the first genuinely new machinery the spine-calculus thread
 has needed since it opened.
+
+### Stage 92: the scaffold — lengths, rotation conservation, and the descent engine
+
+Stage 91 ended on a sentence that could not be formalized: "on a finite cycle, rotation can only
+visit finitely many fires." `Steps` is Prop-level and lengthless — the program's rewriting
+infrastructure, sufficient for eleven acyclicity results, simply cannot say "finitely many" about
+a path. This stage builds the missing layer, generically in RS.lean:
+
+| | |
+|---|---|
+| `RS.StepsN` | length-indexed paths; `toSteps`/`toStepsN` equivalence, `trans` (adds lengths), `rotate` (basepoint shift preserves length) — all axiom-free |
+| **`RS.no_cycle_of_descent`** | **the descent engine: if every nonempty cycle yields a strictly shorter one, there are no nonempty cycles** — bounded strong induction, no minimum chosen, hence no choice axiom and no decidability demand |
+| `RS.acyclic_of_cycle_descent` | the bridge: strictly-shortening cycle surgery proves `Acyclic` outright — pinned |
+| `sc_cycle_stepsN` | every `{S,C}` cycle yields a length-indexed nonempty cycle |
+| **`scRootCycle_rotate_same_length`** | **rotation preserves length**: `t → u ⟶ᵏ a → b ⟶ˡ t` and its rotation at the return's fire are both cycles of total length `k + l + 2` — pinned |
+
+The design point worth recording: the engine never *finds* a minimal cycle. Extracting a minimum
+from "some cycle exists" needs either decidability (unavailable — the carrier is infinite) or
+choice (banned). Bounded induction sidesteps both: descend from any given cycle's own length, and
+the hypothesis does the rest. The rung-3 reading: rotate-or-descend now has its measure. Rotation
+provably spends no length, so it cannot escape a length-descent argument — if the DESCEND branch
+(or any future surgery on the rotate branch) can be shown to strictly shorten some cycle, rung 3
+closes through `acyclic_of_cycle_descent`. What descent currently lacks is a cycle at the smaller
+size: the projection fires are on smaller terms but not known to recur. The gap between "fires"
+and "cycles" is now the whole of rung 3.
