@@ -4102,3 +4102,28 @@ what automation could and couldn't do. This file is a first-class deliverable
   theorem on root cycles — the branch tree becomes an honest coinductive-flavored invariant, and
   whether it can be driven to a contradiction (or to a minimal-cycle normal form) is the next
   genuine research question. (2) C6, declined a seventy-eighth time.
+
+## 2026-07-28 — Stage 91: the dichotomy, stated once
+
+- An assembly stage by design: the rotation lemma deliberately deferred from Stage 90 was indeed
+  three combinators of glue (`trans`, `tail`, and root-steps-are-steps). The surprise was in the
+  descent half — writing the uniform statement forced me to see that both rules' left projections
+  are the SAME projection, `app h r ⟶* (t's left)` with `h` the head argument and `r` the last:
+  the per-rule anatomies had been hiding a symmetry. This keeps happening: the theorem improves
+  while being restated, which is an argument for restating theorems.
+- Green on first build again — four stages running. The shape-lens arc (87–91) has now gone from
+  "no {S,C} term reduces to itself under a leaf" to "every cycle carries a root cycle that rotates
+  or descends" in five sittings, each stage one composition ahead of the last. Contrast the
+  measure era, where five sittings bought two impossibility sweeps. When the objects force shapes,
+  follow shapes.
+- What the invariant is missing, stated honestly: a reason rotation cannot recur forever. On a
+  finite cycle there are finitely many root fires and rotation just walks them, but `RS.Steps` is
+  Prop-level and lengthless, so even "a cycle has finitely many fires" is unstatable. The natural
+  infrastructure is length-indexed paths — `StepsN n`, minimal cycles, rotation as a
+  length-preserving basepoint shift. That is real machinery (new induction principles, a
+  Prop-to-data bridge), and it should be built as its own stage rather than smuggled in.
+- Ranking: (1) **length-indexed paths**: define `StepsN`, prove the equivalence with `Steps`,
+  and restate rotation as basepoint shift on a minimal-length cycle — the deliverable is the
+  well-foundedness scaffold, not yet the theorem. (2) The third-level shape analysis (what a root
+  redex reachable from `app h r`, `h` an application, forces) — the alternative continuation if
+  the scaffold stalls. (3) C6, declined a seventy-ninth time.

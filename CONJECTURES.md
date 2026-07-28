@@ -3878,3 +3878,29 @@ on strictly smaller terms. The first branch is a rotation, not a descent; the se
 descends but lands on fires not yet known to cycle. Making the rotation formal (every root cycle
 yields a root cycle at each of its return's root fires) is cheap and would close the branch tree
 into a genuine dichotomy: rotate at the same size, or descend into projections.
+
+### Stage 91: rotate or descend — one invariant for the frontier
+
+Stage 90's per-rule anatomies close into a single dichotomy on root cycles. The rotation half is
+three combinators of glue once stated: a whole-term root fire on the return path has `b ⟶* t` and
+`u ⟶* a` around it, and root steps are steps, so `b ⟶* t → u ⟶* a` closes a root cycle THROUGH
+the return's fire — on the same cycle, at the same size. The descent half turned out to be uniform
+across the two rules, which the per-rule anatomies had obscured: for both `S f g x` and `C x y z`,
+the left projection runs from `app h r` — the HEAD argument applied to the LAST argument — to the
+fired term's left component. One statement, no case split in the conclusion:
+
+| | |
+|---|---|
+| `scRootStep_step` / `scRootCycle_of_return_fire` | root steps are steps; the rotation — axiom-free |
+| **`scRootCycle_rotate_or_descend`** | a root cycle contains another root cycle on itself, or its head argument is an application and `app head last` fires a root redex on a strictly smaller term |
+| **`scCycle_rotate_or_descend`** | composed with localization: every `{S,C}` cycle carries a root cycle that rotates or descends — pinned |
+
+Why this is the right frontier statement: rotation is movement among the finitely many root fires
+ON a single cycle; descent leaves the cycle for a strictly smaller term, but lands on a fire not
+known to cycle. Neither branch self-destructs, so rung 3 stays open — but the invariant now has
+the shape of a well-foundedness argument missing exactly one ingredient: a reason rotation cannot
+be taken forever. On a FINITE cycle it cannot (finitely many fires), but `RS.Steps` is Prop-level
+and carries no length, so "finitely many rotations" is not yet a theorem. Length-indexed paths —
+`StepsN n`, minimal-length cycles, rotation preserving total length while shifting basepoint —
+are the missing infrastructure, and the first genuinely new machinery the spine-calculus thread
+has needed since it opened.

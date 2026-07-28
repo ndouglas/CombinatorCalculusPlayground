@@ -369,7 +369,11 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   projections carry root fires (`sc_root_S_anatomy`); a root C-cycle returns through
   a whole-term root step or `x` is an application with the left projection firing
   and `y ⟶* z` (`sc_root_C_anatomy`). Leaf-headed-argument root cycles must return
-  through whole-term root steps. Termination routes are provably dead
+  through whole-term root steps. The frontier invariant is ROTATE OR DESCEND
+  (`scCycle_rotate_or_descend`, Stage 91): every cycle carries a root cycle that
+  either contains another root cycle on itself (through its return's whole-term
+  root fire) or has an app-headed head argument whose `app head last` projection
+  fires a root redex on a strictly smaller term. Termination routes are provably dead
   (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
   the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
   is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine
