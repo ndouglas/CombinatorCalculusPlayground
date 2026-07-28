@@ -4436,3 +4436,27 @@ what automation could and couldn't do. This file is a first-class deliverable
   construction (bracket-style, if the fragment permits) or an impossibility via head-variable
   analysis — both outcomes advance hosting decisively. (2) The 4-cycle stratum, still parked.
   (3) C6, declined a ninetieth time.
+
+## 2026-07-28 — Stage 103: rotation yes, selection no
+
+- The probe promised "either a construction or an impossibility" and delivered both, at different
+  arities. The one-application selector died in three lemmas — fire results have two spine
+  arguments, full stop — while the two-application form turned out to have a witness with the
+  arguments ROTATED: C C u v w ⟶* v w u, found on paper by chasing the forced final fires
+  backwards. The search then confirmed nothing fixes the arrival order up to 9 machine leaves.
+  Pairing in {S,C} is real but rotated; selection is not real at all.
+- A humility entry: my first genealogy 'proof' that arrival-order pairing is impossible missed a
+  predecessor family (fires with compound first arguments creating leaf-left apps) and collapsed
+  on inspection. The corrected tree branches, and I am not close to an invariant that prunes it.
+  Recorded as a conjecture with the census bound, not a theorem — the Stage 98 lesson about
+  bounded evidence anesthetizing cuts both ways: neither over-claim the search nor under-claim
+  the two theorems that did close.
+- SCV earned its place: the pairing question is not statable over closed terms (closed 'atoms'
+  can fire), and the variables-carrier made both theorems three-liners. RS.steps_last (peel the
+  LAST step, dual to head_of_ne) is the reusable yield — the mkElimApp pothole's generic fix for
+  target-shaped, rather than source-shaped, arguments.
+- Ranking: (1) **rotation-discipline data design**: can the tag pipeline's word encoding be
+  rebuilt with rotation protocols — mkWord-style data where every consumer arrives in the middle
+  slot? A paper design first; if it closes, {S,C} hosting gets its data layer and the program's
+  hardest open question gets a real attack. (2) The arrival-order impossibility, if the design
+  stalls and the invariant matures. (3) C6, declined a ninety-first time.

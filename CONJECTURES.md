@@ -4241,3 +4241,27 @@ SK ≤ `{S,C}` must find a subtler invariant than erasure-counting.
 Standing: SK ≤ `{S,C}` remains open in both directions, now with the failure modes of both naive
 routes (impossibility-by-erasure, construction-by-interpreter) mapped. The pairing question is
 the next decidable-feeling probe.
+
+### Stage 103: the pairing probe — rotation yes, selection no
+
+Stage 102's named question, answered in three parts. The probe needed a new carrier — `SCV`,
+`{S,C}` terms over opaque variables, because closed terms are not inert enough to state
+"definable on arbitrary arguments" — and the shape lens then did what it has done all arc:
+
+- **Selection is impossible** (`scv_no_single_selector`, axiom-free, pinned): no machine `T`, at
+  ANY size, reduces `T a s` to `s a`. Every fire result carries two spine arguments, so `s a` is
+  never the result of a step; congruence would need a step landing on a bare variable; the path
+  must be empty, and it is not. Three lemmas, no induction on the machine.
+- **Rotation is definable** (`scRot_beta`, axiom-free, pinned): `C C u v w ⟶* v w u`. So pairing
+  exists UP TO CYCLIC ROTATION of the argument order — a consumer arriving in the MIDDLE slot is
+  applied to both fields.
+- **Arrival-order pairing is open**: no machine `P` with `P a b s ⟶* s a b` up to 9 machine
+  leaves (census). The paper genealogy forces the last two fires (`C s b a`, reached via
+  `C C b s a` or `C (C s) a b`) but the ancestor tree branches beyond; CONJECTURED impossible.
+
+The design consequence for hosting: `{S,C}` data protocols cannot use SK-style selectors, but
+rotation-convention protocols — where the handler is passed in a fixed middle position — survive
+the impossibility. The interpreter route is neither dead nor open as previously stated: it is
+CONSTRAINED to rotation discipline, a design regime with no precedent in the tag pipeline. The
+sharpest formal separation so far between `{S,C}` and every basis the program has hosted
+machines in: SK and {S,K}-fragments select; `{S,C}` only rotates.
