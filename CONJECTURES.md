@@ -4139,3 +4139,36 @@ A pattern note: this is the third consecutive stage where precise formulation di
 inverted the ranked question (96: kill became witness; 98: search became one-liner; 99:
 uniqueness became a second witness plus a two-point classification). Exact accounting keeps
 outperforming intuition about which side of a question is true.
+
+### Stage 100: the hosting question, scoped — and rung 3 embeds in the top
+
+The ranked deliverable was the obstruction analysis for SK ≤ `{S,C}`, and it comes with a formal
+core: the DIRECTION ASYMMETRY is now a theorem. `{S,C} ≤ SK` in the weak certificate class
+(`scInSK : PathEncoding RS.SC RS.SK`, pinned): `C` is implemented by the Stage 76 bracket toolkit
+(`cImpl x y z ⟶* x z y` is one application of `bracketOpt_beta3_Term`), and injectivity reuses
+`siInSK`'s technique with a one-level cascade — `cImpl`'s right component is `K`-headed
+(`cImpl_shape`, by `rfl`), no image is `K` or `K`-headed, done. Every rung of the ladder now
+path-encodes into SK: the taxonomy's upward closure is complete.
+
+The obstruction analysis for the hard direction, recorded honestly — every candidate fails:
+
+1. **Acyclicity refutation**: inapplicable. Stage 96 made `{S,C}` cyclic, which is exactly the
+   necessary condition `not_acyclic_of_pathEncoding` imposes on a host of cyclic SK. The one
+   refutation mechanism the program owns cannot touch the question.
+2. **Leaf reachability**: SK reaches leaves (`K K y ⟶ K`), `{S,C}` cannot — but path encodings
+   land leaves on app-shaped images, so the mismatch does not transport.
+3. **Conservation**: `{S,C}` is non-erasing (morally WN ⇒ SN), SK is not (`K x Ω`) — but
+   normality does not pull back along `path`, so the mismatch does not transport either.
+4. **Cycle-space cardinality**: killed formally this stage — cycles pump through congruence
+   (`sc_cycle_pump`, axiom-free): `app scCycA u` cycles for EVERY `u`, so both systems have
+   infinitely many cycle terms and no counting refutation exists.
+5. **Cycle lengths**: source cycles stretch freely along host paths; `{S,C}`'s missing 2-cycles
+   force nothing.
+
+Conclusion: SK ≤ `{S,C}` is open with NO applicable tool in either direction. A refutation needs
+a genuinely new transportable invariant — something preserved by injective step-to-path maps that
+SK has and `{S,C}` lacks; nothing in the program's inventory qualifies. A certificate needs K's
+erasure encoded inside app-shaped `{S,C}` terms, where the tag pipeline's Simulation machinery is
+the template but the non-erasing host must simulate erasure by parking garbage — the exact
+inverse of the problem `bwd` solved for the tag driver (there the host computed too much; here it
+cannot forget at all). That inversion is the sharpest statement of why the question is hard.

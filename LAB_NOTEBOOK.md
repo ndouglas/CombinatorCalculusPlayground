@@ -4358,3 +4358,28 @@ what automation could and couldn't do. This file is a first-class deliverable
   are the tools; the first deliverable is the obstruction analysis, not the construction.
   (2) The 3-cycle classification blast, if completeness becomes load-bearing. (3) C6, declined
   an eighty-seventh time.
+
+## 2026-07-28 — Stage 100: the asymmetry, made formal
+
+- A century of stages. The hosting scope turned out to have a formalizable half: `{S,C} ≤ SK` fell
+  in a sitting because three old investments composed on contact — the bracket toolkit gave
+  `cImpl` and its β-lemma for free, `siInSK` gave the injectivity technique (its `ne_K` trick
+  needed only `cImpl_shape`, which is `rfl`), and the RS bridge lemmas did the rest. The whole
+  embedding is ~90 lines, and the collision cascade that looked like the risky part stopped at
+  depth one because `cImpl`'s right component happens to be K-headed. I checked that shape by
+  `#eval` before writing a line — verify-before-formalize again.
+- The obstruction analysis (ledger) ends in an inversion worth remembering: the tag pipeline's
+  `bwd` problem was a host that computes TOO MUCH (the driver runs past the source's halt); an
+  SK-into-{S,C} certificate faces a host that cannot FORGET — K's erasure must become garbage
+  parked inside app-shaped encodings forever. The two hard problems of this program are dual, and
+  the parking version has no template yet. Also recorded: nothing in the inventory transports as
+  a refutation invariant, so the question is genuinely open in both directions — the honest state
+  is "no tool," not "no answer yet with known tools."
+- `sc_cycle_pump` is three lines and axiom-free, and it preempts a whole family of tempting
+  finite-counting arguments. Cheap prophylaxis against future wrong rankings.
+- Ranking: (1) **the classification blast** (every root 3-cycle is a rotation of the h- or
+  w-cycle) — now the only specified-and-bounded item left on rung 3, and the completeness would
+  make the cycle-space description exact; take it if a full sitting is available. (2) **garbage
+  parking**: sketch what a K-erasure encoding into a non-erasing host would even look like on the
+  two-cell tag alphabet — a design probe, not a construction. (3) C6, declined an
+  eighty-eighth time.
