@@ -1847,3 +1847,59 @@ theorem sc_root_S_projection_length {f g x : SCTerm} {k : Nat}
   rcases sc_root_S_return_length hback with h | ⟨kL, kR, _, _, hsum, hkL, hkR⟩
   · exact absurd h hnoroot
   · omega
+
+-- ## Stage 96: RUNG 3 IS CYCLIC — the {S,C} three-cycle
+-- The 3-cycle question, answered by a WITNESS. Stage 95's budgets said an S-rooted 3-cycle must
+-- carry two root fires among its three steps; chasing that surviving branch through the
+-- injections (fire one S, fire two C, an appL C-fire closing) leaves one consistent assignment,
+-- and it is inhabited. With `h = C S C`:
+--
+--     S (C h) C h  ⟶S  (C h h) (C h)  ⟶C  h (C h) h  ⟶C·appL  S (C h) C h
+--
+-- Nine leaves — three above the census horizon. So `{S,C}` is CYCLIC: the last open rung of the
+-- acyclicity ladder closes OPPOSITE to `{S,B}`, the minimal cycle length is exactly three
+-- (Stages 93–94's kills were complete), and `PathEncoding.refute_of_acyclic` can never apply to
+-- `{S,C}` — the acyclicity route to refuting SK-hosting there is closed off, permanently. Every
+-- necessary condition of Stages 81–95 is (consistently) satisfied by the witness: both C-fires
+-- are FLAT (`ρ(y) ≤ ρ(z)`), the cycle passes through root redexes, carries a second fire, and
+-- its S-rooted return holds exactly two fires.
+
+/-- The seed: `h = C S C`. -/
+def scCycH : SCTerm := .app (.app .C .S) .C
+
+/-- `S (C h) C h`. -/
+def scCycA : SCTerm := .app (.app (.app .S (.app .C scCycH)) .C) scCycH
+
+/-- `C h h (C h)`. -/
+def scCycB : SCTerm := .app (.app (.app .C scCycH) scCycH) (.app .C scCycH)
+
+/-- `h (C h) h`. -/
+def scCycC : SCTerm := .app (.app scCycH (.app .C scCycH)) scCycH
+
+theorem scCycA_step : SCStep scCycA scCycB := SCStep.S_red (.app .C scCycH) .C scCycH
+
+theorem scCycB_step : SCStep scCycB scCycC := SCStep.C_red scCycH scCycH (.app .C scCycH)
+
+theorem scCycC_step : SCStep scCycC scCycA :=
+  SCStep.appL (SCStep.C_red .S .C (.app .C scCycH))
+
+/-- **RUNG 3 IS CYCLIC**: `{S,C}` has a genuine reduction cycle, of length three. -/
+theorem SC_cycle : RS.SC.StepsN 3 scCycA scCycA :=
+  RS.StepsN.tail scCycA_step (RS.StepsN.tail scCycB_step
+    (RS.StepsN.tail scCycC_step (@RS.StepsN.refl RS.SC scCycA)))
+
+/-- The ladder answer: `{S,C}` is NOT acyclic. -/
+theorem SC_not_acyclic : ¬ RS.Acyclic RS.SC := by
+  intro h
+  exact h scCycA_step (RS.Steps.tail scCycB_step
+    (RS.Steps.tail scCycC_step (@RS.Steps.refl RS.SC scCycA)))
+
+/-- The minimal cycle length is EXACTLY three: Stages 93–94's kills were complete. -/
+theorem sc_minimal_cycle_length :
+    (∃ t, RS.SC.StepsN 3 t t) ∧ ∀ n t, 1 ≤ n → RS.SC.StepsN n t t → 3 ≤ n :=
+  ⟨⟨scCycA, SC_cycle⟩, fun _ _ h1 h => sc_cycle_length_ge_three h1 h⟩
+
+-- The witness sits three leaves above the census horizon, and its C-fires are FLAT — exactly the
+-- step kind `scCycle_needs_flat_C` said every cycle must contain and no measure could punish.
+example : scCycA.leafCount = 9 := rfl
+example : rightDepthC scCycH ≤ rightDepthC (SCTerm.app .C scCycH) := by decide

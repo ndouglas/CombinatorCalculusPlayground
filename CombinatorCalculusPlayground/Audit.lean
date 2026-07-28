@@ -103,3 +103,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_root_S_return_length' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_root_S_return_length
+
+/-- info: 'SC_cycle' does not depend on any axioms -/
+#guard_msgs in #print axioms SC_cycle
+
+/-- info: 'SC_not_acyclic' does not depend on any axioms -/
+#guard_msgs in #print axioms SC_not_acyclic
+
+/-- info: 'sc_minimal_cycle_length' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_minimal_cycle_length
