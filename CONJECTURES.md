@@ -3585,3 +3585,22 @@ layer, shell-invariant instantiation, `bwd`, and the assembled `Simulation` plus
 `Fin n` discharge of the interface via Stage 76–77's selectors (`selArgs_normal` ✓,
 `selArgs_injective` ✓, `dispatchT_correct` ✓ — plus the rule-table bookkeeping), and then citing any
 universal table from the literature is construction, not mechanism.
+
+### Stage 79: the `Fin n` discharge — every finite-alphabet 2-tag system, hosted
+
+**`finTagInSK (n) (rule) : Simulation (RS.Tag ⟨Fin n, 2, rule⟩) RS.SK`** — every deletion-number-2
+tag system over a finite alphabet is certifiably hosted inside SK, with `universalReach_finTag` the
+taxonomy certificate. Each concrete known-universal 2-tag system from the literature is now an
+instance of a machine-checked theorem; citing one is bibliography, not mathematics.
+
+| | |
+|---|---|
+| `finEncS` / `finEncS_normal` / `finEncS_injective` | symbols as selectors, table-ordered — Stage 76–77's lemmas discharge normality and injectivity |
+| `kDepth` / `kDepth_selArgs` / `finDecS` | the decoder COUNTS `K`-WRAPS: a selector's wrap-depth is its symbol index, and off-image garbage is harmless because `dec_enc` is the whole spec |
+| `table_decomp` / `finRULE` | the take/drop bookkeeping, done once: any table position splits into pre/post of the right lengths, and `dispatchT_correct` does the rest |
+
+**The SEVENTH `Classical.choice` leak — caught by the build-enforced audit, one stage after the
+audit was built.** And it came through a NEW door: `omega` closing a NON-ARITHMETIC goal (the
+existential, from contradictory hypotheses) routes through `Classical.choice` — six leaks came via
+`BEq`/`simp`, this one via `omega`'s exfalso path. Fix: `absurd hs (Nat.not_lt_zero s)`. The audit
+file paid for itself before its first birthday.

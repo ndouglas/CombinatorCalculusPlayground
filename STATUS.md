@@ -65,6 +65,7 @@ substantive rather than bookkeeping.
 | a `Simulation` whose source is known-universal | `universalReach_extend` |
 | **a `Simulation` of a genuine multi-step machine INSIDE SK** | `countdownInSK` |
 | **a `Simulation` of a genuine TAG SYSTEM inside SK — the open item, closed** | `tagABInSK`, `universalReach_tagAB_SK` |
+| **...generalised: EVERY finite-alphabet 2-tag system is hosted** | `tagTInSK`, `finTagInSK`, `universalReach_finTag` |
 
 **Negative controls** — what the definitions would collapse to if loosened:
 `bareEncNorm_trivial` (an oracle encoder witnesses unpinned normalization-based
@@ -198,14 +199,17 @@ version is the claim.
 plainly: *"if Stage 5 never terminates, the notebook is the result."*
 `LAB_NOTEBOOK.md` is that deliverable. Its most transferable content:
 
-- **Six `Classical.choice` leaks** (the fifth in Stage 69 — Stage 9's `BEq`
+- **Seven `Classical.choice` leaks** (the fifth in Stage 69 — Stage 9's `BEq`
   trap again, sixty stages later, in a file that quotes it; the SIXTH in
   Stage 76 was PRE-EXISTING — `occurs_bracket`'s `grind` had leaked since it
   was written, tainting `combinatory_completeness`, and was found only when
   new code imitated the old tactic). Five caught by a per-stage
   `#print axioms`; the sixth showed per-stage auditing certifies stages, not
   the tree — so the claim is now BUILD-ENFORCED (`Audit.lean` pins every
-  headline theorem's exact footprint with `#guard_msgs`)
+  headline theorem's exact footprint with `#guard_msgs`). The SEVENTH leak
+  (Stage 79) was caught by that audit one stage after it was built, and came
+  through a new door: `omega` aimed at a non-arithmetic goal routes through
+  `Classical.choice`
   audit and none by review, all originating in core's `BEq`/instance layer or in
   `omega` discharging a non-arithmetic goal. Three were fixed by rewriting; the
   fourth was resolved by *weakening a decorative claim* rather than paying the
@@ -413,8 +417,15 @@ in the slots, not the steps.
 Honest scope, unchanged in kind since Stage 16: `tagAB` belongs to the
 Cocke–Minsky universal CLASS (m = 2), but this two-symbol instance is not
 itself proven universal and no such claim is made. Spec piece (v) — a
-tag-step driver with a real `Simulation` — is discharged in full; scaling
-the alphabet to a known-universal instance is construction, not mechanism.
+tag-step driver with a real `Simulation` — is discharged in full.
+
+**Stages 76–79 completed the scaling**: `tagTInSK` (any m = 2 system, given
+a four-hypothesis dispatch interface) and `finTagInSK` (the interface
+discharged for every `Fin n` alphabet via selectors). Every concrete
+known-universal 2-tag system in the literature is an instance of a
+machine-checked theorem; universality of any particular table remains
+EXTERNAL knowledge, cited not checked, as the repository has always
+scoped it.
 
 The original framing follows, for the record.
 

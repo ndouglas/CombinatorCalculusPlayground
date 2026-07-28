@@ -3787,3 +3787,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   connecting `dispatchT_correct`'s pre/post form to table positions is the only real work. That
   yields `Simulation (RS.Tag T) RS.SK` for every 2-tag system over `Fin n`, subsuming all concrete
   universal instances at once. (2) rungs 2/3 via match-bounds. (3) C6, declined a sixty-sixth time.
+
+## 2026-07-27 — Stage 79: bibliography, not mathematics
+
+- `finTagInSK`: every 2-tag system over `Fin n` is certifiably hosted inside SK. The known-universal
+  agenda is closed at the mechanism level — any concrete universal table from the literature
+  (Cocke–Minsky's constructions, or any later small universal 2-tag system) is an instance of a
+  machine-checked theorem, and citing one is bibliography, not mathematics. The stage itself was the
+  promised bookkeeping: symbols as selectors with the index arithmetic arranged so the rule table
+  reads in natural order, a decoder that counts `K`-wraps (correct on the image, garbage elsewhere,
+  and the spec only ever asks about the image), and one take/drop decomposition lemma.
+- The build-enforced audit earned its existence ONE STAGE after being built: `finTagInSK` came out
+  carrying `Classical.choice`, the `#guard_msgs` pin failed the build, and the bisect found leak
+  seven — through a door none of the previous six used. `omega`, aimed at a goal that is not
+  arithmetic (an existential, discharged from contradictory hypotheses), routes through
+  `Classical.choice`. Every previous leak came through `BEq`-adjacent `simp`; I would not have
+  re-audited an `omega` line by habit, and the per-stage habit is exactly what the audit no longer
+  relies on. The rule extracted: give `omega` arithmetic goals only; for absurdity with a
+  non-arithmetic goal, `absurd` with the named contradiction.
+- Seven leaks, seven mechanisms visible in one list now: instance-layer `simp` (×5 variants),
+  `grind`, `omega`-exfalso. The trail is starting to look less like carelessness and more like a
+  survey of where classical logic hides in a proof assistant's automation — which may be worth a
+  paragraph in whatever Goal 4 eventually becomes.
+- Ranking: (1) **STATUS and the spec ledger**: the open item's closure is now total (general theorem
+  + finite-alphabet instantiation); update the accounting and consider what remains of the program's
+  original spec — rungs 2/3 and C6 are the only live items. (2) rungs 2/3 via match-bounds. (3) C6,
+  declined a sixty-seventh time.
