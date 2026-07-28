@@ -362,8 +362,11 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
   the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
   is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine
-  word (`scSpine_S_root`, `scSpine_C_root`). Censused clean to 6 leaves under any
-  strategy.
+  word (`scSpine_S_root`, `scSpine_C_root`) — and its first theorem is in
+  (`sc_no_leaf_self_embed`, Stage 87): no `{S,C}` term reduces to itself applied
+  under a leaf, `¬(x ⟶* ℓ x)`, because both root rules freeze the left component as
+  an application ({S,C}-specific: `B` exposes leaf lefts). Censused clean to 6 leaves
+  under any strategy.
 
 **Shared machinery.** Every acyclic-fragment result above — and C2's original argument —
 is an instance of one lemma, `RS.Acyclic.of_three_level`: three measures where each level

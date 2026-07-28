@@ -3989,3 +3989,34 @@ what automation could and couldn't do. This file is a first-class deliverable
   live mathematical thread, to be picked up in sittings that can afford dead ends. (2) C6, declined
   a seventy-fourth time — and if the ranking is ever otherwise empty, C6's decline count is itself
   the argument to finally probe it or formally retire it.
+
+## 2026-07-28 — Stage 87: the frozen left
+
+- First sitting of the deliberate long-horizon thread, and it paid immediately — not with a
+  measure but with a SHAPE invariant: every `{S,C}` step result is an application, and both root
+  rules produce app-headed lefts. I had stared at `(f x)(g x)` and `(x z) y` for five stages
+  without noticing they agree on this, because every previous lens asked "what number goes down?"
+  rather than "what shape is forced?" The measure sweeps of Stages 84–85 were not wasted — they
+  are why I trust that no number works — but the working lesson is that impossibility sweeps over
+  a FAMILY of arguments should end with the question "what do the counterexamples all still
+  satisfy?"
+- The theorem: `sc_no_leaf_self_embed`, `¬(x ⟶* ℓ x)` for any leaf `ℓ` — unconditional, and
+  genuinely `{S,C}`-specific, since `B x y z ⟶ x (y z)` exposes leaf lefts and the argument dies
+  on `{S,B}` (correctly: rung 2 needed ρ instead). Proof is the path dichotomy: a root step
+  freezes the left as an app forever, so the target `ℓ x` is unreachable on that branch; the
+  rootless branch forces `x = ℓ x₁` and descends on `leafCount`.
+- Two Lean potholes, both now recorded in the commit: anonymous `.app` dot-notation fails wherever
+  the expected type is `RS.Carrier ?m` rather than syntactic `SCTerm` (write `SCTerm.app`); and
+  `subst hf` with `hf : f = ℓ` eliminated `ℓ` — subst removes the RHS variable — orphaning every
+  later `ℓ`. The fix that generalizes: rewrite with the equation instead of substituting when both
+  sides are live locals. Also: RS.Steps recursion at a concrete instance with an implication
+  motive wants `refine h.rec (motive := ...) ?_ ?_` with tactic holes; `exact` with inline premise
+  lambdas leaves the motive metavariable unassigned while the premises elaborate.
+- Filed as the spine calculus's first result, not a sixth cycle condition — it kills a family of
+  return paths (leaf-over-self embeddings) rather than constraining every cycle. The honest next
+  step is to connect it: push `sc_cycle_needs_root`'s case analysis one level deeper at a root-C
+  redex and count which branches now die on this theorem.
+- Ranking: (1) **the second-level root-cycle analysis for rung 3**: expand the return-path cases
+  at a root C-redex and apply the frozen-left theorem to the leaf-headed branches; the deliverable
+  is either a sixth necessary condition or a precise inventory of which return shapes remain
+  unkilled. (2) C6, declined a seventy-fifth time.

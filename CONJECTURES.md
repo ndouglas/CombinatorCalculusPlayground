@@ -3765,3 +3765,31 @@ What remains live in the original spec: rung 3 (genuine open research, honestly 
 route recorded) and C6 (declined seventy-three times on materiality). The program's headline
 sentence is unchanged and now rests on a fully calibrated instrument: **if S alone is universal,
 its encoding must be non-injective or must fail to preserve reduction paths.**
+
+### Stage 87: the frozen left — the spine calculus's first theorem
+
+The spine calculus opened with an invariant both measure families overlooked, because it is not a
+measure: every `{S,C}` step RESULT is an application, and both root rules produce an APP-HEADED
+LEFT component — S yields `(f x)(g x)`, C yields `(x z) y`. This is `{S,C}`-specific structure:
+`{S,B}`'s `B x y z ⟶ x (y z)` can expose a leaf left, so the invariant marks a real dividing line
+between the two rungs rather than a generic fact about applicative rewriting. Once the left is an
+application it stays one (`appL` steps land on apps; `appR` steps don't touch it), so any path
+containing a root step can never end at a term of shape `ℓ x` with `ℓ` a leaf. The path dichotomy
+then leaves only the rootless spine branch, which forces `x = ℓ x₁` with `x₁ ⟶* ℓ x₁` — a strict
+descent in `leafCount`. Hence, unconditionally:
+
+| | |
+|---|---|
+| `scStep_result_isApp` | every step lands on an application — axiom-free |
+| `sc_steps_to_leaf` | leaves are unreachable: a path ending at a non-application is empty — axiom-free |
+| `scRootStep_left_app` | both root rules make the left component an application — axiom-free |
+| `scStep_leftApp` / `scSteps_leftApp` | app-headedness of the left is invariant ever after — axiom-free |
+| **`sc_no_leaf_self_embed`** | **no `{S,C}` term reduces to itself under a leaf: `¬(x ⟶* ℓ x)`** — `[propext, Quot.sound]`, pinned in Audit.lean |
+
+This is exactly the target shape the second-level root-cycle analysis produces: a root-C cycle's
+return path forces self-embeddings `x = C x₁`-style where a leaf sits over the recurring term, and
+those are now closed off wholesale. The theorem is not itself a cycle condition — it kills a
+FAMILY of return paths rather than constraining every cycle — which is why it is filed as the
+spine calculus's first result rather than a sixth necessary condition. The next connection to make:
+drive the root-cycle case analysis (`sc_cycle_needs_root`) one level deeper and count how many of
+its branches terminate in a leaf-self-embedding.
