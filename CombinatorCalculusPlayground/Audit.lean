@@ -85,3 +85,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scRootCycle_rotate_same_length' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scRootCycle_rotate_same_length
+
+/-- info: 'sc_minimal_cycle_is_root' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_minimal_cycle_is_root
+
+/-- info: 'sc_cycle_length_ge_two' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_cycle_length_ge_two

@@ -1436,3 +1436,150 @@ theorem scRootCycle_rotate_same_length {t u a b : SCTerm} {k l : Nat} (hr : SCRo
     exact he ▸ ct
   · have he : l + (k + (0 + 1) + 1) = k + l + 2 := by omega
     exact he ▸ cb
+
+-- ## Stage 93: minimal cycles are root cycles — localization spends no length
+-- The scaffold's first purchase. Stage 81's localization descends through projections to find a
+-- root cycle, but its output forgets how long the found cycle is; against the descent engine that
+-- is a wasted asset. This stage redoes the dichotomy and the localization in `StepsN` form: a
+-- cycle of length `n` yields a root cycle of TOTAL length ≤ n — and on a MINIMAL cycle the
+-- inequality is forced to equality, so minimal cycles may be assumed root cycles outright. Two
+-- small teeth for the atlas come along: no step is a self-loop, so minimal cycles have length ≥ 2.
+
+/-- No step is a self-loop. -/
+theorem scStep_irrefl_aux : ∀ (n : Nat) (t : SCTerm), t.leafCount ≤ n → ¬ SCStep t t := by
+  intro n
+  induction n with
+  | zero =>
+      intro t hle _
+      exact absurd hle (by have := scLeaf_pos t; omega)
+  | succ n ih =>
+      intro t hle h
+      rcases scStep_cases h with hroot | ⟨f, x, f', heq1, heq2, hs⟩ | ⟨f, x, x', heq1, heq2, hs⟩
+      · cases hroot
+      · subst heq1
+        injection heq2 with h1 h2
+        subst h1
+        have hf : f.leafCount ≤ n := by
+          have := scLeaf_pos x
+          have hs2 : f.leafCount + x.leafCount ≤ n + 1 := hle
+          omega
+        exact ih f hf hs
+      · subst heq1
+        injection heq2 with h1 h2
+        subst h2
+        have hx : x.leafCount ≤ n := by
+          have := scLeaf_pos f
+          have hs2 : f.leafCount + x.leafCount ≤ n + 1 := hle
+          omega
+        exact ih x hx hs
+
+theorem scStep_irrefl (t : SCTerm) : ¬ SCStep t t :=
+  scStep_irrefl_aux t.leafCount t (Nat.le_refl _)
+
+/-- Zero-length paths go nowhere. -/
+theorem RS.stepsN_zero_eq {A : RS} {a b : A.Carrier} (h : A.StepsN 0 a b) : a = b := by
+  cases h
+  rfl
+
+/-- One-length paths are steps. -/
+theorem RS.stepsN_one_step {A : RS} {a b : A.Carrier} (h : A.StepsN 1 a b) : A.step a b := by
+  cases h with
+  | tail s rest => exact (RS.stepsN_zero_eq rest) ▸ s
+
+/-- Cycles of length one do not exist. -/
+theorem sc_no_one_cycle {t : SCTerm} (h : RS.SC.StepsN 1 t t) : False :=
+  scStep_irrefl t (RS.stepsN_one_step h)
+
+/-- Every nonempty `{S,C}` cycle has length at least 2. -/
+theorem sc_cycle_length_ge_two {n : Nat} {t : SCTerm} (h1 : 1 ≤ n)
+    (hcyc : RS.SC.StepsN n t t) : 2 ≤ n := by
+  rcases Nat.lt_or_ge n 2 with h2 | h2
+  · have hn : n = 1 := by omega
+    subst hn
+    exact (sc_no_one_cycle hcyc).elim
+  · exact h2
+
+/-- The path dichotomy, with lengths: a root sandwich accounting for every step, the empty path,
+or a projection whose component lengths SUM to the whole. -/
+theorem sc_stepsN_facts : ∀ {n : Nat} {t u : SCTerm}, RS.SC.StepsN n t u →
+    (∃ k₁ k₂ a b, SCRootStep a b ∧ RS.SC.StepsN k₁ t a ∧ RS.SC.StepsN k₂ b u ∧ k₁ + 1 + k₂ = n)
+    ∨ (n = 0 ∧ t = u)
+    ∨ (∃ nf nx f x f' x', t = SCTerm.app f x ∧ u = SCTerm.app f' x' ∧ RS.SC.StepsN nf f f'
+        ∧ RS.SC.StepsN nx x x' ∧ nf + nx = n) := by
+  intro n t u h
+  refine h.rec (motive := fun n t u _ =>
+      (∃ k₁ k₂ a b, SCRootStep a b ∧ RS.SC.StepsN k₁ t a ∧ RS.SC.StepsN k₂ b u ∧ k₁ + 1 + k₂ = n)
+      ∨ (n = 0 ∧ t = u)
+      ∨ (∃ nf nx f x f' x', t = SCTerm.app f x ∧ u = SCTerm.app f' x' ∧ RS.SC.StepsN nf f f'
+          ∧ RS.SC.StepsN nx x x' ∧ nf + nx = n)) ?_ ?_
+  · intro a
+    exact Or.inr (Or.inl ⟨rfl, rfl⟩)
+  · intro m a b c s rest ih
+    rcases scStep_cases s with hroot | ⟨f, x, f', heq1, heq2, hs⟩ | ⟨f, x, x', heq1, heq2, hs⟩
+    · exact Or.inl ⟨0, m, a, b, hroot, @RS.StepsN.refl RS.SC a, rest, by omega⟩
+    · subst heq1; subst heq2
+      rcases ih with ⟨k₁, k₂, p, q, hr, h1, h2, hsum⟩ | ⟨hm0, heqbc⟩
+        | ⟨nf, nx, g, y, g', y', heqb, heqc, pf2, px2, hsum⟩
+      · exact Or.inl ⟨k₁ + 1, k₂, p, q, hr, RS.StepsN.tail s h1, h2, by omega⟩
+      · exact Or.inr (Or.inr ⟨1, 0, f, x, f', x, rfl, heqbc.symm,
+          RS.StepsN.tail hs (@RS.StepsN.refl RS.SC f'), @RS.StepsN.refl RS.SC x, by omega⟩)
+      · injection heqb with hg hy
+        subst hg; subst hy
+        exact Or.inr (Or.inr ⟨nf + 1, nx, f, x, g', y', rfl, heqc,
+          RS.StepsN.tail hs pf2, px2, by omega⟩)
+    · subst heq1; subst heq2
+      rcases ih with ⟨k₁, k₂, p, q, hr, h1, h2, hsum⟩ | ⟨hm0, heqbc⟩
+        | ⟨nf, nx, g, y, g', y', heqb, heqc, pf2, px2, hsum⟩
+      · exact Or.inl ⟨k₁ + 1, k₂, p, q, hr, RS.StepsN.tail s h1, h2, by omega⟩
+      · exact Or.inr (Or.inr ⟨0, 1, f, x, f, x', rfl, heqbc.symm,
+          @RS.StepsN.refl RS.SC f, RS.StepsN.tail hs (@RS.StepsN.refl RS.SC x'), by omega⟩)
+      · injection heqb with hg hy
+        subst hg; subst hy
+        exact Or.inr (Or.inr ⟨nf, nx + 1, f, x, g', y', rfl, heqc,
+          pf2, RS.StepsN.tail hs px2, by omega⟩)
+
+/-- Localization with lengths: a cycle of length `n` yields a root cycle of total length ≤ `n`. -/
+theorem sc_cycle_root_length_aux : ∀ (size : Nat), ∀ (n : Nat) (t : SCTerm),
+    t.leafCount ≤ size → 1 ≤ n → RS.SC.StepsN n t t →
+    ∃ a b k, SCRootStep a b ∧ RS.SC.StepsN k b a ∧ k + 1 ≤ n := by
+  intro size
+  induction size with
+  | zero =>
+      intro n t hle _ _
+      exact absurd hle (by have := scLeaf_pos t; omega)
+  | succ size ih =>
+      intro n t hle h1 hcyc
+      rcases sc_stepsN_facts hcyc with ⟨k₁, k₂, a, b, hr, hta, hbt, hsum⟩ | ⟨hn0, _⟩
+        | ⟨nf, nx, f, x, f', x', heq1, heq2, pf, px, hsum⟩
+      · exact ⟨a, b, k₂ + k₁, hr, RS.StepsN.trans hbt hta, by omega⟩
+      · subst hn0
+        exact absurd h1 (Nat.not_succ_le_zero 0)
+      · subst heq1
+        injection heq2 with hf hx
+        subst hf; subst hx
+        have hsize : f.leafCount + x.leafCount ≤ size + 1 := hle
+        rcases Nat.lt_or_ge 0 nf with hnf | hnf
+        · obtain ⟨a, b, k, hr, hret, hk⟩ :=
+            ih nf f (by have := scLeaf_pos x; omega) (by omega) pf
+          exact ⟨a, b, k, hr, hret, by omega⟩
+        · obtain ⟨a, b, k, hr, hret, hk⟩ :=
+            ih nx x (by have := scLeaf_pos f; omega) (by omega) px
+          exact ⟨a, b, k, hr, hret, by omega⟩
+
+/-- The packaged form. -/
+theorem sc_cycle_needs_root_length {n : Nat} {t : SCTerm} (h1 : 1 ≤ n)
+    (hcyc : RS.SC.StepsN n t t) :
+    ∃ a b k, SCRootStep a b ∧ RS.SC.StepsN k b a ∧ k + 1 ≤ n :=
+  sc_cycle_root_length_aux t.leafCount n t (Nat.le_refl _) h1 hcyc
+
+/-- **MINIMAL CYCLES ARE ROOT CYCLES**: if `n` is the least nonempty cycle length, some root
+cycle has EXACTLY that length — localization spends no length on a minimal cycle, so any descent
+argument may assume its minimal cycle fires at the root. -/
+theorem sc_minimal_cycle_is_root {n : Nat} {t : SCTerm} (h1 : 1 ≤ n)
+    (hcyc : RS.SC.StepsN n t t)
+    (hmin : ∀ m u, 1 ≤ m → RS.SC.StepsN m u u → n ≤ m) :
+    ∃ a b k, SCRootStep a b ∧ RS.SC.StepsN k b a ∧ k + 1 = n := by
+  obtain ⟨a, b, k, hr, hret, hle⟩ := sc_cycle_needs_root_length h1 hcyc
+  have hcyc' : RS.SC.StepsN (k + 1) a a := RS.StepsN.tail (scRootStep_step hr) hret
+  have := hmin (k + 1) a (by omega) hcyc'
+  exact ⟨a, b, k, hr, hret, by omega⟩
