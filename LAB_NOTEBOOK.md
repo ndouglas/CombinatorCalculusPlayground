@@ -4237,3 +4237,37 @@ what automation could and couldn't do. This file is a first-class deliverable
   (minimal length ≥ 4) or an explicit near-cycle shape worth staring at. (2) The minimal-cycle
   synthesis: compose every constraint since Stage 81 into one characterization theorem of the
   minimal cycle. (3) C6, declined an eighty-third time.
+
+## 2026-07-28 — Stage 96: the day the hunt turned out to be a search
+
+- I set out to kill 3-cycles and instead FOUND one. The moment worth recording precisely: working
+  Stage 95's surviving branch (S-rooted, two fires, budgets 0+1+1) through the injections on
+  paper, each equation ate a degree of freedom — g = C, f = C h, x = h, h = C S C — until nothing
+  was free, and the remaining question was not "is this impossible?" but "is this term a cycle?"
+  A ten-line Python check said yes before any Lean was written. With h = C S C:
+  S (C h) C h → C h h (C h) → h (C h) h → S (C h) C h. Nine leaves. The census had stopped at six.
+- Rung 3 is CYCLIC, the ladder is finished, and sixteen stages of impossibility work read
+  differently in hindsight: they were a SEARCH PROCEDURE. The measures that failed, the fragments
+  that were acyclic, the six necessary conditions — each narrowed the address of a cycle that was
+  always there. The budgets of Stage 95 were the final constraint: they specified the witness up
+  to unification. I do not think I could have found this term by staring; the impossibility
+  scaffolding found it by making every wrong shape provably wrong.
+- Two disciplines earned this: (1) verify-before-formalize — the Python check cost a minute and
+  meant the Lean was transcription, three constructor applications, axiom-free; (2) the arc's
+  insistence on EXACT budgets (k₁ + 1 + k₂ = n, not ≤) — with slack inequalities the branch
+  would have stayed a fog instead of collapsing to one assignment.
+- Humility entries: the ledger's "structurally unlike rung 2" was righter than intended — not
+  just a different proof, an OPPOSITE verdict. And Stage 84's "the C rule is a genuine permuter,
+  no function of right-position alone is monotone" was the cycle speaking: flat C-fires are
+  where it lives, and both of the witness's C-fires are flat. The conjecture implicit in the hunt
+  (rung 3 acyclic like rung 2) was WRONG, and every theorem proved along the way is still true —
+  the program's method (prove conditions, not conclusions) is what let the wrong conjecture die
+  cheaply.
+- What remains: whether {S,C} hosts SK is now open in the other direction — cyclicity removes
+  the refutation mechanism, making {S,C} a candidate host like rung 1's {S,I}. The spine
+  calculus closes as a success: its theorems cornered the witness.
+- Ranking: (1) **the program review**: rung 3's closure changes STATUS's ladder summary, the
+  spec's open-problems list, and the headline sentence's supporting cast; the review is overdue
+  the moment a goal-level result lands. (2) **{S,C} as host**: probe whether the rung-1 upward-
+  closure argument (a definable I inherits cycles) has an analogue — does {S,C} define an
+  I-like combinator, and does SK path-encode into {S,C}? (3) C6, declined an eighty-fourth time.

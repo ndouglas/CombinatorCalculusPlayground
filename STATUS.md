@@ -292,7 +292,7 @@ against in Stage 16.
 | 0 | `{S}` | **acyclic** (`no_pure_S_cycle`); hence refuted as a host of SK |
 | 1 | `{S,I}` | **cyclic** (`omegaSI_cycle`). NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) — so the mechanism is not merely unhelpful here, it is provably inapplicable |
 | 2 | `{S,B}` | **CLOSED — ACYCLIC (Stage 83: `SB_acyclic`), hence CANNOT HOST SK (`no_pathEncoding_SK_SB`).** The right-spine depth never decreases along any step and strictly increases at root steps; Stage 81's localization supplies the root step on every cycle. Subsumes all fragment results and census bounds. The route: 80 typechecked (termination dead), 81 localized (root steps forced), 82 dichotomized, 83 closed | No counting measure is monotone (`no_monotone_counting_measure`). No cycle under **any** strategy up to 8 leaves within a 30-leaf cap, cap-insensitive to 120 (`onCycleAny`); the cap is not liftable by brute force. **τ strictly drops on every B-reduction and every τ-light S-reduction, so the τ-light fragment is ACYCLIC** (`sbLight_acyclic`) — hence any cycle must fire an S-reduction duplicating a τ-**heavy** argument (`sbCycle_needs_heavy_S`) |
-| 3 | `{S,C}` | **open; termination-based routes CLOSED (`SC_not_normalizing`); Stage 81 root-cycle reduction (`sc_acyclic_of_no_root_cycle`); Stage 84: the strictly-tame fragment is acyclic (`scTame_acyclic`), so any cycle fires a FLATTENING `C` (`scCycle_needs_flat_C`) — the fourth necessary condition, first positional one. Structurally UNLIKE rung 2 (ρ is not monotone under permutation). Stage 85: the τ×ρ braid PROVABLY fails (the necessary flat-C steps are τ-unconstrained, witnessed); the spine calculus — S is tail-preserving, C tail-replacing on the right-spine word (`scSpine_S_root`, `scSpine_C_root`) — is the recorded long-horizon route. Five necessary conditions, two impossibility sweeps.** `C x y z → x z y` has the same `leafCount` delta as `B` (−1), so no counting measure separates them — but τ does: B always lowers τ, **C can raise it** (`tauSC_C_red`, delta `τ(z)−τ(y)−8`), because permuting moves a heavy argument into a lighter position. So the light fragment needs **two** conditions (`scLight_acyclic`). Censused: no cycle up to 6 leaves under any strategy within a 30-leaf cap |
+| 3 | `{S,C}` | **CLOSED — CYCLIC (Stage 96: `SC_cycle`, `SC_not_acyclic`, axiom-free witness).** With `h = C S C`: `S (C h) C h ⟶ C h h (C h) ⟶ h (C h) h ⟶ S (C h) C h` — a 3-cycle, 9 leaves, found by CHASING THE SURVIVING BRANCH of the impossibility hunt (Stage 95's budgets forced any S-rooted 3-cycle to carry two fires; the one consistent assignment is inhabited). Minimal cycle length is EXACTLY 3 (`sc_minimal_cycle_length`). So `{S,C}` closes OPPOSITE to `{S,B}`, and `PathEncoding.refute_of_acyclic` can never apply — the acyclicity route to refuting `{S,C}` as an SK host is permanently closed. Every necessary condition of Stages 81–95 is satisfied by the witness (both C-fires flat, root fires present, second fire present). The census stopped at 6 leaves; the witness sits at 9 |
 | top | `{S,K}` | **cyclic** — by the Ω ↔ M cycle, and independently by inheritance from rung one (`SK_not_acyclic_via_rung1`) |
 
 **A standing caveat on census evidence here.** Cycle hunts based on a single
@@ -317,8 +317,9 @@ independent of the Ω ↔ M cycle, so the two agree.
 ### What each rung has ESTABLISHED
 
 The spec's purpose for a rung is *"a publishable partial result that narrows where
-universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 only as
-"open" understates them against that purpose, so here is what each has delivered.
+universality is lost"* — not a full acyclicity proof. Every rung is now SETTLED
+(rungs 2 and 3 closed in opposite directions, Stages 83 and 96); here is what each
+has delivered.
 
 - **Rung 0 `{S}`** — acyclicity PROVED (`no_pure_S_cycle`), and refuted as an SK host.
   Also a genuine decision procedure for reachability, because monotonicity confines
@@ -353,7 +354,17 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   99.6% of 8-leaf terms survive — because it constrains a cycle's *steps*, not a
   search's *seeds*. Pruning during exploration is also unavailable: it would need a
   localizable unreachability certificate, and these constraints are global sums.)
-- **Rung 3 `{S,C}`** — the last open rung, now carrying SIX necessary conditions and
+- **Rung 3 `{S,C}`** — **CLOSED at Stage 96: CYCLIC (`SC_cycle`, `SC_not_acyclic` —
+  axiom-free witness; minimal cycle length EXACTLY 3, `sc_minimal_cycle_length`).**
+  With `h = C S C`, the 3-cycle is
+  `S (C h) C h ⟶S C h h (C h) ⟶C h (C h) h ⟶C·appL S (C h) C h` — nine leaves,
+  three above the census horizon, found by chasing the surviving branch of the
+  impossibility hunt: Stage 95's budgets forced any S-rooted 3-cycle to carry two
+  root fires, and the single consistent assignment through the injections is
+  inhabited. The rung closes OPPOSITE to `{S,B}`; the acyclicity route to refuting
+  `{S,C}` as an SK host (`PathEncoding.refute_of_acyclic`) is permanently closed.
+  Everything below is the route that cornered the witness — six necessary
+  conditions and two impossibility sweeps, every one satisfied by the cycle:
   two impossibility sweeps: the τ-light fragment is acyclic (`scLight_acyclic`); the
   S-only fragment is acyclic (`scSOnly_acyclic`); the no-C-duplication fragment is
   acyclic (`scNoCDup_acyclic`), so any cycle needs a C-duplicating S-reduction
@@ -391,16 +402,17 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   dichotomies carry exact budgets (`sc_root_S_return_length`,
   `sc_root_C_return_length`: sandwiches account for every step, projections split
   it, the S-side collapse costs ≥ 2) — so an S-rooted root cycle with a rootless
-  return has cycle length ≥ 4 (`sc_root_S_projection_length`); short cycles, if
-  any, must be C-rooted or carry second fires. Termination routes are provably dead
-  (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
-  the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
-  is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine
-  word (`scSpine_S_root`, `scSpine_C_root`) — and its first theorem is in
-  (`sc_no_leaf_self_embed`, Stage 87): no `{S,C}` term reduces to itself applied
-  under a leaf, `¬(x ⟶* ℓ x)`, because both root rules freeze the left component as
-  an application ({S,C}-specific: `B` exposes leaf lefts). Censused clean to 6 leaves
-  under any strategy.
+  return has cycle length ≥ 4 (`sc_root_S_projection_length`); short cycles must be
+  C-rooted or carry second fires — and Stage 96's witness carries exactly the two
+  fires the budget demanded. Termination routes were provably dead
+  (`SC_not_normalizing`), positional measures provably insufficient (C permutes),
+  the τ×ρ braid provably failed (Stage 85, witnessed), and the spine calculus
+  (`scSpine_S_root`, `scSpine_C_root`, `sc_no_leaf_self_embed`) supplied the
+  frozen-left theorem that closed the case analyses. The census stopped at 6 leaves;
+  the witness sits at 9. The necessary conditions stand as theorems ABOUT the
+  cycle space of `{S,C}` — no longer steps toward an acyclicity proof, but the
+  sharpest published description of what its cycles must look like, verified against
+  the one now known to exist.
 
 **Shared machinery.** Every acyclic-fragment result above — and C2's original argument —
 is an instance of one lemma, `RS.Acyclic.of_three_level`: three measures where each level

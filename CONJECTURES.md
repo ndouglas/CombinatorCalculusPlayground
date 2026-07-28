@@ -4011,3 +4011,41 @@ that Stage 89 refused to force away persists at the budget level, and it now has
 - Any k-cycle question on the S side is now arithmetic over branch budgets. The C side, where the
   right projection is free, is where short cycles must live — the next case analysis knows its
   address.
+
+### Stage 96: RUNG 3 IS CYCLIC — the three-cycle that was hiding in the last branch
+
+The 3-cycle question did not get a kill; it got a WITNESS. Stage 95's budgets had cornered any
+S-rooted 3-cycle into carrying two root fires among its three steps (`k₁ + 1 + k₂ = 2`), and
+working that branch through the injections — fire one S, fire two C, an `appL` C-fire closing —
+leaves a single consistent assignment. It is inhabited. With `h = C S C`:
+
+    S (C h) C h  ⟶S  C h h (C h)  ⟶C  h (C h) h  ⟶C·appL  S (C h) C h
+
+Nine leaves, verified computationally before formalizing, then proved by three constructor
+applications — the whole cycle is AXIOM-FREE (`SC_cycle`, `SC_not_acyclic`, pinned).
+
+| | |
+|---|---|
+| `scCycH` / `scCycA` / `scCycB` / `scCycC` | the witness: `h = C S C` and the three cycle terms |
+| **`SC_cycle`** | **`StepsN 3 scCycA scCycA` — {S,C} has a reduction cycle** — axiom-free, pinned |
+| **`SC_not_acyclic`** | **rung 3 closes: CYCLIC** — axiom-free, pinned |
+| **`sc_minimal_cycle_length`** | **the minimal cycle length is EXACTLY 3** — Stages 93–94's kills were complete — pinned |
+
+What this settles, and how it reads back through the arc:
+
+- **The ladder is finished.** Rung 0 acyclic, rung 1 cyclic, rung 2 acyclic, rung 3 CYCLIC — the
+  two three-combinator... two two-combinator bases split in opposite directions, exactly the
+  "structurally unlike" the ledger called at Stage 27. `PathEncoding.refute_of_acyclic` can never
+  apply to `{S,C}`: the acyclicity route to refuting SK-hosting there is permanently closed.
+- **The impossibility hunt was a search procedure.** Every failed measure, every fragment
+  acyclicity, every necessary condition narrowed where a cycle could live; Stage 95's budget said
+  "an S-rooted 3-cycle must look like THIS," and the only shape satisfying the constraints is the
+  cycle. The frozen left, the anatomies, the budgets — none of them was wasted; they were the
+  successive refinements of the witness's address. The 6-leaf census missed it by three leaves.
+- **Every necessary condition is validated against the witness**: both C-fires are flat (guarded
+  in-file), the cycle passes through root redexes, carries a second fire, and its S-rooted return
+  holds exactly two fires. Six conditions, all consistent — the theory was correct; only its
+  conjectured conclusion (acyclicity) was wrong.
+- **What survives as open**: whether `{S,C}` HOSTS SK is untouched — the refutation mechanism is
+  gone, but no Simulation of SK into `{S,C}` exists either. Like rung 1, cyclicity makes `{S,C}` a
+  candidate host rather than a refuted one.
