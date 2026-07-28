@@ -502,3 +502,107 @@ theorem sc_acyclic_of_no_root_cycle
   intro t v hs hback
   obtain ⟨a, b, hr, hcyc⟩ := sc_cycle_needs_root hs hback
   exact h a b hr hcyc
+
+-- ## Stage 82: what a root cycle's return path must do
+-- Stage 81 reduced the rungs to root-redex cycles. Applying its own path dichotomy to the RETURN
+-- path splits each root cycle into two shapes: the return contains ANOTHER root step, or it
+-- projects into the redex's two sides — and the projections are remarkable: `g x ⟶* x` (a term
+-- COLLAPSING to its own argument) and `f x ⟶* S f g` (self-embedding under application). The
+-- degenerate branch dies on size. Collapse-to-argument appears in BOTH rules' dichotomies, making
+-- it the single sub-target that would force every root cycle's return path to carry root steps of
+-- its own.
+
+/-- A root S-cycle's return path either carries a root step, or projects:
+`f x ⟶* S f g` and `g x ⟶* x`. -/
+theorem sb_root_S_return {f g x : SBTerm}
+    (hback : RS.SB.Steps (.app (.app f x) (.app g x)) (.app (.app (.app .S f) g) x)) :
+    (∃ a b, SBRootStep a b ∧ RS.SB.Steps (.app (.app f x) (.app g x)) a
+      ∧ RS.SB.Steps b (.app (.app (.app .S f) g) x))
+    ∨ (RS.SB.Steps (.app f x) (.app (.app .S f) g) ∧ RS.SB.Steps (.app g x) x) := by
+  rcases sb_path_facts hback with h | heq | ⟨F, X, F', X', heq1, heq2, pf, px, _⟩
+  · exact Or.inl h
+  · exfalso
+    injection heq with h1 h2
+    have hc := congrArg SBTerm.leafCount h2
+    have hg := sbLeaf_pos g
+    exact absurd hc (by
+      show ¬(g.leafCount + x.leafCount = x.leafCount)
+      omega)
+  · injection heq1 with hF hX
+    injection heq2 with hF' hX'
+    subst hF; subst hX; subst hF'; subst hX'
+    exact Or.inr ⟨pf, px⟩
+
+/-- A root B-cycle's return path either carries a root step, or projects:
+`x ⟶* B x y` (self-embedding) and `y z ⟶* z` (collapse to argument). -/
+theorem sb_root_B_return {x y z : SBTerm}
+    (hback : RS.SB.Steps (.app x (.app y z)) (.app (.app (.app .B x) y) z)) :
+    (∃ a b, SBRootStep a b ∧ RS.SB.Steps (.app x (.app y z)) a
+      ∧ RS.SB.Steps b (.app (.app (.app .B x) y) z))
+    ∨ (RS.SB.Steps x (.app (.app .B x) y) ∧ RS.SB.Steps (.app y z) z) := by
+  rcases sb_path_facts hback with h | heq | ⟨F, X, F', X', heq1, heq2, pf, px, _⟩
+  · exact Or.inl h
+  · exfalso
+    injection heq with h1 h2
+    have hc := congrArg SBTerm.leafCount h1
+    have hy := sbLeaf_pos y
+    exact absurd hc (by
+      show ¬(x.leafCount = (1 + x.leafCount) + y.leafCount)
+      omega)
+  · injection heq1 with hF hX
+    injection heq2 with hF' hX'
+    subst hF; subst hX; subst hF'; subst hX'
+    exact Or.inr ⟨pf, px⟩
+
+/-- Rung three's mirrors, at parity: the root S-case is identical... -/
+theorem sc_root_S_return {f g x : SCTerm}
+    (hback : RS.SC.Steps (.app (.app f x) (.app g x)) (.app (.app (.app .S f) g) x)) :
+    (∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app (.app f x) (.app g x)) a
+      ∧ RS.SC.Steps b (.app (.app (.app .S f) g) x))
+    ∨ (RS.SC.Steps (.app f x) (.app (.app .S f) g) ∧ RS.SC.Steps (.app g x) x) := by
+  rcases sc_path_facts hback with h | heq | ⟨F, X, F', X', heq1, heq2, pf, px, _⟩
+  · exact Or.inl h
+  · exfalso
+    injection heq with h1 h2
+    have hc := congrArg SCTerm.leafCount h2
+    have hg := scLeaf_pos g
+    exact absurd hc (by
+      show ¬(g.leafCount + x.leafCount = x.leafCount)
+      omega)
+  · injection heq1 with hF hX
+    injection heq2 with hF' hX'
+    subst hF; subst hX; subst hF'; subst hX'
+    exact Or.inr ⟨pf, px⟩
+
+/-- ...and the root C-case projects to `x z ⟶* C x y` and `y ⟶* z`, its degenerate branch dying on
+`x = C x` rather than on the argument slot. -/
+theorem sc_root_C_return {x y z : SCTerm}
+    (hback : RS.SC.Steps (.app (.app x z) y) (.app (.app (.app .C x) y) z)) :
+    (∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app (.app x z) y) a
+      ∧ RS.SC.Steps b (.app (.app (.app .C x) y) z))
+    ∨ (RS.SC.Steps (.app x z) (.app (.app .C x) y) ∧ RS.SC.Steps y z) := by
+  rcases sc_path_facts hback with h | heq | ⟨F, X, F', X', heq1, heq2, pf, px, _⟩
+  · exact Or.inl h
+  · exfalso
+    injection heq with h1 h2
+    injection h1 with h3 h4
+    have hc := congrArg SCTerm.leafCount h3
+    exact absurd hc (by
+      show ¬(x.leafCount = 1 + x.leafCount)
+      omega)
+  · injection heq1 with hF hX
+    injection heq2 with hF' hX'
+    subst hF; subst hX; subst hF'; subst hX'
+    exact Or.inr ⟨pf, px⟩
+
+-- ## Where the rungs stand after the dichotomies
+-- Every root cycle's return path either carries a root step of its own — the regress the next probe
+-- should formalize — or performs one of two exotic reductions:
+--   * COLLAPSE TO ARGUMENT: `u v ⟶* v`, appearing in BOTH rules' projection branches. `{S,B}` and
+--     `{S,C}` are non-erasing except for the fired combinator leaf itself, so a collapse must
+--     destroy all of `u` one combinator-fire at a time while rebuilding `v` exactly — the next
+--     named sub-target, and a plausible theorem;
+--   * SELF-EMBEDDING UNDER APPLICATION: `f x ⟶* S f g`, `x ⟶* B x y` — the open-term cousin of
+--     the ground self-embedding machinery from Stages 39–42.
+-- Ruling out collapse would force every root cycle to contain an inner root step; whether that
+-- regress terminates is then the whole of the rungs.
