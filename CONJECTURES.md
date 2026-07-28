@@ -4361,3 +4361,35 @@ The no-I constraint rules out the naive quine assembly (`g q ⟶* q` needs ident
 protocol must absorb the extra applications the calculus forces — an arity-design problem, not an
 identified obstruction. If it closes, `{S,C}` hosts unbounded two-symbol word traversal, and the
 hosting question's constructive half comes within reach of a genuine tag-step simulation.
+
+### Stage 107: the driver closes — `{S,C}` hosts its first machine
+
+Payload regeneration, discharged by a five-leaf term. The reframe that cracked it: the acting arm
+need not copy ITSELF — it can copy the PARKED arm, and the queue then sustains itself with all
+arms equal. The search found the machine at size five, and it is a term the program already knew:
+
+| | |
+|---|---|
+| `scDup := S (C C) (C C)` | `= w (C C)` where `w = S (C C)` is the second 3-cycle's seed — the cycle engine, repurposed as the duplicator |
+| `scDup_step` | `scDup o r ⟶* r o o`: the S-fire lands the parked arm in BOTH slots of a fresh re-launcher; the next C-fire assembles it exactly |
+| `scRun_step` / **`scRun`** | with both arms `scDup`, the arm pair regenerates every step — **the machine walks ANY two-symbol word to its end marker** — pinned |
+| `scWordS_inj` / **`tailInSC`** | **`PathEncoding RS.TailB RS.SC` — the first positive hosting certificate for rung 3** — pinned |
+
+Every theorem in the Stage 102–107 stack is AXIOM-FREE: shredder, dispatch, words, re-launcher,
+recycling arm, duplicator, traversal, and the PathEncoding itself — pure constructions.
+
+What this settles and what it does not. Settled: `{S,C}` hosts a machine with unboundedly many
+states and arbitrarily long runs — the taxonomy's rung-3 row gains its first POSITIVE entry, and
+the "can a non-erasing, selector-free, I-free calculus run anything?" question is answered yes,
+constructively. Not settled: the tail machine is trivial (deterministic, terminating, no
+branching consequence), and the equal-arms trick that closed regeneration also ERASES the
+per-symbol distinction at the arm level — both arms do the same thing, so the traversal reads the
+word's structure but does not yet ACT on it differentially. A tag simulation needs arms that
+differ (append different productions) while still regenerating — the queue must preserve TWO
+distinct arm identities under duplication of only the parked one. That refinement — or its
+impossibility — is the next question, and it is the precise residue of SK ≤ `{S,C}`.
+
+The seed observation deserves its own line: the w-cycle (Stage 99) and the duplicator differ by
+one application. Cycles and computation in `{S,C}` run on the same engine — self-application of
+`S (C C)` — which is the concrete form of the intuition, standing since the ladder opened, that
+cyclicity and hosting power travel together.

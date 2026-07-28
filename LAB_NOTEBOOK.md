@@ -4536,3 +4536,32 @@ what automation could and couldn't do. This file is a first-class deliverable
   against the no-I constraint); deliverable is the regenerating payload theorem or the named
   obstruction — if it closes, unbounded traversal follows immediately. (2) The arrival-order
   pairing impossibility (parked). (3) C6, declined a ninety-fourth time.
+
+## 2026-07-28 — Stage 107: the cycle engine was the duplicator
+
+- The gap closed with a five-leaf term, and the term is the second 3-cycle's seed applied to the
+  tag: scDup = w (C C), w = S (C C). I found it by search after the reframe (copy the PARKED arm,
+  not yourself), and only recognized it afterwards. The w-cycle's self-application engine and the
+  traversal driver's duplicator are the same machine one argument apart — the cleanest instance
+  yet of this program's oldest intuition, that cycles and computational power are the same
+  phenomenon seen from two sides.
+- The reframe is the transferable lesson: self-reference dissolved the moment the requirement
+  moved from 'the arm must reproduce itself' to 'the queue must reproduce its population.' Queue
+  invariants are weaker than pointwise invariants, and weaker was enough. Stage 106's recycling
+  already had the queue shape; today just noticed a queue of IDENTICAL members needs no lineage.
+- The whole Stage 102-107 stack — shredder to PathEncoding — is axiom-free. Six stages from
+  'can {S,C} erase at all?' to 'here is a machine running inside it,' every step a pure
+  construction. tailInSC flips the taxonomy: rung 3 has a POSITIVE hosting entry, something no
+  cyclic rung had before.
+- Honest scope: the tail machine is trivial, and the equal-arms trick bought regeneration by
+  spending the symbol distinction. The word still ENCODES symbols (the cells differ); the arms
+  just respond identically. Differentiated regenerating arms — the queue preserving two distinct
+  identities while duplicating only the parked member — is exactly what a tag simulation needs
+  and exactly what the equal-arms trick cannot give. Either the (A,B)-queue has its own five-leaf
+  miracle, or there is an invariant (all sustainable queues are eventually constant?) that would
+  be the sharpest negative result of the thread. Both directions are concrete.
+- Ranking: (1) **the differentiated queue**: search/design for arm pairs (A, B), A ≠ B, whose
+  traversal step preserves both identities — the deliverable is the pair or the eventual-
+  constancy conjecture with evidence. (2) The program review — Stage 107 is a goal-level result
+  (first rung-3 hosting certificate) and the review rule triggers. (3) C6, declined a
+  ninety-fifth time.
