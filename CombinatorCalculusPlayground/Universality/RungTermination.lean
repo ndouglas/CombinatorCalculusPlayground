@@ -2216,3 +2216,750 @@ finite-cycle-space refutation of hosting can exist. -/
 theorem sc_cycle_pump (u : SCTerm) :
     RS.SC.StepsN 3 (SCTerm.app scCycA u) (SCTerm.app scCycA u) :=
   scStepsN_appL u SC_cycle
+
+-- ## Stage 101: the classification — every root 3-cycle is the h-cycle or the w-cycle
+-- Stage 99's conjecture, discharged. Method: every equality is injected to atoms; every dead
+-- branch is killed by LINEAR LEAF-COUNT ARITHMETIC (each injected equation becomes a linear
+-- equation over the variables' leaf counts via a defeq-ascribed `congrArg`, and an
+-- `absurd _ (by omega)` combines them — the negation goal is arithmetic, so no choice leak), by
+-- a step-shaped kill (`sc_no_step_collapse`, `sc_no_step_right_embed`, `scStep_result_isApp`),
+-- or by constructor clash. The three live branches pin every variable and close by `rfl`.
+
+private theorem sc_class_S {f g x : SCTerm}
+    (hret : RS.SC.StepsN 2 (.app (.app f x) (.app g x)) (.app (.app (.app .S f) g) x)) :
+    SCTerm.app (SCTerm.app (SCTerm.app .S f) g) x = scCycA
+      ∧ SCTerm.app (SCTerm.app f x) (SCTerm.app g x) = scCycB := by
+  rcases sc_root_S_return_length hret with
+    ⟨k₁, k₂, p, q, hr2, h1, h2, hsum⟩ | ⟨kL, kR, _, _, hsum, hkL, hkR⟩
+  · rcases (by omega : k₁ = 0 ∨ k₁ = 1) with hk1 | hk1
+    · -- (0,1): fire, fire, step
+      have hk2 : k₂ = 1 := by omega
+      subst hk1; subst hk2
+      have hbp := RS.stepsN_zero_eq h1
+      subst hbp
+      have hs := RS.stepsN_one_step h2
+      rcases scRootStep_inv hr2 with ⟨p₁, q₁, r₁, hb, hq⟩ | ⟨p₁, q₁, r₁, hb, hq⟩
+      · -- fire two S: dead
+        injection hb with hb1 hb2
+        injection hb1 with hb3 hb4
+        subst hq
+        rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+        · rcases scRootStep_inv hroot with ⟨p₂, q₂, r₂, hc, hd⟩ | ⟨p₂, q₂, r₂, hc, hd⟩
+          · injection hc with hc1 hc2
+            injection hd with hd1 hd2
+            have e1 : x.leafCount = q₁.leafCount := congrArg SCTerm.leafCount hb4
+            have e2 : q₁.leafCount + r₁.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hc2
+            have e3 : x.leafCount = q₂.leafCount + r₂.leafCount := congrArg SCTerm.leafCount hd2
+            have := scLeaf_pos q₂
+            have := scLeaf_pos r₁
+            exact absurd e1 (by omega)
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            have e1 : g.leafCount + x.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+            have e2 : r₁.leafCount = q₂.leafCount := congrArg SCTerm.leafCount hc4
+            have e3 : x.leafCount = q₂.leafCount := congrArg SCTerm.leafCount hd2
+            have := scLeaf_pos g
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          have e1 : q₁.leafCount + r₁.leafCount = X.leafCount := congrArg SCTerm.leafCount j4
+          have e2 : x.leafCount = X.leafCount := congrArg SCTerm.leafCount j6
+          have e3 : x.leafCount = q₁.leafCount := congrArg SCTerm.leafCount hb4
+          have := scLeaf_pos r₁
+          exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3] at j5
+          injection j5 with j7 j8
+          have e1 : g.leafCount = r₁.leafCount := congrArg SCTerm.leafCount j8
+          have e2 : g.leafCount + x.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+          have := scLeaf_pos x
+          exact absurd e1 (by omega)
+      · -- fire two C: the h-cycle at basepoint A, or dead
+        injection hb with hb1 hb2
+        injection hb1 with hb3 hb4
+        subst hq
+        rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+        · rcases scRootStep_inv hroot with ⟨p₂, q₂, r₂, hc, hd⟩ | ⟨p₂, q₂, r₂, hc, hd⟩
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            have e1 : x.leafCount = q₂.leafCount + r₂.leafCount := congrArg SCTerm.leafCount hd2
+            have e2 : r₁.leafCount = q₂.leafCount := congrArg SCTerm.leafCount hc4
+            have e3 : q₁.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hc2
+            have e4 : x.leafCount = q₁.leafCount := congrArg SCTerm.leafCount hb4
+            have e5 : g.leafCount + x.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+            have := scLeaf_pos g
+            exact absurd e1 (by omega)
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            have e1 : g.leafCount + x.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+            have e2 : r₁.leafCount = q₂.leafCount := congrArg SCTerm.leafCount hc4
+            have e3 : x.leafCount = q₂.leafCount := congrArg SCTerm.leafCount hd2
+            have := scLeaf_pos g
+            exact absurd e1 (by omega)
+        · -- appL: the live path
+          injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3, ← j5] at hst
+          rcases scStep_cases hst with hroot2 | ⟨F₂, X₂, F₂', l1, l2, hst2⟩ | ⟨F₂, X₂, X₂', l1, l2, hst2⟩
+          · rcases scRootStep_inv hroot2 with ⟨p₃, q₃, r₃, he, hf⟩ | ⟨p₃, q₃, r₃, he, hf⟩
+            · injection he with he1 he2
+              injection hf with hf1 hf2
+              injection hf1 with hf3 hf4
+              have e1 : f.leafCount = r₃.leafCount := congrArg SCTerm.leafCount hf4
+              have e2 : r₁.leafCount = r₃.leafCount := congrArg SCTerm.leafCount he2
+              have e3 : g.leafCount + x.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+              have e4 : g.leafCount = q₃.leafCount + r₃.leafCount := congrArg SCTerm.leafCount hf2
+              have := scLeaf_pos q₃
+              have := scLeaf_pos x
+              exact absurd e1 (by omega)
+            · -- LIVE: the h-cycle at basepoint A
+              injection he with he1 he2
+              injection hf with hf1 hf2
+              injection hf1 with hf3 hf4
+              have hfr : f = SCTerm.app g x := by rw [hf4, ← he2, ← hb2]
+              rw [hfr] at hb3
+              injection hb3 with hg hx
+              rw [← hf3, ← hf2, hg] at he1
+              rw [← hx] at he1
+              subst he1
+              subst hg
+              subst hfr
+              exact ⟨rfl, rfl⟩
+          · injection l1 with l3 l4
+            injection l2 with l5 l6
+            have e1 : r₁.leafCount = X₂.leafCount := congrArg SCTerm.leafCount l4
+            have e2 : g.leafCount = X₂.leafCount := congrArg SCTerm.leafCount l6
+            have e3 : g.leafCount + x.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+            have := scLeaf_pos x
+            exact absurd e1 (by omega)
+          · injection l1 with l3 l4
+            injection l2 with l5 l6
+            rw [← l3] at l5
+            have e1 : 1 + f.leafCount = p₁.leafCount := congrArg SCTerm.leafCount l5
+            have e2 : f.leafCount = 1 + p₁.leafCount := congrArg SCTerm.leafCount hb3
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3] at j5
+          injection j5 with j7 j8
+          have e1 : g.leafCount + x.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+          have e2 : g.leafCount = r₁.leafCount := congrArg SCTerm.leafCount j8
+          have := scLeaf_pos x
+          exact absurd e2 (by omega)
+    · -- (1,0): fire, step, fire — dead
+      have hk2 : k₂ = 0 := by omega
+      subst hk1; subst hk2
+      have hqa := RS.stepsN_zero_eq h2
+      subst hqa
+      have hs := RS.stepsN_one_step h1
+      rcases scRootStep_inv hr2 with ⟨f', g', x', hp, ha⟩ | ⟨x', y', z', hp, ha⟩
+      · injection ha with ha1 ha2
+        injection ha1 with ha3 ha4
+        subst hp
+        rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+        · rcases scRootStep_inv hroot with ⟨p₂, q₂, r₂, hc, hd⟩ | ⟨p₂, q₂, r₂, hc, hd⟩
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            have e1 : f.leafCount = 1 + p₂.leafCount := congrArg SCTerm.leafCount hc3
+            have e2 : 1 + f'.leafCount = p₂.leafCount := congrArg SCTerm.leafCount hd3
+            have e3 : 1 + f.leafCount = f'.leafCount := congrArg SCTerm.leafCount ha3
+            exact absurd e1 (by omega)
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            have e1 : f.leafCount = 1 + p₂.leafCount := congrArg SCTerm.leafCount hc3
+            have e2 : 1 + f'.leafCount = p₂.leafCount := congrArg SCTerm.leafCount hd3
+            have e3 : 1 + f.leafCount = f'.leafCount := congrArg SCTerm.leafCount ha3
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          have e1 : g.leafCount + x.leafCount = X.leafCount := congrArg SCTerm.leafCount j4
+          have e2 : x'.leafCount = X.leafCount := congrArg SCTerm.leafCount j6
+          have e3 : g.leafCount = x'.leafCount := congrArg SCTerm.leafCount ha4
+          have := scLeaf_pos x
+          exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3] at j5
+          injection j5 with j7 j8
+          have e1 : 1 + f'.leafCount = f.leafCount := congrArg SCTerm.leafCount j7
+          have e2 : 1 + f.leafCount = f'.leafCount := congrArg SCTerm.leafCount ha3
+          exact absurd e1 (by omega)
+      · injection ha with ha1 ha2
+        injection ha1 with ha3 ha4
+        subst hp
+        rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+        · rcases scRootStep_inv hroot with ⟨p₂, q₂, r₂, hc, hd⟩ | ⟨p₂, q₂, r₂, hc, hd⟩
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            have e1 : z'.leafCount = q₂.leafCount + r₂.leafCount := congrArg SCTerm.leafCount hd2
+            have e2 : y'.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hd4
+            have e3 : x.leafCount = y'.leafCount := congrArg SCTerm.leafCount ha2
+            have e4 : x.leafCount = q₂.leafCount := congrArg SCTerm.leafCount hc4
+            have e5 : g.leafCount = z'.leafCount := congrArg SCTerm.leafCount ha4
+            have e6 : g.leafCount + x.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hc2
+            have := scLeaf_pos g
+            have := scLeaf_pos x
+            exact absurd e1 (by omega)
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            have e1 : g.leafCount + x.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hc2
+            have e2 : y'.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hd4
+            have e3 : x.leafCount = y'.leafCount := congrArg SCTerm.leafCount ha2
+            have := scLeaf_pos g
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          have e1 : g.leafCount + x.leafCount = X.leafCount := congrArg SCTerm.leafCount j4
+          have e2 : z'.leafCount = X.leafCount := congrArg SCTerm.leafCount j6
+          have e3 : g.leafCount = z'.leafCount := congrArg SCTerm.leafCount ha4
+          have := scLeaf_pos x
+          exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3] at j5
+          injection j5 with j7 j8
+          have e1 : 1 + x'.leafCount = f.leafCount := congrArg SCTerm.leafCount j7
+          have e2 : 1 + f.leafCount = x'.leafCount := congrArg SCTerm.leafCount ha3
+          exact absurd e1 (by omega)
+  · exact absurd hsum (by omega)
+
+private theorem sc_class_C {x y z : SCTerm}
+    (hret : RS.SC.StepsN 2 (.app (.app x z) y) (.app (.app (.app .C x) y) z)) :
+    (SCTerm.app (SCTerm.app (SCTerm.app .C x) y) z = scCycB
+        ∧ SCTerm.app (SCTerm.app x z) y = scCycC)
+    ∨ (SCTerm.app (SCTerm.app (SCTerm.app .C x) y) z = scWCycA
+        ∧ SCTerm.app (SCTerm.app x z) y = scWCycB) := by
+  rcases sc_root_C_return_length hret with
+    ⟨k₁, k₂, p, q, hr2, h1, h2, hsum⟩ | ⟨kL, kR, pf, px, hsum, hkL⟩
+  · rcases (by omega : k₁ = 0 ∨ k₁ = 1) with hk1 | hk1
+    · -- (0,1): fire, fire, step — all dead
+      have hk2 : k₂ = 1 := by omega
+      subst hk1; subst hk2
+      have hbp := RS.stepsN_zero_eq h1
+      subst hbp
+      have hs := RS.stepsN_one_step h2
+      rcases scRootStep_inv hr2 with ⟨p₁, q₁, r₁, hb, hq⟩ | ⟨p₁, q₁, r₁, hb, hq⟩
+      · injection hb with hb1 hb2
+        injection hb1 with hb3 hb4
+        subst hq
+        rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+        · rcases scRootStep_inv hroot with ⟨p₂, q₂, r₂, hc, hd⟩ | ⟨p₂, q₂, r₂, hc, hd⟩
+          · injection hc with hc1 hc2
+            injection hd with hd1 hd2
+            have e1 : z.leafCount = q₂.leafCount + r₂.leafCount := congrArg SCTerm.leafCount hd2
+            have e2 : q₁.leafCount + r₁.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hc2
+            have e3 : z.leafCount = q₁.leafCount := congrArg SCTerm.leafCount hb4
+            have := scLeaf_pos r₁
+            have := scLeaf_pos q₂
+            exact absurd e1 (by omega)
+          · injection hc with hc1 hc2
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            have e1 : q₁.leafCount + r₁.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hc2
+            have e2 : y.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hd4
+            have e3 : y.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+            have := scLeaf_pos q₁
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          have e1 : q₁.leafCount + r₁.leafCount = X.leafCount := congrArg SCTerm.leafCount j4
+          have e2 : z.leafCount = X.leafCount := congrArg SCTerm.leafCount j6
+          have e3 : z.leafCount = q₁.leafCount := congrArg SCTerm.leafCount hb4
+          have := scLeaf_pos r₁
+          exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3] at j5
+          injection j5 with j7 j8
+          have e1 : 1 + x.leafCount = p₁.leafCount := congrArg SCTerm.leafCount j7
+          have e2 : x.leafCount = 1 + p₁.leafCount := congrArg SCTerm.leafCount hb3
+          exact absurd e1 (by omega)
+      · injection hb with hb1 hb2
+        injection hb1 with hb3 hb4
+        subst hq
+        rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+        · rcases scRootStep_inv hroot with ⟨p₂, q₂, r₂, hc, hd⟩ | ⟨p₂, q₂, r₂, hc, hd⟩
+          · injection hc with hc1 hc2
+            injection hd with hd1 hd2
+            have e1 : z.leafCount = q₂.leafCount + r₂.leafCount := congrArg SCTerm.leafCount hd2
+            have e2 : q₁.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hc2
+            have e3 : z.leafCount = q₁.leafCount := congrArg SCTerm.leafCount hb4
+            have := scLeaf_pos q₂
+            exact absurd e1 (by omega)
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            have e1 : x.leafCount = 1 + p₁.leafCount := congrArg SCTerm.leafCount hb3
+            have e2 : p₁.leafCount = 1 + p₂.leafCount := congrArg SCTerm.leafCount hc3
+            have e3 : 1 + x.leafCount = p₂.leafCount := congrArg SCTerm.leafCount hd3
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3, ← j5] at hst
+          rcases scStep_cases hst with hroot2 | ⟨F₂, X₂, F₂', l1, l2, hst2⟩ | ⟨F₂, X₂, X₂', l1, l2, hst2⟩
+          · rcases scRootStep_inv hroot2 with ⟨p₃, q₃, r₃, he, hf⟩ | ⟨p₃, q₃, r₃, he, hf⟩
+            · injection he with he1 he2
+              injection hf with hf1 hf2
+              injection hf1 with hf3 hf4
+              have e1 : y.leafCount = q₃.leafCount + r₃.leafCount := congrArg SCTerm.leafCount hf2
+              have e2 : x.leafCount = r₃.leafCount := congrArg SCTerm.leafCount hf4
+              have e3 : y.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+              have e4 : r₁.leafCount = r₃.leafCount := congrArg SCTerm.leafCount he2
+              have := scLeaf_pos q₃
+              exact absurd e1 (by omega)
+            · injection he with he1 he2
+              injection hf with hf1 hf2
+              injection hf1 with hf3 hf4
+              have e1 : y.leafCount = r₁.leafCount := congrArg SCTerm.leafCount hb2
+              have e2 : r₁.leafCount = r₃.leafCount := congrArg SCTerm.leafCount he2
+              have e3 : x.leafCount = r₃.leafCount := congrArg SCTerm.leafCount hf4
+              have e4 : x.leafCount = 1 + p₁.leafCount := congrArg SCTerm.leafCount hb3
+              have e5 : p₁.leafCount = (1 + p₃.leafCount) + q₃.leafCount :=
+                congrArg SCTerm.leafCount he1
+              have e6 : y.leafCount = q₃.leafCount := congrArg SCTerm.leafCount hf2
+              have := scLeaf_pos p₃
+              exact absurd e1 (by omega)
+          · injection l1 with l3 l4
+            injection l2 with l5 l6
+            rw [← l3, ← l5] at hst2
+            rw [hb3] at hst2
+            exact (sc_no_step_right_embed hst2
+              (SCRightNested.tail (SCRightNested.tail (SCRightNested.refl p₁)))).elim
+          · injection l1 with l3 l4
+            injection l2 with l5 l6
+            rw [← l3] at l5
+            have e1 : 1 + x.leafCount = p₁.leafCount := congrArg SCTerm.leafCount l5
+            have e2 : x.leafCount = 1 + p₁.leafCount := congrArg SCTerm.leafCount hb3
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3] at j5
+          injection j5 with j7 j8
+          have e1 : 1 + x.leafCount = p₁.leafCount := congrArg SCTerm.leafCount j7
+          have e2 : x.leafCount = 1 + p₁.leafCount := congrArg SCTerm.leafCount hb3
+          exact absurd e1 (by omega)
+    · -- (1,0): fire, step, fire — the h-cycle at basepoint B, or dead
+      have hk2 : k₂ = 0 := by omega
+      subst hk1; subst hk2
+      have hqa := RS.stepsN_zero_eq h2
+      subst hqa
+      have hs := RS.stepsN_one_step h1
+      rcases scRootStep_inv hr2 with ⟨f', g', x'', hp, ha⟩ | ⟨x'', y'', z'', hp, ha⟩
+      · injection ha with ha1 ha2
+        injection ha1 with ha3 ha4
+        subst hp
+        rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+        · rcases scRootStep_inv hroot with ⟨p₂, q₂, r₂, hc, hd⟩ | ⟨p₂, q₂, r₂, hc, hd⟩
+          · injection hc with hc1 hc2
+            injection hd with hd1 hd2
+            have e1 : x''.leafCount = q₂.leafCount + r₂.leafCount := congrArg SCTerm.leafCount hd2
+            have e2 : y.leafCount = x''.leafCount := congrArg SCTerm.leafCount ha4
+            have e3 : y.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hc2
+            have := scLeaf_pos q₂
+            exact absurd e1 (by omega)
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            have e1 : y.leafCount = x''.leafCount := congrArg SCTerm.leafCount ha4
+            have e2 : x''.leafCount = q₂.leafCount := congrArg SCTerm.leafCount hd2
+            have e3 : z.leafCount = q₂.leafCount := congrArg SCTerm.leafCount hc4
+            have e4 : z.leafCount = g'.leafCount + x''.leafCount := congrArg SCTerm.leafCount ha2
+            have := scLeaf_pos g'
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3, ← j5] at hst
+          rcases scStep_cases hst with hroot2 | ⟨F₂, X₂, F₂', l1, l2, hst2⟩ | ⟨F₂, X₂, X₂', l1, l2, hst2⟩
+          · rcases scRootStep_inv hroot2 with ⟨p₃, q₃, r₃, he, hf⟩ | ⟨p₃, q₃, r₃, he, hf⟩
+            · injection he with he1 he2
+              injection hf with hf1 hf2
+              injection hf1 with hf3 hf4
+              have hzf : z = SCTerm.app .C x := by rw [he2, ← hf4, ← ha3]
+              rw [hzf] at ha2
+              injection ha2 with m1 m2
+              rw [← m1] at hf2
+              exact SCTerm.noConfusion hf2
+            · -- LIVE: the h-cycle at basepoint B
+              injection he with he1 he2
+              injection hf with hf1 hf2
+              injection hf1 with hf3 hf4
+              have hzf : z = SCTerm.app .C x := by rw [he2, ← hf4, ← ha3]
+              rw [hzf] at ha2
+              injection ha2 with m1 m2
+              have hyx : y = x := ha4.trans m2.symm
+              rw [← hf3, ← hf2, ← m1] at he1
+              subst hyx
+              subst hzf
+              subst he1
+              exact Or.inl ⟨rfl, rfl⟩
+          · injection l1 with l3 l4
+            injection l2 with l5 l6
+            have e1 : z.leafCount = X₂.leafCount := congrArg SCTerm.leafCount l4
+            have e2 : g'.leafCount = X₂.leafCount := congrArg SCTerm.leafCount l6
+            have e3 : z.leafCount = g'.leafCount + x''.leafCount := congrArg SCTerm.leafCount ha2
+            have := scLeaf_pos x''
+            exact absurd e1 (by omega)
+          · injection l1 with l3 l4
+            injection l2 with l5 l6
+            rw [← l3] at l5
+            have e1 : 1 + f'.leafCount = x.leafCount := congrArg SCTerm.leafCount l5
+            have e2 : 1 + x.leafCount = f'.leafCount := congrArg SCTerm.leafCount ha3
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3] at j5
+          injection j5 with j7 j8
+          have e1 : 1 + f'.leafCount = x.leafCount := congrArg SCTerm.leafCount j7
+          have e2 : 1 + x.leafCount = f'.leafCount := congrArg SCTerm.leafCount ha3
+          exact absurd e1 (by omega)
+      · injection ha with ha1 ha2
+        injection ha1 with ha3 ha4
+        subst hp
+        rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+        · rcases scRootStep_inv hroot with ⟨p₂, q₂, r₂, hc, hd⟩ | ⟨p₂, q₂, r₂, hc, hd⟩
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            have e1 : z''.leafCount = q₂.leafCount + r₂.leafCount := congrArg SCTerm.leafCount hd2
+            have e2 : y.leafCount = z''.leafCount := congrArg SCTerm.leafCount ha4
+            have e3 : y''.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hd4
+            have e4 : z.leafCount = y''.leafCount := congrArg SCTerm.leafCount ha2
+            have e5 : z.leafCount = q₂.leafCount := congrArg SCTerm.leafCount hc4
+            have e6 : y.leafCount = r₂.leafCount := congrArg SCTerm.leafCount hc2
+            have := scLeaf_pos z
+            exact absurd e1 (by omega)
+          · injection hc with hc1 hc2
+            injection hc1 with hc3 hc4
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            have e1 : x.leafCount = 1 + p₂.leafCount := congrArg SCTerm.leafCount hc3
+            have e2 : 1 + x''.leafCount = p₂.leafCount := congrArg SCTerm.leafCount hd3
+            have e3 : 1 + x.leafCount = x''.leafCount := congrArg SCTerm.leafCount ha3
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3, ← j5] at hst
+          rcases scStep_cases hst with hroot2 | ⟨F₂, X₂, F₂', l1, l2, hst2⟩ | ⟨F₂, X₂, X₂', l1, l2, hst2⟩
+          · rcases scRootStep_inv hroot2 with ⟨p₃, q₃, r₃, he, hf⟩ | ⟨p₃, q₃, r₃, he, hf⟩
+            · injection he with he1 he2
+              injection hf with hf1 hf2
+              injection hf1 with hf3 hf4
+              have e1 : x''.leafCount = r₃.leafCount := congrArg SCTerm.leafCount hf4
+              have e2 : z.leafCount = r₃.leafCount := congrArg SCTerm.leafCount he2
+              have e3 : 1 + x.leafCount = x''.leafCount := congrArg SCTerm.leafCount ha3
+              have e4 : y''.leafCount = q₃.leafCount + r₃.leafCount := congrArg SCTerm.leafCount hf2
+              have e5 : z.leafCount = y''.leafCount := congrArg SCTerm.leafCount ha2
+              have := scLeaf_pos q₃
+              exact absurd e1 (by omega)
+            · injection he with he1 he2
+              injection hf with hf1 hf2
+              injection hf1 with hf3 hf4
+              have e1 : x''.leafCount = r₃.leafCount := congrArg SCTerm.leafCount hf4
+              have e2 : z.leafCount = r₃.leafCount := congrArg SCTerm.leafCount he2
+              have e3 : 1 + x.leafCount = x''.leafCount := congrArg SCTerm.leafCount ha3
+              have e4 : x.leafCount = (1 + p₃.leafCount) + q₃.leafCount :=
+                congrArg SCTerm.leafCount he1
+              have e5 : 1 = p₃.leafCount := congrArg SCTerm.leafCount hf3
+              have e6 : y''.leafCount = q₃.leafCount := congrArg SCTerm.leafCount hf2
+              have e7 : z.leafCount = y''.leafCount := congrArg SCTerm.leafCount ha2
+              exact absurd e1 (by omega)
+          · injection l1 with l3 l4
+            injection l2 with l5 l6
+            rw [← l3, ← l5] at hst2
+            rw [← ha3] at hst2
+            exact (sc_no_step_right_embed hst2
+              (SCRightNested.tail (SCRightNested.tail (SCRightNested.refl x)))).elim
+          · injection l1 with l3 l4
+            injection l2 with l5 l6
+            rw [← l3] at l5
+            have e1 : 1 + x''.leafCount = x.leafCount := congrArg SCTerm.leafCount l5
+            have e2 : 1 + x.leafCount = x''.leafCount := congrArg SCTerm.leafCount ha3
+            exact absurd e1 (by omega)
+        · injection j1 with j3 j4
+          injection j2 with j5 j6
+          rw [← j3] at j5
+          injection j5 with j7 j8
+          have e1 : 1 + x''.leafCount = x.leafCount := congrArg SCTerm.leafCount j7
+          have e2 : 1 + x.leafCount = x''.leafCount := congrArg SCTerm.leafCount ha3
+          exact absurd e1 (by omega)
+  · -- projection: (1,1) dead; (2,0) forces the w-cycle
+    rcases (by omega : kL = 1 ∨ kL = 2) with hL | hL
+    · have hR : kR = 1 := by omega
+      subst hL; subst hR
+      have hstL := RS.stepsN_one_step pf
+      have hstR := RS.stepsN_one_step px
+      rcases scStep_cases hstL with hroot | ⟨F, X, F', l1, l2, hst⟩ | ⟨F, X, X', l1, l2, hst⟩
+      · rcases scRootStep_inv hroot with ⟨p₃, q₃, r₃, he, hf⟩ | ⟨p₃, q₃, r₃, he, hf⟩
+        · injection he with he1 he2
+          injection hf with hf1 hf2
+          rw [hf2] at hstR
+          rw [← he2] at hstR
+          exact (sc_no_step_collapse hstR).elim
+        · injection he with he1 he2
+          injection hf with hf1 hf2
+          injection hf1 with hf3 hf4
+          rw [he2] at hstR
+          rw [← hf4] at hstR
+          rw [← hf3, ← hf2] at he1
+          rw [he1] at hstR
+          exact (sc_no_step_right_embed hstR
+            (SCRightNested.tail (SCRightNested.refl y))).elim
+      · injection l1 with l3 l4
+        injection l2 with l5 l6
+        rw [← l3, ← l5] at hst
+        exact (sc_no_step_right_embed hst
+          (SCRightNested.tail (SCRightNested.refl x))).elim
+      · injection l1 with l3 l4
+        injection l2 with l5 l6
+        rw [← l3] at l5
+        have e1 : 1 + x.leafCount = x.leafCount := congrArg SCTerm.leafCount l5
+        exact absurd e1 (by omega)
+    · have hR : kR = 0 := by omega
+      subst hL; subst hR
+      have hyz := RS.stepsN_zero_eq px
+      subst hyz
+      rcases sc_stepsN_facts pf with ⟨k₁', k₂', a', b', hr3, h1', h2', hsum2⟩ | ⟨h0, _⟩
+        | ⟨nf, nx, F, X, F', X', heq1, heq2, pf2, px2, hsum2⟩
+      · rcases (by omega : k₁' = 0 ∨ k₁' = 1) with m1 | m1
+        · -- fire at the source of the left path
+          have m2 : k₂' = 1 := by omega
+          subst m1; subst m2
+          have ha' := RS.stepsN_zero_eq h1'
+          subst ha'
+          have hs2 := RS.stepsN_one_step h2'
+          rcases scRootStep_inv hr3 with ⟨p₄, q₄, r₄, hb, hq⟩ | ⟨p₄, q₄, r₄, hb, hq⟩
+          · -- S-fire: only the w-cycle survives
+            injection hb with hb1 hb2
+            subst hq
+            rcases scStep_cases hs2 with hroot
+              | ⟨F₃, X₃, F₃', m3, m4, hst3⟩ | ⟨F₃, X₃, X₃', m3, m4, hst3⟩
+            · rcases scRootStep_inv hroot with ⟨p₅, q₅, r₅, hc', hd'⟩ | ⟨p₅, q₅, r₅, hc', hd'⟩
+              · injection hc' with hc'1 hc'2
+                injection hd' with hd'1 hd'2
+                injection hd'1 with hd'3 hd'4
+                have e1 : x.leafCount = r₅.leafCount := congrArg SCTerm.leafCount hd'4
+                have e2 : q₄.leafCount + r₄.leafCount = r₅.leafCount := congrArg SCTerm.leafCount hc'2
+                have e3 : y.leafCount = r₄.leafCount := congrArg SCTerm.leafCount hb2
+                have e4 : y.leafCount = q₅.leafCount + r₅.leafCount := congrArg SCTerm.leafCount hd'2
+                have := scLeaf_pos q₅
+                have := scLeaf_pos q₄
+                exact absurd e1 (by omega)
+              · -- LIVE: the w-cycle, first placement
+                injection hc' with hc'1 hc'2
+                injection hc'1 with hc'3 hc'4
+                injection hd' with hd'1 hd'2
+                injection hd'1 with hd'3 hd'4
+                have hp4 : p₄ = SCTerm.app .C .C := by rw [hc'3, ← hd'3]
+                rw [hp4] at hb1
+                have hx1 : x = SCTerm.app q₄ y := by rw [hd'4, ← hc'2, ← hb2]
+                rw [hb1] at hx1
+                injection hx1 with n1 n2
+                subst n1
+                subst n2
+                subst hb1
+                exact Or.inr ⟨rfl, rfl⟩
+            · injection m3 with m5 m6
+              injection m4 with m7 m8
+              have e1 : q₄.leafCount + r₄.leafCount = X₃.leafCount := congrArg SCTerm.leafCount m6
+              have e2 : y.leafCount = X₃.leafCount := congrArg SCTerm.leafCount m8
+              have e3 : y.leafCount = r₄.leafCount := congrArg SCTerm.leafCount hb2
+              have := scLeaf_pos q₄
+              exact absurd e1 (by omega)
+            · injection m3 with m5 m6
+              injection m4 with m7 m8
+              rw [← m6, ← m8] at hst3
+              rw [← hb2] at hst3
+              exact (sc_no_step_collapse hst3).elim
+          · -- C-fire: dead
+            injection hb with hb1 hb2
+            subst hq
+            rcases scStep_cases hs2 with hroot
+              | ⟨F₃, X₃, F₃', m3, m4, hst3⟩ | ⟨F₃, X₃, X₃', m3, m4, hst3⟩
+            · rcases scRootStep_inv hroot with ⟨p₅, q₅, r₅, hc', hd'⟩ | ⟨p₅, q₅, r₅, hc', hd'⟩
+              · injection hc' with hc'1 hc'2
+                injection hd' with hd'1 hd'2
+                injection hd'1 with hd'3 hd'4
+                have e1 : x.leafCount = r₅.leafCount := congrArg SCTerm.leafCount hd'4
+                have e2 : q₄.leafCount = r₅.leafCount := congrArg SCTerm.leafCount hc'2
+                have e3 : x.leafCount = (1 + p₄.leafCount) + q₄.leafCount :=
+                  congrArg SCTerm.leafCount hb1
+                have := scLeaf_pos p₄
+                exact absurd e1 (by omega)
+              · injection hc' with hc'1 hc'2
+                injection hd' with hd'1 hd'2
+                injection hd'1 with hd'3 hd'4
+                have e1 : x.leafCount = r₅.leafCount := congrArg SCTerm.leafCount hd'4
+                have e2 : q₄.leafCount = r₅.leafCount := congrArg SCTerm.leafCount hc'2
+                have e3 : x.leafCount = (1 + p₄.leafCount) + q₄.leafCount :=
+                  congrArg SCTerm.leafCount hb1
+                have := scLeaf_pos p₄
+                exact absurd e1 (by omega)
+            · injection m3 with m5 m6
+              injection m4 with m7 m8
+              rw [← m5, ← m7] at hst3
+              rcases scStep_cases hst3 with hroot2
+                | ⟨F₄, X₄, F₄', n1', n2', hst4⟩ | ⟨F₄, X₄, X₄', n1', n2', hst4⟩
+              · rcases scRootStep_inv hroot2 with ⟨p₅, q₅, r₅, he', hf'⟩ | ⟨p₅, q₅, r₅, he', hf'⟩
+                · injection hf' with o1 o2
+                  exact SCTerm.noConfusion o1
+                · injection hf' with o1 o2
+                  exact SCTerm.noConfusion o1
+              · injection n1' with n3 n4
+                injection n2' with n5 n6
+                rw [← n3, ← n5] at hst4
+                obtain ⟨u1, u2, hu⟩ := scStep_result_isApp hst4
+                exact SCTerm.noConfusion hu
+              · injection n1' with n3 n4
+                injection n2' with n5 n6
+                rw [← n3] at n5
+                rw [← n4, ← n6] at hst4
+                rw [← hb2] at hst4
+                have hq4 : q₄ = y := m6.trans m8.symm
+                rw [← n5, hq4] at hb1
+                rw [hb1] at hst4
+                exact (sc_no_step_right_embed hst4
+                  (SCRightNested.tail (SCRightNested.refl y))).elim
+            · injection m3 with m5 m6
+              injection m4 with m7 m8
+              rw [← m5] at m7
+              injection m7 with m9 m10
+              rw [← m6, ← m8] at hst3
+              have hyx : y = x := hb2.trans m10.symm
+              rw [hyx] at hst3
+              rw [← m9] at hb1
+              rw [hb1] at hst3
+              exact (sc_no_step_right_embed hst3
+                (SCRightNested.tail (SCRightNested.refl q₄))).elim
+        · -- step, then fire landing exactly on the target
+          have m2 : k₂' = 0 := by omega
+          subst m1; subst m2
+          have hb'eq := RS.stepsN_zero_eq h2'
+          subst hb'eq
+          have hs2 := RS.stepsN_one_step h1'
+          rcases scRootStep_inv hr3 with ⟨p₄, q₄, r₄, hc, hd⟩ | ⟨p₄, q₄, r₄, hc, hd⟩
+          · -- S-result: dead
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            subst hc
+            rcases scStep_cases hs2 with hroot
+              | ⟨F₃, X₃, F₃', m3, m4, hst3⟩ | ⟨F₃, X₃, X₃', m3, m4, hst3⟩
+            · rcases scRootStep_inv hroot with ⟨p₅, q₅, r₅, hc', hd''⟩ | ⟨p₅, q₅, r₅, hc', hd''⟩
+              · injection hc' with hc'1 hc'2
+                injection hd'' with hd''1 hd''2
+                injection hd''1 with hd''3 hd''4
+                have e1 : r₄.leafCount = q₅.leafCount + r₅.leafCount := congrArg SCTerm.leafCount hd''2
+                have e2 : x.leafCount = r₄.leafCount := congrArg SCTerm.leafCount hd4
+                have e3 : x.leafCount = (1 + p₅.leafCount) + q₅.leafCount := congrArg SCTerm.leafCount hc'1
+                have e4 : q₄.leafCount = r₅.leafCount := congrArg SCTerm.leafCount hd''4
+                have e5 : y.leafCount = q₄.leafCount + r₄.leafCount := congrArg SCTerm.leafCount hd2
+                have e6 : y.leafCount = r₅.leafCount := congrArg SCTerm.leafCount hc'2
+                have := scLeaf_pos r₄
+                exact absurd e1 (by omega)
+              · injection hc' with hc'1 hc'2
+                injection hd'' with hd''1 hd''2
+                have e1 : x.leafCount = r₄.leafCount := congrArg SCTerm.leafCount hd4
+                have e2 : r₄.leafCount = q₅.leafCount := congrArg SCTerm.leafCount hd''2
+                have e3 : x.leafCount = (1 + p₅.leafCount) + q₅.leafCount := congrArg SCTerm.leafCount hc'1
+                have := scLeaf_pos p₅
+                exact absurd e1 (by omega)
+            · injection m3 with m5 m6
+              injection m4 with m7 m8
+              have e1 : r₄.leafCount = X₃.leafCount := congrArg SCTerm.leafCount m8
+              have e2 : y.leafCount = X₃.leafCount := congrArg SCTerm.leafCount m6
+              have e3 : x.leafCount = r₄.leafCount := congrArg SCTerm.leafCount hd4
+              have e4 : y.leafCount = q₄.leafCount + r₄.leafCount := congrArg SCTerm.leafCount hd2
+              have := scLeaf_pos q₄
+              exact absurd e1 (by omega)
+            · injection m3 with m5 m6
+              injection m4 with m7 m8
+              rw [← m6, ← m8] at hst3
+              rw [hd2] at hst3
+              exact (sc_no_step_collapse hst3).elim
+          · -- C-result: the w-cycle, second placement, or dead
+            injection hd with hd1 hd2
+            injection hd1 with hd3 hd4
+            subst hc
+            rcases scStep_cases hs2 with hroot
+              | ⟨F₃, X₃, F₃', m3, m4, hst3⟩ | ⟨F₃, X₃, X₃', m3, m4, hst3⟩
+            · rcases scRootStep_inv hroot with ⟨p₅, q₅, r₅, hc', hd''⟩ | ⟨p₅, q₅, r₅, hc', hd''⟩
+              · -- LIVE: the w-cycle, second placement
+                injection hc' with hc'1 hc'2
+                injection hd'' with hd''1 hd''2
+                injection hd''1 with hd''3 hd''4
+                have hp5 : p₅ = SCTerm.app .C .C := by rw [← hd''3, ← hd3]
+                rw [hp5] at hc'1
+                have hx2 : x = SCTerm.app q₅ y := by rw [hd4, hd''2, ← hc'2]
+                rw [hc'1] at hx2
+                injection hx2 with n1 n2
+                subst n1
+                subst n2
+                subst hc'1
+                exact Or.inr ⟨rfl, rfl⟩
+              · injection hc' with hc'1 hc'2
+                injection hd'' with hd''1 hd''2
+                have e1 : x.leafCount = r₄.leafCount := congrArg SCTerm.leafCount hd4
+                have e2 : r₄.leafCount = q₅.leafCount := congrArg SCTerm.leafCount hd''2
+                have e3 : x.leafCount = (1 + p₅.leafCount) + q₅.leafCount := congrArg SCTerm.leafCount hc'1
+                have := scLeaf_pos p₅
+                exact absurd e1 (by omega)
+            · injection m3 with m5 m6
+              injection m4 with m7 m8
+              rw [← m5, ← m7] at hst3
+              rw [← hd3, ← hd2] at hst3
+              have hxy : x = y := hd4.trans (m8.trans m6.symm)
+              rw [← hxy] at hst3
+              exact (sc_no_step_right_embed hst3
+                (SCRightNested.tail (SCRightNested.refl x))).elim
+            · injection m3 with m5 m6
+              injection m4 with m7 m8
+              rw [← m5] at m7
+              rw [← m6, ← m8] at hst3
+              rw [← hd4] at hst3
+              rw [← hd3, ← hd2] at m7
+              rw [← m7] at hst3
+              exact (sc_no_step_right_embed hst3
+                (SCRightNested.tail (SCRightNested.refl y))).elim
+      · exact absurd h0 (by omega)
+      · injection heq1 with i1 i2
+        injection heq2 with i3 i4
+        rw [← i1, ← i3] at pf2
+        exact (sc_no_leaf_self_embed (fun _ _ h => SCTerm.noConfusion h)
+          (RS.StepsN.toSteps pf2)).elim
+
+/-- **THE CLASSIFICATION**: every root 3-cycle of `{S,C}` is the h-cycle at basepoint A, the
+h-cycle at basepoint B, or the w-cycle. -/
+theorem sc_root_three_cycle_classified {a b : SCTerm} (hr : SCRootStep a b)
+    (hret : RS.SC.StepsN 2 b a) :
+    (a = scCycA ∧ b = scCycB) ∨ (a = scCycB ∧ b = scCycC) ∨ (a = scWCycA ∧ b = scWCycB) := by
+  cases hr with
+  | S_red f g x => exact Or.inl (sc_class_S hret)
+  | C_red x y z =>
+      rcases sc_class_C hret with ⟨e1, e2⟩ | ⟨e1, e2⟩
+      · exact Or.inr (Or.inl ⟨e1, e2⟩)
+      · exact Or.inr (Or.inr ⟨e1, e2⟩)
+
+/-- Composed with localization and the length kills: every 3-cycle passes through one of the two
+known cycles. Stage 99's conjecture, discharged. -/
+theorem sc_three_cycles_are_known {t : SCTerm} (h : RS.SC.StepsN 3 t t) :
+    ∃ a b, SCRootStep a b ∧ RS.SC.StepsN 2 b a ∧
+      ((a = scCycA ∧ b = scCycB) ∨ (a = scCycB ∧ b = scCycC) ∨ (a = scWCycA ∧ b = scWCycB)) := by
+  obtain ⟨a, b, k, hr, hret, hk⟩ := sc_cycle_needs_root_length (by omega) h
+  have hge := sc_cycle_length_ge_three (n := k + 1) (by omega)
+    (RS.StepsN.tail (scRootStep_step hr) hret)
+  have hk2 : k = 2 := by omega
+  subst hk2
+  exact ⟨a, b, hr, hret, sc_root_three_cycle_classified hr hret⟩

@@ -133,3 +133,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_cycle_pump' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_cycle_pump
+
+/-- info: 'sc_root_three_cycle_classified' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_root_three_cycle_classified
+
+/-- info: 'sc_three_cycles_are_known' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_three_cycles_are_known
