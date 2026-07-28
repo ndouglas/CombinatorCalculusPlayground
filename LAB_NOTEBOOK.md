@@ -4485,3 +4485,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   under rotation discipline; the deliverable is `scWord` + a one-step traversal theorem, or the
   named obstruction. (2) The arrival-order pairing impossibility (parked). (3) C6, declined a
   ninety-second time.
+
+## 2026-07-28 — Stage 105: the gadget that dissolved
+
+- The planned route failed and the failure pointed at the fix. The 4-ary cell gadget (store rest
+  in a wrapper, permute it behind the interrogation arms) is census-dead to 9 leaves — the same
+  early-behind-late resistance the pairing probe hit. The fix was to stop fighting the calculus:
+  don't STORE rest behind anything; let it sit where tags naturally put their continuation (first
+  argument position, right-nested), and read the tags' own fire patterns as the protocol. C
+  applied to rest recurses; C C applied to rest dispatches. The calculus had a word discipline
+  built in; the design work was noticing it.
+- Swap parity as symbol selection is the part I would not have designed on purpose: a-cells swap
+  the arms, so WHICH arm a b-cell fires depends on the parity of preceding a's — and encoding
+  σ₂ as the two-cell block `ab` makes every block self-normalizing (each block contains exactly
+  the swaps it needs). The asymmetry that looked like a defect of the a-cell is the selection
+  mechanism.
+- Four of five skeleton pieces are now theorems, all axiom-free, in one arc week. The driver
+  remains, and it is the genuinely hard piece: the arms must contain the traversal machinery
+  itself, which means self-duplication (S is the only copier, and it copies THIRD arguments —
+  the driver must arrange itself as something's third argument to reproduce). The tag pipeline
+  solved the analogous problem with fixpoint-free selfRep built on bracket abstraction, which
+  used K; the {S,C} version has no template. That is the next real research obligation.
+- Ranking: (1) **the driver probe**: can an {S,C} term self-reproduce under application —
+  find D, u with D u ⟶* something containing D u (or the precise self-application shape the
+  traversal needs)? The cycle witnesses (w w prefixes) are the natural seeds. Deliverable:
+  the reproduction gadget or the named obstruction. (2) The arrival-order pairing impossibility
+  (parked). (3) C6, declined a ninety-third time.

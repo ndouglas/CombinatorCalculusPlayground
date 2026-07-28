@@ -4302,3 +4302,33 @@ branching, shredding); two are engineering with named obligations. This is the f
 hosting question has had a constructive attack with no identified obstruction — the honest odds
 moved. The next stage of this thread is the word-chaining plumbing, which will either produce
 `{S,C}`-encoded two-symbol words with a working traversal step, or name the obstruction.
+
+### Stage 105: the word layer — mkWord survives translation to rotation-land
+
+Word chaining, closed — and the failure of the obvious route is as informative as the success of
+the real one. The obvious protocol (cell = gadget applied to tag and rest, arms supplied at
+interrogation) requires the 4-ary permuter `M t r x y ⟶* t x y r`; the census found no such
+machine up to 9 leaves, matching the pairing pattern: `{S,C}` resists gadgets that hold a stored
+argument BEHIND later arrivals under a fixed head. The working protocol dissolves the gadget:
+store `rest` inside the tag application, and let the tags' own fire patterns do the chaining:
+
+| | |
+|---|---|
+| `scCellA_step` | `(C rest) β₁ β₂ ⟶ rest β₂ β₁` — recurse into the word, arms SWAPPED |
+| `scCellB_step` | `(C C rest) β₁ β₂ ⟶* β₁ β₂ rest` — dispatch the first arm |
+| `scWord` | σ₁ := b-cell, σ₂ := a-cell over b-cell, over an end-marker parameter |
+| **`scWord_step_false` / `scWord_step_true`** | **the traversal theorems: per-symbol arm dispatch under one calling convention** — the arm heads, receives the parked other arm, then the remaining word |
+| `scWord_normal` | words over a normal end marker are NORMAL — stable data |
+
+All axiom-free, all pinned. The design content: swap PARITY is the selection mechanism — a-cells
+rotate which arm is "first," b-cells fire whichever arm currently is — so a two-symbol alphabet
+encodes as `b` and `ab`, and every symbol block ends in a dispatch that lands on the right arm.
+This is the tag pipeline's `mkWord`/`STEPc` discipline reborn without selectors.
+
+The hosting skeleton stands at FOUR of five pieces proved: symbols (104), branching (104),
+shredding (102), words (105). The remaining piece is the driver: (a) the arms must re-invoke the
+traversal on `rest` — recursion, without K-based `selfRep`; S-duplication is the mechanism and
+the cycle witnesses prove the pattern lives, but a driver that duplicates ITSELF into the arm
+position is unbuilt; (b) the garbage-slot obligations — each dispatch parks one arm, a fixed
+closed term, and the machine must reduce it back to a constant slot. Both are engineering with
+named shapes; neither has an identified obstruction.
