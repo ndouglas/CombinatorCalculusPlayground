@@ -3949,3 +3949,24 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **the τ×ρ braid for rung 3**: compute τ's behavior on flattening C-steps and ρ's on
   C-duplicating S-steps; if either is signed, build the lexicographic composite. (2) C6, declined a
   seventy-second time.
+
+## 2026-07-28 — Stage 85: the braid that wasn't, and the word underneath
+
+- The τ×ρ braid died in the first hour of paper, and this time the failure is witnessed in the
+  build: `scHeavy` — sitting in the ledger since Stage 27 as the τ-asymmetry example — is exactly a
+  flat, τ-raising C, the step kind cycles need and τ cannot punish; and S-fires always raise ρ, so
+  ρ cannot punish the τ-family's heavy steps either. Two families, each blind precisely where the
+  other needs eyes. I notice the failure took an hour because both halves were already theorems —
+  cheap failure is what the last five stages of infrastructure purchased.
+- What the failure exposed is better than what was sought. Writing the two root rules against the
+  right-spine sequence: S refines the head and PRESERVES the tail; C REPLACES the tail wholesale —
+  both equations are `rfl`. Rung 3's dynamics is a word rewriting system over term-valued letters,
+  and every measure attempted so far was a homomorphism from that word structure into ℕ that C's
+  tail replacement can defeat. The honest statement of where rung 3 stands: five necessary
+  conditions, two impossibility sweeps, and a recorded route (the spine calculus) that is genuine
+  open research — the kind that may outlive the program, as Stage 80 said of its predecessors.
+- Ranking, with the ladder now honestly parked: (1) **the program review** — STATUS's header still
+  says 52 targets and ~344 theorems; it is 70 targets and far more, the four goals have moved
+  decisively since the last accounting, and the spec deserves a settled-state pass before any new
+  research thread opens. (2) The spine calculus for rung 3, as deliberate long-horizon research.
+  (3) C6, declined a seventy-third time.

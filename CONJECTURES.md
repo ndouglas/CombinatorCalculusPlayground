@@ -3720,3 +3720,25 @@ argument; a two-clause τ-heavy condition; and a flattening `C`. The τ-family a
 measure DIFFERENT things (exponential subtree weight vs right-spine position), so the next hunt is
 for their joint behavior — what does a flattening `C` do to τ, and can the two families be braided
 into a lexicographic argument where each covers the other's blind steps?
+
+### Stage 85: the braid fails, and what lies under both measures
+
+The ranked τ×ρ braid does not exist, and the obstruction is now WITNESSED rather than suspected:
+the flat C-steps every cycle must contain (`scCycle_needs_flat_C`) are τ-unconstrained — the
+ledger's own `scHeavy` is flat AND τ-raising, build-enforced — and S-fires, the τ-family's bad
+steps, always RAISE ρ. Each family's blind spot is invisible to the other; no lexicographic
+composite of the two closes rung 3.
+
+| | |
+|---|---|
+| `scSpine` / `rightDepthC_eq_spine_length` | the right-spine sequence; ρ is its length, τ weights its elements |
+| **`scSpine_S_root`** | S refines the spine head into two elements and PRESERVES the tail — `rfl` |
+| **`scSpine_C_root`** | C REPLACES the entire spine tail: `σ(z)` out, `σ(y)` in — `rfl` |
+| guards | the independence witnesses, build-enforced |
+
+The failure exposes the structure beneath both measures: rung 3's dynamics is a WORD REWRITING
+SYSTEM over term-valued letters — the spine sequence — where S is tail-preserving and C is
+tail-replacing. Any closing argument must handle the tail replacement, which no positional measure
+(Stage 84's sweep) and no τ-composite (this stage) can. The spine calculus is the recorded route,
+and it is genuine research: rung 3 remains open, now with five necessary conditions and two
+machine-checked impossibility sweeps around it.
