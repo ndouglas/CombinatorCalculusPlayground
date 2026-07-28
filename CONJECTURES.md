@@ -4265,3 +4265,40 @@ the impossibility. The interpreter route is neither dead nor open as previously 
 CONSTRAINED to rotation discipline, a design regime with no precedent in the tag pipeline. The
 sharpest formal separation so far between `{S,C}` and every basis the program has hosted
 machines in: SK and {S,K}-fragments select; `{S,C}` only rotates.
+
+### Stage 104: branching without selectors — the design skeleton stands
+
+The rotation-discipline design's crux was branching: a selector-free calculus cannot erase the
+untaken arm, and every data protocol needs a two-way choice. Solved, by HEAD PROMOTION under a
+uniform protocol (`tag β₁ β₂ x`, both tags consuming exactly three arguments):
+
+| | |
+|---|---|
+| `scTagA := C` | dispatches FIRST arm: `a β₁ β₂ x ⟶ β₁ x β₂` — one C-fire |
+| `scTagB := C C` | dispatches SECOND arm: `b β₁ β₂ x ⟶* β₂ x β₁` — Stage 103's rotator re-read |
+| `scTag_normal` | both tags NORMAL — inert as stored data; distinguishable |
+
+The chosen arm becomes the head, receives the continuation `x`, and receives the UNTAKEN arm as
+an ordinary argument — parked, not erased. All axiom-free, dispatches pinned.
+
+**The design skeleton for a `{S,C}` data layer, as it now stands:**
+
+1. **Symbols**: the two-cell tag alphabet above; n-symbol alphabets via longer C-powers (each
+   C-power dispatches with a distinct promotion pattern — unverified beyond n = 2).
+2. **Branching**: this stage — uniform, inert, head-promoting, garbage-parking.
+3. **Words**: chained cells where each cell's tag dispatches the driver's per-symbol arms and the
+   continuation carries the rest of the word — the mkWord discipline with the handler in the
+   protocol's third slot instead of SK's selector position. UNVERIFIED: the chaining plumbing.
+4. **Driver recursion**: self-application via S-duplication (the cycle witnesses prove the
+   pattern lives); fixpoint-free selfRep needs re-derivation without K. UNVERIFIED.
+5. **The garbage-slot invariant**: each simulated step parks exactly one untaken arm — a FIXED
+   closed term per branch — so `enc` can carry one designated slot whose contents must reduce
+   back to a constant after each step. The finitely many obligations `Jᵢ⟨G₀⟩ ⟶* G₀` are concrete
+   reduction checks once the arms are fixed. UNVERIFIED, and the likeliest failure point: the
+   parked arm must land in a position where those reductions can actually fire.
+
+Standing: no piece of the skeleton is known impossible; three pieces are proved (symbols,
+branching, shredding); two are engineering with named obligations. This is the first time the
+hosting question has had a constructive attack with no identified obstruction — the honest odds
+moved. The next stage of this thread is the word-chaining plumbing, which will either produce
+`{S,C}`-encoded two-symbol words with a working traversal step, or name the obstruction.

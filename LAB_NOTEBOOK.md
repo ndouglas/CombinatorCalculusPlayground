@@ -4460,3 +4460,28 @@ what automation could and couldn't do. This file is a first-class deliverable
   slot? A paper design first; if it closes, {S,C} hosting gets its data layer and the program's
   hardest open question gets a real attack. (2) The arrival-order impossibility, if the design
   stalls and the invariant matures. (3) C6, declined a ninety-first time.
+
+## 2026-07-28 — Stage 104: the branch that parks instead of erasing
+
+- The crux fell in one sitting because two prior results composed AGAIN: Stage 103's rotator IS
+  the second tag's dispatch (same theorem, new reading), and Stage 102's shredder is what makes
+  the parked arm tolerable. I went looking for a data-layer design and found that the pieces had
+  already been proved under other names — the third time this arc has re-read an existing
+  theorem as a new capability. The design method that keeps working: name the capability the
+  design needs, then grep the theorem list before proving anything.
+- The dispatch protocol's uniformity matters more than it looks: both tags consume exactly three
+  arguments, so a word cell can apply WHATEVER tag it holds without knowing it — no meta-level
+  case split, which is what would have smuggled selection back in. And both tags are normal, so
+  words built from them are stable data — the good-garbage-is-bad-data tension from Stage 102 is
+  resolved by having the TAGS be data and the ARMS be garbage-handlers.
+- Honest inventory of what is NOT done: word chaining, driver recursion without K-based selfRep,
+  and the garbage-slot obligations. The last is the likeliest failure point — parking an arm as
+  an argument is easy; guaranteeing the parked arm's REDUCTION back to the slot constant, from
+  the position it lands in, is the engineering. But for the first time the hosting question has
+  a constructive attack with no identified obstruction, which is a different epistemic state
+  than any earlier stage of this thread.
+- Ranking: (1) **word chaining**: build two-symbol {S,C} words from the tags and prove the
+  traversal step — one cell consumed, driver re-applied to the rest — the mkWord/STEPc analogue
+  under rotation discipline; the deliverable is `scWord` + a one-step traversal theorem, or the
+  named obstruction. (2) The arrival-order pairing impossibility (parked). (3) C6, declined a
+  ninety-second time.
