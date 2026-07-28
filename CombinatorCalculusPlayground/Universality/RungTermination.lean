@@ -1957,3 +1957,144 @@ theorem sb_no_I_on_S (t : SBTerm) : ¬ RS.SB.Steps (SBTerm.app t .S) .S := by
 /-- **No I-like combinator in `{S,B}`**, at any size — the 7-leaf census bound, unconditionally. -/
 theorem sb_no_I_like (t : SBTerm) : ¬ ∀ u, RS.SB.Steps (SBTerm.app t u) u :=
   fun h => sb_no_I_on_S t (h .S)
+
+-- ## Stage 99: the second three-cycle — uniqueness refuted
+-- The ranked question was whether Stage 96's witness is the unique minimal cycle. Working the
+-- full classification on paper (both budget branches of both root shapes, ~40 leaf cases), the
+-- consecutive-fires branch forces exactly the Stage 96 cycle — but the C-rooted projection
+-- branch with `y = z` and a two-step left path has a surviving assignment of its own:
+-- `x = w w`, `y = z = w` with `w = S (C C)`. Verified computationally, then by constructor:
+--
+--     C (w w) w w  ⟶C  (w w w) w  ⟶S·appL  (C C w (w w)) w  ⟶C·appL  C (w w) w w
+--
+-- Thirteen leaves, ONE root fire (C-rooted) — the other consistent answer to Stage 95's budget,
+-- which said short cycles are C-rooted or carry second fires: the h-cycle carries two fires, the
+-- w-cycle is C-rooted. The paper classification (every root 3-cycle is a rotation of one of the
+-- two) is recorded in the ledger as a conjecture; the case tree's recurring kill is packaged
+-- here as the stage's reusable tool: NO SINGLE STEP RIGHT-EMBEDS ITS SOURCE.
+
+/-- The seed: `w = S (C C)`. -/
+def scWCycW : SCTerm := .app .S (.app .C .C)
+
+/-- `C (w w) w w`. -/
+def scWCycA : SCTerm := .app (.app (.app .C (.app scWCycW scWCycW)) scWCycW) scWCycW
+
+/-- `(w w w) w`. -/
+def scWCycB : SCTerm := .app (.app (.app scWCycW scWCycW) scWCycW) scWCycW
+
+/-- `(C C w (w w)) w`. -/
+def scWCycB2 : SCTerm :=
+  .app (.app (.app (.app .C .C) scWCycW) (.app scWCycW scWCycW)) scWCycW
+
+theorem scWCycA_step : SCStep scWCycA scWCycB :=
+  SCStep.C_red (.app scWCycW scWCycW) scWCycW scWCycW
+
+theorem scWCycB_step : SCStep scWCycB scWCycB2 :=
+  SCStep.appL (SCStep.S_red (.app .C .C) scWCycW scWCycW)
+
+theorem scWCycB2_step : SCStep scWCycB2 scWCycA :=
+  SCStep.appL (SCStep.C_red .C scWCycW (.app scWCycW scWCycW))
+
+/-- **A second three-cycle** — axiom-free. -/
+theorem SC_second_cycle : RS.SC.StepsN 3 scWCycA scWCycA :=
+  RS.StepsN.tail scWCycA_step (RS.StepsN.tail scWCycB_step
+    (RS.StepsN.tail scWCycB2_step (@RS.StepsN.refl RS.SC scWCycA)))
+
+/-- The w-cycle shares no term with the h-cycle: its leaf counts run 13/12/14 against 9/11/10. -/
+theorem sc_second_cycle_new :
+    scWCycA ≠ scCycA ∧ scWCycA ≠ scCycB ∧ scWCycA ≠ scCycC := by
+  refine ⟨fun h => ?_, fun h => ?_, fun h => ?_⟩ <;>
+    · have hc := congrArg SCTerm.leafCount h
+      exact absurd hc (by decide)
+
+/-- **Minimal-cycle uniqueness is REFUTED**: two disjoint cycles of the minimal length. -/
+theorem sc_min_cycle_not_unique :
+    ∃ t t', t ≠ t' ∧ RS.SC.StepsN 3 t t ∧ RS.SC.StepsN 3 t' t' :=
+  ⟨scWCycA, scCycA, sc_second_cycle_new.1, SC_second_cycle, SC_cycle⟩
+
+/-- Right-nesting only grows leaf count. -/
+theorem scRightNested_size {t u : SCTerm} (h : SCRightNested t u) :
+    t.leafCount ≤ u.leafCount := by
+  induction h with
+  | refl => exact Nat.le_refl _
+  | tail h ih =>
+      show _ ≤ _ + _
+      have := ih
+      omega
+
+theorem scRightNested_trans {x y z : SCTerm} (h1 : SCRightNested x y)
+    (h2 : SCRightNested y z) : SCRightNested x z := by
+  induction h2 with
+  | refl => exact h1
+  | tail h ih => exact SCRightNested.tail ih
+
+theorem scRightNested_inv {t u : SCTerm} (h : SCRightNested t u) :
+    t = u ∨ ∃ a b, u = SCTerm.app a b ∧ SCRightNested t b := by
+  cases h with
+  | refl => exact Or.inl rfl
+  | tail h => exact Or.inr ⟨_, _, rfl, h⟩
+
+/-- **No single step right-embeds its source**: `t ⟶ u` with `t` right-nested in `u` is
+impossible. The root and appL cases die on size through `scRightNested_size`; the appR case
+recurses. Subsumes the single-step frozen-left and every wrap kill of the classification. -/
+theorem sc_no_step_right_embed_aux : ∀ (n : Nat) (t u : SCTerm), t.leafCount ≤ n →
+    SCStep t u → SCRightNested t u → False := by
+  intro n
+  induction n with
+  | zero =>
+      intro t u hle _ _
+      exact absurd hle (by have := scLeaf_pos t; omega)
+  | succ n ih =>
+      intro t u hle hs hn
+      rcases scRightNested_inv hn with heq | ⟨a, b, hu, hnb⟩
+      · subst heq
+        exact scStep_irrefl t hs
+      · subst hu
+        rcases scStep_cases hs with hroot
+          | ⟨F, X, F', heq1, heq2, hstep⟩ | ⟨F, X, X', heq1, heq2, hstep⟩
+        · rcases scRootStep_inv hroot with ⟨p, q, r, hb1, hb2⟩ | ⟨p, q, r, hb1, hb2⟩
+          · injection hb2 with h1 h2
+            have hsz := scRightNested_size hnb
+            have hc1 : t.leafCount = 1 + p.leafCount + q.leafCount + r.leafCount := by
+              rw [hb1]; rfl
+            have hc2 : b.leafCount = q.leafCount + r.leafCount := by rw [h2]; rfl
+            have := scLeaf_pos p
+            omega
+          · injection hb2 with h1 h2
+            have hsz := scRightNested_size hnb
+            have hc1 : t.leafCount = 1 + p.leafCount + q.leafCount + r.leafCount := by
+              rw [hb1]; rfl
+            rw [h2] at hsz
+            have := scLeaf_pos p
+            have := scLeaf_pos r
+            omega
+        · injection heq2 with h1 h2
+          subst heq1
+          have hsz := scRightNested_size hnb
+          rw [h2] at hsz
+          have := scLeaf_pos F
+          exact absurd hsz (by
+            show ¬(F.leafCount + X.leafCount ≤ X.leafCount)
+            omega)
+        · injection heq2 with h1 h2
+          subst heq1
+          rw [h2] at hnb
+          have hXn : SCRightNested X X' :=
+            scRightNested_trans (SCRightNested.tail (SCRightNested.refl X)) hnb
+          have hXsz : X.leafCount ≤ n := by
+            have hle2 : F.leafCount + X.leafCount ≤ n + 1 := hle
+            have := scLeaf_pos F
+            omega
+          exact ih X X' hXsz hstep hXn
+
+theorem sc_no_step_right_embed {t u : SCTerm} (hs : SCStep t u)
+    (hn : SCRightNested t u) : False :=
+  sc_no_step_right_embed_aux t.leafCount t u (Nat.le_refl _) hs hn
+
+-- The wrap kills the classification's case tree leaned on, now one-liners.
+example (t w : SCTerm) : ¬ SCStep t (SCTerm.app w t) :=
+  fun h => sc_no_step_right_embed h (SCRightNested.tail (SCRightNested.refl t))
+
+example (t : SCTerm) : ¬ SCStep t (SCTerm.app .C (SCTerm.app .C t)) :=
+  fun h => sc_no_step_right_embed h
+    (SCRightNested.tail (SCRightNested.tail (SCRightNested.refl t)))
