@@ -4104,3 +4104,38 @@ there. `{S,B}` and `{S,C}` are projection-free, so the define-I transport is clo
 unconditionally for both, and any SK-hosting certificate for them must survive without it: SK's
 erasing steps must land on encoded terms (applications), which the leaf argument does not forbid.
 The hosting question stays open in both directions, now with one fewer route on each side.
+
+### Stage 99: the second three-cycle — uniqueness refuted, classification conjectured
+
+The ranked question — is Stage 96's witness THE minimal cycle? — has answer no. The full paper
+classification runs both budget branches of both root shapes through the injections (~40 leaf
+cases). The consecutive-fires branch (two root fires then a step) survives only as the h-cycle,
+exactly as Stage 96 found. But the C-rooted projection branch with `y = z` and a two-step left
+path has its own surviving assignment: `x = w w`, `y = z = w`, `w = S (C C)`:
+
+    C (w w) w w  ⟶C  (w w w) w  ⟶S·appL  (C C w (w w)) w  ⟶C·appL  C (w w) w w
+
+Thirteen leaves, disjoint from the h-cycle (leaf counts 13/12/14 vs 9/11/10), and C-rooted with
+ONE root fire — the budgets' other consistent answer, inhabited too. Both cycles axiom-free.
+
+| | |
+|---|---|
+| `scWCycW/A/B/B2` + steps | the witness, by constructor — axiom-free |
+| **`SC_second_cycle`** | **a second 3-cycle** — axiom-free, pinned |
+| **`sc_min_cycle_not_unique`** | **minimal-cycle uniqueness REFUTED** — axiom-free, pinned |
+| `scRightNested_size/trans/inv` | the right-nesting toolkit |
+| **`sc_no_step_right_embed`** | **no single step right-embeds its source** — the case tree's recurring kill, packaged; subsumes single-step frozen-left and every wrap kill — pinned |
+
+**CONJECTURE (3-cycle classification).** Every root 3-cycle of `{S,C}` is a rotation of the
+h-cycle or the w-cycle — equivalently, `(a, b)` with `SCRootStep a b ∧ StepsN 2 b a` forces
+`(a, b) ∈ {(scCycA, scCycB), (scCycB, scCycC′), (scWCycA, scWCycB)}`-shaped instances. Status:
+the case tree is fully worked on paper (this stage); every branch dies on absorption, collapse,
+right-embedding, or app-vs-leaf EXCEPT the two inhabited ones. Formalizing is a Stage-94-style
+equations-first blast at roughly 4× scale — mechanical, bounded, and now specified. Materiality:
+it would be the program's first complete classification of a cycle space; the two witnesses
+already suffice for every downstream claim made so far.
+
+A pattern note: this is the third consecutive stage where precise formulation dissolved or
+inverted the ranked question (96: kill became witness; 98: search became one-liner; 99:
+uniqueness became a second witness plus a two-point classification). Exact accounting keeps
+outperforming intuition about which side of a question is true.

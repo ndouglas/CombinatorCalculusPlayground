@@ -4328,3 +4328,33 @@ what automation could and couldn't do. This file is a first-class deliverable
   cycle-space classification theorem, and the C-rooted case completes it. (2) **SK-into-{S,C}
   hosting**: scope what a Simulation would need (K-erasure inside app-shaped encodings) and
   probe the smallest obstruction. (3) C6, declined an eighty-sixth time.
+
+## 2026-07-28 — Stage 99: the other answer the budgets allowed
+
+- Stage 95's budget theorem said short cycles are C-rooted or carry second fires — an OR, and I
+  read it as rhetoric when it was inventory. The h-cycle inhabits the second-fires disjunct; the
+  w-cycle, found today by finishing the case tree, inhabits the C-rooted one. Two disjuncts, two
+  cycles. The lesson from Stage 96 sharpens: when exact constraints leave a branch standing,
+  INSTANTIATE IT — and when a dichotomy's both sides survive, expect both to be inhabited.
+- The w-cycle is prettier than the h-cycle in one respect: it is C-rooted with a single root
+  fire, so its return path is pure projection — the whole cycle lives in the left component's
+  two-step self-embedding `w w w ⟶ C C w (w w) ⟶ C (w w) w`, lifted under appL. `w = S (C C)`
+  is the {S,C} cousin of the Ω-style self-application seeds that power every cycle this program
+  has met: rung 1's Ω_SI, SK's Ω, now w w.
+- The reusable yield: `sc_no_step_right_embed` — no single step maps a term into a term that
+  right-nests it. Every wrap kill in the ~40-case tree was an instance; the proof is four cases,
+  three dead on the nesting size bound, one recursing. `SCRightNested` (built in Stage 89 for
+  collapse) earned a second job. The multi-step version is NOT provable — the w-cycle itself has
+  `w w w ⟶2 C (w w) w`... which does not right-embed; the honest open question is whether
+  multi-step right-self-embedding `t ⟶+ u t`-style is possible at all in {S,C}; the frozen left
+  says no when the head is a leaf. Unranked for now; noted.
+- Formalizing the full classification is specified and bounded (equations-first, ~40 branches,
+  every kill now a named lemma), but the two witnesses already carry every downstream claim. It
+  goes to the ledger as a conjecture with materiality honestly marked — the right call is to not
+  spend a stage on it unless a downstream result needs the completeness.
+- Ranking: (1) **SK-into-{S,C} hosting, scoped**: with the ladder settled and both transport
+  routes closed, the honest next question is what a positive certificate would need — K-erasure
+  inside app-shaped encodings; the countdown machine's Simulation template and the tag pipeline
+  are the tools; the first deliverable is the obstruction analysis, not the construction.
+  (2) The 3-cycle classification blast, if completeness becomes load-bearing. (3) C6, declined
+  an eighty-seventh time.
