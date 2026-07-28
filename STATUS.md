@@ -14,8 +14,11 @@ inherited since Stage 0. As of Stage 76 this claim is **build-enforced**:
 `Audit.lean` pins the headline theorems' exact footprints with `#guard_msgs`,
 so any drift fails the build.
 
-At time of writing: 52 build targets, ~344 theorems, ~238 build-enforced
-`#guard`s, ~7,900 lines of Lean.
+At time of writing (Stage 86 review): 32 modules, ~700 theorems, ~377
+build-enforced `#guard`s plus 16 `#guard_msgs`-pinned axiom footprints, ~14,100
+lines of Lean. (The previous accounting here — 52 targets, ~344 theorems — was
+forty stages stale; the program roughly doubled during the tag-Simulation and
+ladder arcs, Stages 59–85.)
 
 ---
 
@@ -40,8 +43,10 @@ over abstract rewriting systems — see Goal 2.
 
 ## Goal 2 — a machine-checked taxonomy of universality definitions
 
-**Status: the taxonomy is built and calibrated. One instance remains open — see
-"the open item" below.**
+**Status: DONE — taxonomy built, calibrated in both directions, and the open
+item CLOSED (Stages 75–79): a genuine tag system is hosted by a machine-checked
+`Simulation`, generalised to EVERY finite-alphabet 2-tag system. See "the open
+item" below for the route.**
 
 Three observation modes, all quantifying over a pinned encoding class:
 `UniversalReach` / `UniversalNorm` / `UniversalConv` (`Universality/Defs.lean`).
@@ -321,8 +326,11 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   definable `I` inherits the cycle (`not_acyclic_of_pathEncoding`, `siInSK`). Also the
   witness that erasure-freeness does *not* explain rung 0's acyclicity, and that
   **arity** is the discriminator.
-- **Rung 2 `{S,B}`** — five results, none of them the full proof, and they **compose**
-  into a joint necessary condition on any cycle:
+- **Rung 2 `{S,B}`** — **CLOSED at Stage 83: ACYCLIC (`SB_acyclic`), hence not an SK
+  host (`no_pathEncoding_SK_SB`)** — by right-spine-depth monotonicity composed with
+  Stage 81's cycle localization. Everything below is subsumed, and kept as the record
+  of the route (and of the six-stage miss the closure exposed — see the Stage 83
+  notebook entry):
   - no counting measure is monotone (`no_monotone_counting_measure`);
   - the τ-light fragment is ACYCLIC (`sbLight_acyclic`), so a cycle must fire an
     S-reduction on a τ-**heavy** argument — threshold bootstrapped from τ ≥ 4 to an
@@ -344,14 +352,18 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   99.6% of 8-leaf terms survive — because it constrains a cycle's *steps*, not a
   search's *seeds*. Pruning during exploration is also unavailable: it would need a
   localizable unreachability certificate, and these constraints are global sums.)
-- **Rung 3 `{S,C}`** — now at **parity with rung two**: the τ-light fragment is acyclic
-  with a two-clause condition (`scLight_acyclic`); the S-only fragment is acyclic
-  (`scSOnly_acyclic`); the **no-C-duplication fragment is acyclic**
-  (`scNoCDup_acyclic`, which subsumes the S-only one), so any cycle must contain an
-  S-reduction whose duplicated argument contains a `C` (`scCycle_needs_C_duplication`);
-  plus the structural finding that **τ separates B from C where no counting measure
-  can**, since both rules have identical `leafCount` deltas. Censused clean to 6 leaves
-  under any strategy.
+- **Rung 3 `{S,C}`** — the last open rung, now carrying FIVE necessary conditions and
+  two impossibility sweeps: the τ-light fragment is acyclic (`scLight_acyclic`); the
+  S-only fragment is acyclic (`scSOnly_acyclic`); the no-C-duplication fragment is
+  acyclic (`scNoCDup_acyclic`), so any cycle needs a C-duplicating S-reduction
+  (`scCycle_needs_C_duplication`); any cycle passes through a root redex
+  (`sc_acyclic_of_no_root_cycle`, Stage 81); and any cycle fires a FLATTENING `C`
+  (`scCycle_needs_flat_C`, Stage 84). Termination routes are provably dead
+  (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
+  the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
+  is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine
+  word (`scSpine_S_root`, `scSpine_C_root`). Censused clean to 6 leaves under any
+  strategy.
 
 **Shared machinery.** Every acyclic-fragment result above — and C2's original argument —
 is an instance of one lemma, `RS.Acyclic.of_three_level`: three measures where each level

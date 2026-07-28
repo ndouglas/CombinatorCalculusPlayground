@@ -3742,3 +3742,26 @@ tail-replacing. Any closing argument must handle the tail replacement, which no 
 (Stage 84's sweep) and no τ-composite (this stage) can. The spine calculus is the recorded route,
 and it is genuine research: rung 3 remains open, now with five necessary conditions and two
 machine-checked impossibility sweeps around it.
+
+### Stage 86: the program review — the settled state, re-accounted
+
+A documentation stage, ranked first because STATUS's header was forty stages stale and every goal
+had moved. The refreshed accounting:
+
+- **Scale**: 32 modules, ~700 theorems, ~377 build-enforced `#guard`s plus 16 pinned axiom
+  footprints, ~14,100 lines — roughly double the last accounting, all of it from the
+  tag-Simulation arc (59–79) and the ladder arc (80–85).
+- **Goal 1** (foundations): DONE, unchanged.
+- **Goal 2** (the taxonomy): now marked **DONE** — the open item closed at Stage 75 (`tagABInSK`),
+  generalised at 78–79 (`tagTInSK`, `finTagInSK`): every finite-alphabet 2-tag system is
+  certifiably hosted inside SK. The calibration is complete in both directions.
+- **Goal 3** (pure-S reachability): CLOSED, unchanged.
+- **Goal 4** (the methodology deliverable): richer by seven `Classical.choice` leaks with seven
+  distinct mechanisms, the build-enforced audit, and the estimate-vs-structure catalogue.
+- **The ladder**: rung 0 acyclic, rung 1 cyclic, **rung 2 CLOSED (acyclic, not an SK host)**,
+  rung 3 open with five necessary conditions, two impossibility sweeps, and a recorded route.
+
+What remains live in the original spec: rung 3 (genuine open research, honestly parked with its
+route recorded) and C6 (declined seventy-three times on materiality). The program's headline
+sentence is unchanged and now rests on a fully calibrated instrument: **if S alone is universal,
+its encoding must be non-injective or must fail to preserve reduction paths.**

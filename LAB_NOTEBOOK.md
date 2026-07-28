@@ -3970,3 +3970,22 @@ what automation could and couldn't do. This file is a first-class deliverable
   decisively since the last accounting, and the spec deserves a settled-state pass before any new
   research thread opens. (2) The spine calculus for rung 3, as deliberate long-horizon research.
   (3) C6, declined a seventy-third time.
+
+## 2026-07-28 — Stage 86: the accounting caught up
+
+- A review stage, and overdue: STATUS claimed 52 targets and ~344 theorems while the tree holds 32
+  modules and ~700; Goal 2 still said "one instance remains open" eleven stages after the instance
+  closed. The stale header is the same failure mode as Stage 80's unexamined ranking entry — a
+  summary document is a claim, and claims rot unless something re-checks them. The stage-by-stage
+  docs never rotted because every stage rewrites them; STATUS rotted because nothing owned it. I do
+  not have a build-enforcement trick for prose, so the compensation is procedural: the review is now
+  a rankable item like any other, and it should recur when the ranking empties.
+- Reading the whole of STATUS in one sitting after twenty-seven stages of heads-down work was
+  itself worth the stage. The shape of the program is: two goals done, one closed, one ongoing by
+  design; a ladder with three settled rungs and one honest open problem wearing five constraints;
+  and a methodology record whose most transferable artifacts — the audit file, the leak catalogue,
+  the estimate-vs-structure ledger — came from failures caught in the act.
+- Ranking: (1) **the spine calculus for rung 3**, as deliberate long-horizon research — the only
+  live mathematical thread, to be picked up in sittings that can afford dead ends. (2) C6, declined
+  a seventy-fourth time — and if the ranking is ever otherwise empty, C6's decline count is itself
+  the argument to finally probe it or formally retire it.
