@@ -1389,3 +1389,50 @@ theorem scCycle_rotate_or_descend {t v : SCTerm} (hs : SCStep t v) (hback : RS.S
                 ∧ RS.SC.Steps b (SCTerm.app (SCTerm.app K h) m)))) := by
   obtain ⟨p, q, hr, hcyc⟩ := sc_cycle_needs_root hs hback
   exact ⟨p, q, hr, hcyc, scRootCycle_rotate_or_descend hr hcyc⟩
+
+-- ## Stage 92: length-indexed paths — the well-foundedness scaffold
+-- Stage 91's invariant is missing one ingredient: a reason rotation cannot recur forever. On a
+-- finite cycle it cannot — finitely many fires — but `Steps` is lengthless, so that sentence was
+-- unstatable. `RS.StepsN` (in RS.lean) now counts; the pieces here bridge it to `Acyclic` and
+-- restate the rotation with lengths. The headline is the CONSERVATION fact the scaffold exists
+-- for: rotation is a length-preserving basepoint shift — the original root cycle and its rotated
+-- companion have the SAME total length `k + l + 2`. A descent argument now has its measure: any
+-- future cycle surgery that strictly shortens feeds `RS.no_cycle_of_descent` and closes rung 3.
+
+/-- No nonempty `StepsN` cycles means acyclic, generically. -/
+theorem RS.acyclic_of_no_stepsN_cycle {A : RS}
+    (h : ∀ n t, 1 ≤ n → ¬ A.StepsN n t t) : RS.Acyclic A := by
+  intro t v hs hback
+  obtain ⟨k, hk⟩ := hback.toStepsN
+  exact h (k + 1) t (by omega) (RS.StepsN.tail hs hk)
+
+/-- The descent engine, at `Acyclic`: strictly-shortening cycle surgery proves acyclicity. -/
+theorem RS.acyclic_of_cycle_descent {A : RS}
+    (h : ∀ n t, 1 ≤ n → A.StepsN n t t → ∃ m u, 1 ≤ m ∧ m < n ∧ A.StepsN m u u) :
+    RS.Acyclic A :=
+  RS.acyclic_of_no_stepsN_cycle (RS.no_cycle_of_descent h)
+
+/-- Every `{S,C}` cycle yields a length-indexed nonempty cycle. -/
+theorem sc_cycle_stepsN {t v : SCTerm} (hs : SCStep t v) (hback : RS.SC.Steps v t) :
+    ∃ n, 1 ≤ n ∧ RS.SC.StepsN n t t := by
+  obtain ⟨k, hk⟩ := hback.toStepsN
+  exact ⟨k + 1, by omega, RS.StepsN.tail hs hk⟩
+
+/-- **Rotation preserves length**: a root cycle `t → u ⟶ᵏ a → b ⟶ˡ t` and its rotation at the
+return's fire are cycles of the SAME total length `k + l + 2`. Rotation never grows the cycle —
+the measure a future descent argument will spend. -/
+theorem scRootCycle_rotate_same_length {t u a b : SCTerm} {k l : Nat} (hr : SCRootStep t u)
+    (hr' : SCRootStep a b) (h1 : RS.SC.StepsN k u a) (h2 : RS.SC.StepsN l b t) :
+    RS.SC.StepsN (k + l + 2) t t ∧ RS.SC.StepsN (k + l + 2) b b := by
+  have ct : RS.SC.StepsN (k + (l + 1) + 1) t t :=
+    RS.StepsN.tail (scRootStep_step hr)
+      (RS.StepsN.trans h1 (RS.StepsN.tail (scRootStep_step hr') h2))
+  have cb : RS.SC.StepsN (l + (k + (0 + 1) + 1)) b b :=
+    RS.StepsN.trans h2
+      (RS.StepsN.tail (scRootStep_step hr)
+        (RS.StepsN.trans h1 (RS.StepsN.tail (scRootStep_step hr') (@RS.StepsN.refl RS.SC b))))
+  constructor
+  · have he : k + (l + 1) + 1 = k + l + 2 := by omega
+    exact he ▸ ct
+  · have he : l + (k + (0 + 1) + 1) = k + l + 2 := by omega
+    exact he ▸ cb

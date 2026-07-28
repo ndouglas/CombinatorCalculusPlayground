@@ -79,3 +79,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scCycle_rotate_or_descend' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scCycle_rotate_or_descend
+
+/-- info: 'RS.acyclic_of_cycle_descent' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms RS.acyclic_of_cycle_descent
+
+/-- info: 'scRootCycle_rotate_same_length' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scRootCycle_rotate_same_length

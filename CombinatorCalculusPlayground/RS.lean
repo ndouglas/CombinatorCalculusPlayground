@@ -29,6 +29,59 @@ theorem Steps.trans {a b c : A.Carrier} (h1 : A.Steps a b) (h2 : A.Steps b c) :
   | refl => exact h2
   | tail s _ ih => exact Steps.tail s (ih h2)
 
+-- Length-indexed paths (Stage 92). `Steps` is Prop-level and lengthless, so statements like "a
+-- cycle has finitely many root fires" or "take a minimal cycle" are unstatable against it.
+-- `StepsN n` counts steps; the descent engine below turns any strictly-shortening cycle surgery
+-- into a no-cycles theorem, by bounded induction — no choice.
+inductive StepsN (A : RS) : Nat → A.Carrier → A.Carrier → Prop
+  | refl (a : A.Carrier) : StepsN A 0 a a
+  | tail {n : Nat} {a b c : A.Carrier} : A.step a b → StepsN A n b c → StepsN A (n + 1) a c
+
+theorem StepsN.toSteps {n : Nat} {a b : A.Carrier} (h : A.StepsN n a b) : A.Steps a b := by
+  induction h with
+  | refl a => exact Steps.refl a
+  | tail s _ ih => exact Steps.tail s ih
+
+theorem Steps.toStepsN {a b : A.Carrier} (h : A.Steps a b) : ∃ n, A.StepsN n a b := by
+  induction h with
+  | refl a => exact ⟨0, StepsN.refl a⟩
+  | tail s _ ih =>
+      obtain ⟨n, hn⟩ := ih
+      exact ⟨n + 1, StepsN.tail s hn⟩
+
+theorem StepsN.trans {m n : Nat} {a b c : A.Carrier} (h1 : A.StepsN m a b)
+    (h2 : A.StepsN n b c) : A.StepsN (m + n) a c := by
+  induction h1 with
+  | refl a =>
+      rw [Nat.zero_add]
+      exact h2
+  | tail s _ ih =>
+      rw [Nat.add_right_comm]
+      exact StepsN.tail s (ih h2)
+
+/-- Basepoint shift: a cycle through `a` visiting `b` is a cycle through `b`, same total length. -/
+theorem StepsN.rotate {m n : Nat} {a b : A.Carrier} (h1 : A.StepsN m a b) (h2 : A.StepsN n b a) :
+    A.StepsN (n + m) b b :=
+  StepsN.trans h2 h1
+
+/-- The descent engine: if every nonempty cycle yields a strictly shorter nonempty cycle, there
+are no nonempty cycles. Bounded strong induction — no minimum is ever chosen. -/
+theorem no_cycle_of_descent
+    (h : ∀ n t, 1 ≤ n → A.StepsN n t t → ∃ m u, 1 ≤ m ∧ m < n ∧ A.StepsN m u u) :
+    ∀ n t, 1 ≤ n → ¬ A.StepsN n t t := by
+  have key : ∀ (bound n : Nat) (t : A.Carrier), n ≤ bound → 1 ≤ n → ¬ A.StepsN n t t := by
+    intro bound
+    induction bound with
+    | zero =>
+        intro n t hle h1 _
+        omega
+    | succ bound ih =>
+        intro n t hle h1 hcyc
+        obtain ⟨m, u, hm1, hmn, hmc⟩ := h n t h1 hcyc
+        exact ih m u (by omega) hm1 hmc
+  intro n t h1
+  exact key n n t (Nat.le_refl n) h1
+
 /-- No step applies. -/
 def NormalForm (A : RS) (a : A.Carrier) : Prop := ¬ ∃ b, A.step a b
 
