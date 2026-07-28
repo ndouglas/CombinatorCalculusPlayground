@@ -1903,3 +1903,57 @@ theorem sc_minimal_cycle_length :
 -- step kind `scCycle_needs_flat_C` said every cycle must contain and no measure could punish.
 example : scCycA.leafCount = 9 := rfl
 example : rightDepthC scCycH ≤ rightDepthC (SCTerm.app .C scCycH) := by decide
+
+-- ## Stage 98: no I-like combinator in {S,B} or {S,C} — the census bound becomes a theorem
+-- The transport probe (does the basis define an `I`, inheriting rung 1's structure?), answered
+-- unconditionally by the shape lens. Both bases' rules drop only their own fired combinator leaf
+-- and never PROJECT — every step result is an application — so a nonempty path can never end at
+-- a leaf. An I-like `t` would need `t S ⟶* S`: the path is nonempty (`t S ≠ S`, absorption) and
+-- ends at a leaf. Dead. This upgrades `{S,B}`'s "no I-like up to 7 leaves" census to all sizes,
+-- and settles the same question for `{S,C}` without any search at all. What it does NOT touch:
+-- hosting SK remains open for both cyclic-or-unreachable rungs — SK's own erasing steps land on
+-- encoded terms, which are applications.
+
+/-- Every `{S,B}` step lands on an application. -/
+theorem sbStep_result_isApp {t u : SBTerm} (h : SBStep t u) : ∃ a b, u = .app a b := by
+  cases h with
+  | S_red f g x => exact ⟨_, _, rfl⟩
+  | B_red x y z => exact ⟨_, _, rfl⟩
+  | appL h => exact ⟨_, _, rfl⟩
+  | appR h => exact ⟨_, _, rfl⟩
+
+/-- Leaves are unreachable in `{S,B}`: a path ending at a non-application is empty. -/
+theorem sb_steps_to_leaf : ∀ {t u : SBTerm}, RS.SB.Steps t u →
+    (∀ a b, u ≠ SBTerm.app a b) → t = u := by
+  intro t u h
+  exact h.rec (motive := fun t u _ => (∀ a b, u ≠ SBTerm.app a b) → t = u)
+    (fun _ _ => rfl)
+    (fun {a c b} s _ ih hu => by
+      have hc := ih hu
+      subst hc
+      obtain ⟨p, q, hpq⟩ := sbStep_result_isApp s
+      exact absurd hpq (hu p q))
+
+/-- No `{S,C}` term reduces `t S` to `S` — even the single instance of I-likeness fails. -/
+theorem sc_no_I_on_S (t : SCTerm) : ¬ RS.SC.Steps (SCTerm.app t .S) .S := by
+  intro h
+  have heq := sc_steps_to_leaf h (fun _ _ h' => SCTerm.noConfusion h')
+  exact sc_ne_absorb_right heq.symm
+
+/-- **No I-like combinator in `{S,C}`**, at any size. -/
+theorem sc_no_I_like (t : SCTerm) : ¬ ∀ u, RS.SC.Steps (SCTerm.app t u) u :=
+  fun h => sc_no_I_on_S t (h .S)
+
+/-- No `{S,B}` term reduces `t S` to `S`. -/
+theorem sb_no_I_on_S (t : SBTerm) : ¬ RS.SB.Steps (SBTerm.app t .S) .S := by
+  intro h
+  have heq := sb_steps_to_leaf h (fun _ _ h' => SBTerm.noConfusion h')
+  have hc := congrArg SBTerm.leafCount heq
+  have := sbLeaf_pos t
+  exact absurd hc (by
+    show ¬(t.leafCount + 1 = 1)
+    omega)
+
+/-- **No I-like combinator in `{S,B}`**, at any size — the 7-leaf census bound, unconditionally. -/
+theorem sb_no_I_like (t : SBTerm) : ¬ ∀ u, RS.SB.Steps (SBTerm.app t u) u :=
+  fun h => sb_no_I_on_S t (h .S)

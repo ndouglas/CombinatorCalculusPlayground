@@ -112,3 +112,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_minimal_cycle_length' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_minimal_cycle_length
+
+/-- info: 'sc_no_I_like' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_no_I_like
+
+/-- info: 'sb_no_I_like' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sb_no_I_like
