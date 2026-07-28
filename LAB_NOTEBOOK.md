@@ -4412,3 +4412,27 @@ what automation could and couldn't do. This file is a first-class deliverable
   K-erasure into a non-erasing host on the two-cell tag alphabet — the deliverable is a design
   document in the ledger, not code. (2) The 4-cycle stratum, only if the parking probe stalls.
   (3) C6, declined an eighty-ninth time.
+
+## 2026-07-28 — Stage 102: good garbage is bad data
+
+- A design stage that produced a theorem anyway: writing "the host cannot lose arbitrary
+  material" as the impossibility half, I went to check it against the C-rule and found the
+  opposite — C-fires consume their own leaf, towers chain the fires, and `cTower_shreds` is a
+  five-line induction. The probe's most useful output is that the OBVIOUS refutation of hosting
+  is false, formally, axiom-free. Fourth stage running where stating the argument precisely
+  flipped or dissolved it.
+- The design tensions that survive are worth their names. GOOD GARBAGE IS BAD DATA: volatility is
+  exactly what garbage wants and storage cannot tolerate; a construction must convert one to the
+  other at the K-fire boundary and nowhere else. And the CIRCULARITY: routing arbitrary structure
+  into shreddable shape is itself computation, performed without erasure, on data the host may
+  not even be able to pair-project. That last clause is the pairing question — named in the
+  ledger as the next probe, and it feels decidable with the TermV machinery: either exhibit
+  `pair` in `{S,C}` or prove the head-variable poverty forbids it.
+- The λI literature (Church's original calculus, Kleene's λI-definability) is the right prior
+  art to consult before attacking pairing: λI-definability of recursive functions uses garbage
+  absorption tricks whose DIRECTED (reduction, not conversion) versions are exactly what hosting
+  needs. Recorded as a prior-art obligation, cited-not-checked as always.
+- Ranking: (1) **the pairing probe**: is `pair a b s ⟶* s a b` definable in `{S,C}`? Either a
+  construction (bracket-style, if the fragment permits) or an impossibility via head-variable
+  analysis — both outcomes advance hosting decisively. (2) The 4-cycle stratum, still parked.
+  (3) C6, declined a ninetieth time.

@@ -4199,3 +4199,45 @@ routes through choice, while plain disjunctions of equalities are clean — veri
 experiment before fixing. The budget-splitting idiom the length arc introduced at Stage 93 is
 exactly where such goals arise, so the clean form (plain-disjunction omega, per-branch arithmetic
 `have`s) is now the recorded idiom.
+
+### Stage 102: garbage parking — the design analysis, and the shredder
+
+The design probe for hosting SK inside `{S,C}`, worked to the point where every piece is either a
+theorem, a named open question, or a stated tension. The problem: `enc (K x y) ⟶* enc x` for
+EVERY `y`, with `enc` injective — unboundedly many distinct host terms converging on one, in a
+host where every step preserves all material except its own fired combinator leaf.
+
+**The enabling fact, now a theorem** (`sc_unbounded_convergence`, axiom-free, pinned): unbounded
+convergence EXISTS in `{S,C}`. A left-nested C-tower is a chain of C-redexes, each fire consuming
+exactly one leaf, and every tower collapses to the fixed residue `C C C` (`cTower_shreds`). So
+the naive impossibility argument — "a non-erasing host cannot lose arbitrary material" — is
+false: it can, one leaf per step, provided the material is TOWER-SHAPED. Any refutation of
+SK ≤ `{S,C}` must find a subtler invariant than erasure-counting.
+
+**The design tensions, stated honestly:**
+
+1. **Good garbage is bad data.** Towers self-shred — they are volatile, decaying toward `C C C`
+   under any strategy that reaches them. That makes them ideal garbage (drop the `y`-material as
+   towers and let reduction consume it) and useless storage (a tower-coded datum can lose its
+   value to a stray `appL`). Stable data needs normal forms — partial applications, the tag
+   pipeline's `mkWord` discipline — and those are precisely the shapes that CANNOT be consumed.
+   A hosting construction must convert stable code into volatile garbage at exactly the K-fire,
+   and nowhere else.
+2. **The no-I weakness bites the interpreter route.** Stage 98 proved `{S,C}` defines no I-like
+   combinator even on single leaves; the same head-variable poverty makes it UNCLEAR whether
+   `λs. s a` (application-to-a-fixed-argument, the heart of fold-style data) is definable at all.
+   The tag pipeline's entire data discipline (fold-coded words, selector dispatch) presumes
+   pairing; `{S,C}`'s definable-operations fragment may be too weak for it. NAMED OPEN QUESTION:
+   is pairing (`pair a b s ⟶* s a b` for some closed `pair`) definable in `{S,C}`? A negative
+   would kill the interpreter route outright and be the sharpest λI-fragment separation the
+   program has; a positive unlocks the tag-pipeline template.
+3. **Convergence is necessary, not sufficient.** The shredder converges tower families; K-erasure
+   needs convergence of `enc (K x y)` over ALL `y` — the encoding must ROUTE arbitrary
+   `y`-structure into tower shape before shredding. That routing is itself a computation the host
+   must perform without erasure, on data it cannot pair-project. This circularity — you need the
+   machine to build the garbage the machine needs to discard — is the precise residue of the
+   hosting problem, sharper than Stage 100's "the host cannot forget."
+
+Standing: SK ≤ `{S,C}` remains open in both directions, now with the failure modes of both naive
+routes (impossibility-by-erasure, construction-by-interpreter) mapped. The pairing question is
+the next decidable-feeling probe.
