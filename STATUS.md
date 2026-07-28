@@ -204,7 +204,7 @@ version is the claim.
 plainly: *"if Stage 5 never terminates, the notebook is the result."*
 `LAB_NOTEBOOK.md` is that deliverable. Its most transferable content:
 
-- **Seven `Classical.choice` leaks** (the fifth in Stage 69 — Stage 9's `BEq`
+- **Eight `Classical.choice` leaks** (the fifth in Stage 69 — Stage 9's `BEq`
   trap again, sixty stages later, in a file that quotes it; the SIXTH in
   Stage 76 was PRE-EXISTING — `occurs_bracket`'s `grind` had leaked since it
   was written, tainting `combinatory_completeness`, and was found only when
@@ -214,7 +214,8 @@ plainly: *"if Stage 5 never terminates, the notebook is the result."*
   headline theorem's exact footprint with `#guard_msgs`). The SEVENTH leak
   (Stage 79) was caught by that audit one stage after it was built, and came
   through a new door: `omega` aimed at a non-arithmetic goal routes through
-  `Classical.choice`
+  `Classical.choice`; the EIGHTH (Stage 93) was the same door again —
+  the mechanism recurs because contradictory-hypothesis branches invite it
   audit and none by review, all originating in core's `BEq`/instance layer or in
   `omega` discharging a non-arithmetic goal. Three were fixed by rewriting; the
   fourth was resolved by *weakening a decorative claim* rather than paying the
@@ -377,7 +378,12 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   place (Stage 92): length-indexed paths (`RS.StepsN`), a choice-free descent engine
   (`RS.acyclic_of_cycle_descent` — strictly-shortening cycle surgery proves
   acyclicity), and the conservation fact that rotation preserves total cycle length
-  (`scRootCycle_rotate_same_length`) — rotation cannot escape a length descent. Termination routes are provably dead
+  (`scRootCycle_rotate_same_length`) — rotation cannot escape a length descent.
+  First purchase (Stage 93): the dichotomy and localization redone with lengths
+  (`sc_stepsN_facts`, `sc_cycle_needs_root_length`), so MINIMAL CYCLES ARE ROOT
+  CYCLES exactly (`sc_minimal_cycle_is_root`), no step is a self-loop
+  (`scStep_irrefl`), and minimal cycles have length ≥ 2
+  (`sc_cycle_length_ge_two`). Termination routes are provably dead
   (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
   the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
   is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine

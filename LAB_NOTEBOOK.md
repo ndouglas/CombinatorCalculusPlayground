@@ -4156,3 +4156,32 @@ what automation could and couldn't do. This file is a first-class deliverable
   rejoin the cycle above a certain position) would be the first strict-shortening surgery.
   (2) The third-level shape analysis of `app h r` reachability, as the fallback. (3) C6, declined
   an eightieth time.
+
+## 2026-07-28 — Stage 93: the first purchase, and the eighth leak
+
+- The scaffold paid for itself one stage after it was built: redoing the dichotomy and
+  localization with lengths was mechanical (the proofs mirror Stages 81's, plus omega on the
+  sums), and the corollary is the wlog the descent hunt needed — minimal cycles ARE root cycles,
+  exactly, because localization's accounting is conservative: sandwich steps sum to n, projection
+  components sum to n, nothing is ever discarded. The atlas also gains its first numeric tooth:
+  no self-loop steps, so minimal cycles have length ≥ 2.
+- The eighth Classical.choice leak, caught by the per-stage audit, is the seventh's mechanism
+  verbatim: omega closing a non-arithmetic goal — this time the localization's existential in the
+  contradictory n = 0 branch. Two occurrences make a pattern: the danger zone is precisely the
+  CONTRADICTORY-HYPOTHESIS BRANCH, where the goal is whatever the theorem concludes and omega
+  seems like the natural closer because the hypotheses are arithmetic. The clean form is subst +
+  absurd + a targeted Nat lemma. Recorded in CONJECTURES so the next branch reaches for absurd
+  first.
+- Two mkElimApp reminders in one stage: cases on `StepsN 1 t t` dies on the REPEATED index (not
+  the literal — literals unify fine); the fix is the same as ever — state inversions with
+  distinct index variables (`stepsN_zero_eq`, `stepsN_one_step`, now generic in RS) and compose.
+- Where the hunt stands: every tool since Stage 81 now composes on one object, the minimal root
+  cycle — rotate-or-descend, both anatomies, rotation's conservation law, length ≥ 2. The rung
+  closes if a minimal root cycle can be forced to yield any strictly shorter cycle. The descend
+  branch hands us root fires on strictly smaller TERMS; the missing move is a surgery that turns
+  one into a shorter CYCLE — or shows the descend branch incompatible with minimality outright.
+- Ranking: (1) **descend vs minimality**: on a minimal root cycle, work the descend branch's data
+  (app-headed head argument, left projection firing on a smaller term, the C-side's y ⟶* z)
+  against exact-length localization — the target is either a shorter cycle from the projection
+  fires or a shape contradiction. (2) The third-level shape analysis of `app h r` reachability.
+  (3) C6, declined an eighty-first time.

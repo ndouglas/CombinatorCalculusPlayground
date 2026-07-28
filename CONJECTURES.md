@@ -3929,3 +3929,32 @@ provably spends no length, so it cannot escape a length-descent argument — if 
 closes through `acyclic_of_cycle_descent`. What descent currently lacks is a cycle at the smaller
 size: the projection fires are on smaller terms but not known to recur. The gap between "fires"
 and "cycles" is now the whole of rung 3.
+
+### Stage 93: minimal cycles are root cycles — localization spends no length
+
+The scaffold's first purchase. Stage 81's localization finds a root cycle inside any cycle but
+forgets how long the found cycle is; against the descent engine, that discards the asset the
+engine spends. Redoing the dichotomy and the localization in `StepsN` form recovers it, and the
+accounting is exact: the root sandwich accounts for every step (`k₁ + 1 + k₂ = n`) and the
+projection branch's component lengths SUM to the whole (`nf + nx = n`), so localization can only
+shed length, never add it — and on a minimal cycle it can shed none:
+
+| | |
+|---|---|
+| `scStep_irrefl` / `sc_no_one_cycle` / **`sc_cycle_length_ge_two`** | no step is a self-loop (the root cases die on occurs-check); minimal cycle length ≥ 2 — pinned |
+| `RS.stepsN_zero_eq` / `RS.stepsN_one_step` | index-literal inversions, generic |
+| `sc_stepsN_facts` | the path dichotomy with lengths |
+| `sc_cycle_needs_root_length` | a cycle of length `n` yields a root cycle of total length ≤ `n` |
+| **`sc_minimal_cycle_is_root`** | **on a minimal-length cycle the inequality is equality: some root cycle has EXACTLY the minimal length** — pinned |
+
+The strategic consequence: any future descent argument may assume its minimal cycle fires at the
+root, with the rotate-or-descend dichotomy and both anatomies available at full strength on a
+cycle that cannot shrink. Every tool of Stages 81–92 now composes on a single object — the minimal
+root cycle — and the rung closes if that object can be shown to yield any strictly shorter cycle.
+
+The audit also caught the EIGHTH `Classical.choice` leak, and it is the seventh's mechanism
+recurring: `omega` aimed at a non-arithmetic goal (an existential in a contradictory branch)
+routes through choice. The lesson sharpens from "give omega arithmetic goals only" to a pattern:
+contradictory-hypothesis branches INVITE the leak, because the goal there is whatever the theorem
+concludes, and omega will happily close it. `subst` + `absurd` + a targeted `Nat` lemma is the
+clean form.
