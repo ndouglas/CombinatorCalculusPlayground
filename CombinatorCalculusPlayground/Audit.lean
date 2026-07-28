@@ -148,3 +148,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scRot_beta' does not depend on any axioms -/
 #guard_msgs in #print axioms scRot_beta
+
+/-- info: 'scTagA_dispatch' does not depend on any axioms -/
+#guard_msgs in #print axioms scTagA_dispatch
+
+/-- info: 'scTagB_dispatch' does not depend on any axioms -/
+#guard_msgs in #print axioms scTagB_dispatch

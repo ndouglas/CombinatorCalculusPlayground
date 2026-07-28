@@ -3078,3 +3078,50 @@ theorem scRot_beta (u v w : SCTerm) :
     RS.SC.Steps (.app (.app (.app (.app .C .C) u) v) w) (.app (.app v w) u) :=
   RS.Steps.tail (SCStep.appL (SCStep.C_red .C u v))
     (RS.Steps.tail (SCStep.C_red v u w) (@RS.Steps.refl RS.SC _))
+
+-- ## Stage 104: branching without selectors — the two-symbol dispatch
+-- The rotation-discipline design's crux, solved and formalized. A selector-free calculus cannot
+-- branch by ERASING the untaken arm — but it can branch by HEAD PROMOTION: under the uniform
+-- protocol `tag β₁ β₂ x`, the tag `a := C` promotes the FIRST arm (`β₁ x β₂`) and the tag
+-- `b := C C` promotes the SECOND (`β₂ x β₁` — Stage 103's rotator, re-read as dispatch). The
+-- chosen arm heads, receives the continuation `x`, and receives the UNTAKEN arm as an argument —
+-- parked, not erased, to be shredded (Stage 102) or carried. Both tags are normal (inert as
+-- stored data) and distinguishable. The full data-layer design goes to the ledger.
+
+/-- The two-symbol tag alphabet: `a := C`, `b := C C`. -/
+def scTagA : SCTerm := .C
+def scTagB : SCTerm := .app .C .C
+
+/-- Tag `a` dispatches to the FIRST arm: `a β₁ β₂ x ⟶ β₁ x β₂`. -/
+theorem scTagA_dispatch (β₁ β₂ x : SCTerm) :
+    RS.SC.Steps (.app (.app (.app scTagA β₁) β₂) x) (.app (.app β₁ x) β₂) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.C_red β₁ β₂ x)
+
+/-- Tag `b` dispatches to the SECOND arm: `b β₁ β₂ x ⟶* β₂ x β₁`. -/
+theorem scTagB_dispatch (β₁ β₂ x : SCTerm) :
+    RS.SC.Steps (.app (.app (.app (.app .C .C) β₁) β₂) x) (.app (.app β₂ x) β₁) :=
+  scRot_beta β₁ β₂ x
+
+/-- Both tags are NORMAL — inert as stored data. -/
+theorem scTag_normal : (¬ ∃ u, SCStep scTagA u) ∧ (¬ ∃ u, SCStep scTagB u) := by
+  constructor
+  · rintro ⟨u, h⟩
+    obtain ⟨a, b, hab⟩ := scStep_source_isApp h
+    exact SCTerm.noConfusion hab
+  · rintro ⟨u, h⟩
+    rcases scStep_cases h with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+    · rcases scRootStep_inv hroot with ⟨p, q, r, hb, _⟩ | ⟨p, q, r, hb, _⟩
+      · injection hb with h1 h2
+        exact SCTerm.noConfusion h1
+      · injection hb with h1 h2
+        exact SCTerm.noConfusion h1
+    · injection j1 with j3 j4
+      obtain ⟨a, b, hab⟩ := scStep_source_isApp hst
+      rw [← j3] at hab
+      exact SCTerm.noConfusion hab
+    · injection j1 with j3 j4
+      obtain ⟨a, b, hab⟩ := scStep_source_isApp hst
+      rw [← j4] at hab
+      exact SCTerm.noConfusion hab
+
+example : scTagA ≠ scTagB := fun h => SCTerm.noConfusion h
