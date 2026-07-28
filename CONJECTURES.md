@@ -3793,3 +3793,31 @@ FAMILY of return paths rather than constraining every cycle — which is why it 
 spine calculus's first result rather than a sixth necessary condition. The next connection to make:
 drive the root-cycle case analysis (`sc_cycle_needs_root`) one level deeper and count how many of
 its branches terminate in a leaf-self-embedding.
+
+### Stage 88: the second fire — rung 3's sixth necessary condition
+
+The frozen-left theorem was cashed in one stage after it was proved. Stage 82's dichotomies left
+each root cycle two escapes: the return path carries a root step of its own, or it projects into
+the redex's two sides — and the LEFT projection is a self-embedding, `f x ⟶* (S f) g` for the
+S-rule and `x z ⟶* (C x) y` for the C-rule, both instances of one shape: `f x ⟶* (ℓ f) g` with
+`ℓ` a leaf. Running the path dichotomy on that path closes it: the trivial branch dies on size
+(`f = ℓ f` inflates leaf count), and the projection branch is literally `f ⟶* ℓ f` — the frozen
+left. So the self-embedding needs a root step of its own, and lifting through left congruence:
+
+| | |
+|---|---|
+| `sc_left_self_embed_needs_root` | `f x ⟶* (ℓ f) g` carries a root sandwich — generic in the leaf `ℓ`, covering both rules at once |
+| `sc_root_S_return2` / `sc_root_C_return2` | the second-level dichotomies: a root step in the return path, or one inside its left projection |
+| `scSteps_appL` | left congruence lifted to paths — axiom-free |
+| **`scRootCycle_second_redex`** | **every root cycle's return path reaches a second root redex — at the root, or immediately left of it** |
+| **`scCycle_second_redex`** | composed with localization: every `{S,C}` cycle produces a root cycle whose return reaches a second root fire — `[propext, Quot.sound]`, pinned |
+
+This is the sixth necessary condition, and the first positional one in TREE terms (Stage 84's
+flat-C was positional in redex-argument terms): a cycle's activity cannot avoid the top-left
+spine. The Stage 82 comment asked whether the root-step regress terminates, calling it "the whole
+of the rungs" — the regress is now one level deep and machine-checked. What the second level did
+NOT close: the surviving branches still carry the exotic reductions — `g x ⟶* x` (collapse to
+argument, S-side) and `y ⟶* z` (C-side) — and the second root redex reached is not itself known
+to cycle, so the regress does not yet iterate. Collapse-to-argument remains the named sub-target:
+killing it would force every root cycle's return to carry a WHOLE-TERM root step, and the shape
+lens (ask what is forced, not what is counted) has not yet been pointed at it.

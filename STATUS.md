@@ -352,13 +352,15 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   99.6% of 8-leaf terms survive — because it constrains a cycle's *steps*, not a
   search's *seeds*. Pruning during exploration is also unavailable: it would need a
   localizable unreachability certificate, and these constraints are global sums.)
-- **Rung 3 `{S,C}`** — the last open rung, now carrying FIVE necessary conditions and
+- **Rung 3 `{S,C}`** — the last open rung, now carrying SIX necessary conditions and
   two impossibility sweeps: the τ-light fragment is acyclic (`scLight_acyclic`); the
   S-only fragment is acyclic (`scSOnly_acyclic`); the no-C-duplication fragment is
   acyclic (`scNoCDup_acyclic`), so any cycle needs a C-duplicating S-reduction
   (`scCycle_needs_C_duplication`); any cycle passes through a root redex
-  (`sc_acyclic_of_no_root_cycle`, Stage 81); and any cycle fires a FLATTENING `C`
-  (`scCycle_needs_flat_C`, Stage 84). Termination routes are provably dead
+  (`sc_acyclic_of_no_root_cycle`, Stage 81); any cycle fires a FLATTENING `C`
+  (`scCycle_needs_flat_C`, Stage 84); and any root cycle's return path reaches a
+  SECOND root redex, at the root or immediately left of it
+  (`scCycle_second_redex`, Stage 88 — cycles cannot avoid the top-left spine). Termination routes are provably dead
   (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
   the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
   is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine

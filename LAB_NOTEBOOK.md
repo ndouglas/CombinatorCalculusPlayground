@@ -4020,3 +4020,30 @@ what automation could and couldn't do. This file is a first-class deliverable
   at a root C-redex and apply the frozen-left theorem to the leaf-headed branches; the deliverable
   is either a sixth necessary condition or a precise inventory of which return shapes remain
   unkilled. (2) C6, declined a seventy-fifth time.
+
+## 2026-07-28 — Stage 88: the second fire
+
+- The fastest stage in weeks, and the reason is worth recording: Stage 87 proved exactly the lemma
+  its own analysis predicted would be needed, so this stage was assembly — the second-level
+  dichotomy is `sc_path_facts` applied to Stage 82's projection branch, with the two death
+  branches dying on size and on the frozen left. Both rules' self-embeddings are instances of one
+  shape, `f x ⟶* (ℓ f) g` with `ℓ` a leaf, so one generic helper covers S and C — the first time
+  the two rules have shared a lemma since the localization engine.
+- The headline: `scCycle_second_redex` — every `{S,C}` cycle produces a root cycle whose return
+  path reaches a SECOND root redex, at the root or immediately left of it. Sixth necessary
+  condition; first positional one in tree terms. The build went green on the first attempt, which
+  I credit to yesterday's potholes being written down: subst directions chosen so the surviving
+  names are the lowercase ones, `SCTerm.app` spelled out where the expected type is the carrier,
+  and the `refine h.rec (motive := ...) ?_ ?_` idiom for the congruence lift.
+- Honesty about what did not close: the regress does not yet iterate. The second root redex is
+  REACHED, not shown to cycle, so there is no descent argument — and the surviving branches still
+  carry the Stage 82 exotics, `g x ⟶* x` (collapse to argument) and `y ⟶* z`. Collapse is now
+  clearly the load-bearing escape: kill it and every root cycle's return must carry a whole-term
+  root step, at which point the regress has a real chance of becoming a well-founded descent.
+- The methodological note that Stage 87 suggested and this stage confirms: the shape lens ("what
+  does every step force?") produced in two stages what five stages of measure hunting could not.
+  The right next question is the shape question for collapse: what shape must `u` have for
+  `u v ⟶* v` to even begin — and does the frozen left already constrain its first step?
+- Ranking: (1) **no-collapse for `{S,C}` via the shape lens**: point the path dichotomy and the
+  frozen-left invariant at `u v ⟶* v`; even a conditional kill (leaf-headed `u`, say) would
+  narrow the last escape. (2) C6, declined a seventy-sixth time.
