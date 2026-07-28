@@ -1256,3 +1256,80 @@ theorem sc_root_S_return3 {f g x : SCTerm}
   rcases sc_root_S_return2 hback with h | ⟨h1, h2⟩
   · exact Or.inl h
   · exact Or.inr ⟨h1, sc_collapse_needs_root h2⟩
+
+-- ## Stage 90: the leaf-argument kill — cycle anatomy at rung 3
+-- Stages 88 and 89 supplied the two halves of a contradiction: root sources are APP-APP-HEADED
+-- (`scRootStep_source`), and leaf-headed terms are LEFT-RIGID (`scSteps_from_leafLeft`) — so a
+-- leaf-headed term can NEVER reach a root redex. Stage 88's second-level sandwich lives inside
+-- the left projections `f x ⟶* (S f) g` and `x z ⟶* (C x) y`, whose sources are leaf-headed
+-- exactly when the redex's HEAD ARGUMENT is a leaf. For those cycles the projection escape is
+-- absurd and the return must carry a whole-term root step. Folding in Stage 89's collapse fire,
+-- each rule gets its sharpest cycle statement yet — the ANATOMY: a root cycle returns through a
+-- whole-term root step, or its head argument is an application and the projections carry root
+-- fires of their own.
+
+/-- Every term is a leaf or an application. -/
+theorem sc_leaf_or_app (t : SCTerm) :
+    (∀ a b, t ≠ SCTerm.app a b) ∨ ∃ a b, t = SCTerm.app a b := by
+  cases t with
+  | S => exact Or.inl (fun _ _ h => SCTerm.noConfusion h)
+  | C => exact Or.inl (fun _ _ h => SCTerm.noConfusion h)
+  | app a b => exact Or.inr ⟨a, b, rfl⟩
+
+/-- A leaf-headed term never reaches a root redex: rigidity keeps its left a leaf, but root
+sources are app-app-headed. -/
+theorem sc_leafLeft_no_root_reach {ℓ v a b : SCTerm} (hℓ : ∀ p q, ℓ ≠ SCTerm.app p q)
+    (hr : SCRootStep a b) (h : RS.SC.Steps (SCTerm.app ℓ v) a) : False := by
+  obtain ⟨w, ha, _⟩ := scSteps_from_leafLeft hℓ h v rfl
+  obtain ⟨p, q, r, hs⟩ := scRootStep_source hr
+  rw [ha] at hs
+  injection hs with h1 h2
+  exact absurd h1 (hℓ p q)
+
+/-- A root S-cycle with a LEAF `f` must return through a whole-term root step. -/
+theorem sc_root_S_return_leaf {f g x : SCTerm} (hf : ∀ a b, f ≠ SCTerm.app a b)
+    (hback : RS.SC.Steps (.app (.app f x) (.app g x)) (.app (.app (.app .S f) g) x)) :
+    ∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app (.app f x) (.app g x)) a
+      ∧ RS.SC.Steps b (.app (.app (.app .S f) g) x) := by
+  rcases sc_root_S_return2 hback with h | ⟨⟨a, b, hr, h1, _⟩, _⟩
+  · exact h
+  · exact (sc_leafLeft_no_root_reach hf hr h1).elim
+
+/-- A root C-cycle with a LEAF `x` must return through a whole-term root step. -/
+theorem sc_root_C_return_leaf {x y z : SCTerm} (hx : ∀ a b, x ≠ SCTerm.app a b)
+    (hback : RS.SC.Steps (.app (.app x z) y) (.app (.app (.app .C x) y) z)) :
+    ∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app (.app x z) y) a
+      ∧ RS.SC.Steps b (.app (.app (.app .C x) y) z) := by
+  rcases sc_root_C_return2 hback with h | ⟨⟨a, b, hr, h1, _⟩, _⟩
+  · exact h
+  · exact (sc_leafLeft_no_root_reach hx hr h1).elim
+
+/-- **S-CYCLE ANATOMY**: a root S-cycle returns through a whole-term root step, or `f` is an
+application and BOTH projections carry root fires. -/
+theorem sc_root_S_anatomy {f g x : SCTerm}
+    (hback : RS.SC.Steps (.app (.app f x) (.app g x)) (.app (.app (.app .S f) g) x)) :
+    (∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app (.app f x) (.app g x)) a
+      ∧ RS.SC.Steps b (.app (.app (.app .S f) g) x))
+    ∨ ((∃ f₁ f₂, f = SCTerm.app f₁ f₂)
+        ∧ (∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app f x) a ∧ RS.SC.Steps b (.app (.app .S f) g))
+        ∧ (∃ w a b, SCRightNested w (.app g x) ∧ SCRootStep a b ∧ RS.SC.Steps w a)) := by
+  rcases sc_root_S_return3 hback with h | ⟨⟨a, b, hr, h1, h2⟩, hcol⟩
+  · exact Or.inl h
+  · rcases sc_leaf_or_app f with hf | hf
+    · exact (sc_leafLeft_no_root_reach hf hr h1).elim
+    · exact Or.inr ⟨hf, ⟨a, b, hr, h1, h2⟩, hcol⟩
+
+/-- **C-CYCLE ANATOMY**: a root C-cycle returns through a whole-term root step, or `x` is an
+application, the left projection carries a root fire, and `y ⟶* z`. -/
+theorem sc_root_C_anatomy {x y z : SCTerm}
+    (hback : RS.SC.Steps (.app (.app x z) y) (.app (.app (.app .C x) y) z)) :
+    (∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app (.app x z) y) a
+      ∧ RS.SC.Steps b (.app (.app (.app .C x) y) z))
+    ∨ ((∃ x₁ x₂, x = SCTerm.app x₁ x₂)
+        ∧ (∃ a b, SCRootStep a b ∧ RS.SC.Steps (.app x z) a ∧ RS.SC.Steps b (.app (.app .C x) y))
+        ∧ RS.SC.Steps y z) := by
+  rcases sc_root_C_return2 hback with h | ⟨⟨a, b, hr, h1, h2⟩, hyz⟩
+  · exact Or.inl h
+  · rcases sc_leaf_or_app x with hx | hx
+    · exact (sc_leafLeft_no_root_reach hx hr h1).elim
+    · exact Or.inr ⟨hx, ⟨a, b, hr, h1, h2⟩, hyz⟩

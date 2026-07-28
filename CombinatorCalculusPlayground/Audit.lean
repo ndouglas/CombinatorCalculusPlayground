@@ -70,3 +70,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_collapse_needs_root' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_collapse_needs_root
+
+/-- info: 'sc_root_S_anatomy' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_root_S_anatomy
+
+/-- info: 'sc_root_C_anatomy' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_root_C_anatomy
