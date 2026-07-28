@@ -1715,3 +1715,135 @@ theorem sc_cycle_length_ge_three {n : Nat} {t : SCTerm} (h1 : 1 ≤ n)
     subst hn
     exact (sc_no_two_cycle hcyc).elim
   · exact h3
+
+-- ## Stage 95: budgets — the return dichotomies with lengths, and collapse costs two
+-- The general form of Stage 94's constraint. First an unconditional new fact: NO SINGLE STEP
+-- collapses `u v` to `v` — the root and appL cases die on absorption, and the appR case demands
+-- the same collapse one size smaller — so collapse costs at least two steps. Then the Stage 82
+-- return dichotomies in `StepsN` form, with exact budget accounting and the side conditions the
+-- shapes force: both left projections are nonempty (absorption), and the S-side's right
+-- projection is a collapse, so it costs ≥ 2. Corollary: an S-rooted root cycle whose return
+-- carries no whole-term root fire has return length ≥ 3, cycle length ≥ 4.
+
+/-- No single step collapses an application onto its own argument. -/
+theorem sc_no_step_collapse_aux : ∀ (n : Nat) (v u : SCTerm), v.leafCount ≤ n →
+    ¬ SCStep (SCTerm.app u v) v := by
+  intro n
+  induction n with
+  | zero =>
+      intro v u hle _
+      exact absurd hle (by have := scLeaf_pos v; omega)
+  | succ n ih =>
+      intro v u hle h
+      rcases scStep_cases h with hroot
+        | ⟨F, X, F', heq1, heq2, hstep⟩ | ⟨F, X, X', heq1, heq2, hstep⟩
+      · rcases scRootStep_inv hroot with ⟨p, q, r, hb, ha⟩ | ⟨p, q, r, hb, ha⟩
+        · injection hb with hb1 hb2
+          rw [← hb2] at ha
+          have hc := congrArg SCTerm.leafCount ha
+          have hp := scLeaf_pos p
+          have hq := scLeaf_pos q
+          exact absurd hc (by
+            show ¬(v.leafCount = (p.leafCount + v.leafCount) + (q.leafCount + v.leafCount))
+            omega)
+        · injection hb with hb1 hb2
+          rw [← hb2] at ha
+          have hc := congrArg SCTerm.leafCount ha
+          have hp := scLeaf_pos p
+          have hq := scLeaf_pos q
+          exact absurd hc (by
+            show ¬(v.leafCount = (p.leafCount + v.leafCount) + q.leafCount)
+            omega)
+      · injection heq1 with h1 h2
+        rw [← h2] at heq2
+        exact sc_ne_absorb_right heq2
+      · injection heq1 with h1 h2
+        rw [← h1] at heq2
+        rw [← h2] at hstep
+        rw [heq2] at hstep
+        have hx : X'.leafCount ≤ n := by
+          have hc : v.leafCount = u.leafCount + X'.leafCount := by rw [heq2]; rfl
+          have := scLeaf_pos u
+          omega
+        exact ih X' u hx hstep
+
+theorem sc_no_step_collapse {u v : SCTerm} (h : SCStep (SCTerm.app u v) v) : False :=
+  sc_no_step_collapse_aux v.leafCount v u (Nat.le_refl _) h
+
+/-- **Collapse costs at least two steps.** -/
+theorem sc_collapse_length_ge_two {n : Nat} {u v : SCTerm}
+    (h : RS.SC.StepsN n (SCTerm.app u v) v) : 2 ≤ n := by
+  rcases Nat.lt_or_ge n 2 with h2 | h2
+  · rcases (by omega : n = 0 ∨ n = 1) with rfl | rfl
+    · have heq := RS.stepsN_zero_eq h
+      exact (sc_ne_absorb_right heq.symm).elim
+    · exact (sc_no_step_collapse (RS.stepsN_one_step h)).elim
+  · exact h2
+
+/-- The S-return dichotomy with budgets: a root sandwich accounting for every step, or a
+projection with `kL + kR = n`, a nonempty self-embedding and a ≥ 2 collapse. -/
+theorem sc_root_S_return_length {f g x : SCTerm} {n : Nat}
+    (hback : RS.SC.StepsN n (.app (.app f x) (.app g x)) (.app (.app (.app .S f) g) x)) :
+    (∃ k₁ k₂ a b, SCRootStep a b
+      ∧ RS.SC.StepsN k₁ (.app (.app f x) (.app g x)) a
+      ∧ RS.SC.StepsN k₂ b (.app (.app (.app .S f) g) x) ∧ k₁ + 1 + k₂ = n)
+    ∨ (∃ kL kR, RS.SC.StepsN kL (.app f x) (.app (.app .S f) g)
+        ∧ RS.SC.StepsN kR (.app g x) x ∧ kL + kR = n ∧ 1 ≤ kL ∧ 2 ≤ kR) := by
+  rcases sc_stepsN_facts hback with h | ⟨hn0, heq⟩
+    | ⟨nf, nx, F, X, F', X', heq1, heq2, pf, px, hsum⟩
+  · exact Or.inl h
+  · injection heq with h1 h2
+    exact (sc_ne_absorb_right h2.symm).elim
+  · injection heq1 with hF hX
+    injection heq2 with hF' hX'
+    subst hF; subst hX; subst hF'; subst hX'
+    have hkL : 1 ≤ nf := by
+      rcases Nat.lt_or_ge 0 nf with h' | h'
+      · omega
+      · have h0 : nf = 0 := by omega
+        subst h0
+        have heq := RS.stepsN_zero_eq pf
+        injection heq with e1 e2
+        exact (sc_ne_absorb_right e1).elim
+    have hkR : 2 ≤ nx := sc_collapse_length_ge_two px
+    exact Or.inr ⟨nf, nx, pf, px, hsum, hkL, hkR⟩
+
+/-- The C-return dichotomy with budgets: the left self-embedding is nonempty; the right
+projection `y ⟶* z` may be free. -/
+theorem sc_root_C_return_length {x y z : SCTerm} {n : Nat}
+    (hback : RS.SC.StepsN n (.app (.app x z) y) (.app (.app (.app .C x) y) z)) :
+    (∃ k₁ k₂ a b, SCRootStep a b
+      ∧ RS.SC.StepsN k₁ (.app (.app x z) y) a
+      ∧ RS.SC.StepsN k₂ b (.app (.app (.app .C x) y) z) ∧ k₁ + 1 + k₂ = n)
+    ∨ (∃ kL kR, RS.SC.StepsN kL (.app x z) (.app (.app .C x) y)
+        ∧ RS.SC.StepsN kR y z ∧ kL + kR = n ∧ 1 ≤ kL) := by
+  rcases sc_stepsN_facts hback with h | ⟨hn0, heq⟩
+    | ⟨nf, nx, F, X, F', X', heq1, heq2, pf, px, hsum⟩
+  · exact Or.inl h
+  · injection heq with h1 h2
+    injection h1 with h3 h4
+    exact (sc_ne_absorb_right h3).elim
+  · injection heq1 with hF hX
+    injection heq2 with hF' hX'
+    subst hF; subst hX; subst hF'; subst hX'
+    have hkL : 1 ≤ nf := by
+      rcases Nat.lt_or_ge 0 nf with h' | h'
+      · omega
+      · have h0 : nf = 0 := by omega
+        subst h0
+        have heq := RS.stepsN_zero_eq pf
+        injection heq with e1 e2
+        exact (sc_ne_absorb_right e1).elim
+    exact Or.inr ⟨nf, nx, pf, px, hsum, hkL⟩
+
+/-- An S-rooted root cycle whose return carries no whole-term root fire has return length ≥ 3
+(cycle length ≥ 4): the self-embedding costs ≥ 1 and the collapse costs ≥ 2. -/
+theorem sc_root_S_projection_length {f g x : SCTerm} {k : Nat}
+    (hback : RS.SC.StepsN k (.app (.app f x) (.app g x)) (.app (.app (.app .S f) g) x))
+    (hnoroot : ¬ ∃ k₁ k₂ a b, SCRootStep a b
+      ∧ RS.SC.StepsN k₁ (.app (.app f x) (.app g x)) a
+      ∧ RS.SC.StepsN k₂ b (.app (.app (.app .S f) g) x) ∧ k₁ + 1 + k₂ = k) :
+    3 ≤ k := by
+  rcases sc_root_S_return_length hback with h | ⟨kL, kR, _, _, hsum, hkL, hkR⟩
+  · exact absurd h hnoroot
+  · omega

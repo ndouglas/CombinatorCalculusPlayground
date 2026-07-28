@@ -97,3 +97,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_cycle_length_ge_three' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_cycle_length_ge_three
+
+/-- info: 'sc_collapse_length_ge_two' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_collapse_length_ge_two
+
+/-- info: 'sc_root_S_return_length' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_root_S_return_length
