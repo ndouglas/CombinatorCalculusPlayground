@@ -1333,3 +1333,59 @@ theorem sc_root_C_anatomy {x y z : SCTerm}
   · rcases sc_leaf_or_app x with hx | hx
     · exact (sc_leafLeft_no_root_reach hx hr h1).elim
     · exact Or.inr ⟨hx, ⟨a, b, hr, h1, h2⟩, hyz⟩
+
+-- ## Stage 91: rotate or descend — the anatomy as a single invariant
+-- Stage 90's anatomies read, per rule, as a dichotomy. This stage makes it one theorem. The
+-- rotation half: a whole-term root fire on the return path closes a root cycle THROUGH THAT FIRE
+-- (`b ⟶* t → u ⟶* a` and root steps are steps), sitting on the same cycle. The descent half is
+-- uniform across the rules once seen from the redex: for both `S f g x` and `C x y z` the left
+-- projection runs from `app h r` (HEAD argument applied to LAST argument) to the fired term's
+-- left component, so one statement covers both. Every root cycle rotates or descends; composed
+-- with localization, every `{S,C}` cycle carries a root cycle that does.
+
+/-- Root steps are steps. -/
+theorem scRootStep_step {t u : SCTerm} (h : SCRootStep t u) : SCStep t u := by
+  cases h with
+  | S_red f g x => exact SCStep.S_red f g x
+  | C_red x y z => exact SCStep.C_red x y z
+
+/-- The rotation: a root fire on a root cycle's return path closes a root cycle of its own. -/
+theorem scRootCycle_of_return_fire {t u a b : SCTerm} (hr : SCRootStep t u)
+    (h1 : RS.SC.Steps u a) (h2 : RS.SC.Steps b t) : RS.SC.Steps b a :=
+  RS.Steps.trans h2 (RS.Steps.tail (scRootStep_step hr) h1)
+
+/-- **ROTATE OR DESCEND**: a root cycle contains another root cycle on itself (through its
+return's whole-term root fire), or its head argument is an application and the redex's
+`app head last` projection fires a root redex on a strictly smaller term. -/
+theorem scRootCycle_rotate_or_descend {t u : SCTerm} (hr : SCRootStep t u)
+    (hback : RS.SC.Steps u t) :
+    (∃ a b, SCRootStep a b ∧ RS.SC.Steps b a ∧ RS.SC.Steps u a ∧ RS.SC.Steps b t)
+    ∨ (∃ K h m r, (K = SCTerm.S ∨ K = SCTerm.C)
+        ∧ t = SCTerm.app (SCTerm.app (SCTerm.app K h) m) r
+        ∧ (∃ h₁ h₂, h = SCTerm.app h₁ h₂)
+        ∧ (∃ a b, SCRootStep a b ∧ RS.SC.Steps (SCTerm.app h r) a
+            ∧ RS.SC.Steps b (SCTerm.app (SCTerm.app K h) m))) := by
+  cases hr with
+  | S_red f g x =>
+      rcases sc_root_S_anatomy hback with ⟨a, b, hr', h1, h2⟩ | ⟨happ, hfire, _⟩
+      · exact Or.inl ⟨a, b, hr', scRootCycle_of_return_fire (SCRootStep.S_red f g x) h1 h2,
+          h1, h2⟩
+      · exact Or.inr ⟨SCTerm.S, f, g, x, Or.inl rfl, rfl, happ, hfire⟩
+  | C_red x y z =>
+      rcases sc_root_C_anatomy hback with ⟨a, b, hr', h1, h2⟩ | ⟨happ, hfire, _⟩
+      · exact Or.inl ⟨a, b, hr', scRootCycle_of_return_fire (SCRootStep.C_red x y z) h1 h2,
+          h1, h2⟩
+      · exact Or.inr ⟨SCTerm.C, x, y, z, Or.inr rfl, rfl, happ, hfire⟩
+
+/-- Composed with localization: every `{S,C}` cycle carries a root cycle that rotates or
+descends. -/
+theorem scCycle_rotate_or_descend {t v : SCTerm} (hs : SCStep t v) (hback : RS.SC.Steps v t) :
+    ∃ p q, SCRootStep p q ∧ RS.SC.Steps q p ∧
+      ((∃ a b, SCRootStep a b ∧ RS.SC.Steps b a ∧ RS.SC.Steps q a ∧ RS.SC.Steps b p)
+        ∨ (∃ K h m r, (K = SCTerm.S ∨ K = SCTerm.C)
+            ∧ p = SCTerm.app (SCTerm.app (SCTerm.app K h) m) r
+            ∧ (∃ h₁ h₂, h = SCTerm.app h₁ h₂)
+            ∧ (∃ a b, SCRootStep a b ∧ RS.SC.Steps (SCTerm.app h r) a
+                ∧ RS.SC.Steps b (SCTerm.app (SCTerm.app K h) m)))) := by
+  obtain ⟨p, q, hr, hcyc⟩ := sc_cycle_needs_root hs hback
+  exact ⟨p, q, hr, hcyc, scRootCycle_rotate_or_descend hr hcyc⟩

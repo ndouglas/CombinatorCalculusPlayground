@@ -76,3 +76,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_root_C_anatomy' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_root_C_anatomy
+
+/-- info: 'scCycle_rotate_or_descend' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scCycle_rotate_or_descend
