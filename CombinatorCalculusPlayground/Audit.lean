@@ -139,3 +139,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_three_cycles_are_known' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_three_cycles_are_known
+
+/-- info: 'sc_unbounded_convergence' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_unbounded_convergence

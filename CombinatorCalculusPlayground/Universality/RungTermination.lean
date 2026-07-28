@@ -2963,3 +2963,41 @@ theorem sc_three_cycles_are_known {t : SCTerm} (h : RS.SC.StepsN 3 t t) :
   have hk2 : k = 2 := by omega
   subst hk2
   exact ⟨a, b, hr, hret, sc_root_three_cycle_classified hr hret⟩
+
+-- ## Stage 102: the shredder — unbounded convergence exists in {S,C}
+-- The garbage-parking design probe (Stage 100's deferred item; full design in the ledger). The
+-- decisive enabling fact, formalized: hosting SK's `K x y ⟶ x` requires unboundedly many
+-- distinct host terms to converge on ONE — `enc (K x y)` must reach `enc x` for EVERY `y` — and
+-- a non-erasing host looks like it should forbid that. It does not: every C-fire consumes
+-- exactly its own fired leaf, and a left-nested C-TOWER `((C C) C) C ⋯` is a chain of such
+-- fires, collapsing from any height to the fixed residue `C C C`. Unbounded material, consumed
+-- to a constant, one leaf per step. So "non-erasing hosts cannot host erasure" is NOT a theorem,
+-- and any future refutation of SK ≤ {S,C} must find a subtler invariant.
+
+/-- The left-nested C-tower: `cTower n = C C C ⋯ C` with `n + 1` leaves. -/
+def cTower : Nat → SCTerm
+  | 0 => .C
+  | n + 1 => .app (cTower n) .C
+
+theorem cTower_leafCount : ∀ n, (cTower n).leafCount = n + 1
+  | 0 => rfl
+  | n + 1 => by
+      show (cTower n).leafCount + 1 = n + 2
+      rw [cTower_leafCount n]
+
+/-- Towers shrink one leaf per step: the innermost `C C C C` fires under `appL`. -/
+theorem cTower_step : ∀ n, SCStep (cTower (n + 3)) (cTower (n + 2))
+  | 0 => SCStep.C_red .C .C .C
+  | n + 1 => SCStep.appL (cTower_step n)
+
+/-- **The shredder**: every C-tower collapses to the fixed residue `C C C`. -/
+theorem cTower_shreds : ∀ n, RS.SC.Steps (cTower (n + 2)) (cTower 2)
+  | 0 => @RS.Steps.refl RS.SC (cTower 2)
+  | n + 1 => RS.Steps.tail (cTower_step n) (cTower_shreds n)
+
+/-- **Unbounded convergence in `{S,C}`**: infinitely many pairwise-distinct terms all reduce to
+one term — exactly the reachability shape K-erasure imposes on a host. -/
+theorem sc_unbounded_convergence :
+    ∀ n, RS.SC.Steps (cTower (n + 2)) (cTower 2)
+      ∧ (cTower (n + 2)).leafCount = n + 3 :=
+  fun n => ⟨cTower_shreds n, cTower_leafCount (n + 2)⟩
