@@ -4511,3 +4511,28 @@ what automation could and couldn't do. This file is a first-class deliverable
   traversal needs)? The cycle witnesses (w w prefixes) are the natural seeds. Deliverable:
   the reproduction gadget or the named obstruction. (2) The arrival-order pairing impossibility
   (parked). (3) C6, declined a ninety-third time.
+
+## 2026-07-28 — Stage 106: the parked arm was never garbage
+
+- The probe aimed at self-reproduction and hit something better first: the dispatch protocol's
+  'parked' argument lands in exactly the position the re-launcher needs filled. I had been
+  carrying 'park the untaken arm, shred it later' as a design liability since Stage 102 — the
+  garbage-slot invariant was the named likeliest failure point — and it evaporated: the untaken
+  arm is the next step's first arm. The lesson mirrors Stage 105's: the calculus keeps having the
+  discipline built in, and the design work is reading the fire patterns as intent instead of
+  fighting them.
+- scArm P = C (C C P) is seven leaves and does three jobs: it is normal data, it absorbs the
+  dispatch's two arguments as its own missing slots, and it rotates the arm pair. The traversal
+  invariant is now visibly a QUEUE: arms (β₁, β₂) → (β₂, P) — the parked arm waits one turn,
+  every payload serves once. Unbounded traversal = an unbounded payload supply — the whole driver
+  problem is now one question: can a payload rebuild itself under S-duplication with the junk
+  arities absorbed?
+- Formal note: every theorem this stage is a composition of C_red constructors and two prior
+  theorems — zero new case analysis, zero build failures, all axiom-free. Five stages of
+  shape-lens infrastructure have made new capabilities nearly free; this is what a mature toolkit
+  feels like.
+- Ranking: (1) **payload regeneration**: design the pack q and the S-fire plumbing so a payload
+  installs a copy of itself (protocol: absorb the forced extra applications — arity design
+  against the no-I constraint); deliverable is the regenerating payload theorem or the named
+  obstruction — if it closes, unbounded traversal follows immediately. (2) The arrival-order
+  pairing impossibility (parked). (3) C6, declined a ninety-fourth time.

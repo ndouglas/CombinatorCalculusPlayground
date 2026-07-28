@@ -4332,3 +4332,32 @@ the cycle witnesses prove the pattern lives, but a driver that duplicates ITSELF
 position is unbuilt; (b) the garbage-slot obligations — each dispatch parks one arm, a fixed
 closed term, and the machine must reduce it back to a constant slot. Both are engineering with
 named shapes; neither has an identified obstruction.
+
+### Stage 106: the re-launcher and the recycling arm — one gap from a driver
+
+The driver probe, and the arc's compounding continues: two compositions closed most of the
+remaining distance, and the second dissolved a problem the Stage 104 design had budgeted for.
+
+| | |
+|---|---|
+| `scRelaunch β₁ β₂ := C (C C β₂) β₁` | applied to `rest`: three C-fires walk it into head position with both arms — `scRelaunch_beta : ⋯ r ⟶* r β₁ β₂`. Normal, storable |
+| `scArm P := C (C C P)` | an arm that IS a partial re-launcher: the dispatch hands it exactly its missing slots — `scArm_step : scArm P o r ⟶* r o P` |
+| **`scTraversal_step_false/true`** | **the composed full traversal step**: interrogate a word whose acting arm is a recycling arm, and the rest of the word is directly re-interrogated, arms rotated, payload installed — both symbols, one calling convention — pinned |
+| `scArm_normal` | arms are storable data |
+
+The design surprise: THE PARKED ARM IS NOT GARBAGE. Stage 104 budgeted a garbage-slot invariant
+for the untaken arm — the likeliest failure point, per that ledger entry. The recycling arm
+eliminates it: the dispatch's "parked" argument is exactly the re-launcher's first missing slot,
+so the untaken arm becomes the next step's FIRST arm. Nothing is discarded, nothing accumulates:
+the arm pair evolves as `(β₁, β₂) → (β₂, P)` where `P` is the acting arm's payload. All
+axiom-free.
+
+The single remaining obligation, sharply: PAYLOAD REGENERATION. Each traversal step installs the
+acting arm's payload as the next second arm and consumes it — so a depth-`n` payload chain
+supports `n` steps, and unbounded traversal needs payloads that rebuild themselves. The mechanism
+must be S-duplication (`S f g x` copies `x`), and the shape is a pack `q` that, fired as some
+S-redex's third argument, lands one copy as the running machinery and one as the future payload.
+The no-I constraint rules out the naive quine assembly (`g q ⟶* q` needs identity), so the pack's
+protocol must absorb the extra applications the calculus forces — an arity-design problem, not an
+identified obstruction. If it closes, `{S,C}` hosts unbounded two-symbol word traversal, and the
+hosting question's constructive half comes within reach of a genuine tag-step simulation.
