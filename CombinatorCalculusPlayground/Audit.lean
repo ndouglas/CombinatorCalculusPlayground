@@ -58,3 +58,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'no_pathEncoding_SK_SB' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms no_pathEncoding_SK_SB
+
+/-- info: 'sc_no_leaf_self_embed' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_no_leaf_self_embed

@@ -927,3 +927,112 @@ example (f g x : SCTerm) :
       < rightDepthC (.app (.app f x) (.app g x)) := by
   show rightDepthC x + 1 < (rightDepthC x + 1) + 1
   omega
+
+-- ## Stage 87: the frozen left — no {S,C} term reduces to itself under a leaf
+-- The spine calculus's first theorem, from an invariant both measure families overlooked: every
+-- `{S,C}` step RESULT is an application, and both root rules produce APP-HEADED LEFT components
+-- (`(f x)(g x)` and `(x z) y` alike — contrast `{S,B}`, where `B x y z → x (y z)` can expose a
+-- leaf left). So after any root step the left component is an application forever, leaves are
+-- unreachable by nonempty paths, and terms of shape `app ℓ x` (a leaf applied to `x`) are
+-- unreachable from any path containing a root step. The path dichotomy then forces a size descent:
+--
+--     **no term reduces to itself applied under a leaf: `¬(x ⟶* ℓ x)`** —
+--
+-- unconditional, and exactly the shape the second-level root-cycle analysis produces.
+
+/-- Every step lands on an application. -/
+theorem scStep_result_isApp {t u : SCTerm} (h : SCStep t u) : ∃ a b, u = .app a b := by
+  cases h with
+  | S_red f g x => exact ⟨_, _, rfl⟩
+  | C_red x y z => exact ⟨_, _, rfl⟩
+  | appL h => exact ⟨_, _, rfl⟩
+  | appR h => exact ⟨_, _, rfl⟩
+
+/-- Leaves are unreachable: a path ending at a non-application is empty. -/
+theorem sc_steps_to_leaf : ∀ {t u : SCTerm}, RS.SC.Steps t u →
+    (∀ a b, u ≠ SCTerm.app a b) → t = u := by
+  intro t u h
+  exact h.rec (motive := fun t u _ => (∀ a b, u ≠ SCTerm.app a b) → t = u)
+    (fun _ _ => rfl)
+    (fun {a c b} s _ ih hu => by
+      have hc := ih hu
+      subst hc
+      obtain ⟨p, q, hpq⟩ := scStep_result_isApp s
+      exact absurd hpq (hu p q))
+
+/-- Both root rules produce an app-headed left component. -/
+theorem scRootStep_left_app {t u : SCTerm} (h : SCRootStep t u) :
+    ∃ a b c, u = .app (.app a b) c := by
+  cases h with
+  | S_red f g x => exact ⟨_, _, _, rfl⟩
+  | C_red x y z => exact ⟨_, _, _, rfl⟩
+
+/-- ...and app-headedness of the left component is invariant from then on. -/
+theorem scStep_leftApp {t u : SCTerm} (h : SCStep t u)
+    (hp : ∃ a b c, t = .app (.app a b) c) : ∃ a b c, u = .app (.app a b) c := by
+  cases h with
+  | S_red f g x => exact ⟨_, _, _, rfl⟩
+  | C_red x y z => exact ⟨_, _, _, rfl⟩
+  | @appL t t' u h' =>
+      obtain ⟨p, q, hpq⟩ := scStep_result_isApp h'
+      exact ⟨p, q, u, by rw [hpq]⟩
+  | @appR t u u' h' =>
+      obtain ⟨a, b, c, habc⟩ := hp
+      injection habc with h1 _
+      exact ⟨a, b, u', by rw [h1]⟩
+
+theorem scSteps_leftApp : ∀ {t u : SCTerm}, RS.SC.Steps t u →
+    (∃ a b c, t = .app (.app a b) c) → ∃ a b c, u = .app (.app a b) c := by
+  intro t u h
+  refine h.rec (motive := fun t u _ =>
+      (∃ a b c, t = SCTerm.app (SCTerm.app a b) c) →
+        ∃ a b c, u = SCTerm.app (SCTerm.app a b) c) ?_ ?_
+  · intro _ hp
+    exact hp
+  · intro a b c s h' ih hp
+    exact ih (scStep_leftApp s hp)
+
+/-- **No `{S,C}` term reduces to itself applied under a leaf.** A root step anywhere on the path
+freezes the left component as an application, which `app ℓ x` is not; the rootless alternative
+forces `x = app ℓ x₁` with `x₁ ⟶* app ℓ x₁`, a strict size descent. -/
+theorem sc_no_leaf_self_embed_aux (ℓ : SCTerm) (hℓ : ∀ a b, ℓ ≠ SCTerm.app a b) :
+    ∀ (n : Nat) (x : SCTerm), x.leafCount ≤ n → ¬ RS.SC.Steps x (SCTerm.app ℓ x) := by
+  intro n
+  induction n with
+  | zero =>
+      intro x hle _
+      exact absurd hle (by have := scLeaf_pos x; omega)
+  | succ n ih =>
+      intro x hle h
+      rcases sc_path_facts h with ⟨a, b, hr, h1, h2⟩ | heq | ⟨f, x₁, F', X', heq1, heq2, pf, px, _⟩
+      · obtain ⟨p, q, r, hb⟩ := scRootStep_left_app hr
+        obtain ⟨a', b', c', habc⟩ := scSteps_leftApp h2 ⟨p, q, r, hb⟩
+        injection habc with h1' _
+        exact absurd h1' (hℓ a' b')
+      · have hc := congrArg SCTerm.leafCount heq
+        have hp := scLeaf_pos ℓ
+        exact absurd hc (by
+          show ¬(x.leafCount = ℓ.leafCount + x.leafCount)
+          omega)
+      · injection heq2 with hF' hX'
+        subst hX'
+        rw [← hF'] at pf
+        have hf : f = ℓ := sc_steps_to_leaf pf hℓ
+        rw [hf] at heq1
+        subst heq1
+        have hx1 : x₁.leafCount ≤ n := by
+          have := scLeaf_pos ℓ
+          have hsz : ℓ.leafCount + x₁.leafCount ≤ n + 1 := hle
+          omega
+        exact ih x₁ hx1 px
+
+/-- The packaged form, and its two instances. -/
+theorem sc_no_leaf_self_embed {ℓ x : SCTerm} (hℓ : ∀ a b, ℓ ≠ SCTerm.app a b) :
+    ¬ RS.SC.Steps x (SCTerm.app ℓ x) :=
+  sc_no_leaf_self_embed_aux ℓ hℓ x.leafCount x (Nat.le_refl _)
+
+example (x : SCTerm) : ¬ RS.SC.Steps x (SCTerm.app SCTerm.C x) :=
+  sc_no_leaf_self_embed (fun _ _ h => SCTerm.noConfusion h)
+
+example (x : SCTerm) : ¬ RS.SC.Steps x (SCTerm.app SCTerm.S x) :=
+  sc_no_leaf_self_embed (fun _ _ h => SCTerm.noConfusion h)
