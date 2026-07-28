@@ -3923,3 +3923,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   second positional measure for `{S,C}` — the C-rule preserves the MULTISET of right-spine depths
   of arguments in some form; look for the invariant OUTSIDE counting measures this time.
   (2) C6, declined a seventy-first time.
+
+## 2026-07-28 — Stage 84: the fragment the lens allows
+
+- Rung 3 held, as the ledger said it would. The measure hunt is worth recording in full so nobody
+  re-runs it: sum-of-right-depths breaks on C (the swapped-out argument loses a right-turn for its
+  whole subtree); max-right-nesting breaks on S (the head's contribution can dominate and drop);
+  exponential right-weights break both ways. `C` is a genuine permuter, and no function of
+  right-position alone is monotone under permutation. The ρ-lens's honest yield is the fragment:
+  when C only fires strictly-deepening, both root rules are ρ-strict and Stage 83's argument
+  transcribes verbatim — `scTame_acyclic`, hence `scCycle_needs_flat_C`: every cycle fires a
+  flattening C. Fourth necessary condition, first positional one.
+- A design note that mattered: the tame condition must be LOCAL (on the fired redex's own
+  arguments), not global (on the whole term's Δρ) — global fragments do not localize, because an
+  appL-step's inner projection can violate a whole-term condition the outer step satisfies. The
+  ledger's fragments were all local, and I now understand that as a requirement rather than a
+  style.
+- The composition of conditions is starting to look like a pincer: cycles need S-steps that
+  duplicate C-heavy arguments (τ-family) AND C-steps that flatten the right spine (ρ-family). The
+  two families are blind to different steps — τ to position, ρ to weight — and the obvious next
+  question is their braid: what does a flattening C do to τ? If flattening is τ-expensive and
+  duplication is ρ-expensive, a joint lexicographic measure may close the rung the way ρ alone
+  closed rung 2. That is a real candidate, not a hope: both halves are proved, only their
+  interaction is unmeasured.
+- Ranking: (1) **the τ×ρ braid for rung 3**: compute τ's behavior on flattening C-steps and ρ's on
+  C-duplicating S-steps; if either is signed, build the lexicographic composite. (2) C6, declined a
+  seventy-second time.

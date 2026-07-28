@@ -3700,3 +3700,23 @@ census hunts to eight leaves) are all subsumed by a measure a first-year student
 **Why rung 3 does not fall the same way**, exactly as the ledger's "structurally UNLIKE" predicted:
 `C x y z → x z y` moves `z` OFF the right spine (Δρ = ρ(y) − ρ(z), either sign). Inherited free:
 any `{S,C}` cycle must contain a right-spine C-reduction whose `y` is right-shallower than its `z`.
+
+### Stage 84: rung 3 through the ρ-lens — the tame fragment is acyclic
+
+Rung 3 does not fall to Stage 83's argument — `C` moves `z` off the right spine, and the paper hunt
+confirmed the breakage is thorough: sums, maxima, and exponential weightings of right-depths each
+fail on one rule or the other. The ledger's "structurally unlike" verdict from Stage 27 holds from
+every direction tried. What survives:
+
+| | |
+|---|---|
+| `SCTameStep` / `RS.SCTame` | the strictly-tame fragment: `C` fires only when it strictly DEEPENS the right spine (`ρ(z) < ρ(y)`) — a LOCAL condition, which is what lets localization survive projection (whole-term-Δρ fragments do not localize) |
+| `scTameStep_rightDepth_le` / `scTameRoot_rightDepth_lt` | in the fragment, ρ is weakly monotone and BOTH root rules are strict |
+| **`scTame_acyclic`** | the fragment is acyclic — Stage 83's two-piece argument, verbatim |
+| **`scCycle_needs_flat_C`** | **any `{S,C}` cycle must fire a FLATTENING `C`** (`ρ(y) ≤ ρ(z)`) — rung three's fourth necessary condition, and its first positional one |
+
+Rung 3's cycle conditions now read: a C-reduction; an S-reduction duplicating a `C`-containing
+argument; a two-clause τ-heavy condition; and a flattening `C`. The τ-family and the ρ-family
+measure DIFFERENT things (exponential subtree weight vs right-spine position), so the next hunt is
+for their joint behavior — what does a flattening `C` do to τ, and can the two families be braided
+into a lexicographic argument where each covers the other's blind steps?
