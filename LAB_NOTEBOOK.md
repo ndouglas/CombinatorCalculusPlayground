@@ -4211,3 +4211,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   with exact budget accounting (k_L + k_R = return length, sandwich positions), stated on a
   minimal root cycle — the general form of the 2-cycle proof's constraint. (2) The 3-cycle kill
   as a corollary test of that machinery. (3) C6, declined an eighty-second time.
+
+## 2026-07-28 — Stage 95: the price of collapse
+
+- The plan was mechanical (dichotomies with lengths); the discovery was not: writing the S-side
+  side-condition forced the question "can a single step collapse `u v` to `v`?", and the answer is
+  an unconditional no with a four-line induction — the appR case IS the same question one size
+  smaller, which is as clean as size induction ever gets. Stage 82 called collapse exotic, Stage
+  89 proved it fires a root redex, and now it has a price: two steps minimum. Every one of these
+  came from asking what a single step is FORCED to look like.
+- The budget bookkeeping surfaced the S/C asymmetry a third time, and this time with teeth: the
+  S-side return must pay 1 (self-embedding) + 2 (collapse) in its projection branch, so rootless
+  S-returns cost ≥ 3 and S-rooted short cycles need second fires; the C-side's `y ⟶* z` can be
+  FREE (y = z), so C-rooted cycles are where any short cycle must live. The rung's hard core keeps
+  contracting toward the C rule's permutation behavior — consistent with the ledger's original
+  "structurally unlike" verdict and with every measure failure since.
+- First-try green again, and the equations-first discipline from Stage 94 deserves the credit:
+  both dichotomies are rcases + injections + two absorption calls, no dependent elimination
+  anywhere. The `subst` pattern (eliminate the capital-letter existential witnesses, keep the
+  concrete shapes) has not produced a single orphaned-variable error since Stage 87 wrote the
+  rule down.
+- Ranking: (1) **the 3-cycle question**: the budgets have cornered it — S-rooted needs a sandwich
+  (two fires in three steps, budget k₁ + 1 + k₂ = 2), C-rooted a projection with kL + kR = 2;
+  both are finite shape analyses of the Stage 94 kind, and the outcome is either no-3-cycles
+  (minimal length ≥ 4) or an explicit near-cycle shape worth staring at. (2) The minimal-cycle
+  synthesis: compose every constraint since Stage 81 into one characterization theorem of the
+  minimal cycle. (3) C6, declined an eighty-third time.

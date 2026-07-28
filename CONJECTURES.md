@@ -3988,3 +3988,26 @@ call. The numeric ladder (no 1-cycles, no 2-cycles) is not the road to the rung 
 costs multiplicatively more — but the 2-cycle proof surfaced the reusable pattern: the return's
 FIRST step is already heavily constrained by the fired shape. The general form of that constraint
 is the next thing worth stating.
+
+### Stage 95: budgets — and collapse costs two
+
+The general form of Stage 94's observation, plus an unconditional fact found on the way. **No
+single step collapses `u v` to `v`** (`sc_no_step_collapse`): the root cases die on absorption
+(the fired result contains `v` twice, or once plus a leaf), the `appL` case on absorption, and the
+`appR` case demands the same collapse one size smaller — size induction closes it. With the
+zero-step case dead on absorption too: **collapse costs at least two steps**
+(`sc_collapse_length_ge_two`, pinned). Stage 82 called collapse "exotic"; it now has a price tag.
+
+The return dichotomies then go length-indexed (`sc_root_S_return_length` pinned,
+`sc_root_C_return_length`): the root sandwich accounts for every step (`k₁ + 1 + k₂ = n`), the
+projection splits the budget (`kL + kR = n`), and the shapes force side conditions — both left
+self-embeddings are nonempty (`kL ≥ 1`, absorption), and the S-side's right projection IS a
+collapse, so `kR ≥ 2`. The C-side's right projection (`y ⟶* z`) may be free: the S/C asymmetry
+that Stage 89 refused to force away persists at the budget level, and it now has consequences:
+
+- `sc_root_S_projection_length`: an S-rooted root cycle with a rootless return has return length
+  ≥ 3, cycle length ≥ 4. Combined with `sc_cycle_length_ge_three`: a 3-cycle, if one exists, is
+  either S-rooted with TWO root fires among its three steps, or C-rooted.
+- Any k-cycle question on the S side is now arithmetic over branch budgets. The C side, where the
+  right projection is free, is where short cycles must live — the next case analysis knows its
+  address.

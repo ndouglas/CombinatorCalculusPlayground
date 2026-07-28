@@ -386,7 +386,13 @@ universality is lost"* — not a full acyclicity proof. Reporting rungs 2 and 3 
   (`sc_cycle_length_ge_two`). Second purchase (Stage 94): a root fire is never
   undone in one step (`sc_no_root_two_cycle` — the live branch dies on the frozen
   left), so there are no 2-cycles and MINIMAL CYCLE LENGTH ≥ 3
-  (`sc_cycle_length_ge_three`). Termination routes are provably dead
+  (`sc_cycle_length_ge_three`). Third purchase (Stage 95): collapse costs at least
+  two steps (`sc_no_step_collapse`, `sc_collapse_length_ge_two`), and the return
+  dichotomies carry exact budgets (`sc_root_S_return_length`,
+  `sc_root_C_return_length`: sandwiches account for every step, projections split
+  it, the S-side collapse costs ≥ 2) — so an S-rooted root cycle with a rootless
+  return has cycle length ≥ 4 (`sc_root_S_projection_length`); short cycles, if
+  any, must be C-rooted or carry second fires. Termination routes are provably dead
   (`SC_not_normalizing`), positional measures provably insufficient (C permutes), and
   the τ×ρ braid provably fails (Stage 85, witnessed). The recorded long-horizon route
   is the spine calculus: S is tail-preserving, C tail-replacing on the right-spine
