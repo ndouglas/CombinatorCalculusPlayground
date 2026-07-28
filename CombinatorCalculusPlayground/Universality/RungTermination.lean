@@ -13,6 +13,7 @@
 -- of cycles, or the unbounded well-founded measure Stage 44 already named. Sharper, and now with
 -- the impossibility half machine-checked.
 import CombinatorCalculusPlayground.Universality.Ladder
+import CombinatorCalculusPlayground.Universality.Calibration
 import CombinatorCalculusPlayground.Recurrence
 
 open Term
@@ -606,3 +607,87 @@ theorem sc_root_C_return {x y z : SCTerm}
 --     the ground self-embedding machinery from Stages 39–42.
 -- Ruling out collapse would force every root cycle to contain an inner root step; whether that
 -- regress terminates is then the whole of the rungs.
+
+-- ## Stage 83: RUNG 2 IS CLOSED — {S,B} is acyclic
+--
+-- The no-collapse probe found something stronger than no-collapse. Both rules of `{S,B}` BURY THE
+-- LAST ARGUMENT DEEPER RIGHT: `S f g x → (f x)(g x)` and `B x y z → x (y z)` each push the
+-- rightmost subterm one application deeper on the right spine. So the RIGHT-SPINE DEPTH
+--
+--     ρ(app a b) = ρ(b) + 1,   ρ(leaf) = 0
+--
+-- never decreases along any step, and strictly increases at every root step. Alone that proves
+-- nothing — a cycle could avoid the right spine — which is why every measure hunt since Stage 20
+-- missed it: ρ is not a counting measure (the ledger's refutations do not cover it), and without
+-- strictness on some step OF EVERY CYCLE it is useless. Stage 81's localization supplies exactly
+-- that missing strictness: every cycle yields a cycle through a ROOT step. Composed: ρ(a) < ρ(b)
+-- and ρ(b) ≤ ρ(a). Rung 2 falls in four lemmas.
+--
+-- Why rung 3 does NOT fall to the same argument, exactly as the ledger predicted ("structurally
+-- unlike"): `C x y z → x z y` moves `z` OFF the right spine — Δρ = ρ(y) − ρ(z), either sign — so ρ
+-- is not monotone for `{S,C}`, and any `{S,C}` cycle must contain a right-spine C-reduction whose
+-- `y` is right-shallower than its `z`. That is rung 3's new constraint, inherited free.
+
+/-- The right-spine depth. -/
+def rightDepth : SBTerm → Nat
+  | .app _ b => rightDepth b + 1
+  | _ => 0
+
+/-- Every `{S,B}` step weakly increases the right-spine depth: both rules bury the last argument
+deeper, left-side steps do not touch the spine, right-side steps are monotone by induction. -/
+theorem sbStep_rightDepth_le {t u : SBTerm} (h : SBStep t u) :
+    rightDepth t ≤ rightDepth u := by
+  induction h with
+  | S_red f g x =>
+      show rightDepth x + 1 ≤ (rightDepth x + 1) + 1
+      omega
+  | B_red x y z =>
+      show rightDepth z + 1 ≤ (rightDepth z + 1) + 1
+      omega
+  | @appL t t' u _ _ =>
+      show rightDepth u + 1 ≤ rightDepth u + 1
+      exact Nat.le_refl _
+  | @appR t u u' _ ih =>
+      show rightDepth u + 1 ≤ rightDepth u' + 1
+      omega
+
+/-- ...and every ROOT step strictly increases it. -/
+theorem sbRoot_rightDepth_lt {t u : SBTerm} (h : SBRootStep t u) :
+    rightDepth t < rightDepth u := by
+  cases h with
+  | S_red f g x =>
+      show rightDepth x + 1 < (rightDepth x + 1) + 1
+      omega
+  | B_red x y z =>
+      show rightDepth z + 1 < (rightDepth z + 1) + 1
+      omega
+
+theorem sbSteps_rightDepth_le : ∀ {t u : SBTerm}, RS.SB.Steps t u →
+    rightDepth t ≤ rightDepth u := by
+  intro t u h
+  exact h.rec (fun _ => Nat.le_refl _)
+    (fun s _ ih => Nat.le_trans (sbStep_rightDepth_le s) ih)
+
+/-- **RUNG 2: `{S,B}` IS ACYCLIC.** A cycle yields a root-cycle (Stage 81); the root step strictly
+raises the right-spine depth; the return path cannot lower it. -/
+theorem SB_acyclic : RS.Acyclic RS.SB := by
+  intro t v hs hback
+  obtain ⟨a, b, hr, hcyc⟩ := sb_cycle_needs_root hs hback
+  have h1 := sbRoot_rightDepth_lt hr
+  have h2 := sbSteps_rightDepth_le hcyc
+  omega
+
+/-- **The rung's purpose, delivered: `{S,B}` cannot host SK** — by the program's one refutation
+mechanism, now applicable because the rung is closed. The ladder gains its first full rung beyond
+`{S}` and ι. -/
+theorem no_pathEncoding_SK_SB : ¬ Nonempty (PathEncoding RS.SK RS.SB) :=
+  PathEncoding.refute_of_acyclic SB_acyclic
+    (RS.SK_steps_iff.mpr omega_to_M) (RS.SK_steps_iff.mpr M_to_omega)
+    omega_ne_M
+
+-- Anchors: the fragments' acyclicity results are all subsumed, and no-collapse — the question that
+-- started the stage — is a corollary rather than a target.
+theorem sb_no_collapse {u v : SBTerm} (h : RS.SB.Steps (.app u v) v) : False := by
+  have := sbSteps_rightDepth_le h
+  have : rightDepth v + 1 ≤ rightDepth v := this
+  omega

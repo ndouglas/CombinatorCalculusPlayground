@@ -6,6 +6,7 @@
 -- the claim BUILD-ENFORCED: every headline theorem's exact axiom footprint is pinned with
 -- `#guard_msgs`, so any future leak — in new code or old — fails the build.
 import CombinatorCalculusPlayground.TagGeneral
+import CombinatorCalculusPlayground.Universality.RungTermination
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
 import CombinatorCalculusPlayground.Universality.OneRule
@@ -51,3 +52,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'universalReach_finTag' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms universalReach_finTag
+
+/-- info: 'SB_acyclic' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms SB_acyclic
+
+/-- info: 'no_pathEncoding_SK_SB' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms no_pathEncoding_SK_SB
