@@ -868,3 +868,62 @@ theorem scCycle_needs_flat_C {t : SCTerm}
     (hcyc : ∃ u, SCTameStep t u ∧ RS.SCTame.Steps u t) : False := by
   obtain ⟨u, h1, h2⟩ := hcyc
   exact scTame_acyclic h1 h2
+
+-- ## Stage 85: the braid fails, and what lies under both measures
+-- The ranked τ×ρ braid does not exist, for a reason now witnessed rather than suspected: the
+-- cycle-necessary FLAT C-steps are τ-unconstrained — the ledger's own `scHeavy` is flat AND
+-- τ-raising (guards below) — and S-fires, the τ-family's bad steps, always RAISE ρ. Each family's
+-- blind spot is invisible to the other, so no lexicographic composite of the two closes rung 3.
+--
+-- What the failure exposes is the structure beneath both measures: the RIGHT-SPINE SEQUENCE —
+-- the list of left-children along the right spine. ρ is its length; τ weights its elements. The
+-- two root rules act on it with completely different signatures:
+--
+--     S f g x :  (S f g) :: σ(x)   ⟶   (f x) :: g :: σ(x)     — head refined, TAIL PRESERVED
+--     C x y z :  (C x y) :: σ(z)   ⟶   (x z) :: σ(y)          — the ENTIRE TAIL REPLACED
+--
+-- Both are `rfl`. Any measure that closes rung 3 must handle C's tail replacement, which no
+-- function of ρ alone (Stage 84's sweep) and no τ-composite (this stage) can. The spine sequence
+-- itself — a word over terms, rewritten by the two signatures above — is the recorded route.
+
+/-- The right-spine sequence: left-children along the right spine, root first. -/
+def scSpine : SCTerm → List SCTerm
+  | .app a b => a :: scSpine b
+  | _ => []
+
+/-- ρ is its length. -/
+theorem rightDepthC_eq_spine_length : ∀ t : SCTerm, rightDepthC t = (scSpine t).length := by
+  intro t
+  induction t with
+  | S => rfl
+  | C => rfl
+  | app a b _ ihb =>
+      show rightDepthC b + 1 = (scSpine b).length + 1
+      omega
+
+/-- An S-root step refines the spine head into two elements and PRESERVES the tail. -/
+theorem scSpine_S_root (f g x : SCTerm) :
+    scSpine (.app (.app (.app .S f) g) x) = (.app (.app .S f) g) :: scSpine x ∧
+    scSpine (.app (.app f x) (.app g x)) = (.app f x) :: g :: scSpine x :=
+  ⟨rfl, rfl⟩
+
+/-- A C-root step REPLACES the entire spine tail: `σ(z)` out, `σ(y)` in. -/
+theorem scSpine_C_root (x y z : SCTerm) :
+    scSpine (.app (.app (.app .C x) y) z) = (.app (.app .C x) y) :: scSpine z ∧
+    scSpine (.app (.app x z) y) = (.app x z) :: scSpine y :=
+  ⟨rfl, rfl⟩
+
+-- ### The independence witnesses, build-enforced
+-- `scHeavy = C S S (S S S S)` — the ledger's own τ-asymmetry witness — is FLAT (its C fires with
+-- ρ(y) = 0 ≤ 1 = ρ(z)), and it RAISES τ. So the flat C-steps that every cycle must contain
+-- (`scCycle_needs_flat_C`) are exactly the ones τ cannot punish: the braid's precise obstruction.
+#guard rightDepthC .S ≤ rightDepthC (.app (.app (.app .S .S) .S) .S)
+#guard tauSC (.app (.app .S (.app (.app (.app .S .S) .S) .S)) .S)
+  > tauSC (.app (.app (.app .C .S) .S) (.app (.app (.app .S .S) .S) .S))
+-- And S-root fires always raise ρ — the τ-family's bad steps are ρ-good, closing the other
+-- direction of the pincer's independence.
+example (f g x : SCTerm) :
+    rightDepthC (.app (.app (.app .S f) g) x)
+      < rightDepthC (.app (.app f x) (.app g x)) := by
+  show rightDepthC x + 1 < (rightDepthC x + 1) + 1
+  omega
