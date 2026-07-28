@@ -3384,3 +3384,80 @@ def tailInSC : PathEncoding RS.TailB RS.SC where
       obtain ⟨cb, hcb⟩ := s
       subst hcb
       exact RS.Steps.trans (scRun_step .S cb b) ih
+
+-- ## Stage 108: production-carrying cells — differentiation moves into the word
+-- The differentiated-queue probe. The catalyst route (an arm `X` with `X o r ⟶* r o X`, exactly
+-- leaf-balanced, cycle-style self-reconstitution) is census-dead to 9 leaves, and every
+-- arm-level scheme built from parked-copying and payload-burning HOMOGENIZES the pair. The
+-- resolution is to stop differentiating the arms: the WORD's cells are built at encoding time,
+-- where per-symbol differences are free. `scRelaunch`, re-read a third time, is exactly the
+-- production-carrying cell: `scPCell p rest = scRelaunch p rest`, and applying it to a driver
+-- delivers the production and the rest — `scPCell p rest ⋅ D ⟶* D p rest`. Under an
+-- accumulator the same fires go through (`scSteps_appL`), giving the three-argument driver
+-- protocol `D p rest acc` — the production, the remaining word, and the write-slot, delivered
+-- by pure cell machinery. What remains for a tag step is only the driver (ledger).
+
+/-- A cell carrying its own production: `scPCell p rest ⋅ D ⟶* D p rest`. -/
+def scPCell (p rest : SCTerm) : SCTerm := scRelaunch p rest
+
+theorem scPCell_step (p rest D : SCTerm) :
+    RS.SC.Steps (.app (scPCell p rest) D) (.app (.app D p) rest) :=
+  scRelaunch_beta p rest D
+
+/-- The same fires under an accumulator: interrogation with a write-slot riding along delivers
+the THREE-argument driver protocol `D p rest acc`. -/
+theorem scPCell_step_acc (p rest D acc : SCTerm) :
+    RS.SC.Steps (.app (.app (scPCell p rest) D) acc)
+      (.app (.app (.app D p) rest) acc) := by
+  have h := scPCell_step p rest D
+  exact h.rec (motive := fun a b _ =>
+      RS.SC.Steps (SCTerm.app a acc) (SCTerm.app b acc)) 
+    (fun a => @RS.Steps.refl RS.SC _)
+    (fun s _ ih => RS.Steps.tail (SCStep.appL s) ih)
+
+/-- Production cells are normal over normal contents — storable data. -/
+theorem scPCell_normal (p rest : SCTerm)
+    (hp : ¬ ∃ u, SCStep p u) (hr : ¬ ∃ u, SCStep rest u) :
+    ¬ ∃ u, SCStep (scPCell p rest) u := by
+  rintro ⟨u, h⟩
+  rcases scStep_cases h with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+  · rcases scRootStep_inv hroot with ⟨a, b, c, hb, _⟩ | ⟨a, b, c, hb, _⟩
+    · injection hb with h1 h2
+      injection h1 with h3 h4
+      exact SCTerm.noConfusion h3
+    · injection hb with h1 h2
+      injection h1 with h3 h4
+      exact SCTerm.noConfusion h3
+  · injection j1 with j3 j4
+    rcases scStep_cases (show SCStep (SCTerm.app .C (SCTerm.app (SCTerm.app .C .C) rest)) F'
+        from by rw [j3]; exact hst) with
+      hroot2 | ⟨F₂, X₂, F₂', l1, l2, hst2⟩ | ⟨F₂, X₂, X₂', l1, l2, hst2⟩
+    · rcases scRootStep_inv hroot2 with ⟨a, b, c, hb, _⟩ | ⟨a, b, c, hb, _⟩
+      · injection hb with h1 h2
+        exact SCTerm.noConfusion h1
+      · injection hb with h1 h2
+        exact SCTerm.noConfusion h1
+    · injection l1 with l3 l4
+      obtain ⟨a, b, hab⟩ := scStep_source_isApp hst2
+      rw [← l3] at hab
+      exact SCTerm.noConfusion hab
+    · injection l1 with l3 l4
+      rcases scStep_cases (show SCStep (SCTerm.app (SCTerm.app .C .C) rest) X₂' from by
+          rw [l4]; exact hst2) with
+        hroot3 | ⟨F₃, X₃, F₃', m1, m2, hst3⟩ | ⟨F₃, X₃, X₃', m1, m2, hst3⟩
+      · rcases scRootStep_inv hroot3 with ⟨a, b, c, hb, _⟩ | ⟨a, b, c, hb, _⟩
+        · injection hb with h1 h2
+          injection h1 with h3 h4
+          exact SCTerm.noConfusion h3
+        · injection hb with h1 h2
+          injection h1 with h3 h4
+          exact SCTerm.noConfusion h3
+      · injection m1 with m3 m4
+        exact scTag_normal.2 ⟨F₃', by
+          show SCStep (SCTerm.app .C .C) F₃'
+          rw [m3]
+          exact hst3⟩
+      · injection m1 with m3 m4
+        exact hr ⟨X₃', by rw [m4]; exact hst3⟩
+  · injection j1 with j3 j4
+    exact hp ⟨X', by rw [j4]; exact hst⟩

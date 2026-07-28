@@ -175,3 +175,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'tailInSC' does not depend on any axioms -/
 #guard_msgs in #print axioms tailInSC
+
+/-- info: 'scPCell_step_acc' does not depend on any axioms -/
+#guard_msgs in #print axioms scPCell_step_acc
