@@ -3528,3 +3528,28 @@ theorem scNormal_C2 {X Y : SCTerm} (hX : ¬ ∃ u, SCStep X u) (hY : ¬ ∃ u, S
 theorem scCons_normal (q : SCTerm) (hq : ¬ ∃ u, SCStep q u) :
     ¬ ∃ u, SCStep (scCons q) u :=
   scNormal_C2 (scNormal_C2 scTag_normal.2 scTag_normal.1) hq
+
+-- ## Stage 110: the mid-spine insertion obstruction — the driver's last gap has a name
+-- The driver-assembly probe found the wall instead of the gadget, and mapped it. The pile
+-- protocol (state = `word ⋅ A ⋅ A ⋅ W₁ ⋯ Wₖ ⋅ acc`, productions piling before the tail,
+-- LIFO ∘ LIFO = FIFO at the flip) reduces the whole tag driver to ONE gadget: a cell delivering
+-- `[β₁, β₂, rest, W]` — its stored wrapper landing BEHIND later-arriving runtime arguments.
+-- Census: no such fused cell to 9 leaves (general) or 12 (C-only); no `[β₁, β₂, W, rest]` cell
+-- to 11; no 3-argument arm `A o W r ⟶* r o o W` to 8. Every proved gadget (re-launcher, scDup,
+-- scCons) modifies the spine only at its FRONT; passengers step material back by one
+-- fire-relative position only. MID-SPINE INSERTION — new material between the relaunch prefix
+-- and the riding tail — resists everything tried. The conjecture and its stakes go to the
+-- ledger. What is true and proved here: the state shape is viable (tails ride traversal
+-- untouched), and the single-fire acc-wrapper exists.
+
+/-- Traversal with a trailing slot: the tail rides the whole run untouched — the pile/acc state
+shape is viable. -/
+theorem scRun_tail (E X : SCTerm) (w : List Bool) :
+    RS.SC.Steps (.app (.app (.app (scWord E w) scDup) scDup) X)
+      (.app (.app (.app E scDup) scDup) X) :=
+  scSteps_appL X (scRun E w)
+
+/-- The acc-wrapper fires in one step: `(C p j) ⋅ acc ⟶ (p acc) j`. -/
+theorem scWrap_beta (p j acc : SCTerm) :
+    RS.SC.Steps (.app (.app (.app .C p) j) acc) (.app (.app p acc) j) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.C_red p j acc)
