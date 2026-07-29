@@ -4641,3 +4641,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   show stored literals cannot cross runtime arrivals; the genealogy toolkit applies; a proof
   caps {S,C} hosting and is a program headline. (2) The program review (three goal-level
   results now pending). (3) C6, declined a ninety-eighth time.
+
+## 2026-07-28 — Stage 111: the model was the wall
+
+- Set out to prove the insertion conjecture; instead derived the member-dynamics calculus (three
+  moves, atoms never nest, freeze on atom-head), proved the freeze exemplar in Lean, and then
+  watched the conjecture split in my hands: the opaque bound is TRUE and fully explains the
+  Stage 110 negatives — and it says nothing about the real question, because real cell
+  components are compounds and compounds do not freeze. The searches modeled rest and W as
+  atoms for tractability, and the tractability choice was the entire content of the negative.
+  Bounded evidence anesthetizes (Stage 98's lesson); MODELED evidence can simply be about the
+  model.
+- The member-dynamics calculus is the stage's real yield: an interrogation is a word-rewriting
+  process over spine members with exactly one reorder move (passenger-back), one supply move
+  (prefix flatten), and one terminator (atom heads). The opaque bound falls out in four lines of
+  reasoning. The structured question becomes: can a compound member, riding backward as a
+  passenger, unpack usefully after the freeze — and the answer is visibly yes-in-principle
+  (component-internal reduction continues); what needs building is the choreography.
+- Humility ledger: Stage 110's 'wall, mapped' was half right. The wall is real in the opaque
+  regime; the map drew it across a road it does not cross. I recorded the conjecture with
+  correct stakes but overbroad scope — the census caveat culture (leftmost-only, bounded, now
+  MODELED) gains a third entry.
+- Ranking: (1) **the structured cell, by hand**: use the member calculus to choreograph
+  [β₁, β₂, REST, W] with REST and W compound — riding W inside a compound passenger and
+  unpacking post-freeze via component reduction; deliverable is the cell or a precise statement
+  of what the choreography cannot do. (2) The program review (overdue; three goal-level results
+  pending). (3) C6, declined a ninety-ninth time.

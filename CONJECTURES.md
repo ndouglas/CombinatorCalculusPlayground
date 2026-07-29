@@ -4487,3 +4487,36 @@ tag driver outright. Either resolution is a headline.
 Proved this stage (`scRun_tail`, `scWrap_beta`, axiom-free): the pile state SHAPE is viable —
 tails ride the whole traversal untouched — and the one-fire acc-wrapper exists. The machinery is
 staged on both sides of the wall; only the wall is undecided.
+
+### Stage 111: the two regimes — the searches were sound for the model, unsound for the question
+
+The insertion-invariant attempt produced the right analysis and the wrong-way-around conclusion,
+in the best possible order: the analysis first. The member dynamics of an interrogation are
+exactly three facts: fires edit the machine-headed prefix; a fire's passenger steps backward past
+its `z` (the ONLY reordering primitive); and — the anchor, now formalized — when an atom reaches
+the head, THE SPINE FREEZES (`scv_varHead2_step`, axiom-free, pinned): no root fire applies to a
+variable-headed term, so its member sequence is permanent and only component-internal reduction
+continues. Together with atoms-never-nest, this PROVES the searched statement in the model the
+searches used: with `rest` and `W` opaque, nothing is ever behind the last atom until the final
+fire, whose single passenger is the only literal that can land there. Stage 110's triple negative
+is structural — the opaque bound is a fact, not a search horizon.
+
+But the model was wrong for the question. The REAL `rest` is the next cell and the REAL `W` is a
+wrapper — both C-HEADED COMPOUNDS. A compound in head position does not freeze; it fires. The
+whole freeze-driven bound evaporates for structured components, and with it the impossibility
+reading of Stage 110: a real cell may use its stored components' own firing structure as
+machinery — the cell and its contents can CONSPIRE. Mid-spine insertion splits:
+
+- **Opaque insertion: CLOSED, negative, explained** — at most one opaque literal behind the last
+  atom, the final passenger.
+- **Structured insertion: REOPENED** — the target `[β₁, β₂, rest, W]` with `rest`, `W` compound
+  is not covered by any search run so far (they modeled both as atoms), and the weave the member
+  dynamics permit (literals hiding inside compounds, unpacking at head position after riding
+  backward) is exactly what the opaque model forbids.
+
+The corrected frontier for SK ≤ `{S,C}`'s constructive half: hand-construct the structured cell —
+the search space is wrong-shaped for brute force, but the member-dynamics calculus developed
+here is the right tool for composition — or show the structured regime inherits the opaque
+bound. The stakes are unchanged (a working cell completes the tag driver; a bound caps hosting),
+but the odds moved toward construction: the freeze was the only obstruction mechanism found, and
+real cells are exempt from it.
