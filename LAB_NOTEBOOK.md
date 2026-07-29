@@ -4615,3 +4615,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   D applied to enc(state) performs read-cons-advance with D regenerated — the last obligation
   of the hosting skeleton. (2) The program review (two goal-level results pending). (3) C6,
   declined a ninety-seventh time.
+
+## 2026-07-28 — Stage 110: the wall, mapped
+
+- The stage aimed at the last obligation and instead named the last problem. Three searches,
+  three protocols, all negative — and negatives with a common shape: the fires edit the front of
+  the spine, passengers move material back one position per fire, and nothing tried gets a stored
+  literal to land BEHIND runtime arguments that arrived after it. The design space kept
+  collapsing to the same wall from different directions (element-creation, outward growth,
+  garnish duplication), which is usually the sign of a real invariant rather than a missing
+  trick.
+- The pile protocol itself is the stage's positive design yield: LIFO piling composed with LIFO
+  folding gives FIFO — the two reversals cancel — so the tag queue's order is FREE if insertion
+  works. The entire SK <= {S,C} constructive program is now one question wide: is mid-spine
+  insertion possible? The question is concrete, census-bounded from below, and shaped like the
+  program's other impossibility theorems (a spine-dynamics invariant, provable by the
+  genealogy/shape methods of Stages 87-101 if true).
+- Meta-note for the eventual writeup: this thread's last six stages alternately produced
+  five-leaf miracles and named walls, and the difference was never effort — it was whether the
+  design need aligned with what fires naturally do. The calculus has exactly three moves
+  (prefix-edit, passenger-step, z-nest) and the surviving architecture uses all three and asks
+  for nothing else. Mid-spine insertion asks for a fourth move. That is the cleanest statement
+  of why I now suspect the conjecture is TRUE.
+- Ranking: (1) **the insertion invariant**: attempt the proof — formalize spine positions and
+  show stored literals cannot cross runtime arrivals; the genealogy toolkit applies; a proof
+  caps {S,C} hosting and is a program headline. (2) The program review (three goal-level
+  results now pending). (3) C6, declined a ninety-eighth time.

@@ -4452,3 +4452,38 @@ one-tag-step theorem is driver REGENERATION only: the orchestration (route `p` t
 `rest` to a re-interrogation) plus the scDup transposition (the driver duplicates a spare
 arriving in the accumulator pair, never itself). The hosting thread's obligations have gone from
 five (Stage 104) to one.
+
+### Stage 110: the mid-spine insertion obstruction
+
+The driver-assembly probe found the wall instead of the gadget — and mapping a wall precisely is
+the arc's second-best outcome. The pile protocol crystallized first, and it is a genuine
+simplification: state = `word ⋅ A ⋅ A ⋅ W₁ ⋯ Wₖ ⋅ acc`, with each step's production-wrapper
+piling just behind the arms, and the queue ORDER works out — the pile accumulates LIFO and the
+flip-phase fold is LIFO, and LIFO ∘ LIFO = FIFO. Everything about the tag driver then reduces to
+ONE gadget: a cell delivering `[β₁, β₂, rest, W]`, i.e. its stored wrapper landing BEHIND the
+later-arriving runtime arguments. That gadget is census-dead:
+
+- fused 4-slot cell: none to 9 leaves (general search), none to 12 (C-only);
+- the alternate order `[β₁, β₂, W, rest]`: none to 11;
+- the 3-argument arm `A o W r ⟶* r o o W`: none to 8.
+
+And the architectural alternatives each hit a named wall: applying wrappers to the accumulator
+needs ELEMENT-CREATION (fire results make prefixes, not elements — only passengers are intact
+elements, and passengers must pre-exist); onion encodings need OUTWARD GROWTH (a subterm cannot
+wrap its own context); garnished arms DUPLICATE the garnish. The pattern behind all of it:
+**every proved gadget edits the spine only at its front, and the passenger mechanism steps
+material backward by exactly one fire-relative position** — so machine-literals stored early
+cannot land arbitrarily deep behind runtime arguments that arrive later.
+
+**CONJECTURE (mid-spine insertion).** No `{S,C}` cell machine can deliver `[β₁, β₂, rest, W]`
+from a two-argument interrogation — more generally, spine positions strictly between the active
+prefix and the riding tail are unreachable for stored literals. STAKES: if TRUE, the pile
+protocol dies, and with it (given the other walls) plausibly every queue-growing architecture —
+`{S,C}` hosting would cap near tail-machine strength, making "K is for unbounded queues" the
+sharpest separation of the program and a major negative half of SK ≤ `{S,C}`. If FALSE, the
+witnessing gadget (12–20 leaves, beyond blind search — hand composition required) completes the
+tag driver outright. Either resolution is a headline.
+
+Proved this stage (`scRun_tail`, `scWrap_beta`, axiom-free): the pile state SHAPE is viable —
+tails ride the whole traversal untouched — and the one-fire acc-wrapper exists. The machinery is
+staged on both sides of the wall; only the wall is undecided.
