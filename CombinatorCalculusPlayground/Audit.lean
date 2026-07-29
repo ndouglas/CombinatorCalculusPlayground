@@ -178,3 +178,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scPCell_step_acc' does not depend on any axioms -/
 #guard_msgs in #print axioms scPCell_step_acc
+
+/-- info: 'scCons_beta' does not depend on any axioms -/
+#guard_msgs in #print axioms scCons_beta

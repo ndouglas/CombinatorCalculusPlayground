@@ -3461,3 +3461,70 @@ theorem scPCell_normal (p rest : SCTerm)
         exact hr ⟨X₃', by rw [m4]; exact hst3⟩
   · injection j1 with j3 j4
     exact hp ⟨X', by rw [j4]; exact hst⟩
+
+-- ## Stage 109: runtime cons — the accumulator is writable
+-- The driver's first named obligation, closed. Consing a production onto the accumulator at
+-- runtime looked blocked by the bare-assembly problem (fire results carry passengers), but a
+-- four-fire chain threads the passengers so each lands exactly where the next fire needs it:
+-- `scCons q ⋅ acc ⟶* (C q) acc`, bare, no junk. The produced cell `(C q) acc` has its own
+-- one-fire interrogation protocol — `(C q acc) D ⟶ (q D) acc` — so the accumulator built this
+-- way is itself a consumable word (in reversed, two-stack-queue order; the reversal pass is a
+-- later traversal). With cons closed, the driver's only remaining obligation is regeneration.
+
+/-- The cons engine: `C (C C) C`. -/
+def scConsA : SCTerm := .app (.app .C (.app .C .C)) .C
+
+/-- The cons gadget for payload `q`. -/
+def scCons (q : SCTerm) : SCTerm := .app (.app .C scConsA) q
+
+/-- **Runtime cons**: `scCons q ⋅ acc ⟶* (C q) acc` — four C-fires, no residue. -/
+theorem scCons_beta (q acc : SCTerm) :
+    RS.SC.Steps (.app (scCons q) acc) (.app (.app .C q) acc) :=
+  RS.Steps.tail (SCStep.C_red scConsA q acc)
+    (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C .C) .C acc))
+      (RS.Steps.tail (SCStep.appL (SCStep.C_red .C acc .C))
+        (RS.Steps.tail (SCStep.C_red .C acc q) (@RS.Steps.refl RS.SC _))))
+
+/-- The produced cell's interrogation: `(C q acc) ⋅ D ⟶ (q D) acc`. -/
+theorem scQCell_step (q acc D : SCTerm) :
+    RS.SC.Steps (.app (.app (.app .C q) acc) D) (.app (.app q D) acc) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.C_red q acc D)
+
+/-- `C X` is normal when `X` is. -/
+theorem scNormal_C1 {X : SCTerm} (hX : ¬ ∃ u, SCStep X u) :
+    ¬ ∃ u, SCStep (.app .C X) u := by
+  rintro ⟨u, h⟩
+  rcases scStep_cases h with hroot | ⟨F, Y, F', j1, j2, hst⟩ | ⟨F, Y, Y', j1, j2, hst⟩
+  · rcases scRootStep_inv hroot with ⟨a, b, c, hb, _⟩ | ⟨a, b, c, hb, _⟩
+    · injection hb with h1 h2
+      exact SCTerm.noConfusion h1
+    · injection hb with h1 h2
+      exact SCTerm.noConfusion h1
+  · injection j1 with j3 j4
+    obtain ⟨a, b, hab⟩ := scStep_source_isApp hst
+    rw [← j3] at hab
+    exact SCTerm.noConfusion hab
+  · injection j1 with j3 j4
+    exact hX ⟨Y', by rw [j4]; exact hst⟩
+
+/-- `C X Y` is normal when `X` and `Y` are. -/
+theorem scNormal_C2 {X Y : SCTerm} (hX : ¬ ∃ u, SCStep X u) (hY : ¬ ∃ u, SCStep Y u) :
+    ¬ ∃ u, SCStep (.app (.app .C X) Y) u := by
+  rintro ⟨u, h⟩
+  rcases scStep_cases h with hroot | ⟨F, Z, F', j1, j2, hst⟩ | ⟨F, Z, Z', j1, j2, hst⟩
+  · rcases scRootStep_inv hroot with ⟨a, b, c, hb, _⟩ | ⟨a, b, c, hb, _⟩
+    · injection hb with h1 h2
+      injection h1 with h3 h4
+      exact SCTerm.noConfusion h3
+    · injection hb with h1 h2
+      injection h1 with h3 h4
+      exact SCTerm.noConfusion h3
+  · injection j1 with j3 j4
+    exact scNormal_C1 hX ⟨F', by rw [j3]; exact hst⟩
+  · injection j1 with j3 j4
+    exact hY ⟨Z', by rw [j4]; exact hst⟩
+
+/-- The cons gadget is storable. -/
+theorem scCons_normal (q : SCTerm) (hq : ¬ ∃ u, SCStep q u) :
+    ¬ ∃ u, SCStep (scCons q) u :=
+  scNormal_C2 (scNormal_C2 scTag_normal.2 scTag_normal.1) hq
