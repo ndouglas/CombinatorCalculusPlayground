@@ -3553,3 +3553,29 @@ theorem scRun_tail (E X : SCTerm) (w : List Bool) :
 theorem scWrap_beta (p j acc : SCTerm) :
     RS.SC.Steps (.app (.app (.app .C p) j) acc) (.app (.app p acc) j) :=
   @RS.Steps.single RS.SC _ _ (SCStep.C_red p j acc)
+
+-- ## Stage 111: the two regimes — opaque literals freeze, compound cells fire
+-- The insertion-invariant attempt, and a correction to Stage 110. The member dynamics of an
+-- interrogation are exactly: fires edit the machine-headed prefix; a fire's passenger steps
+-- backward past its z; ATOMS NEVER NEST into compound elements; and when an atom reaches the
+-- head, THE SPINE FREEZES — only component-internal reduction remains (formalized below at the
+-- exemplar arity). Consequences: in the OPAQUE model (rest and W as atoms), at most one stored
+-- literal can land behind the last atom — the final fire's own passenger — so Stage 110's
+-- searched negatives are STRUCTURAL, not evidence gaps. But the real `rest` and `W` are
+-- C-HEADED COMPOUNDS: in head position they fire on, so the freeze that drives the opaque bound
+-- does not apply to them. The mid-spine insertion question is therefore TWO questions: opaque
+-- insertion (closed, negative, explained) and structured insertion (REOPENED — the real cell
+-- may exploit its own components' structure). The corrected frontier goes to the ledger.
+
+/-- **The freeze**: a variable-headed term steps only componentwise — no root fire can touch it,
+so its spine shape is permanent. (Exemplar at two arguments; the argument is uniform.) -/
+theorem scv_varHead2_step {i : Nat} {a b u : SCV}
+    (h : SCVStep (.app (.app (.var i) a) b) u) :
+    (∃ a', u = .app (.app (.var i) a') b ∧ SCVStep a a')
+    ∨ (∃ b', u = .app (.app (.var i) a) b' ∧ SCVStep b b') := by
+  cases h with
+  | appL h2 =>
+      cases h2 with
+      | appL h3 => cases h3
+      | appR h3 => exact Or.inl ⟨_, rfl, h3⟩
+  | appR h2 => exact Or.inr ⟨_, rfl, h2⟩
