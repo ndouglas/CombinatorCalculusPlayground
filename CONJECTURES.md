@@ -4423,3 +4423,32 @@ is again available to absorb); (b) driver regeneration — and the scDup transpo
 the driver duplicates an ARRIVING spare carried in the accumulator pair, never itself. Neither
 has an identified obstruction; both are the same genre as the five compositions that closed
 Stages 104–107.
+
+### Stage 109: runtime cons — the accumulator is writable
+
+The driver's first obligation, closed. The bare-assembly problem (every fire result glues a
+passenger) had made runtime data construction look blocked since Stage 102; the resolution is a
+four-fire chain where each passenger lands exactly where the next fire needs it:
+
+| | |
+|---|---|
+| `scConsA := C (C C) C` | the cons engine |
+| `scCons q := C scConsA q` | the gadget for payload `q` — storable (`scCons_normal`) |
+| **`scCons_beta`** | **`scCons q ⋅ acc ⟶* (C q) acc` — bare, four C-fires, zero residue** — pinned |
+| `scQCell_step` | the produced cell's interrogation: `(C q acc) ⋅ D ⟶ (q D) acc` |
+| `scNormal_C1`/`C2` | reusable normality helpers |
+
+The fire-by-fire anatomy, because it is the arc's thesis in miniature: fire one nests `acc` under
+the engine with `q` riding as passenger; fires two and three thread the engine's own two `C`s
+into head and trailing position; fire four assembles the cell with `q` as the final
+passenger-turned-payload. Four passengers, four jobs, nothing wasted — the same
+waste-is-input principle that produced the recycling arm and the accumulator slot.
+
+Design consequences: the accumulator built by front-consing is itself a consumable word — its
+cells `(C q) acc` have a one-fire interrogation — stored in REVERSED order, which is the
+two-stack queue representation: when the front word exhausts, a reversal pass (another traversal,
+same machinery) turns the accumulator into the next front. The remaining obligation for a
+one-tag-step theorem is driver REGENERATION only: the orchestration (route `p` to a cons, route
+`rest` to a re-interrogation) plus the scDup transposition (the driver duplicates a spare
+arriving in the accumulator pair, never itself). The hosting thread's obligations have gone from
+five (Stage 104) to one.

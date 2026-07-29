@@ -4590,3 +4590,28 @@ what automation could and couldn't do. This file is a first-class deliverable
   theorem: D applied to an encoded tag state performs read-append-advance; if it closes, a full
   tag simulation into {S,C} is assembly. (2) The program review (two goal-level results now
   pending it). (3) C6, declined a ninety-sixth time.
+
+## 2026-07-28 — Stage 109: four passengers, four jobs
+
+- Runtime cons closed in four fires, and the proof of concept for the arc's design principle is
+  now complete at every scale: in a non-erasing calculus, a construction works exactly when every
+  forced passenger has a job. The cons chain's four passengers each land where the next fire
+  needs them; when I tried to design AROUND the passengers (the Stage 105 gadget search, the
+  bare-assembly complaints of Stages 102 and 108), the calculus said no; when the passengers are
+  the design, five-leaf and seven-leaf gadgets fall out.
+- The produced cells (C q acc) differ in shape from the scPCell chain the front word uses — two
+  cell species, each with a one-or-two-fire protocol, convertible by traversal. The two-stack
+  queue is the natural {S,C} representation of a tag queue: front word consumed cell-by-cell,
+  back word accumulated in reverse by scCons, reversal by a dedicated traversal pass when the
+  front exhausts. All three phases now have their gadgets; what none of them has is a driver
+  that survives more than a bounded number of steps.
+- Obligation count: five (Stage 104) -> one. The regeneration problem is unchanged in statement
+  (duplicate an arriving spare, never yourself) but the arena is now fully concrete: the driver
+  receives (p, rest, acc); acc can carry a pack; scDup-style S-fires can copy the pack; the
+  orchestration must route four things with the usual passenger discipline. It is an assembly
+  problem with a known trick, not an open problem with an unknown shape.
+- Ranking: (1) **the driver assembly**: build D with fuel-free regeneration via the pack-in-
+  accumulator transposition; deliverable is the one-tag-step theorem
+  D applied to enc(state) performs read-cons-advance with D regenerated — the last obligation
+  of the hosting skeleton. (2) The program review (two goal-level results pending). (3) C6,
+  declined a ninety-seventh time.
