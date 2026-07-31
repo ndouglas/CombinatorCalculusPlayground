@@ -4667,3 +4667,26 @@ what automation could and couldn't do. This file is a first-class deliverable
   unpacking post-freeze via component reduction; deliverable is the cell or a precise statement
   of what the choreography cannot do. (2) The program review (overdue; three goal-level results
   pending). (3) C6, declined a ninety-ninth time.
+
+## 2026-07-31 — Stage 112: the wall had a door
+
+- The construction took one sitting and two fires, and the searches could never have found it:
+  they modeled the arms as opaque atoms, and the entire trick is that the arms are NOT opaque —
+  they are known constants, so the cell can carry a fresh copy and never route the arriving ones
+  at all. Stage 110 mapped a real wall; Stage 111 proved which side of it the real system lives
+  on; today walked through. The three stages together are the cleanest specimen yet of the
+  program's central method: model, prove the model's bound, locate the model's edge, construct
+  past it.
+- scTCell is the fourth reading of the same seven-leaf idiom (C (C X Y) Z shapes): rotator,
+  recycling arm, production cell, traversal cell. The {S,C} machine shop is one C-idiom and one
+  S-idiom (scDup) deep, which by now I believe is not poverty but the actual grain of the
+  calculus: two-argument C-partials are the universal joint.
+- The pile pattern [W, scDup] per step — production wrapper plus one spare-arm junk — is the
+  first place the design ACCEPTS permanent junk rather than recycling it, and it is legal
+  because the junk is deterministic: enc remains a function of the source state. Non-erasure
+  does not forbid waste; it forbids UNACCOUNTED waste.
+- Ranking: (1) **the fold phase**: design the end marker that consumes the pile (known
+  alternating pattern, one-fire wrappers) and produces the next front word — the last
+  engineering between here and a genuine tag Simulation into {S,C}. (2) The program review
+  (now four goal-level results pending — overdue by its own rule). (3) C6, declined a
+  hundredth time.

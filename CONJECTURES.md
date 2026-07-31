@@ -4520,3 +4520,34 @@ here is the right tool for composition — or show the structured regime inherit
 bound. The stakes are unchanged (a working cell completes the tag driver; a bound caps hosting),
 but the odds moved toward construction: the freeze was the only obstruction mechanism found, and
 real cells are exempt from it.
+
+### Stage 112: the one-tag-step — the wall had a door, and the door was trivial
+
+The structured cell, hand-built in one sitting with Stage 111's member calculus — and it is
+SEVEN LEAVES plus contents, two fires, simpler than anything the searches were looking for:
+
+| | |
+|---|---|
+| `scTCell W rest := C (C rest scDup) W` | the production cell — normal over normal contents |
+| **`scTCell_step`** | **`scTCell W rest ⋅ A₁ ⋅ A₂ ⟶(2) rest ⋅ A₁ ⋅ scDup ⋅ W ⋅ A₂`** — pinned |
+| `scDup_normal` / `scTCell_normal` | storability |
+| **`scTWord_step`** | **THE ONE-TAG-STEP**: with `scDup` arms, interrogation READS the head cell, APPENDS its wrapper to the pile, ADVANCES with the arm pair regenerated — pinned |
+
+All axiom-free. The trick is exactly what the opaque model forbids and the real system provides:
+THE ARMS ARE CONSTANTS. The cell does not route the arriving arms around anything — it stores a
+fresh literal `scDup` and hands the next cell `(arriving-arm, fresh-arm)`, dropping its wrapper
+and the spare arriving arm into the pile. Nothing crosses, nothing freezes; the pile pattern per
+step is `[W, scDup]` — fixed, so `enc` remains a function of the source state.
+
+The three-stage arc in one line: Stage 110 proved the searches could not find the gadget;
+Stage 111 proved WHY (the opaque bound is real) and that the reason does not apply to real
+cells; Stage 112 built the gadget in the real regime. The mid-spine insertion question is now
+fully resolved: impossible for opaque literals, two fires for structured cells.
+
+What remains for a full tag Simulation into `{S,C}`: the FOLD phase — when the front word
+exhausts, the end marker must consume the pile `[W₁, scDup, W₂, scDup, …]` and produce the next
+front word. The pile is a known alternating pattern, the wrappers are one-fire appliers, and the
+end marker is an encoding-time machine: this is a traversal design of the same kind as
+everything since Stage 105, with named gadgets for every piece. After that: the tag Simulation
+assembles, and the question "does `{S,C}` host genuine tag systems?" — the constructive half of
+SK ≤ `{S,C}` — is within reach of ordinary stage work.
