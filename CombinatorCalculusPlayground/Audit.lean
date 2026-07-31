@@ -184,3 +184,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scv_varHead2_step' does not depend on any axioms -/
 #guard_msgs in #print axioms scv_varHead2_step
+
+/-- info: 'scTCell_step' does not depend on any axioms -/
+#guard_msgs in #print axioms scTCell_step
+
+/-- info: 'scTWord_step' does not depend on any axioms -/
+#guard_msgs in #print axioms scTWord_step

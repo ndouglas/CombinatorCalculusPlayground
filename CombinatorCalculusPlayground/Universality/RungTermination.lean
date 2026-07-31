@@ -3579,3 +3579,85 @@ theorem scv_varHead2_step {i : Nat} {a b u : SCV}
       | appL h3 => cases h3
       | appR h3 => exact Or.inl ⟨_, rfl, h3⟩
   | appR h2 => exact Or.inr ⟨_, rfl, h2⟩
+
+-- ## Stage 112: the one-tag-step — mid-spine insertion achieved, the driver closes
+-- The structured cell, hand-built with the member calculus, and simpler than anything the
+-- opaque searches could have seen. The trick the atom model forbids: THE ARMS ARE CONSTANTS.
+-- The cell stores a fresh literal arm and its production wrapper, and its two fires (i) hand the
+-- next cell the arriving first arm plus the FRESH arm, and (ii) drop the wrapper and the spare
+-- arriving arm into the pile — nothing crosses anything, nothing freezes, and the pile receives
+-- `[W, scDup-junk]` per step (a fixed pattern, so `enc` stays a function of the source state):
+--
+--     scTCell W rest ⋅ A₁ ⋅ A₂  ⟶(2 fires)  rest ⋅ A₁ ⋅ scDup ⋅ W ⋅ A₂
+--
+-- With both arms `scDup`, the invariant regenerates and the traversal READS the cell, APPENDS
+-- its production wrapper to the pile, and ADVANCES to the rest — the one-tag-step. The
+-- remaining engineering for a full tag Simulation is the FOLD phase (consume the pile at word
+-- exhaustion), which is a traversal of the same kind over a known cell pattern.
+
+/-- Production-carrying traversal cell: `C (C rest scDup) W`. -/
+def scTCell (W rest : SCTerm) : SCTerm :=
+  .app (.app .C (.app (.app .C rest) scDup)) W
+
+/-- **The cell step**: two fires deliver the next interrogation with a fresh arm, and drop the
+wrapper and the spare arriving arm behind it. -/
+theorem scTCell_step (W rest A₁ A₂ : SCTerm) :
+    RS.SC.Steps (.app (.app (scTCell W rest) A₁) A₂)
+      (.app (.app (.app (.app rest A₁) scDup) W) A₂) :=
+  RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .C rest) scDup) W A₁))
+    (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red rest scDup A₁)))
+      (@RS.Steps.refl RS.SC _))
+
+/-- `scDup` is normal — storable. -/
+theorem scDup_normal : ¬ ∃ u, SCStep scDup u := by
+  rintro ⟨u, h⟩
+  rcases scStep_cases h with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+  · rcases scRootStep_inv hroot with ⟨a, b, c, hb, _⟩ | ⟨a, b, c, hb, _⟩
+    · injection hb with h1 h2
+      injection h1 with h3 h4
+      exact SCTerm.noConfusion h3
+    · injection hb with h1 h2
+      injection h1 with h3 h4
+      exact SCTerm.noConfusion h3
+  · injection j1 with j3 j4
+    rcases scStep_cases (show SCStep (SCTerm.app .S (.app .C .C)) F' from by
+        rw [j3]; exact hst) with
+      hroot2 | ⟨F₂, X₂, F₂', l1, l2, hst2⟩ | ⟨F₂, X₂, X₂', l1, l2, hst2⟩
+    · rcases scRootStep_inv hroot2 with ⟨a, b, c, hb, _⟩ | ⟨a, b, c, hb, _⟩
+      · injection hb with h1 h2
+        exact SCTerm.noConfusion h1
+      · injection hb with h1 h2
+        exact SCTerm.noConfusion h1
+    · injection l1 with l3 l4
+      obtain ⟨a, b, hab⟩ := scStep_source_isApp hst2
+      rw [← l3] at hab
+      exact SCTerm.noConfusion hab
+    · injection l1 with l3 l4
+      exact scTag_normal.2 ⟨X₂', by
+        show SCStep (SCTerm.app .C .C) X₂'
+        rw [l4]
+        exact hst2⟩
+  · injection j1 with j3 j4
+    exact scTag_normal.2 ⟨X', by
+      show SCStep (SCTerm.app .C .C) X'
+      rw [j4]
+      exact hst⟩
+
+/-- Traversal cells are normal over normal contents — storable data. -/
+theorem scTCell_normal (W rest : SCTerm)
+    (hW : ¬ ∃ u, SCStep W u) (hr : ¬ ∃ u, SCStep rest u) :
+    ¬ ∃ u, SCStep (scTCell W rest) u :=
+  scNormal_C2 (scNormal_C2 hr scDup_normal) hW
+
+/-- Words of productions: each cell carries its symbol's wrapper. -/
+def scTWord (E : SCTerm) : List SCTerm → SCTerm
+  | [] => E
+  | W :: ws => scTCell W (scTWord E ws)
+
+/-- **THE ONE-TAG-STEP**: interrogating a production word with `scDup` arms READS the head cell,
+APPENDS its wrapper (and one spare arm) to the pile, and ADVANCES — with the arm pair
+regenerated. -/
+theorem scTWord_step (E W : SCTerm) (ws : List SCTerm) :
+    RS.SC.Steps (.app (.app (scTWord E (W :: ws)) scDup) scDup)
+      (.app (.app (.app (.app (scTWord E ws) scDup) scDup) W) scDup) :=
+  scTCell_step W (scTWord E ws) scDup scDup
