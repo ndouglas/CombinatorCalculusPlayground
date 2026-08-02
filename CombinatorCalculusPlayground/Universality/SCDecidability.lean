@@ -140,3 +140,47 @@ theorem scReachFrom_iff (n : Nat) (t u : SCTerm) :
 def scReachWithin_decidable (n : Nat) (t u : SCTerm) :
     Decidable (∃ k, k ≤ n ∧ RS.SC.StepsN k t u) :=
   decidable_of_iff _ (scReachFrom_iff n t u)
+
+-- ## Stage 122: S-count conservation, and the pairing deadlock
+-- Two yields. FORMAL: C-fires preserve the S-count exactly (they kill only their own C), so in
+-- the C-fragment (S-count, leaf-count) evolve as (constant, −1 per step) — sharpening Stage
+-- 117's conservation to a two-component invariant. ON PAPER (ledger): the member calculus now
+-- PROVES the arrival-order pairing impossibility by deadlock — for `s` to head the final term,
+-- both `a` and `b` must cross behind `s`, but a crossing's configuration `[C, machine, Y, s]`
+-- forces the other variable to already be behind `s` (it cannot hide in the machine slot: vars
+-- in argument position are bare, and var-headed members freeze wrong on unpacking) — so no
+-- crossing can be first. Formalizing the deadlock needs the member-position calculus as a Lean
+-- structure; the supporting laws land now.
+
+/-- Count the `S` leaves. -/
+def SCTerm.countS : SCTerm → Nat
+  | .S => 1
+  | .C => 0
+  | .app f x => f.countS + x.countS
+
+/-- C-fires preserve the S-count exactly. -/
+theorem scStepC_countS {t u : SCTerm} (h : SCStepC t u) :
+    u.countS = t.countS := by
+  induction h with
+  | C_red x y z =>
+      show (x.countS + z.countS) + y.countS = ((0 + x.countS) + y.countS) + z.countS
+      omega
+  | appL h ih =>
+      show _ + _ = _ + _
+      omega
+  | appR h ih =>
+      show _ + _ = _ + _
+      omega
+
+/-- The C-fragment's two-component invariant: S-count constant, leaf count down one per step. -/
+theorem scStepsC_invariant : ∀ {n : Nat} {t u : SCTerm}, RS.SCC.StepsN n t u →
+    u.countS = t.countS ∧ n + u.leafCount = t.leafCount := by
+  intro n t u h
+  exact ⟨by
+    refine h.rec (motive := fun n t u _ =>
+        SCTerm.countS u = SCTerm.countS t) ?_ ?_
+    · intro a
+      rfl
+    · intro m a b c s rest ih
+      rw [ih, scStepC_countS s],
+    scStepsC_conservation h⟩
