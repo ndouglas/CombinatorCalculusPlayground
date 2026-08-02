@@ -530,9 +530,16 @@ transport (Stage 116, `Simulation.steps_iff` + `Simulation.transferDecidable`,
 axiom-free): reachability is equivalent across a Simulation, so deciding the
 host decides the source — a Simulation of SK into a reachability-decidable
 host would decide SK-reachability (undecidable, external). Decidability of
-`{S,C}` would therefore close the negative half at the Simulation class; the
-one-way-flow law and the pushdown shape are evidence toward it, S-duplication
-of compound members the muddying factor. Stage 115
+`{S,C}` would therefore close the negative half at the Simulation class. The
+C-FRAGMENT is settled (Stage 117, `scStepsC_conservation`, `SCC_acyclic`,
+pinned): every C-fire loses exactly one leaf, so the fragment obeys EXACT
+CONSERVATION (a length-`n` path loses exactly `n` leaves), terminates, is
+acyclic (every full-system cycle fires an S — the dual of `scSOnly_acyclic`,
+closing the fragment square), and has finite reachable sets (fragment
+reachability decidable in principle). The dichotomy
+(`scStep_leafCount_dichotomy`) pins the escape: the non-decreasing steps are
+exactly the S-fires. Full-`{S,C}` decidability = whether S-fires can be
+accounted. Stage 115
 also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
 S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
 Negative standing results shaping any route: arm-level differentiation

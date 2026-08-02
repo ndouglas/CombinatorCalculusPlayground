@@ -4786,3 +4786,28 @@ what automation could and couldn't do. This file is a first-class deliverable
   exactly where S-duplication of compounds escapes it — the deliverable is the fragment
   decidability theorem plus the named escape, which together locate {S,C} in the hierarchy.
   (2) The pairing impossibility. (3) C6, declined a hundred-and-fourth time.
+
+## 2026-08-02 — Stage 117: the fragment square
+
+- Exact conservation was sitting one `omega` away this whole time: C-fires lose their own leaf
+  and nothing else, so the C-fragment's paths are metered — length-n path, n leaves gone. The
+  square (S-only acyclic needs-C; C-only acyclic needs-S) is aesthetically what the ladder's
+  rung-3 verdict demanded: {S,C}'s power is a genuinely joint effect, and the witness cycles
+  spend S-material against C-arrangement in exact balance. I checked the h-cycle's books: one
+  S-fire at +2, two C-fires at −2, per lap. The cycle is a balanced budget.
+- The probe's deliverable narrowed the decidability question to one sentence: can S-fires be
+  accounted? The fragment below them is finite; the duplication above them is the only source
+  of unboundedness; and the member calculus already constrains WHAT gets duplicated (intact
+  elements, genetically closed). The question has the shape of the rung-3 endgame — necessary
+  conditions accumulating around an object that is either tameable or a witness — and I said
+  last stage I had no prediction; the conservation law nudges me toward 'the accounting is
+  possible in the interrogation fragment and fails in general,' which would split the answer
+  the way Stage 111 split insertion.
+- Formal note: one build failure, the Carrier dot-notation pothole in a motive — the same
+  pothole as Stages 87, 93, 96. It is the only error this stage and it has a fixed two-second
+  fix; the toolkit has made even the mistakes routine.
+- Ranking: (1) **S-fire accounting in the interrogation fragment**: the interrogation dynamics
+  duplicate only MEMBERS (scDup copies the parked arm); probe whether member-duplication keeps
+  interrogation reachability decidable (the state space is member-sequences over a finite
+  gadget alphabet with copy — a well-structured-transition-systems question). (2) The pairing
+  impossibility. (3) C6, declined a hundred-and-fifth time.

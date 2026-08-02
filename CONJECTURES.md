@@ -4689,3 +4689,34 @@ pushdown move — the honest frame for `{S,C}`-reduction is the process-rewrite-
 the question is genuine research. Either answer is a program headline: decidable ⇒ SK has no
 Simulation into `{S,C}` and "K buys undecidability"; undecidable ⇒ the proof itself will exhibit
 the computational power the hosting thread was hunting.
+
+### Stage 117: exact conservation — the fragment square closes
+
+The decidability probe's first slice, and the cleanest fragment theorem of the program: **every
+C-fire loses exactly one leaf** — its own fired `C`, nothing else — so the C-fragment obeys
+exact conservation, and everything follows by arithmetic:
+
+| | |
+|---|---|
+| `SCStepC` / `RS.SCC` | the C-fragment: `{S,C}` without S-fires; includes into the full system |
+| **`scStepsC_conservation`** | **a fragment path of length `n` loses exactly `n` leaves** — pinned |
+| `scStepsC_length_lt` | the fragment terminates: paths shorter than the starting leaf count |
+| **`SCC_acyclic`** | **the fragment is acyclic: every full-system cycle fires an S** — pinned |
+| `scStep_leafCount_dichotomy` | every step loses exactly one leaf or is non-decreasing; the non-decreasing steps are exactly the S-fires |
+
+This closes the FRAGMENT SQUARE: the S-only fragment was acyclic (cycles need C — Stage 27-era),
+and now the C-only fragment is acyclic (cycles need S). Neither combinator alone loops; the
+loop, like everything else unbounded in `{S,C}`, is a JOINT effect — S supplies material
+(duplication), C supplies arrangement (permutation), and the witness cycles spend them in exact
+balance (the h-cycle: one S-fire's +2 against two C-fires' −2).
+
+The location statement for the decidability question: C-fragment reachable sets are finite
+(strictly decreasing leaf count, finite branching), so fragment reachability is decidable in
+principle — the enumerator is Stage 49–58-genre engineering, unbuilt. Everything beyond finite —
+cycles, unbounded traversal, the hosting machinery — lives in S-duplication. Full-`{S,C}`
+decidability is therefore exactly the question of ACCOUNTING S-FIRES: whether the material
+S-fires inject is structured enough (the member calculus says duplicated material enters as
+intact elements with genetically-closed contents) that reachability stays decidable, or whether
+duplication-of-compounds crosses into undecidable process-rewriting territory. That question is
+now stated with all its supporting laws machine-checked; it is the program's live frontier, and
+both answers remain headlines.
