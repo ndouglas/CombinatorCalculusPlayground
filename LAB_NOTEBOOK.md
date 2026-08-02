@@ -4968,3 +4968,25 @@ what automation could and couldn't do. This file is a first-class deliverable
   occurrence predicate, prove it invariant under scvStep, then close scv_no_pair on the funnel
   segment — possibly two stages' work; take the invariant first if the closure resists.
   (2) Bounded intermediates. (3) C6, declined a hundred-and-fifteenth time.
+
+## 2026-08-02 — Stage 128: the roads that go nowhere
+
+- The closure argument sharpened during design, BEFORE any Lean: with counts pinned at one,
+  no variable can ever nest — S-duplication breaks the count, head-nesting is Stuck (forever,
+  now a theorem), promotion freezes the head. So all three variables ride bare through the
+  whole path, and the deadlock reduces to pure member-order bookkeeping: the invariant "a and
+  b both sit ahead of s" is inductive because the only fire that breaks it needs both payload
+  variables in positions two and three — forcing a variable into position one, which is
+  promotion, which is dead. Stage 122's circular-crossing argument becomes a one-invariant
+  induction.
+- Verify-before-formalize did its job again: the trichotomy + invariant ran clean on 191k
+  reachable states (all machines ≤ 7 leaves) before a line of Lean was written.
+- Two build iterations (simp's Or-nesting in membership normal forms; a countVar unfold
+  needing rfl after rw). The Stuck preservation proof is eleven branches and none resisted —
+  the member-action characterization plus the hum-computation pattern is now a fully
+  debugged pipeline.
+- Ranking: (1) **the closure**: define `Ahead` (payload variables ahead of s in the member
+  list), prove the invariant step lemma (S-fire/C-fire/internal × where-s-sits, exporting
+  Stuck/var-head dead ends), lift to paths, evaluate at t₀ and C s b a — delivers
+  `scv_no_pair`, the arrival-order pairing impossibility, closing the question open since
+  Stage 103. (2) Bounded intermediates. (3) C6, declined a hundred-and-sixteenth time.

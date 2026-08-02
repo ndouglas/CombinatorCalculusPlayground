@@ -4858,3 +4858,18 @@ the root C-fire from `C s b a`. What remains for `scv_no_pair`: the continuation
 segment `(x s) y ⟶* C s b a` must move BOTH payload variables behind `s` while `s` itself
 returns to third-from-last position, and the positional invariant (bare vars, head exception)
 says the member traffic cannot do it. That is Stage 128's brick.
+
+### Stage 128: the dead ends
+
+The closure's supporting kit: `SCV.Stuck` (a variable heads the term or heads a compound
+member) with STUCKNESS IS FOREVER (`scv_stuck_step`/`scv_stuck_steps`, pinned `[propext]`) — a
+committed member never fires internally, never sheds arguments, and every root fire promotes,
+carries, appends to, or steps it in place. Since `C s b a` has head `C` and three bare-variable
+members, nothing stuck and nothing var-headed ever reaches it (`scv_stuck_no_pairPre`,
+`scv_varHead_no_pairPre`). Plus the exact root-S-fire count law with arbitrary tail
+(`scv_sfire_count`) — the duplication kill. The consequence (Stage 129's floor): on a
+count-preserving pairing path, every term is frozen, stuck, or has ALL THREE variables riding
+as bare top-level members — and the first two never reach the predecessor. Verified
+computationally before formalization: 191,115 reachable states, all machines to 7 leaves, zero
+violations of the trichotomy, and the ordering invariant (a, b ahead of s) held on every live
+state.
