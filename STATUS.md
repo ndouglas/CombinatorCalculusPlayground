@@ -14,15 +14,26 @@ inherited since Stage 0. As of Stage 76 this claim is **build-enforced**:
 `Audit.lean` pins the headline theorems' exact footprints with `#guard_msgs`,
 so any drift fails the build.
 
-At time of writing (Stage 114 review): 32 modules, ~843 theorems, ~439
-build-enforced `#guard`s plus 62 `#guard_msgs`-pinned axiom footprints, ~17,100
-lines of Lean. Since the Stage 97 review: the 3-cycle CLASSIFICATION became a
-theorem (Stage 101 — the program's first complete description of a cycle
-space), and the HOSTING THREAD (Stages 98–113, its own section below) built a
-machine-checked computation stack inside `{S,C}` — a calculus with no erasure,
-no identity, and no selectors — culminating in `tailInSC` (the first positive
-hosting certificate on any upper rung) and the ONE-TAG-STEP. The entire
-hosting stack is axiom-free.
+At time of writing (Stage 130 review): 36 modules, ~916 theorems, 371
+build-enforced `#guard`s plus 83 `#guard_msgs`-pinned axiom footprints, ~19,100
+lines of Lean, zero warnings. Since the Stage 114 review, one autonomous run
+(Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
+(confluence and unique normal forms transported from the SK Takahashi
+template; normal forms characterized; bounded reachability DECIDABLE with a
+verified successor function; exact C-fragment conservation; the two-sided
+speed limit) and the MEMBER CALCULUS made machine-checked theory
+(`SCMembers.lean`: the member-action characterization, count monotonicity and
+the squeeze, the crossing configuration, the last-variable invariant, the
+funnel, stuckness-is-forever) — culminating in **`scv_no_pair`** (Stage 129):
+ARRIVAL-ORDER PAIRING IS IMPOSSIBLE IN `{S,C}`, closing a conjecture open
+since Stage 103 and turning its census bound into a theorem at every machine
+size. That is the program's first standing conjecture closed from the hosting
+thread's negative side, and it hardens the interrogation wall: `{S,C}` hosts
+data, branching, and self-regenerating traversal, but no machine can
+reorder-and-apply its arguments selector-style. Earlier milestones (Stage 114
+review and before): the acyclicity ladder complete with the h-/w-cycle
+classification, the hosting stack through `tailInSC` and the one-tag-step
+(axiom-free throughout).
 
 ---
 
@@ -587,8 +598,8 @@ lengths, and `scReachWithin` would then decide `t ⟶* u` outright. Stage 115
 also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
 S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
 Negative standing results shaping any route: arm-level differentiation
-homogenizes, arrival-order pairing conjectured impossible (≤ 9), opaque
-mid-spine insertion impossible.
+homogenizes, arrival-order pairing IMPOSSIBLE (Stage 129, `scv_no_pair` —
+formerly a ≤ 9 census conjecture), opaque mid-spine insertion impossible.
 
 ## The open item — CLOSED (Stage 75)
 

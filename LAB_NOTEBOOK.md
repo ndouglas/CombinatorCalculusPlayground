@@ -5016,3 +5016,23 @@ what automation could and couldn't do. This file is a first-class deliverable
   (bounded intermediates, the fold/Simulation architecture question, C6's standing), refresh
   the headline numbers. (2) Bounded intermediates. (3) C6, declined a hundred-and-seventeenth
   time.
+
+## 2026-08-02 — Stage 130: the review
+
+- Reviewed per the Stage 114 rule (goal-level result → review within three stages; Stage 129
+  triggered, reviewed at +1). STATUS header rewritten with the run's two threads (decidability
+  kit, member calculus → deadlock); the stale "conjectured impossible (≤ 9)" line upgraded to
+  the theorem; numbers refreshed (36 modules / ~916 theorems / 83 pins / ~19.1k lines).
+- What the run says about method: every deep result came from formalizing the WORKING THEORY
+  (member positions) rather than the target directly; the two paper proof-sketches both
+  simplified under formalization (the crossing circularity dissolved into a promotion
+  observation). The prose theory is upstream of the Lean, but the Lean is upstream of the
+  truth.
+- Honest ledger: bounded intermediates has resisted two direct attempts (Stages 115, 122
+  pivots); it is the genuinely hard open question. The impossibility family is the cheap
+  harvest. The fold needs an architecture idea nobody has yet.
+- Ranking: (1) **the impossibility family**: generalize `scv_no_pair` across arrival orders
+  (the invariant never used payload order) and state the interrogation wall as a cluster —
+  target `scv_no_pair_swapped` (`¬ P a b s ⟶* s b a`) and the two-argument selector corollary
+  re-derived from `Ahead`, one stage. (2) Bounded intermediates. (3) C6, declined a
+  hundred-and-eighteenth time.

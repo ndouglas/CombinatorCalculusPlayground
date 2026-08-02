@@ -4891,3 +4891,21 @@ PRESERVATION alone kills duplication, and var-injectivity kills the two-payloads
 configurations. Stage 122's circular-crossing argument ("each crossing demands the other
 first") is subsumed: the formal invariant needed no circularity analysis at all, because the
 crossing configuration self-destructs by promotion. The assembly built first-try green.
+
+### Stage 130: program review (the Stage 114 rule, triggered by Stage 129)
+
+Numbers: 36 modules, ~916 theorems, 371 `#guard`s + 83 pinned footprints, ~19,100 lines, zero
+warnings, axiom budget `[propext, Quot.sound]` or less throughout, hosting stack still
+axiom-free. The autonomous run (119–129) held the conventions: every stage a feat+docs commit
+pair, every headline pinned, two self-corrections caught in-run (SCNF_iff pin, scvStep_members
+pin), verify-before-formalize used twice (191k-state trichotomy check; the census refresh).
+Goals 1–2 remain DONE; Goal 3 (pure-S decidability) remains closed positive; the `{S,C}`
+decidability frontier — bounded intermediates — is the standing open question inherited by the
+next arc. Thread re-ranking coming out of the review: (1) the IMPOSSIBILITY FAMILY — the
+`Ahead`/`Stuck` machinery is order-agnostic between payloads and should retire the other
+arrival orders and arity variants in one consolidation stage, completing the interrogation
+wall as a theorem cluster; (2) bounded intermediates; (3) the fold/Simulation architecture
+question stays parked (genetic closure); C6 stays declined. Meta-observation for Goal 4: five
+eleven-branch case analyses now ride one characterization theorem (`scvStep_members`), each
+landing in ≤ 2 build iterations — the calculus's proofs have become PLUMBING, which is the
+strongest evidence the abstraction is right.
