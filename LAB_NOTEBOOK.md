@@ -4887,3 +4887,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   bare-vars invariant with head exception — the infrastructure that formalizes the deadlock and
   likely the opaque-insertion bound too, retiring two proof-sketches at once. (2) Bounded
   intermediates (resumed). (3) C6, declined a hundred-and-tenth time.
+
+## 2026-08-02 — Stage 123: the theory takes the oath
+
+- The member calculus went from prose to Lean in one module and one build, because fifteen
+  stages of use had already debugged the statements. The characterization theorem's proof is the
+  three-constructor induction it should be — appL extends the tail, appR is the in-place case —
+  and the appList/recon plumbing is the whole cost. Pin-guessing note: twice this run the pin
+  direction surprised (one axiom-free that I guessed leaky, one [propext] I guessed free) — run
+  the audit BEFORE writing the pin, always.
+- Ranking: (1) **the crossing lemma**: from scvStep_members, derive the relative-order law —
+  two bare-var members swap only when they occupy positions three and four with the fire's
+  machinery ahead — the deadlock's engine. (2) The deadlock assembly. (3) C6, declined a
+  hundred-and-eleventh time.

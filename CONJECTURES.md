@@ -4796,3 +4796,13 @@ variable's crossing can be first: `s` never reaches the head, and `P a b s ⟶* 
 witness at any machine size. The census bound (Stage 103, ≤ 9 leaves) is thereby explained
 structurally, like every census bound this program has eventually caught up with. Formalizing
 the deadlock = formalizing member positions; named as the thread's next formalization target.
+
+### Stage 123: the member-position calculus, machine-checked
+
+`SCMembers.lean`: every term is its spine head applied to its member list (`SCV.recon`), and —
+the load-bearing theorem — `scvStep_members` (`[propext]`, pinned): every step is an S-fire on
+the first three members, a C-fire on the first three members, or one member stepping in place.
+Nothing else can happen. The prose theory that carried fifteen stages is now infrastructure; the
+crossing lemma, the bare-vars invariant, and the pairing deadlock are formalization targets
+sitting one theorem deep on this one. First-try green, whole module — the sign of a theory whose
+statements were forced by use before they were written down.
