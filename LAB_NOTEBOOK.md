@@ -4873,3 +4873,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   needing super-linear intermediates (S-towers that must inflate before deflating); a
   counterexample is likelier and would be the computational-depth witness. (2) The pairing
   impossibility. (3) C6, declined a hundred-and-ninth time.
+
+## 2026-08-02 — Stage 122: the deadlock
+
+- The bounded-intermediate hunt pivoted mid-sitting: working the member calculus for a
+  counterexample family kept producing the crossing-configuration lemma instead, and that lemma
+  is the pairing impossibility — the question that has been open since Stage 103. The deadlock
+  is three sentences once the invariants are laid out, which is how the good ones have all
+  looked. Four stages today (confluence, normal forms, bounded decidability, conservation +
+  deadlock); the autonomous cadence holds when each stage is either a template transport or a
+  one-lemma composition on mature theory.
+- Ranking: (1) **the member-position calculus in Lean**: spineMembers, the crossing lemma, the
+  bare-vars invariant with head exception — the infrastructure that formalizes the deadlock and
+  likely the opaque-insertion bound too, retiring two proof-sketches at once. (2) Bounded
+  intermediates (resumed). (3) C6, declined a hundred-and-tenth time.

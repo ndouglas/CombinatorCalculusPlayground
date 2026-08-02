@@ -4781,3 +4781,18 @@ procedure for any bounded region (121). Everything reduces to ONE question: are 
 on a `t ⟶* u` path boundable in `t` and `u`? A bound plus the shrink limit bounds path length,
 and `scReachWithin` decides reachability outright; a counterexample family is the first genuine
 computational-depth witness. This is the cleanest the frontier has ever been stated.
+
+### Stage 122: S-count conservation, and the pairing deadlock
+
+Formal: `scStepC_countS` (C-fires preserve the S-count exactly — they kill only their own `C`)
+and `scStepsC_invariant` (the C-fragment's two-component law: S-count constant, leaf count −1
+per step). Paper, upgrading Stage 103's conjecture to a proof-sketch at theorem confidence: the
+ARRIVAL-ORDER PAIRING DEADLOCK. Relative member order changes only by backward crossings
+(the member calculus's one reorder move); a crossing of `Y` behind `s` has configuration
+`[C, machine, Y, s]` — positions one through three fully occupied by the leaf `C`, a var-free
+machine member (vars in argument position are bare; var-headed members freeze wrong on
+unpacking), and `Y` itself — so the OTHER variable must already sit behind `s`. Neither
+variable's crossing can be first: `s` never reaches the head, and `P a b s ⟶* s a b` has no
+witness at any machine size. The census bound (Stage 103, ≤ 9 leaves) is thereby explained
+structurally, like every census bound this program has eventually caught up with. Formalizing
+the deadlock = formalizing member positions; named as the thread's next formalization target.
