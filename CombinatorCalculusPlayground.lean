@@ -30,3 +30,4 @@ import CombinatorCalculusPlayground.Universality.RungTermination
 import CombinatorCalculusPlayground.Audit
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
+import CombinatorCalculusPlayground.Universality.SCConfluence

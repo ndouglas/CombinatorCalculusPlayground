@@ -7,6 +7,7 @@
 -- `#guard_msgs`, so any future leak — in new code or old — fails the build.
 import CombinatorCalculusPlayground.TagGeneral
 import CombinatorCalculusPlayground.Universality.RungTermination
+import CombinatorCalculusPlayground.Universality.SCConfluence
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
 import CombinatorCalculusPlayground.Universality.OneRule
@@ -208,3 +209,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scSteps_growth_le' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scSteps_growth_le
+
+/-- info: 'SC_confluence' depends on axioms: [propext] -/
+#guard_msgs in #print axioms SC_confluence
+
+/-- info: 'sc_nf_unique' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_nf_unique
