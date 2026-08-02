@@ -523,11 +523,16 @@ last-position variable forces the three-member C-fire shape. Stage 126 lifted
 it to paths (`scv_lastVar_step`, `scv_lastVar_steps`, pinned): along any
 count-preserving reduction, a last-position variable RIDES THE TAIL until the
 one configuration that can consume it — handed back with its full sandwich
-(the path to it, the step out, the path onward). The pairing deadlock's
-engine and its path glue are theorems; what remains prose is the
-configuration's continuation analysis (the consumed variable's successor is
-headed by the old first member, and the other two variables have nowhere
-legal to live).
+(the path to it, the step out, the path onward). Stage 127 assembled THE
+FUNNEL (`scv_pair_funnel`, pinned, with `scv_varHead_frozen` — vars freeze at
+the head — and `scv_pair_pred` — the ONLY step into `s a b` is the root
+C-fire from `C s b a`): every pairing path `P a b s ⟶* s a b` threads the
+crossing configuration `C x y s` (`x` machine-headed, `s`-free on both
+members, payload variables split one-each across `x` and `y`) and then the
+canonical predecessor. The deadlock is one theorem wide: the funnel segment
+`(x s) y ⟶* C s b a` must cross both payload variables behind `s`, and the
+positional invariant (bare vars, head exception — still prose) says each
+crossing demands the other first.
 Non-erasure forbids UNACCOUNTED waste, not waste: every surviving gadget gives
 each forced passenger a job.
 

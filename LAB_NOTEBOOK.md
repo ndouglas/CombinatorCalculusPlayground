@@ -4943,3 +4943,28 @@ what automation could and couldn't do. This file is a first-class deliverable
   every placement either freezes the wrong head or leaves a variable homeless — delivers
   `scv_no_pair`, the arrival-order pairing impossibility. (2) Bounded intermediates. (3) C6,
   declined a hundred-and-fourteenth time.
+
+## 2026-08-02 — Stage 127: the needle, threaded
+
+- The funnel composes five Stage-121-through-126 pieces without one new induction over steps:
+  last-step peel (steps_last), predecessor inversion (one new lemma, the same nine-branch
+  skeleton for the third time), the last-variable invariant, the freeze, and the count
+  squeeze. The assembly-layer proofs are now cheaper than their statement blocks — the sign
+  the theory has reached its API.
+- Two recurring Lean footguns resurfaced and were dispatched from the catalogue: `rcases h :`
+  substitutes into the goal (branches want `rfl`, not `h`), and dotted constructors inside
+  `show`-ascribed list literals need qualification. One genuinely new: the defeq-ascription
+  trick (`have h' : <reduced type> := h`) carried every literal computation in the funnel —
+  no simp normalization fights at all.
+- Stage 126's lemmas were strengthened IN PLACE (the config's successor shape exported); the
+  amendment cost one conjunct in two proofs, and the funnel could not have been stated
+  without it. Amending last stage's statement beats deriving shape post-hoc from the fire.
+- The remaining gap is now exactly one theorem wide: on `(x s) y ⟶* C s b a`, both payload
+  variables must cross behind `s`, and each crossing's configuration demands the other
+  already crossed. The circularity is the deadlock; the formal handle is the positional
+  invariant (every variable occurrence is a bare member or a member head, preserved by all
+  three member-actions).
+- Ranking: (1) **the positional invariant + the closure**: define the bare-with-head-exception
+  occurrence predicate, prove it invariant under scvStep, then close scv_no_pair on the funnel
+  segment — possibly two stages' work; take the invariant first if the closure resists.
+  (2) Bounded intermediates. (3) C6, declined a hundred-and-fifteenth time.

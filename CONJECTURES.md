@@ -4842,3 +4842,19 @@ count kill carries over. The path lift threads `scvSteps_countVar_squeeze` at ev
 remains for the pairing impossibility: the continuation analysis — the consumed variable's
 successor is headed by the old first member, and the other two count-one variables have no legal
 home in a three-member C-spine.
+
+### Stage 127: the funnel
+
+The deadlock's skeleton is assembled: `scv_pair_funnel` (pinned) — every pairing path
+`P a b s ⟶* s a b` (machine `P` free of the three variables) threads the needle: it reaches the
+var-2 crossing configuration `C x y s`, fires it to `(x s) y`, continues to the CANONICAL
+PREDECESSOR `C s b a`, and fires that into the target. The configuration arrives counted out:
+`x` is machine-headed (`scv_varHead_frozen`, pinned `[propext]` — a variable at the spine head
+stays there forever, so a var-headed `x` could never reach the C-headed predecessor), neither
+`x` nor `y` contains `s`, and the two payload variables are split one-each across `x` and `y`.
+The predecessor is unique (`scv_pair_pred`, pinned): S-fires and member-internal steps would
+place an application among the target's all-variable members, so the only step into `s a b` is
+the root C-fire from `C s b a`. What remains for `scv_no_pair`: the continuation analysis — the
+segment `(x s) y ⟶* C s b a` must move BOTH payload variables behind `s` while `s` itself
+returns to third-from-last position, and the positional invariant (bare vars, head exception)
+says the member traffic cannot do it. That is Stage 128's brick.
