@@ -514,9 +514,14 @@ demotes a spare to accounted pile-junk).
 three moves — prefix-edit, passenger-step-back, z-nest — one terminator (an
 atom reaching the head freezes the spine), one permanence (the last member is
 immovable, so piles are LIFO by law; LIFO fold of LIFO pile restores FIFO).
-MACHINE-CHECKED as of Stage 123 (`SCMembers.lean`): `scvStep_members`, the
-member-action characterization — every step is an S-fire or C-fire on the
-first three members, or one member stepping in place.
+MACHINE-CHECKED as of Stages 123–125 (`SCMembers.lean`): `scvStep_members`
+(the member-action characterization — every step is an S-fire or C-fire on
+the first three members, or one member stepping in place), the count laws
+(`scvSteps_countVar_mono`, the squeeze), and `scv_cross_last` — THE CROSSING
+CONFIGURATION: on count-preserving steps, moving a member behind a
+last-position variable forces the three-member C-fire shape. The pairing
+deadlock's per-step engine is a theorem; only the path-level induction
+remains prose.
 Non-erasure forbids UNACCOUNTED waste, not waste: every surviving gadget gives
 each forced passenger a job.
 

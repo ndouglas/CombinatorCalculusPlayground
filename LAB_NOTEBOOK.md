@@ -4909,3 +4909,19 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **the crossing lemma on count-preserving paths** (the members-count bridge:
   countVar distributes over spineHead and members; then the three-member forced shape).
   (2) The deadlock assembly. (3) C6, declined a hundred-and-twelfth time.
+
+## 2026-08-02 — Stage 125: the engine, checked
+
+- The crossing lemma took six build iterations, all list algebra — reverse isn't definitional,
+  sum lemmas differ from Mathlib's names, simp closes constructor-clash goals by itself and
+  then the dead code errors. None of the iterations touched the MATHEMATICS: the nine-branch
+  structure survived from the paper argument unchanged, which is the real test of Stage 122's
+  proof. The un-reversed-space reformulation (msum_reverse) was the one genuine simplification
+  found during formalization.
+- Seven autonomous stages this run (119–125): confluence, normal forms, bounded decidability,
+  count laws, member calculus, crossing engine. The run's shape: three template transports,
+  then four stages of new theory whose statements had been debugged by fifteen stages of use.
+- Ranking: (1) **the deadlock assembly**: the path-level induction — iterate scv_cross_last
+  along a count-preserving reduction to show s never reaches the head; delivers the pairing
+  impossibility as a pinned theorem. (2) Bounded intermediates. (3) C6, declined a
+  hundred-and-thirteenth time.

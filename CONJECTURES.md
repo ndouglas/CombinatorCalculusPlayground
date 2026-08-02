@@ -4816,3 +4816,15 @@ preservation — the crossing lemma's hypothesis, derived not assumed). The stag
 own gap pre-prose: the S-fire CAN move a last-position variable by duplicating it, so the
 crossing configuration is forced only on count-preserving paths — the corrected lemma order is
 counts first, crossing second.
+
+### Stage 125: the crossing configuration, formalized
+
+The deadlock's engine is a theorem: `scv_cross_last` (pinned) — on a count-preserving step with
+count one, moving any member behind a last-position variable forces the source into exactly
+three members with head `C`, and the result's head is the old first member's head. Nine branches
+through the member-action characterization; the S-fire-duplicates-the-variable branch dies on
+direct counting, every second-occurrence branch on `two_vars_dead` (the count bridge), the
+internal branches on vars-don't-step and results-are-apps. The supporting kit (`appList` laws,
+count-sum algebra, the bridge) is the member calculus's standard library. Remaining for the full
+pairing impossibility: the path-level induction iterating this lemma to the `s`-headed target —
+prose at Stage 122 confidence, now with its hard step machine-checked.
