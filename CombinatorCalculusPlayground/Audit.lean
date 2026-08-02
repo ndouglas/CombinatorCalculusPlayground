@@ -268,3 +268,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scv_swap_reachable' does not depend on any axioms -/
 #guard_msgs in #print axioms scv_swap_reachable
+
+/-- info: 'sc_no_max_bound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_no_max_bound
+
+/-- info: 'scMt_steps' does not depend on any axioms -/
+#guard_msgs in #print axioms scMt_steps
+
+/-- info: 'RS.Steps.exists_le' depends on axioms: [propext] -/
+#guard_msgs in #print axioms RS.Steps.exists_le
