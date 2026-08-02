@@ -247,3 +247,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scv_pair_funnel' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scv_pair_funnel
+
+/-- info: 'scv_stuck_steps' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scv_stuck_steps
+
+/-- info: 'scv_stuck_no_pairPre' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scv_stuck_no_pairPre
+
+/-- info: 'scv_sfire_count' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scv_sfire_count

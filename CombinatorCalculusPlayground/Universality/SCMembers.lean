@@ -770,3 +770,175 @@ theorem scv_pair_funnel {P : SCV}
         split 1 (key 1 hc1 rfl)
       exact ⟨w, x, y, hw, hm, hh, hstep2, hv, hxh,
         by omega, by omega, by omega, by omega⟩
+
+-- ## Stage 128: the dead ends — Stuck, and the roads that never reach `C s b a`
+-- The closure's supporting trichotomy (verified computationally on 191k reachable states
+-- before formalization): on a count-preserving pairing path every term is var-HEADED (frozen —
+-- Stage 127), or STUCK (some compound member has a variable at its head: such a member can
+-- never fire internally, never sheds its arguments, and only ever promotes its variable to the
+-- term head — so stuckness is forever), or all three variables ride as bare top-level members.
+-- `C s b a` is neither frozen nor stuck, so paths through it live entirely in the third
+-- regime — where member order is governed by the root fires alone. Stage 129 closes there.
+
+/-- Variable `k` is committed: it heads the term, or it heads a COMPOUND member. Either way it
+can never again be a bare member of a C-headed spine. -/
+def SCV.Stuck (k : Nat) (t : SCV) : Prop :=
+  t.spineHead = .var k
+  ∨ ∃ m ∈ t.members, m.spineHead = .var k ∧ ∃ f a, m = .app f a
+
+/-- Counts distribute over an applied list. -/
+theorem SCV.countVar_appList (k : Nat) : ∀ (ms : List SCV) (f : SCV),
+    (SCV.appList f ms).countVar k = f.countVar k + (ms.map (SCV.countVar k)).sum := by
+  intro ms
+  induction ms with
+  | nil => intro f; simp [SCV.appList]
+  | cons m ms ih =>
+      intro f
+      show (SCV.appList (.app f m) ms).countVar k = _
+      rw [ih]
+      show (f.countVar k + m.countVar k) + (ms.map (SCV.countVar k)).sum
+        = f.countVar k + (m.countVar k + (ms.map (SCV.countVar k)).sum)
+      omega
+
+/-- The exact count law of a root S-fire: the third member's count is added, whatever the
+tail. -/
+theorem scv_sfire_count {k : Nat} {t u f g x : SCV} {T : List SCV}
+    (hh : t.spineHead = .S) (hm : t.members = f :: g :: x :: T)
+    (hu : u = SCV.appList (.app (.app f x) (.app g x)) T) :
+    u.countVar k = t.countVar k + x.countVar k := by
+  have ht := SCV.countVar_members k t
+  rw [hm, hh] at ht
+  have ht' : t.countVar k
+      = 0 + (f.countVar k + (g.countVar k + (x.countVar k
+        + (T.map (SCV.countVar k)).sum))) := ht
+  have hu' : u.countVar k
+      = ((f.countVar k + x.countVar k) + (g.countVar k + x.countVar k))
+        + (T.map (SCV.countVar k)).sum := by
+    rw [hu, SCV.countVar_appList]
+    rfl
+  omega
+
+/-- Stuckness is forever: one step. The committed member survives every fire — it is promoted
+(head case), carried, appended to, or stepped in place (head preserved, still an
+application). -/
+theorem scv_stuck_step {k : Nat} {t u : SCV} (h : SCVStep t u)
+    (hst : SCV.Stuck k t) : SCV.Stuck k u := by
+  rcases hst with hhead | ⟨m, hmem, hmh, f0, a0, hma⟩
+  · exact Or.inl (scv_varHead_step hhead h)
+  rcases scvStep_members h with ⟨f, g, x, T, hh, hm, hu⟩ | ⟨x, y, z, T, hh, hm, hu⟩
+    | ⟨pre, m₀, m₀', post, hs, hm, hh', hm'⟩
+  · -- S-fire
+    have hum : u.members = (f.members ++ [x, .app g x]) ++ T := by
+      rw [hu, SCV.appList_members]
+      show ((SCV.app f x).members ++ [SCV.app g x]) ++ T = _
+      show ((f.members ++ [x]) ++ [SCV.app g x]) ++ T = _
+      simp
+    rw [hm] at hmem
+    simp only [List.mem_cons] at hmem
+    rcases hmem with hmf | hmg | hmx | hmT
+    · -- m = f: promoted to the head
+      left
+      have hus : u.spineHead = f.spineHead := by
+        rw [hu, SCV.appList_spineHead]
+        rfl
+      rw [hus, ← hmf]
+      exact hmh
+    · -- m = g: rides inside the new member (g x), still at its head
+      right
+      refine ⟨.app g x, ?_, ?_, g, x, rfl⟩
+      · rw [hum]
+        simp
+      · show g.spineHead = _
+        rw [← hmg]
+        exact hmh
+    · -- m = x: still a member
+      right
+      refine ⟨m, ?_, hmh, f0, a0, hma⟩
+      rw [hum, hmx]
+      simp
+    · -- m ∈ T: still a member
+      right
+      refine ⟨m, ?_, hmh, f0, a0, hma⟩
+      rw [hum]
+      simp
+      exact Or.inr (Or.inr (Or.inr hmT))
+  · -- C-fire
+    have hum : u.members = (x.members ++ [z, y]) ++ T := by
+      rw [hu, SCV.appList_members]
+      show ((SCV.app x z).members ++ [y]) ++ T = _
+      show ((x.members ++ [z]) ++ [y]) ++ T = _
+      simp
+    rw [hm] at hmem
+    simp only [List.mem_cons] at hmem
+    rcases hmem with hmx | hmy | hmz | hmT
+    · left
+      have hus : u.spineHead = x.spineHead := by
+        rw [hu, SCV.appList_spineHead]
+        rfl
+      rw [hus, ← hmx]
+      exact hmh
+    · right
+      refine ⟨m, ?_, hmh, f0, a0, hma⟩
+      rw [hum, hmy]
+      simp
+    · right
+      refine ⟨m, ?_, hmh, f0, a0, hma⟩
+      rw [hum, hmz]
+      simp
+    · right
+      refine ⟨m, ?_, hmh, f0, a0, hma⟩
+      rw [hum]
+      simp
+      exact Or.inr (Or.inr (Or.inr hmT))
+  · -- member-internal
+    rw [hm] at hmem
+    simp only [List.mem_append, List.mem_cons] at hmem
+    rcases hmem with hpre | hm0 | hpost
+    · right
+      refine ⟨m, ?_, hmh, f0, a0, hma⟩
+      rw [hm']
+      simp
+      exact Or.inl hpre
+    · -- the committed member itself steps: head preserved, result still an application
+      right
+      obtain ⟨p, q, hpq⟩ := scvStep_result_isApp hs
+      rw [← hm0] at hs
+      refine ⟨m₀', ?_, scv_varHead_step hmh hs, p, q, hpq⟩
+      rw [hm']
+      simp
+    · right
+      refine ⟨m, ?_, hmh, f0, a0, hma⟩
+      rw [hm']
+      simp
+      exact Or.inr (Or.inr hpost)
+
+/-- Stuckness is forever, along paths. -/
+theorem scv_stuck_steps {k : Nat} : ∀ {t u : SCV}, RS.SCV.Steps t u →
+    SCV.Stuck k t → SCV.Stuck k u := by
+  intro t u h
+  refine h.rec (motive := fun a b _ => SCV.Stuck k a → SCV.Stuck k b) ?_ ?_
+  · intro a ha
+    exact ha
+  · intro a b c s _ ih ha
+    exact ih (scv_stuck_step s ha)
+
+/-- The canonical predecessor is not stuck for any variable: its head is `C` and its members
+are three bare variables. -/
+theorem scv_pairPre_not_stuck (k : Nat) : ¬ SCV.Stuck k SCV.pairPre := by
+  rintro (hhead | ⟨m, hmem, hmh, f0, a0, hma⟩)
+  · exact SCV.noConfusion (show SCV.C = SCV.var k from hhead)
+  · have hm3 : m ∈ ([.var 2, .var 1, .var 0] : List SCV) := hmem
+    simp at hm3
+    rcases hm3 with h | h | h <;> (subst h; exact SCV.noConfusion hma)
+
+/-- Nothing stuck ever reaches the canonical predecessor. -/
+theorem scv_stuck_no_pairPre {k : Nat} {t : SCV} (h : RS.SCV.Steps t SCV.pairPre) :
+    ¬ SCV.Stuck k t :=
+  fun hst => scv_pairPre_not_stuck k (scv_stuck_steps h hst)
+
+/-- Nothing var-headed ever reaches the canonical predecessor. -/
+theorem scv_varHead_no_pairPre {i : Nat} {t : SCV} (h : RS.SCV.Steps t SCV.pairPre) :
+    t.spineHead ≠ .var i := by
+  intro hh
+  have := scv_varHead_frozen h hh
+  exact SCV.noConfusion (show SCV.C = SCV.var i from this)
