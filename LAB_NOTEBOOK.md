@@ -4990,3 +4990,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   Stuck/var-head dead ends), lift to paths, evaluate at t₀ and C s b a — delivers
   `scv_no_pair`, the arrival-order pairing impossibility, closing the question open since
   Stage 103. (2) Bounded intermediates. (3) C6, declined a hundred-and-sixteenth time.
+
+## 2026-08-02 — Stage 129: the deadlock closes
+
+- The headline: `scv_no_pair`. A conjecture that survived twenty-six stages, a census, and
+  two paper proof-sketches is a pinned theorem, and the final form is SIMPLER than every
+  sketch: one list invariant, one promotion observation, no circularity argument. Stage 122's
+  "no crossing can be first" dissolved — the crossing configuration kills itself, because
+  putting both payloads ahead of `s` in a three-member fire zone forces one into the
+  promotion seat. The right invariant made the deadlock a case analysis.
+- Design lesson worth keeping: the count-1 hypotheses I carried through four stages of
+  planning were dead weight — preservation alone suffices, and injectivity does the rest.
+  The lemma got STRONGER by needing less; noticed only while writing the statement. Check
+  hypothesis necessity at statement time, not proof time.
+- The assembly (path lemma + final theorem) built FIRST TRY; the step lemma needed two
+  iterations (a rewrite direction, an Or-nesting). Eleven-branch case analyses through
+  scvStep_members are now routine plumbing: five in the file, all green within two builds.
+- The run so far (Stages 119–129, eleven autonomous stages): confluence, normal forms,
+  bounded decidability, conservation, member calculus, counts, crossing lemma, invariant,
+  funnel, dead ends, closure. Two standing conjectures retired (bounded-pairing census → 
+  theorem; the deadlock). GOAL-LEVEL RESULT: per the Stage 114 rule, a program review is due
+  within three stages.
+- Ranking: (1) **the program review** (Stage 114 rule: goal-level result → review within
+  three stages): re-read STATUS against the four spec goals, re-rank the open threads
+  (bounded intermediates, the fold/Simulation architecture question, C6's standing), refresh
+  the headline numbers. (2) Bounded intermediates. (3) C6, declined a hundred-and-seventeenth
+  time.

@@ -529,10 +529,19 @@ the head — and `scv_pair_pred` — the ONLY step into `s a b` is the root
 C-fire from `C s b a`): every pairing path `P a b s ⟶* s a b` threads the
 crossing configuration `C x y s` (`x` machine-headed, `s`-free on both
 members, payload variables split one-each across `x` and `y`) and then the
-canonical predecessor. The deadlock is one theorem wide: the funnel segment
-`(x s) y ⟶* C s b a` must cross both payload variables behind `s`, and the
-positional invariant (bare vars, head exception — still prose) says each
-crossing demands the other first.
+canonical predecessor. Stages 128–129 CLOSED THE DEADLOCK: with `Stuck`
+(a variable heading the term or a compound member — forever, by
+`scv_stuck_steps`) supplying the dead ends, the invariant `Ahead` (both
+payload variables ahead of `s` in the member list) is inductive on
+count-preserving steps — the only fire that could break it needs `s` third
+and both payloads in the two slots ahead, promoting one of them — and so
+**ARRIVAL-ORDER PAIRING IS IMPOSSIBLE IN `{S,C}`** (`scv_no_pair`, pinned):
+no machine `P`, however large, reduces `P a b s` to `s a b` on opaque
+arguments. Open since Stage 103; the census bound (≤ 9 leaves) is now a
+theorem at every size. This is the program's second complete impossibility
+at the interrogation level (after the one-application selector, Stage 103)
+and its first CLOSED standing conjecture from the hosting thread's
+negative side.
 Non-erasure forbids UNACCOUNTED waste, not waste: every surviving gadget gives
 each forced passenger a job.
 

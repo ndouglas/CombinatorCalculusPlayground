@@ -4873,3 +4873,21 @@ as bare top-level members — and the first two never reach the predecessor. Ver
 computationally before formalization: 191,115 reachable states, all machines to 7 leaves, zero
 violations of the trichotomy, and the ordering invariant (a, b ahead of s) held on every live
 state.
+
+### Stage 129: ARRIVAL-ORDER PAIRING IS IMPOSSIBLE IN `{S,C}` — the deadlock, closed
+
+`scv_no_pair` (pinned): no machine `P`, however large, reduces `P a b s ⟶* s a b` on opaque
+arguments. Conjectured at Stage 103 from a census bound (≤ 9 leaves); now a theorem at every
+size. The proof is ONE INVARIANT: `Ahead` — both payload variables sit ahead of `s` in the
+member list. It is inductive on count-preserving steps up to commitments (`scv_ahead_step`):
+the only fire that could break it is a root C-fire with `s` third, but `Ahead` puts both
+payloads in the two slots ahead, so one occupies first position and is PROMOTED — stuck
+forever (Stage 128), never reaching the target's unique predecessor `C s b a` (Stage 127).
+S-fires cannot move `s` (first promotes, second nests, third duplicates — `scv_sfire_count`);
+member-internal steps leave the split intact (variables do not step). At `P a b s` the
+invariant holds; at `C s b a` both payloads sit BEHIND `s`; every pairing path ends through
+`C s b a`. Contradiction. Notably: the count-1 hypotheses proved unnecessary — count
+PRESERVATION alone kills duplication, and var-injectivity kills the two-payloads-one-slot
+configurations. Stage 122's circular-crossing argument ("each crossing demands the other
+first") is subsumed: the formal invariant needed no circularity analysis at all, because the
+crossing configuration self-destructs by promotion. The assembly built first-try green.
