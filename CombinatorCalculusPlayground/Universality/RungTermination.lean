@@ -3692,3 +3692,26 @@ theorem scTCell2_normal (W₁ W₂ rest : SCTerm)
     (h1 : ¬ ∃ u, SCStep W₁ u) (h2 : ¬ ∃ u, SCStep W₂ u) (hr : ¬ ∃ u, SCStep rest u) :
     ¬ ∃ u, SCStep (scTCell2 W₁ W₂ rest) u :=
   scNormal_C2 (scNormal_C2 (scNormal_C2 hr scDup_normal) h1) h2
+
+-- ## Stage 115: one-way data flow — the fold's obstruction deepens, and a correction
+-- The fold-cascade sitting produced structure, not a gadget. Two findings, one correction.
+--
+-- THE CORRECTION: Stage 111's prose invariant "atoms never nest into compound elements" has a
+-- hole, witnessed below: an S-fire with a variable in g-position creates the member `(g x)` —
+-- a compound with the atom at its HEAD. The refined invariant: atoms occur bare in argument
+-- position OR at member heads; and head-position atoms freeze on flattening, so the Stage 111
+-- freeze theorem and the one-literal-behind bound both SURVIVE the correction (the ledger has
+-- the re-derivation). The machine-checked freeze (`scv_varHead2_step`) was never affected.
+--
+-- THE DEEPENING: elements are GENETICALLY CLOSED — every argument-position subterm of every
+-- reduct descends from an argument-position subterm of the initial term; fires flatten element
+-- contents onto the spine and never assemble spine material back into elements. Data flows
+-- elements → spine, one way. Consequence: the fold cannot re-create a NESTED next word from
+-- pile members — the nested-word architecture ends at generation one, and the surviving route
+-- is the FLAT/boustrophedon design (pile-as-word with alternating reading direction), scoped in
+-- the ledger.
+
+/-- The hole witness: a legal, count-preserving S-fire nests a variable at a member's head. -/
+example : SCVStep (.app (.app (.app .S .C) (.var 0)) .C)
+    (.app (.app .C .C) (.app (.var 0) .C)) :=
+  SCVStep.S_red .C (.var 0) .C
