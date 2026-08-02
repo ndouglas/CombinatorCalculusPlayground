@@ -4551,3 +4551,33 @@ end marker is an encoding-time machine: this is a traversal design of the same k
 everything since Stage 105, with named gadgets for every piece. After that: the tag Simulation
 assembles, and the question "does `{S,C}` host genuine tag systems?" — the constructive half of
 SK ≤ `{S,C}` — is within reach of ordinary stage work.
+
+### Stage 113: multi-wrapper cells, and the fold's wall named
+
+Two deliverables: the easy extension, and the honest scoping of what is not easy.
+
+The extension (`scTCell2`, `scTCell2_step`, axiom-free, pinned): multi-symbol productions are
+LAYERING — each extra C-layer in a traversal cell drops one more wrapper into the pile, one fire
+per layer, arms sustained throughout. `scTCell2` covers two-symbol productions (the largest tagAB
+needs); the pattern iterates to any arity. Group-internal pile order is an encoding-time choice.
+
+The scoping, with two new structural facts:
+
+1. **The spine's last member is permanent.** Fires insert `spine(x), z, y` strictly before the
+   trailing tail; nothing, ever, lands behind the final member. Consequence: the pile is LIFO by
+   necessity — and by the Stage 110 design, LIFO fold of LIFO pile gives FIFO, so the order is
+   right. (This also retroactively sharpens111's member calculus: three moves, one terminator,
+   one permanence.)
+2. **The fold's wall**: the fold must maintain the accumulated next-front-word across steps, and
+   the accumulator must be a protected ELEMENT (safe from prefix fires) — but every assembly
+   gadget produces live PREFIXES: `scCons q acc` yields `(C q) acc` as a prefix which, the moment
+   the fold's trailing material arrives behind it, is a C-redex again and fires wrongly. Element
+   status comes only from passenger-hood, and passengers must pre-exist — the same
+   element-creation circle as Stage 108, now precisely located at the fold.
+
+Candidate route, recorded: make the cascade harmless instead of preventing it — production
+payloads valued in TAGS (`C`, `C C`), so the "wrong" continued fires stay machine-headed and can
+be choreographed as part of the fold protocol itself (the cascade becomes the fold). This is a
+genuine design problem of the Stage 104–112 genre, not one-sitting assembly; it goes to the
+ranking as its own thread. The hosting construction stands at: run phase DONE (one-tag-step, any
+production arity), fold phase SCOPED with named wall and candidate route.

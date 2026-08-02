@@ -4690,3 +4690,25 @@ what automation could and couldn't do. This file is a first-class deliverable
   engineering between here and a genuine tag Simulation into {S,C}. (2) The program review
   (now four goal-level results pending — overdue by its own rule). (3) C6, declined a
   hundredth time.
+
+## 2026-07-31 — Stage 113: layering is free, folding is not
+
+- The multi-wrapper cell cost one trace and zero build failures — layering C's is the calculus's
+  cheapest move, and each layer is one more pile entry. If the fold existed, the full tag
+  Simulation would now be assembly at every production arity. It does not exist yet, and this
+  sitting's value was locating exactly why: the accumulator-as-element problem, the same circle
+  Stage 108 hit, now pinned to a specific phase with a specific failure trace (scCons output
+  re-firing under the fold's trailing material).
+- Two permanent facts came out of the scoping: the tail is immovable (so LIFO piling is not a
+  choice but a law — happily the design wanted LIFO anyway), and the member calculus gains its
+  fourth clause: three moves, one terminator, one permanence.
+- The candidate route inverts the problem the way this arc keeps rewarding: don't protect the
+  accumulator from fires — make the fires BE the fold. Tag-valued payloads keep every cascade
+  step machine-headed, and machine-headed cascades are choreographable. Whether the choreography
+  closes is next thread's question.
+- The review is now overdue by any reading of its own rule (five goal-level results since
+  Stage 97: the classification, tailInSC, the one-tag-step among them) and the ranking has
+  deferred it four times for hot construction work. Discipline says it goes first now.
+- Ranking: (1) **the program review** — the settled-state pass over Stages 98-113: STATUS header
+  refresh, the hosting-thread arc recorded as a unit, the ladder-to-hosting pivot made explicit
+  in the spec's terms. (2) The fold cascade design. (3) C6, declined a hundred-and-first time.
