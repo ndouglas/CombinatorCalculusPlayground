@@ -5036,3 +5036,24 @@ what automation could and couldn't do. This file is a first-class deliverable
   target `scv_no_pair_swapped` (`¬ P a b s ⟶* s b a`) and the two-argument selector corollary
   re-derived from `Ahead`, one stage. (2) Bounded intermediates. (3) C6, declined a
   hundred-and-eighteenth time.
+
+## 2026-08-02 — Stage 131: the wall and the door, again
+
+- First-build green, whole block — second stage in a row. The `Ahead` machinery consumed the
+  swapped order at the cost of one generic lemma and a mirrored assembly; the invariant's
+  indifference to payload order, noticed at design time in Stage 129, paid out exactly as
+  predicted.
+- The positive companion matters as much as the negatives: `C C a b s ⟶ C b a s ⟶ (b s) a`
+  shows rearrangement-and-application is CHEAP — the impossibility is purely about which
+  term heads the result. This is the sharpest statement yet of what "no selectors" means
+  dynamically: `{S,C}` can shuffle its arguments but never hand control to one that arrived
+  last. The wall-and-door pattern (Stage 112's mid-spine insertion) repeats at the
+  interrogation level.
+- Thirteen autonomous stages this run (119–131). The member calculus now carries three
+  pinned impossibilities and one pinned possibility about the same configuration space —
+  a completed local theory.
+- Ranking: (1) **bounded intermediates** (the `{S,C}` decidability frontier — the one
+  standing question with goal-level weight; attack via the member calculus: can a path's
+  intermediate leaf count exceed every function of endpoint sizes? the speed limits meter
+  steps, the S-count meters fuel). (2) The fold/Simulation architecture question (parked,
+  needs an idea). (3) C6, declined a hundred-and-nineteenth time.

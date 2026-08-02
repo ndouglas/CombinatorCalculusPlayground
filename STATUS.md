@@ -552,7 +552,12 @@ arguments. Open since Stage 103; the census bound (≤ 9 leaves) is now a
 theorem at every size. This is the program's second complete impossibility
 at the interrogation level (after the one-application selector, Stage 103)
 and its first CLOSED standing conjecture from the hosting thread's
-negative side.
+negative side. Stage 131 completed the FAMILY: the swapped order is
+impossible too (`scv_no_pair_swapped`, via the generic predecessor
+`scv_sel_pred`), while payload-headed rearrangement is TWO FIRES
+(`scv_swap_reachable`, axiom-free: `C C a b s ⟶* (b s) a`). The wall is
+exactly about `s` reaching the head — `{S,C}` shuffles arguments freely
+but never hands control to the one that arrived last.
 Non-erasure forbids UNACCOUNTED waste, not waste: every surviving gadget gives
 each forced passenger a job.
 

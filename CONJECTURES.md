@@ -4909,3 +4909,17 @@ question stays parked (genetic closure); C6 stays declined. Meta-observation for
 eleven-branch case analyses now ride one characterization theorem (`scvStep_members`), each
 landing in ≤ 2 build iterations — the calculus's proofs have become PLUMBING, which is the
 strongest evidence the abstraction is right.
+
+### Stage 131: the impossibility family — the wall's exact edge
+
+The interrogation wall is now a CLUSTER with a witnessed boundary. Impossible (pinned): both
+s-headed arrival orders — `scv_no_pair` (`s a b`, Stage 129) and `scv_no_pair_swapped`
+(`s b a`) — via the generic predecessor lemma `scv_sel_pred` (the only step into `s x y` on
+variable arguments is the root C-fire from `C s y x`, ANY indices; subsumes Stage 127's
+concrete version). Possible (pinned, AXIOM-FREE, a two-constructor term): payload-headed
+rearrangement — `scv_swap_reachable`: the machine `C C` reduces `C C a b s` to `(b s) a` in
+two fires. So `{S,C}` machines can reorder and apply opaque arguments freely — as long as a
+PAYLOAD ends up at the head. The wall is exactly about `s` reaching the head: what a selector
+needs and what `{S,C}` cannot do. The census explanation is complete: Stage 103's bounded
+searches failed at every size for a structural reason now stated as three theorems, one of
+them positive.
