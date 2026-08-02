@@ -238,3 +238,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scv_lastVar_steps' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scv_lastVar_steps
+
+/-- info: 'scv_varHead_frozen' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scv_varHead_frozen
+
+/-- info: 'scv_pair_pred' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scv_pair_pred
+
+/-- info: 'scv_pair_funnel' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scv_pair_funnel

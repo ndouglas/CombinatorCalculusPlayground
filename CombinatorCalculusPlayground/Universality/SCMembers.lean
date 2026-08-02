@@ -434,7 +434,7 @@ theorem scv_lastVar_step {t u : SCV} {k : Nat} (h : SCVStep t u)
     (hlast : SCV.lastVar k t) :
     SCV.lastVar k u
     ∨ ∃ x y, t.members = [x, y, .var k] ∧ t.spineHead = .C
-        ∧ u.spineHead = x.spineHead := by
+        ∧ u.spineHead = x.spineHead ∧ u = .app (.app x (.var k)) y := by
   obtain ⟨M, hM⟩ := hlast
   rcases scvStep_members h with ⟨f, g, x, T, hh, hm, hu⟩ | ⟨x, y, z, T, hh, hm, hu⟩
     | ⟨pre, m, m', post, hs, hm, hh', hm'⟩
@@ -506,7 +506,7 @@ theorem scv_lastVar_step {t u : SCV} {k : Nat} (h : SCVStep t u)
       simp at hM
       obtain ⟨hz, _⟩ := hM
       subst hz
-      refine ⟨x, y, by rw [hm], hh, ?_⟩
+      refine ⟨x, y, by rw [hm], hh, ?_, hu⟩
       rw [hu, SCV.appList_spineHead]
       rfl
     · -- T nonempty: the variable stays last
@@ -551,21 +551,222 @@ theorem scv_lastVar_steps {k : Nat} : ∀ {t u : SCV}, RS.SCV.Steps t u →
     SCV.lastVar k u
     ∨ ∃ w v x y, RS.SCV.Steps t w ∧ SCVStep w v ∧ RS.SCV.Steps v u
         ∧ w.members = [x, y, .var k] ∧ w.spineHead = .C
-        ∧ v.spineHead = x.spineHead := by
+        ∧ v.spineHead = x.spineHead ∧ v = .app (.app x (.var k)) y := by
   intro t u h
   refine h.rec (motive := fun t u _ =>
       SCV.countVar k u = SCV.countVar k t → SCV.countVar k t = 1 → SCV.lastVar k t →
       SCV.lastVar k u
       ∨ ∃ w v x y, RS.SCV.Steps t w ∧ SCVStep w v ∧ RS.SCV.Steps v u
           ∧ w.members = [x, y, .var k] ∧ w.spineHead = .C
-          ∧ v.spineHead = x.spineHead) ?_ ?_
+          ∧ v.spineHead = x.spineHead ∧ v = .app (.app x (.var k)) y) ?_ ?_
   · intro a _ _ hl
     exact Or.inl hl
   · intro a b c s rest ih hcount h1 hl
     have hbc : SCV.countVar k b = SCV.countVar k a :=
       scvSteps_countVar_squeeze s rest hcount
-    rcases scv_lastVar_step s hbc h1 hl with hlb | ⟨x, y, hm, hh, hv⟩
-    · rcases ih (by omega) (by omega) hlb with hlu | ⟨w, v, x, y, h1', h2', h3', h4', h5', h6'⟩
+    rcases scv_lastVar_step s hbc h1 hl with hlb | ⟨x, y, hm, hh, hv, hsh⟩
+    · rcases ih (by omega) (by omega) hlb with hlu
+        | ⟨w, v, x, y, h1', h2', h3', h4', h5', h6', h7'⟩
       · exact Or.inl hlu
-      · exact Or.inr ⟨w, v, x, y, RS.Steps.tail s h1', h2', h3', h4', h5', h6'⟩
-    · exact Or.inr ⟨a, b, x, y, @RS.Steps.refl RS.SCV a, s, rest, hm, hh, hv⟩
+      · exact Or.inr ⟨w, v, x, y, RS.Steps.tail s h1', h2', h3', h4', h5', h6', h7'⟩
+    · exact Or.inr ⟨a, b, x, y, @RS.Steps.refl RS.SCV a, s, rest, hm, hh, hv, hsh⟩
+
+-- ## Stage 127: the funnel — every pairing path threads the needle
+-- Assembly of the deadlock so far. Three new facts: a variable at the spine head freezes it
+-- there forever (heads change only at root fires, which need `S`/`C`); the pairing target
+-- `s a b` has EXACTLY ONE step-predecessor, the root C-fire from `C s b a` (S-fires and
+-- member-internal steps would put an application among its all-variable members); and
+-- therefore any path `P a b s ⟶* s a b` decomposes through the var-2 crossing configuration
+-- (Stage 126) and then the canonical predecessor — with the configuration's first member
+-- machine-headed and var-2-free, and the two payload variables split across its two
+-- non-variable members. What Stage 128 must close: that split has no legal continuation.
+
+/-- A spine head is never an application. -/
+theorem SCV.spineHead_not_app : ∀ (t f a : SCV), t.spineHead ≠ .app f a := by
+  intro t
+  induction t with
+  | S => intro f a h; exact SCV.noConfusion h
+  | C => intro f a h; exact SCV.noConfusion h
+  | var i => intro f a h; exact SCV.noConfusion h
+  | app g x ihg ihx =>
+      intro f a h
+      exact ihg f a h
+
+/-- A variable at the head freezes it: no root fire applies, so one step preserves the head. -/
+theorem scv_varHead_step {t u : SCV} {i : Nat} (hh : t.spineHead = .var i)
+    (h : SCVStep t u) : u.spineHead = .var i := by
+  rcases scvStep_members h with ⟨f, g, x, T, hS, _, _⟩ | ⟨x, y, z, T, hC, _, _⟩
+    | ⟨_, _, _, _, _, _, hh', _⟩
+  · rw [hS] at hh
+    exact SCV.noConfusion hh
+  · rw [hC] at hh
+    exact SCV.noConfusion hh
+  · rw [hh']
+    exact hh
+
+/-- The freeze, along paths: once a variable heads the spine, it heads every reduct. -/
+theorem scv_varHead_frozen {i : Nat} : ∀ {t u : SCV}, RS.SCV.Steps t u →
+    t.spineHead = .var i → u.spineHead = .var i := by
+  intro t u h
+  refine h.rec (motive := fun a b _ =>
+      SCV.spineHead a = .var i → SCV.spineHead b = .var i) ?_ ?_
+  · intro a ha
+    exact ha
+  · intro a b c s _ ih ha
+    exact ih (scv_varHead_step ha s)
+
+/-- The pairing target `s a b` on opaque arguments. -/
+def SCV.pairTarget : SCV := .app (.app (.var 2) (.var 0)) (.var 1)
+
+/-- Its unique step-predecessor: `C s b a`. -/
+def SCV.pairPre : SCV := .app (.app (.app .C (.var 2)) (.var 1)) (.var 0)
+
+theorem scv_pairPre_step : SCVStep SCV.pairPre SCV.pairTarget :=
+  SCVStep.C_red (.var 2) (.var 1) (.var 0)
+
+/-- **The predecessor lemma**: the ONLY step into `s a b` is the root C-fire from `C s b a`.
+An S-fire or a member-internal step would place an application among the target's
+all-variable members. -/
+theorem scv_pair_pred {t : SCV} (h : SCVStep t SCV.pairTarget) : t = SCV.pairPre := by
+  rcases scvStep_members h with ⟨f, g, x, T, hh, hm, hu⟩ | ⟨x, y, z, T, hh, hm, hu⟩
+    | ⟨pre, m, m', post, hs, hm, hh', hm'⟩
+  · -- S-fire: the member (g x) is an application
+    exfalso
+    have h0 := congrArg SCV.members hu
+    rw [SCV.appList_members] at h0
+    have hum : ([.var 0, .var 1] : List SCV)
+        = ((f.members ++ [x]) ++ [.app g x]) ++ T := h0
+    rcases hfm : f.members with _ | ⟨a, l⟩
+    · rw [hfm] at hum
+      simp at hum
+    · rw [hfm] at hum
+      simp at hum
+      obtain ⟨_, hrest⟩ := hum
+      rcases l with _ | ⟨b, l₂⟩
+      · simp at hrest
+      · simp at hrest
+  · -- C-fire: the live case
+    have h0 := congrArg SCV.members hu
+    rw [SCV.appList_members] at h0
+    have hum : ([.var 0, .var 1] : List SCV) = ((x.members ++ [z]) ++ [y]) ++ T := h0
+    have h1 := congrArg SCV.spineHead hu
+    rw [SCV.appList_spineHead] at h1
+    have hhd : (SCV.var 2) = x.spineHead := h1
+    rcases hxm : x.members with _ | ⟨a, l⟩
+    · rw [hxm] at hum
+      simp at hum
+      obtain ⟨hz, hy, hT⟩ := hum
+      -- x has no members, so it IS its spine head: the variable 2
+      have hx2 : x = SCV.var 2 := by
+        cases x with
+        | S => exact absurd hhd.symm (by intro hc; exact SCV.noConfusion hc)
+        | C => exact absurd hhd.symm (by intro hc; exact SCV.noConfusion hc)
+        | var n =>
+            have : (SCV.var 2) = SCV.var n := hhd
+            rw [this]
+        | app f a => simp [SCV.members] at hxm
+      have hrec := SCV.recon t
+      rw [hm, hh, hx2, ← hz, ← hy, hT] at hrec
+      exact hrec.symm
+    · rw [hxm] at hum
+      have hlen := congrArg List.length hum
+      simp at hlen
+      omega
+  · -- member-internal: the stepped member is an application among all-variable members
+    exfalso
+    obtain ⟨p, q, hpq⟩ := scvStep_result_isApp hs
+    have hum : ([.var 0, .var 1] : List SCV) = pre ++ m' :: post := hm'
+    subst hpq
+    rcases pre with _ | ⟨a, pre₂⟩
+    · injection hum with h1 _
+      exact SCV.noConfusion h1
+    · injection hum with _ h2
+      rcases pre₂ with _ | ⟨b, pre₃⟩
+      · injection h2 with h3 _
+        exact SCV.noConfusion h3
+      · injection h2 with _ h4
+        simp at h4
+
+/-- **The funnel.** Every pairing path `P a b s ⟶* s a b` (machine `P` free of the three
+variables) threads the needle: it reaches the var-2 crossing configuration `w = C x y s`
+(Stage 126), fires it to `(x s) y`, continues to the canonical predecessor `C s b a`, and
+fires that into the target. Moreover the configuration is counted out: `x` is machine-headed,
+neither `x` nor `y` contains `s`, and the two payload variables are split across `x` and `y`
+with one occurrence total each. -/
+theorem scv_pair_funnel {P : SCV}
+    (hP0 : P.countVar 0 = 0) (hP1 : P.countVar 1 = 0) (hP2 : P.countVar 2 = 0)
+    (h : RS.SCV.Steps (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) SCV.pairTarget) :
+    ∃ w x y,
+      RS.SCV.Steps (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) w
+      ∧ w.members = [x, y, .var 2] ∧ w.spineHead = .C
+      ∧ SCVStep w (.app (.app x (.var 2)) y)
+      ∧ RS.SCV.Steps (.app (.app x (.var 2)) y) SCV.pairPre
+      ∧ (x.spineHead = .S ∨ x.spineHead = .C)
+      ∧ x.countVar 2 = 0 ∧ y.countVar 2 = 0
+      ∧ x.countVar 0 + y.countVar 0 = 1
+      ∧ x.countVar 1 + y.countVar 1 = 1 := by
+  have hc0 : SCV.countVar 0 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 := by
+    show P.countVar 0 + 1 + 0 + 0 = 1
+    omega
+  have hc1 : SCV.countVar 1 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 := by
+    show P.countVar 1 + 0 + 1 + 0 = 1
+    omega
+  have hc2 : SCV.countVar 2 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 := by
+    show P.countVar 2 + 0 + 0 + 1 = 1
+    omega
+  rcases RS.steps_last h with he | ⟨t', ht', hstep⟩
+  · exfalso
+    injection he with h1 h2
+    injection h2 with h3
+    omega
+  · have hpre : t' = SCV.pairPre := scv_pair_pred hstep
+    subst hpre
+    have hl0 : SCV.lastVar 2 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) := by
+      refine ⟨SCV.var 1 :: SCV.var 0 :: P.members.reverse, ?_⟩
+      show (((P.members ++ [SCV.var 0]) ++ [SCV.var 1]) ++ [SCV.var 2]).reverse = _
+      simp
+    have hcpre2 : SCV.countVar 2 SCV.pairPre = 1 := rfl
+    rcases scv_lastVar_steps (k := 2) ht' (by rw [hcpre2, hc2]) hc2 hl0 with hlpre
+      | ⟨w, v, x, y, hw, hstep2, hv, hm, hh, _, hshape⟩
+    · exfalso
+      obtain ⟨M, hM⟩ := hlpre
+      have hM' : ([.var 0, .var 1, .var 2] : List SCV) = .var 2 :: M := hM
+      injection hM' with h1 _
+      injection h1 with h2
+      omega
+    · subst hshape
+      have hxh : x.spineHead = SCV.S ∨ x.spineHead = SCV.C := by
+        rcases hx : x.spineHead with _ | _ | i | ⟨f, a⟩
+        · exact Or.inl rfl
+        · exact Or.inr rfl
+        · exfalso
+          have hvh : (SCV.app (.app x (.var 2)) y).spineHead = .var i := hx
+          have hfr := scv_varHead_frozen hv hvh
+          have hC : SCV.C = SCV.var i := hfr
+          exact SCV.noConfusion hC
+        · exact absurd hx (SCV.spineHead_not_app x f a)
+      have key : ∀ kk : Nat,
+          SCV.countVar kk (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 →
+          SCV.countVar kk SCV.pairPre = 1 →
+          w.countVar kk = 1 := by
+        intro kk hsrc hpre
+        have m1 := scvSteps_countVar_mono (k := kk) hw
+        have m2 := scvStep_countVar_mono (k := kk) hstep2
+        have m3 := scvSteps_countVar_mono (k := kk) hv
+        omega
+      have split : ∀ kk : Nat, w.countVar kk = 1 →
+          x.countVar kk + (y.countVar kk + (SCV.countVar kk (.var 2) + 0)) = 1 := by
+        intro kk hcw
+        have hb := SCV.countVar_members kk w
+        rw [hm, hh] at hb
+        have hbb : w.countVar kk
+            = 0 + (x.countVar kk + (y.countVar kk + (SCV.countVar kk (.var 2) + 0))) := hb
+        omega
+      have k2 : x.countVar 2 + (y.countVar 2 + (1 + 0)) = 1 :=
+        split 2 (key 2 hc2 rfl)
+      have k0 : x.countVar 0 + (y.countVar 0 + (0 + 0)) = 1 :=
+        split 0 (key 0 hc0 rfl)
+      have k1 : x.countVar 1 + (y.countVar 1 + (0 + 0)) = 1 :=
+        split 1 (key 1 hc1 rfl)
+      exact ⟨w, x, y, hw, hm, hh, hstep2, hv, hxh,
+        by omega, by omega, by omega, by omega⟩
