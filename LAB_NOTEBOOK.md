@@ -4833,3 +4833,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   big infrastructure piece the decidability program and any future normalization argument both
   need; templated but sizeable. (2) The bounded-intermediate question, once confluence lands.
   (3) C6, declined a hundred-and-sixth time.
+
+## 2026-08-02 — Stage 119: the transport that was overdue
+
+- Confluence crossed to rung 3 in one sitting and one wrong rewrite direction — the template
+  held perfectly, and the non-erasing symmetry made the {S,C} triangle CLEANER than SK's (two
+  mirror-image redex inversions instead of K's asymmetric discard). It should have been done
+  the week the SC census started; the lesson is that infrastructure transports are cheap
+  exactly when the template is battle-tested, and waiting bought nothing.
+- Ranking: (1) **the interrogation-normal-form probe**: with nf_unique in hand, compute what
+  the hosting states' normal forms ARE — the tag-step states are non-normalizing by design
+  (cycles), but the DATA (words, cells) normalize; characterize normal forms of {S,C} (the
+  analogue of SK's SNF_iff) as the next decidability brick. (2) Bounded intermediates. (3) C6,
+  declined a hundred-and-seventh time.

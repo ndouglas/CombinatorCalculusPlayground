@@ -4747,3 +4747,15 @@ rules) and the BOUNDED-INTERMEDIATE question (does `t ⟶* u` ever require inter
 essentially larger than `t` and `u`? — the metering makes largeness expensive but not
 impossible). Confluence plus a bounded-intermediate theorem would yield a decision procedure;
 a counterexample to bounded intermediates would be the first sign of real computational depth.
+
+### Stage 119: Church–Rosser for `{S,C}`
+
+The SK proof, transported arm for arm (Takahashi: parallel reduction → complete development →
+triangle → diamond → strip). `SC_confluence` and `sc_nf_unique` land at `[propext]`, exactly
+SK's footprint. The structural difference the transport exposed: both `{S,C}` rules are 3-ary
+and non-erasing, so the C-development keeps all three pieces developing where K discarded one,
+the two-argument head shapes are plain, and the triangle's app-case has two SYMMETRIC redex
+sub-cases instead of SK's asymmetric pair — the proof is more uniform than its template. Also
+banked: `scSteps_appR` and `scSteps_congApp`, the missing congruences. For the decidability
+program: normal forms are now unique, so bounded search is meaningful, and any standardization
+or normalization argument has its prerequisite.

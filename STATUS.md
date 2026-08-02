@@ -546,8 +546,11 @@ erases mountains in one step, `{S,C}` pays retail) and no step more than
 doubles. Every `{S,C}` path is metered on both sides. The member-sequence
 abstraction collapses under S-compounding and non-erasing TRSs are
 Turing-complete in general, so the question is genuinely about these rules;
-the named missing infrastructure is SC-CONFLUENCE (templated from the SK
-proof) and the bounded-intermediate question. Stage 115
+SC-CONFLUENCE is now IN PLACE (Stage 119, `SC_confluence`, `sc_nf_unique`,
+pinned at `[propext]` — matching SK's footprint): the Takahashi proof
+transported arm for arm, with both redex inversions at depth three since
+neither `{S,C}` rule erases. The remaining missing piece for a decision
+procedure is the bounded-intermediate question. Stage 115
 also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
 S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
 Negative standing results shaping any route: arm-level differentiation
