@@ -4759,3 +4759,12 @@ sub-cases instead of SK's asymmetric pair — the proof is more uniform than its
 banked: `scSteps_appR` and `scSteps_congApp`, the missing congruences. For the decidability
 program: normal forms are now unique, so bounded search is meaningful, and any standardization
 or normalization argument has its prerequisite.
+
+### Stage 120: the normal forms of `{S,C}`
+
+`SCNF_iff` (pinned): a `{S,C}` term is normal exactly when every spine carries at most two
+arguments — the rung-3 analogue of `SNF_iff`, proved by the standard two-direction argument
+(shape blocks every fire; steplessness forces the shape, with the three-argument case exhibiting
+its own redex). With `sc_nf_unique`, "the" normal form is a well-defined, recognizable object.
+Retroactive dividend: every hosting gadget — tags, cells, arms, words — is spine-width-≤-2 by
+construction, which is WHY the storability lemmas kept being easy.

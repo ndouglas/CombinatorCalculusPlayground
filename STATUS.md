@@ -549,8 +549,9 @@ Turing-complete in general, so the question is genuinely about these rules;
 SC-CONFLUENCE is now IN PLACE (Stage 119, `SC_confluence`, `sc_nf_unique`,
 pinned at `[propext]` — matching SK's footprint): the Takahashi proof
 transported arm for arm, with both redex inversions at depth three since
-neither `{S,C}` rule erases. The remaining missing piece for a decision
-procedure is the bounded-intermediate question. Stage 115
+neither `{S,C}` rule erases. Normal forms are characterized (Stage 120, `SCNF_iff`, pinned): exactly the
+spine-width-≤-2 shapes — the rung-3 `SNF_iff`. The remaining missing piece for
+a decision procedure is the bounded-intermediate question. Stage 115
 also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
 S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
 Negative standing results shaping any route: arm-level differentiation

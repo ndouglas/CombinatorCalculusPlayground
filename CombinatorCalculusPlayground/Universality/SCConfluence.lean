@@ -174,3 +174,114 @@ theorem sc_nf_unique {t u v : SCTerm}
     (hu : RS.NormalForm RS.SC u) (hv : RS.NormalForm RS.SC v) : u = v := by
   obtain ⟨w, hw1, hw2⟩ := SC_confluence h1 h2
   rw [hu.steps_eq hw1, hv.steps_eq hw2]
+
+-- ## Stage 120: the normal forms of {S,C} — spine-width ≤ 2, everywhere
+-- The analogue of Goal 1's `SNF_iff`: a `{S,C}` term is normal exactly when every spine carries
+-- at most two arguments (neither combinator has enough arguments to fire anywhere). With
+-- `sc_nf_unique`, "the" normal form of a normalizing term is now a well-defined object.
+
+/-- Spine-width-≤-2 shapes: a leaf, or a leaf applied to one or two normal arguments. -/
+inductive SCNF : SCTerm → Prop
+  | leafS : SCNF .S
+  | leafC : SCNF .C
+  | one {k a : SCTerm} : (k = .S ∨ k = .C) → SCNF a → SCNF (.app k a)
+  | two {k a b : SCTerm} : (k = .S ∨ k = .C) → SCNF a → SCNF b →
+      SCNF (.app (.app k a) b)
+
+/-- `SCNF` terms have no steps. -/
+theorem SCNF.no_step : ∀ {t : SCTerm}, SCNF t → ¬ ∃ u, SCStep t u := by
+  intro t h
+  induction h with
+  | leafS =>
+      rintro ⟨u, hs⟩
+      obtain ⟨a, b, hab⟩ := scStep_source_isApp hs
+      exact SCTerm.noConfusion hab
+  | leafC =>
+      rintro ⟨u, hs⟩
+      obtain ⟨a, b, hab⟩ := scStep_source_isApp hs
+      exact SCTerm.noConfusion hab
+  | one hk ha iha =>
+      rintro ⟨u, hs⟩
+      rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+      · rcases scRootStep_inv hroot with ⟨p, q, r, hb, _⟩ | ⟨p, q, r, hb, _⟩
+        · injection hb with h1 h2
+          rcases hk with rfl | rfl
+          · exact SCTerm.noConfusion h1
+          · exact SCTerm.noConfusion h1
+        · injection hb with h1 h2
+          rcases hk with rfl | rfl
+          · exact SCTerm.noConfusion h1
+          · exact SCTerm.noConfusion h1
+      · injection j1 with j3 j4
+        obtain ⟨a', b', hab⟩ := scStep_source_isApp hst
+        rw [← j3] at hab
+        rcases hk with rfl | rfl
+        · exact SCTerm.noConfusion hab
+        · exact SCTerm.noConfusion hab
+      · injection j1 with j3 j4
+        exact iha ⟨X', by rw [j4]; exact hst⟩
+  | two hk ha hb iha ihb =>
+      rintro ⟨u, hs⟩
+      rcases scStep_cases hs with hroot | ⟨F, X, F', j1, j2, hst⟩ | ⟨F, X, X', j1, j2, hst⟩
+      · rcases scRootStep_inv hroot with ⟨p, q, r, hb2, _⟩ | ⟨p, q, r, hb2, _⟩
+        · injection hb2 with h1 h2
+          injection h1 with h3 h4
+          rcases hk with rfl | rfl
+          · exact SCTerm.noConfusion h3
+          · exact SCTerm.noConfusion h3
+        · injection hb2 with h1 h2
+          injection h1 with h3 h4
+          rcases hk with rfl | rfl
+          · exact SCTerm.noConfusion h3
+          · exact SCTerm.noConfusion h3
+      · injection j1 with j3 j4
+        rcases scStep_cases (show SCStep (SCTerm.app _ _) F' from by rw [j3]; exact hst) with
+          hroot2 | ⟨F₂, X₂, F₂', l1, l2, hst2⟩ | ⟨F₂, X₂, X₂', l1, l2, hst2⟩
+        · rcases scRootStep_inv hroot2 with ⟨p, q, r, hb2, _⟩ | ⟨p, q, r, hb2, _⟩
+          · injection hb2 with h1 h2
+            rcases hk with rfl | rfl
+            · exact SCTerm.noConfusion h1
+            · exact SCTerm.noConfusion h1
+          · injection hb2 with h1 h2
+            rcases hk with rfl | rfl
+            · exact SCTerm.noConfusion h1
+            · exact SCTerm.noConfusion h1
+        · injection l1 with l3 l4
+          obtain ⟨a', b', hab⟩ := scStep_source_isApp hst2
+          rw [← l3] at hab
+          rcases hk with rfl | rfl
+          · exact SCTerm.noConfusion hab
+          · exact SCTerm.noConfusion hab
+        · injection l1 with l3 l4
+          exact iha ⟨X₂', by rw [l4]; exact hst2⟩
+      · injection j1 with j3 j4
+        exact ihb ⟨X', by rw [j4]; exact hst⟩
+
+/-- Steplessness implies the shape. -/
+theorem SCNF.of_no_step : ∀ {t : SCTerm}, (¬ ∃ u, SCStep t u) → SCNF t := by
+  intro t
+  induction t with
+  | S =>
+      intro _
+      exact SCNF.leafS
+  | C =>
+      intro _
+      exact SCNF.leafC
+  | app f x ihf ihx =>
+      intro h
+      have hf : ¬ ∃ u, SCStep f u := fun ⟨u, hu⟩ => h ⟨.app u x, SCStep.appL hu⟩
+      have hx : ¬ ∃ u, SCStep x u := fun ⟨u, hu⟩ => h ⟨.app f u, SCStep.appR hu⟩
+      have hxn := ihx hx
+      cases ihf hf with
+      | leafS => exact SCNF.one (Or.inl rfl) hxn
+      | leafC => exact SCNF.one (Or.inr rfl) hxn
+      | one hk ha => exact SCNF.two hk ha hxn
+      | two hk ha hb =>
+          rcases hk with rfl | rfl
+          · exact absurd ⟨_, SCStep.S_red _ _ x⟩ h
+          · exact absurd ⟨_, SCStep.C_red _ _ x⟩ h
+
+/-- **The normal forms of `{S,C}` are exactly the spine-width-≤-2 shapes** — the rung-3
+analogue of `SNF_iff`. -/
+theorem SCNF_iff (t : SCTerm) : SCNF t ↔ ¬ ∃ u, SCStep t u :=
+  ⟨SCNF.no_step, SCNF.of_no_step⟩

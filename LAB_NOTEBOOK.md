@@ -4846,3 +4846,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   (cycles), but the DATA (words, cells) normalize; characterize normal forms of {S,C} (the
   analogue of SK's SNF_iff) as the next decidability brick. (2) Bounded intermediates. (3) C6,
   declined a hundred-and-seventh time.
+
+## 2026-08-02 — Stage 120: the shape of stillness
+
+- SCNF_iff in a sitting; the backward direction is four lines because the only way to be
+  three-wide is to be a redex. The hosting thread's storability lemmas were all instances of
+  this one fact, proved piecemeal before the general theorem existed — the usual order of
+  discovery, worth noting because it ran opposite to the textbook order.
+- Ranking: (1) **normalization-region decidability**: with SCNF + nf_unique + the speed limits,
+  build the {S,C} bounded-reachability decision procedure (the Stage 49-58 SK template:
+  executable stepper + soundness/completeness) — the decidability program's first executable
+  brick. (2) Bounded intermediates. (3) C6, declined a hundred-and-eighth time.
