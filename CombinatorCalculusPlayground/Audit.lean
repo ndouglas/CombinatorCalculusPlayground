@@ -193,3 +193,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scTCell2_step' does not depend on any axioms -/
 #guard_msgs in #print axioms scTCell2_step
+
+/-- info: 'Simulation.steps_iff' does not depend on any axioms -/
+#guard_msgs in #print axioms Simulation.steps_iff

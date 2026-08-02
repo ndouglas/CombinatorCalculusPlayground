@@ -55,6 +55,25 @@ theorem fwd_steps (S : Simulation A B) {a a' : A.Carrier}
   | refl => exact RS.Steps.refl _
   | tail s _ ih => exact RS.Steps.trans (S.fwd s) ih
 
+-- ## Reachability transports across a Simulation — in BOTH directions (Stage 116)
+-- `fwd_steps` and `bwd` together make reachability between encoded states EQUIVALENT to source
+-- reachability, so a decision procedure for the host's reachability decides the source's. This
+-- is what makes host-side decidability a REFUTATION tool for Simulation-hosting: a Simulation of
+-- SK into any reachability-decidable host would decide SK-reachability (undecidable — external,
+-- cited not checked).
+
+/-- Reachability is equivalent across a Simulation. -/
+theorem steps_iff (S : Simulation A B) (a a' : A.Carrier) :
+    A.Steps a a' ↔ B.Steps (S.enc a) (S.enc a') :=
+  ⟨S.fwd_steps, S.bwd⟩
+
+/-- Decidable reachability transports BACKWARD along a Simulation: deciding the host decides the
+source. -/
+def transferDecidable (S : Simulation A B)
+    (hB : ∀ b b' : B.Carrier, Decidable (B.Steps b b')) :
+    ∀ a a' : A.Carrier, Decidable (A.Steps a a') :=
+  fun a a' => decidable_of_iff _ (S.steps_iff a a').symm
+
 end Simulation
 
 -- ## The weak hypothesis: what the refutations actually need
