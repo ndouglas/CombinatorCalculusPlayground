@@ -216,5 +216,5 @@ import CombinatorCalculusPlayground.Universality.OneRule
 /-- info: 'sc_nf_unique' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_nf_unique
 
-/-- info: 'SCNF_iff' depends on axioms: [propext, Quot.sound] -/
+/-- info: 'SCNF_iff' does not depend on any axioms -/
 #guard_msgs in #print axioms SCNF_iff
