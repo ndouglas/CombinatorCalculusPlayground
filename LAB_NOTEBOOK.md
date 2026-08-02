@@ -5137,3 +5137,24 @@ what automation could and couldn't do. This file is a first-class deliverable
   phases; would make the glider the first machine-checked deterministic diverger and prove
   the seed has NO normal form). (2) The control question (fold, from the glider side): can a
   wrapper make the pump halt on a marker? (3) C6, declined a hundred-and-twenty-third time.
+
+## 2026-08-02 — Stage 136: the march, certified
+
+- The whole certification rode one lemma: wrappers are inert to scSucc. After that, the
+  five-shape trajectory closes under steps by computation, and determinism + no-normal-form
+  fall out of scSucc_sound/complete — the Stage 121 successor kit doing exactly what a
+  verified interpreter is for. One build iteration (a dotted-constructor ambiguity in a
+  parametric show).
+- The glider is now the program's sharpest single exhibit for "{S,C} computes": an eight-leaf
+  term whose behavior is provably deterministic, provably endless, provably unbounded, and
+  whose entire infinite trajectory is described by a five-case predicate. The negative space
+  (no NF) came from the same machinery as the positive dynamics — no new axioms, no new
+  techniques, just composition.
+- Eighteen autonomous stages (119–136). Context for the ranking: the control question (halt
+  the pump on a marker) is the fold problem; the frontier alternative (computable bound vs
+  undecidability) waits on exactly that. C6 remains the only other standing item.
+- Ranking: (1) **the control probe**: search computationally for a glider variant whose
+  pump consumes a fuel argument — a term family T(w) marching |w| loops then normalizing;
+  success would give programmable mountains (kills weak bounds constructively) and a first
+  handle on control. (2) Retire or re-scope C6 after 124 declines — decide at next review.
+  (3) The StepsLe/engine genericization debt.

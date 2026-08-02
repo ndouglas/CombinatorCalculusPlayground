@@ -4983,3 +4983,14 @@ deterministic, non-terminating, linearly-growing computation. Frontier consequen
 sets of small terms are INFINITE (the capped engine is a necessity, not an optimization), and
 the glider is the simplest specimen of the phenomenon the mountains, the speed limits, and the
 hosting gadgets all orbit — sustained work between small endpoints.
+
+### Stage 136: glider determinism — no normal form
+
+The trace is a theorem: the glider's trajectory is EXACTLY five shapes (`GliderTraj` — the
+seed, one intermediate, and the three phases under any number of wrappers), each with a
+singleton successor list, parametrically in the wrapper count (`scSucc_wrap`: wrappers are
+inert; `scSucc_wrapN`: singletons survive wrapping; the phase transitions are `rfl`). Hence
+`scGlider_deterministic` (pinned) and `scGlider_no_normal_form` (pinned) — the first
+machine-checked normal-form-free term in `{S,C}`. Cycles never certify normal-form-freeness
+(a cyclic term may normalize down another path); determinism leaves no side exit. `{S,C}` at
+eight leaves: deterministic, non-terminating, linearly growing, and now fully certified.

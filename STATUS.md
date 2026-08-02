@@ -623,7 +623,12 @@ itself under a wrapper every three fires, growing five leaves per loop,
 traced 1500 steps without ever branching. Non-cyclic divergence at eight
 leaves: `{S,C}` runs deterministic unbounded computation from tiny seeds,
 and only CONTROL (halting on a condition — the fold problem, seen from the
-other side) separates that from an undecidability reduction. Stage 115
+other side) separates that from an undecidability reduction. Stage 136
+CERTIFIED the march: the trajectory is exactly five shapes with singleton
+successor lists (`GliderTraj`, `scSucc_wrap`), so reduction from the seed
+is deterministic (`scGlider_deterministic`, pinned) and the seed has NO
+NORMAL FORM (`scGlider_no_normal_form`, pinned) — the first
+machine-checked normal-form-free `{S,C}` term. Stage 115
 also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
 S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
 Negative standing results shaping any route: arm-level differentiation
