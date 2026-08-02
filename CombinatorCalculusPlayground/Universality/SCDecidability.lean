@@ -821,3 +821,119 @@ theorem sc_glider : ∀ n, ∃ u, RS.SC.Steps scGliderSeed u ∧ n ≤ u.leafCou
   refine ⟨scGlide n, RS.Steps.trans scGliderSeed_core (scGlide_reach n), ?_⟩
   rw [scGlide_leafCount n]
   omega
+
+-- ## Stage 136: glider determinism — the seed has no normal form
+-- The 1500-step trace becomes a theorem. The glider's trajectory is exactly five shapes —
+-- the seed, one intermediate, and the three phases under any number of wrappers — and each
+-- has EXACTLY ONE successor (`scSucc` computes to a singleton, parametrically in the wrapper
+-- count). So reduction from the seed is deterministic, the trajectory never ends, and the
+-- seed has NO NORMAL FORM — the first machine-checked normal-form-free `{S,C}` term (cycles
+-- alone never certify this: a cyclic term may still normalize down another path).
+
+/-- `k` wrappers around a payload. -/
+def scWrapN : Nat → SCTerm → SCTerm
+  | 0, X => X
+  | k + 1, X => .app (.app .S scP) (scWrapN k X)
+
+/-- Phase two: `C (S S) p (p p)`. -/
+def scC1 : SCTerm := .app (.app (.app .C (.app .S .S)) scP) (.app scP scP)
+
+/-- Phase three: `S S (p p) p`. -/
+def scC2 : SCTerm := .app (.app (.app .S .S) (.app scP scP)) scP
+
+/-- The seed's first reduct: `S S S (C (S S)) (S (C (S S)))`. -/
+def scT1 : SCTerm :=
+  .app (.app (.app (.app .S .S) .S) (.app .C (.app .S .S))) (.app .S (.app .C (.app .S .S)))
+
+#guard scSucc scGliderSeed = [scT1]
+#guard scSucc scT1 = [scCore]
+#guard scSucc scCore = [scC1]
+#guard scSucc scC1 = [scC2]
+#guard scSucc scC2 = [scWrapN 1 scCore]
+
+/-- A wrapper is inert: successors of a wrapped term are the wrapped successors. -/
+theorem scSucc_wrap (X : SCTerm) :
+    scSucc (.app (.app .S scP) X) = (scSucc X).map (fun x' => .app (.app .S scP) x') := by
+  show scSuccRoot (.app (.app .S scP) X)
+      ++ ((scSucc (.app .S scP)).map (fun f' => .app f' X)
+      ++ (scSucc X).map (fun x' => .app (.app .S scP) x')) = _
+  rw [show scSuccRoot (.app (.app .S scP) X) = [] from rfl,
+      show scSucc (.app .S scP) = [] from rfl]
+  simp
+
+/-- Singleton successors survive wrapping. -/
+theorem scSucc_wrapN {X Y : SCTerm} (h : scSucc X = [Y]) :
+    ∀ k, scSucc (scWrapN k X) = [scWrapN k Y]
+  | 0 => h
+  | k + 1 => by
+      show scSucc (.app (.app .S scP) (scWrapN k X)) = _
+      rw [scSucc_wrap, scSucc_wrapN h k]
+      rfl
+
+/-- The glider's complete trajectory. -/
+def GliderTraj (u : SCTerm) : Prop :=
+  u = scGliderSeed ∨ u = scT1
+  ∨ ∃ k, u = scWrapN k scCore ∨ u = scWrapN k scC1 ∨ u = scWrapN k scC2
+
+/-- Every trajectory member has exactly the successor list `[next]` for its known next. -/
+theorem gliderTraj_succ {u : SCTerm} (h : GliderTraj u) :
+    ∃ v, scSucc u = [v] ∧ GliderTraj v := by
+  rcases h with rfl | rfl | ⟨k, rfl | rfl | rfl⟩
+  · exact ⟨scT1, rfl, Or.inr (Or.inl rfl)⟩
+  · exact ⟨scCore, rfl, Or.inr (Or.inr ⟨0, Or.inl rfl⟩)⟩
+  · exact ⟨scWrapN k scC1, scSucc_wrapN rfl k, Or.inr (Or.inr ⟨k, Or.inr (Or.inl rfl)⟩)⟩
+  · exact ⟨scWrapN k scC2, scSucc_wrapN rfl k, Or.inr (Or.inr ⟨k, Or.inr (Or.inr rfl)⟩)⟩
+  · refine ⟨scWrapN (k + 1) scCore, ?_, Or.inr (Or.inr ⟨k + 1, Or.inl rfl⟩)⟩
+    have h1 : scSucc scC2 = [scWrapN 1 scCore] := rfl
+    have h2 := scSucc_wrapN h1 k
+    rw [h2]
+    show [scWrapN k (.app (.app .S scP) scCore)] = _
+    have : ∀ j, scWrapN j (.app (.app .S scP) scCore) = scWrapN (j + 1) scCore := by
+      intro j
+      induction j with
+      | zero => rfl
+      | succ j ih =>
+          show SCTerm.app (.app .S scP) (scWrapN j (.app (.app .S scP) scCore))
+            = SCTerm.app (.app .S scP) (scWrapN (j + 1) scCore)
+          rw [ih]
+    rw [this k]
+
+/-- Reachability stays on the trajectory. -/
+theorem gliderTraj_reach : ∀ {u : SCTerm}, RS.SC.Steps scGliderSeed u → GliderTraj u := by
+  intro u h
+  refine h.rec (motive := fun (a b : SCTerm) _ => GliderTraj a → GliderTraj b) ?_ ?_ (Or.inl rfl)
+  · intro a ha
+    exact ha
+  · intro a b c s _ ih ha
+    obtain ⟨v, hv, htv⟩ := gliderTraj_succ ha
+    have hb := scSucc_complete s
+    rw [hv] at hb
+    have : b = v := by
+      rcases List.mem_cons.mp hb with h' | h'
+      · exact h'
+      · exact absurd h' List.not_mem_nil
+    exact ih (this ▸ htv)
+
+/-- **Determinism**: every reduct of the glider seed has exactly one successor. -/
+theorem scGlider_deterministic {u v w : SCTerm} (h : RS.SC.Steps scGliderSeed u)
+    (h1 : SCStep u v) (h2 : SCStep u w) : v = w := by
+  obtain ⟨n, hn, _⟩ := gliderTraj_succ (gliderTraj_reach h)
+  have hv := scSucc_complete h1
+  have hw := scSucc_complete h2
+  rw [hn] at hv hw
+  have ev : v = n := by
+    rcases List.mem_cons.mp hv with h' | h'
+    · exact h'
+    · exact absurd h' List.not_mem_nil
+  have ew : w = n := by
+    rcases List.mem_cons.mp hw with h' | h'
+    · exact h'
+    · exact absurd h' List.not_mem_nil
+  rw [ev, ew]
+
+/-- **The glider seed has NO NORMAL FORM** — the march never ends, and determinism leaves no
+side exit. First machine-checked normal-form-free term in `{S,C}`. -/
+theorem scGlider_no_normal_form : ¬ RS.SC.Normalizes scGliderSeed := by
+  rintro ⟨b, hsteps, hnf⟩
+  obtain ⟨v, hv, _⟩ := gliderTraj_succ (gliderTraj_reach hsteps)
+  exact hnf ⟨v, scSucc_sound (by rw [hv]; exact List.mem_cons_self)⟩

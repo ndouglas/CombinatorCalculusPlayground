@@ -304,3 +304,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_glider' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_glider
+
+/-- info: 'scGlider_deterministic' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scGlider_deterministic
+
+/-- info: 'scGlider_no_normal_form' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scGlider_no_normal_form
