@@ -196,3 +196,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'Simulation.steps_iff' does not depend on any axioms -/
 #guard_msgs in #print axioms Simulation.steps_iff
+
+/-- info: 'scStepsC_conservation' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scStepsC_conservation
+
+/-- info: 'SCC_acyclic' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms SCC_acyclic

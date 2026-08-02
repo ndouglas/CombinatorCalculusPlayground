@@ -3715,3 +3715,108 @@ theorem scTCell2_normal (W₁ W₂ rest : SCTerm)
 example : SCVStep (.app (.app (.app .S .C) (.var 0)) .C)
     (.app (.app .C .C) (.app (.var 0) .C)) :=
   SCVStep.S_red .C (.var 0) .C
+
+-- ## Stage 117: exact conservation — the C-fragment winds down, all power lives in S
+-- The decidability probe's tractable slice, and it is sharper than a fragment result usually
+-- is: every C-fire consumes EXACTLY one leaf (its own fired `C`), so the C-fragment obeys exact
+-- conservation — a path of length `n` loses exactly `n` leaves. Consequences, each one line
+-- from the law: the fragment TERMINATES (paths shorter than the leaf count), it is ACYCLIC
+-- (a cycle would lose leaves and return), and its reachable sets are finite (bounded depth,
+-- finite branching) — so C-fragment reachability is decidable in principle (the enumerator is
+-- engineering of the Stage 49–58 genre). The general dichotomy pins the escape: every `{S,C}`
+-- step either loses exactly one leaf or is leafCount-non-decreasing — and the non-decreasing
+-- steps are precisely the S-fires. Everything unbounded — the cycles, the traversal, the
+-- hosting machinery — lives in S-duplication. The decidability question for full `{S,C}` is
+-- exactly the question of whether S-fires can be accounted.
+
+/-- The C-fragment: `{S,C}` reduction without S-fires. -/
+inductive SCStepC : SCTerm → SCTerm → Prop
+  | C_red (x y z : SCTerm) :
+      SCStepC (.app (.app (.app .C x) y) z) (.app (.app x z) y)
+  | appL {t t' u : SCTerm} : SCStepC t t' → SCStepC (.app t u) (.app t' u)
+  | appR {t u u' : SCTerm} : SCStepC u u' → SCStepC (.app t u) (.app t u')
+
+def RS.SCC : RS := ⟨SCTerm, SCStepC⟩
+
+/-- The fragment includes into the full system. -/
+theorem scStepC_step {t u : SCTerm} (h : SCStepC t u) : SCStep t u := by
+  induction h with
+  | C_red x y z => exact SCStep.C_red x y z
+  | appL _ ih => exact SCStep.appL ih
+  | appR _ ih => exact SCStep.appR ih
+
+/-- Every C-fragment step loses exactly one leaf. -/
+theorem scStepC_leafCount {t u : SCTerm} (h : SCStepC t u) :
+    u.leafCount + 1 = t.leafCount := by
+  induction h with
+  | C_red x y z =>
+      show (x.leafCount + z.leafCount + y.leafCount) + 1
+        = ((1 + x.leafCount) + y.leafCount) + z.leafCount
+      omega
+  | appL h ih =>
+      show _ + _ + 1 = _ + _
+      omega
+  | appR h ih =>
+      show _ + _ + 1 = _ + _
+      omega
+
+/-- **EXACT CONSERVATION**: a C-fragment path of length `n` loses exactly `n` leaves. -/
+theorem scStepsC_conservation : ∀ {n : Nat} {t u : SCTerm},
+    RS.SCC.StepsN n t u → n + u.leafCount = t.leafCount := by
+  intro n t u h
+  refine h.rec (motive := fun n t u _ =>
+      n + SCTerm.leafCount u = SCTerm.leafCount t) ?_ ?_
+  · intro a
+    omega
+  · intro m a b c s rest ih
+    have hs := scStepC_leafCount s
+    omega
+
+/-- The fragment TERMINATES: every path is shorter than the starting leaf count. -/
+theorem scStepsC_length_lt {n : Nat} {t u : SCTerm} (h : RS.SCC.StepsN n t u) :
+    n < t.leafCount := by
+  have hc := scStepsC_conservation h
+  have := scLeaf_pos u
+  omega
+
+/-- **The C-fragment is ACYCLIC**: `{S,C}` without duplication winds down. Every cycle in the
+full system fires an S. -/
+theorem SCC_acyclic : RS.Acyclic RS.SCC := by
+  intro t v hs hback
+  obtain ⟨k, hk⟩ := hback.toStepsN
+  have hcyc : RS.SCC.StepsN (k + 1) t t := RS.StepsN.tail hs hk
+  have hc := scStepsC_conservation hcyc
+  omega
+
+/-- The general dichotomy: every `{S,C}` step loses exactly one leaf, or is
+leafCount-non-decreasing — and the latter are exactly the steps containing an S-fire. -/
+theorem scStep_leafCount_dichotomy {t u : SCTerm} (h : SCStep t u) :
+    u.leafCount + 1 = t.leafCount ∨ t.leafCount ≤ u.leafCount := by
+  induction h with
+  | S_red f g x =>
+      right
+      show ((1 + f.leafCount) + g.leafCount) + x.leafCount
+        ≤ (f.leafCount + x.leafCount) + (g.leafCount + x.leafCount)
+      have := scLeaf_pos x
+      omega
+  | C_red x y z =>
+      left
+      show (x.leafCount + z.leafCount + y.leafCount) + 1
+        = ((1 + x.leafCount) + y.leafCount) + z.leafCount
+      omega
+  | appL h ih =>
+      rcases ih with h1 | h1
+      · left
+        show _ + _ + 1 = _ + _
+        omega
+      · right
+        show _ + _ ≤ _ + _
+        omega
+  | appR h ih =>
+      rcases ih with h1 | h1
+      · left
+        show _ + _ + 1 = _ + _
+        omega
+      · right
+        show _ + _ ≤ _ + _
+        omega
