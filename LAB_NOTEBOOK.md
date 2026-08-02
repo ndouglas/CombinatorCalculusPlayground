@@ -4857,3 +4857,19 @@ what automation could and couldn't do. This file is a first-class deliverable
   build the {S,C} bounded-reachability decision procedure (the Stage 49-58 SK template:
   executable stepper + soundness/completeness) — the decidability program's first executable
   brick. (2) Bounded intermediates. (3) C6, declined a hundred-and-eighth time.
+
+## 2026-08-02 — Stage 121: the toolchain closes on one question
+
+- Three stages in one day (confluence, normal forms, bounded decidability), each a transport of
+  a battle-tested template, each landing first-or-second try. The decidability program went from
+  'two named missing pieces' to 'one question' — bounded intermediates — with every supporting
+  tool machine-checked. The autonomous-run cadence is working: templates transport cleanly when
+  the target calculus is well-understood, and eleven prior stages of {S,C} shape theory is what
+  'well-understood' turns out to mean.
+- One process slip worth recording: the Stage 120 docs commit swept in a mispinned audit line
+  because only the feat commit gated on the build. Fixed same-sitting; docs commits gate now.
+- Ranking: (1) **bounded intermediates**: hunt the question directly — either prove a bound for
+  a fragment (the interrogation discipline's paths look monotone-ish) or construct a family
+  needing super-linear intermediates (S-towers that must inflate before deflating); a
+  counterexample is likelier and would be the computational-depth witness. (2) The pairing
+  impossibility. (3) C6, declined a hundred-and-ninth time.

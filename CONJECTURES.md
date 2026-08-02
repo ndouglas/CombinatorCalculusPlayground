@@ -4768,3 +4768,16 @@ arguments — the rung-3 analogue of `SNF_iff`, proved by the standard two-direc
 its own redex). With `sc_nf_unique`, "the" normal form is a well-defined, recognizable object.
 Retroactive dividend: every hosting gadget — tags, cells, arms, words — is spine-width-≤-2 by
 construction, which is WHY the storability lemmas kept being easy.
+
+### Stage 121: bounded reachability is decidable
+
+The SK bounded-region template (Stages 49–58), transported: `scSucc` (the verified one-step
+successor function, sound and complete against `SCStep`), `RS.stepsN_last` (the generic
+last-step peel, completing the StepsN inversion kit), and `scReachFrom_iff` (pinned) — the
+n-step closure computes exactly the ≤-n cone, making bounded reachability `Decidable`. The
+decidability program now has all its tools staged: conservation and speed limits (117–118),
+confluence and unique normal forms (119), the normal-form shape (120), and the decision
+procedure for any bounded region (121). Everything reduces to ONE question: are intermediates
+on a `t ⟶* u` path boundable in `t` and `u`? A bound plus the shrink limit bounds path length,
+and `scReachWithin` decides reachability outright; a counterexample family is the first genuine
+computational-depth witness. This is the cleanest the frontier has ever been stated.
