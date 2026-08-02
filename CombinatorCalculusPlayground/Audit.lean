@@ -232,3 +232,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scv_cross_last' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scv_cross_last
+
+/-- info: 'scv_lastVar_step' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scv_lastVar_step
+
+/-- info: 'scv_lastVar_steps' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scv_lastVar_steps

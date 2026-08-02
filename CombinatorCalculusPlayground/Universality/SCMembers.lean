@@ -415,3 +415,157 @@ theorem scv_cross_last {t u : SCV} {k : Nat} (h : SCVStep t u)
         obtain ⟨hbk, _⟩ := hrest2
         exact SCV.two_vars_dead (A := []) (B := (P₃ ++ [m]) ++ pre.reverse) hM
           (by rw [hrest, hbk]; simp) h1
+
+-- ## Stage 126: the last-variable invariant — the deadlock's path glue
+-- The crossing lemma's sibling with the branch polarity inverted: on a count-preserving step,
+-- a last-position variable either STAYS last, or the step was the three-member C-fire
+-- configuration. Lifted to paths (threading the count squeeze), this says: along any
+-- count-preserving reduction, the variable rides the tail until the one configuration that can
+-- consume it — which Stage 127 shows cannot continue to a `var`-headed target.
+
+/-- Variable `k` is the last member. -/
+def SCV.lastVar (k : Nat) (t : SCV) : Prop :=
+  ∃ M, t.members.reverse = .var k :: M
+
+/-- One count-preserving step: the last variable stays last, or the source was the three-member
+C-fire configuration. -/
+theorem scv_lastVar_step {t u : SCV} {k : Nat} (h : SCVStep t u)
+    (hcount : u.countVar k = t.countVar k) (h1 : t.countVar k = 1)
+    (hlast : SCV.lastVar k t) :
+    SCV.lastVar k u
+    ∨ ∃ x y, t.members = [x, y, .var k] ∧ t.spineHead = .C
+        ∧ u.spineHead = x.spineHead := by
+  obtain ⟨M, hM⟩ := hlast
+  rcases scvStep_members h with ⟨f, g, x, T, hh, hm, hu⟩ | ⟨x, y, z, T, hh, hm, hu⟩
+    | ⟨pre, m, m', post, hs, hm, hh', hm'⟩
+  · -- S-fire
+    have hum : u.members = (f.members ++ [x, .app g x]) ++ T := by
+      rw [hu, SCV.appList_members]
+      show ((SCV.app f x).members ++ [SCV.app g x]) ++ T = _
+      show ((f.members ++ [x]) ++ [SCV.app g x]) ++ T = _
+      simp
+    rcases hT : T.reverse with _ | ⟨a, T₂⟩
+    · -- T = []: the fire duplicates the variable — dead on counting
+      exfalso
+      have hTnil : T = [] := by
+        have := congrArg List.reverse hT
+        simpa using this
+      subst hTnil
+      rw [hm] at hM
+      simp at hM
+      obtain ⟨hx, _⟩ := hM
+      have hb := SCV.countVar_members k t
+      rw [hm, hh] at hb
+      have hcu : u.countVar k
+          = (SCV.app (.app f x) (.app g x)).countVar k := by
+        rw [hu]
+        rfl
+      subst hx
+      have hcu2 : (SCV.app (.app f (.var k)) (.app g (.var k))).countVar k
+          = f.countVar k + g.countVar k + 2 := by
+        show (f.countVar k + (if k = k then 1 else 0))
+          + (g.countVar k + (if k = k then 1 else 0)) = _
+        rw [if_pos rfl]
+        omega
+      have hmt : (([f, g, SCV.var k]).map (SCV.countVar k)).sum
+          = f.countVar k + g.countVar k + 1 := by
+        show f.countVar k + (g.countVar k + (SCV.countVar k (.var k) + 0)) = _
+        rw [SCV.countVar_var]
+        omega
+      rw [hmt] at hb
+      rw [hcu, hcu2] at hcount
+      have hS0 : SCV.countVar k SCV.S = 0 := rfl
+      rw [hS0] at hb
+      omega
+    · -- T nonempty: the variable stays last
+      left
+      have htr : t.members.reverse = T.reverse ++ [x, g, f] := by
+        rw [hm]
+        simp
+      rw [hT] at htr
+      rw [hM] at htr
+      injection htr with ha _
+      refine ⟨T₂ ++ ([SCV.app g x, x] ++ f.members.reverse), ?_⟩
+      rw [hum]
+      simp [hT]
+      rw [← ha]
+  · -- C-fire
+    have hum : u.members = (x.members ++ [z, y]) ++ T := by
+      rw [hu, SCV.appList_members]
+      show ((SCV.app x z).members ++ [y]) ++ T = _
+      show ((x.members ++ [z]) ++ [y]) ++ T = _
+      simp
+    rcases hT : T.reverse with _ | ⟨a, T₂⟩
+    · -- T = []: THE CONFIGURATION
+      right
+      have hTnil : T = [] := by
+        have := congrArg List.reverse hT
+        simpa using this
+      subst hTnil
+      rw [hm] at hM
+      simp at hM
+      obtain ⟨hz, _⟩ := hM
+      subst hz
+      refine ⟨x, y, by rw [hm], hh, ?_⟩
+      rw [hu, SCV.appList_spineHead]
+      rfl
+    · -- T nonempty: the variable stays last
+      left
+      have htr : t.members.reverse = T.reverse ++ [z, y, x] := by
+        rw [hm]
+        simp
+      rw [hT] at htr
+      rw [hM] at htr
+      injection htr with ha _
+      refine ⟨T₂ ++ ([y, z] ++ x.members.reverse), ?_⟩
+      rw [hum]
+      simp [hT]
+      rw [← ha]
+  · -- member-internal
+    rcases hP : post.reverse with _ | ⟨a, P₂⟩
+    · exfalso
+      have hPnil : post = [] := by
+        have := congrArg List.reverse hP
+        simpa using this
+      subst hPnil
+      rw [hm] at hM
+      simp at hM
+      obtain ⟨hmk, _⟩ := hM
+      rw [hmk] at hs
+      exact scv_no_step_from_var hs
+    · left
+      have htr : t.members.reverse = post.reverse ++ ([m] ++ pre.reverse) := by
+        rw [hm]
+        simp
+      rw [hP] at htr
+      rw [hM] at htr
+      injection htr with ha _
+      refine ⟨P₂ ++ ([m'] ++ pre.reverse), ?_⟩
+      rw [hm']
+      simp [hP]
+      rw [← ha]
+
+/-- The invariant along paths: the variable rides the tail until the configuration. -/
+theorem scv_lastVar_steps {k : Nat} : ∀ {t u : SCV}, RS.SCV.Steps t u →
+    u.countVar k = t.countVar k → t.countVar k = 1 → SCV.lastVar k t →
+    SCV.lastVar k u
+    ∨ ∃ w v x y, RS.SCV.Steps t w ∧ SCVStep w v ∧ RS.SCV.Steps v u
+        ∧ w.members = [x, y, .var k] ∧ w.spineHead = .C
+        ∧ v.spineHead = x.spineHead := by
+  intro t u h
+  refine h.rec (motive := fun t u _ =>
+      SCV.countVar k u = SCV.countVar k t → SCV.countVar k t = 1 → SCV.lastVar k t →
+      SCV.lastVar k u
+      ∨ ∃ w v x y, RS.SCV.Steps t w ∧ SCVStep w v ∧ RS.SCV.Steps v u
+          ∧ w.members = [x, y, .var k] ∧ w.spineHead = .C
+          ∧ v.spineHead = x.spineHead) ?_ ?_
+  · intro a _ _ hl
+    exact Or.inl hl
+  · intro a b c s rest ih hcount h1 hl
+    have hbc : SCV.countVar k b = SCV.countVar k a :=
+      scvSteps_countVar_squeeze s rest hcount
+    rcases scv_lastVar_step s hbc h1 hl with hlb | ⟨x, y, hm, hh, hv⟩
+    · rcases ih (by omega) (by omega) hlb with hlu | ⟨w, v, x, y, h1', h2', h3', h4', h5', h6'⟩
+      · exact Or.inl hlu
+      · exact Or.inr ⟨w, v, x, y, RS.Steps.tail s h1', h2', h3', h4', h5', h6'⟩
+    · exact Or.inr ⟨a, b, x, y, @RS.Steps.refl RS.SCV a, s, rest, hm, hh, hv⟩
