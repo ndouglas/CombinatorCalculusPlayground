@@ -599,7 +599,13 @@ exactly the spine-width-≤-2 shapes. BOUNDED REACHABILITY IS DECIDABLE
 successor function and its n-step closure compute exactly the ≤-n-step cone.
 The single remaining piece for full decidability is the BOUNDED-INTERMEDIATE
 question — an intermediate bound plus the shrink limit would bound path
-lengths, and `scReachWithin` would then decide `t ⟶* u` outright. Stage 115
+lengths, and `scReachWithin` would then decide `t ⟶* u` outright. The
+question is now STATED PRECISELY (`RS.StepsLe`, Stage 132) and has its first
+hard datum: THE MINIMAL MOUNTAIN (`sc_no_max_bound`, pinned) — a six-leaf
+term whose only step climbs to seven on its way to a six-leaf target, so any
+bounding function exceeds the identity; probe data (all starts ≤ 8 leaves)
+force `f(8,8) ≥ 31`, an explosive trend consistent with the doubling speed
+limit and with genuine computation happening between the endpoints. Stage 115
 also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
 S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
 Negative standing results shaping any route: arm-level differentiation

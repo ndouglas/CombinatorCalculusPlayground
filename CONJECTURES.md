@@ -4923,3 +4923,21 @@ PAYLOAD ends up at the head. The wall is exactly about `s` reaching the head: wh
 needs and what `{S,C}` cannot do. The census explanation is complete: Stage 103's bounded
 searches failed at every size for a structural reason now stated as three theorems, one of
 them positive.
+
+### Stage 132: the mountain — bounded intermediates has a floor
+
+The `{S,C}` decidability frontier is now stated precisely and has its first hard datum.
+`RS.StepsLe` (generic): paths whose every term stays within a size bound, with the kit
+(`head_le`, `toSteps`, `weaken`, first-step inversion) and `RS.Steps.exists_le` (pinned,
+`[propext]`): every path is bounded by SOMETHING — the frontier question is exactly whether
+that something is a function of the endpoint sizes. The datum, machine-checked: THE MINIMAL
+MOUNTAIN. `S (C S) S (S S) ⟶* S (S (S S)) (S S)`, six leaves each (`scMt_steps`, axiom-free),
+yet the source's only step climbs to seven (`scMt_forced`, via the verified successor) — so
+`sc_no_max_bound` (pinned): the identity bound fails, every path exceeds both endpoints.
+Behind it, the probe (minimax-bottleneck Dijkstra, all starts to 8 leaves): forced excess 1 at
+six leaves, 3 at seven, 23 at eight — a 31-leaf pass is REQUIRED to reach some targets as
+small as three leaves. Any frontier bound `f` needs `f(8,8) ≥ 31`; the blow-up-then-collapse
+is the phenomenon, and its growth rate is the question — if `f` exists and is computable,
+reachability is decidable (`scReachWithin` + the speed limits); if mountains grow beyond every
+computable bound, `{S,C}` reachability is undecidable and the Simulation-class negative half
+closes at rung 3.

@@ -5057,3 +5057,23 @@ what automation could and couldn't do. This file is a first-class deliverable
   intermediate leaf count exceed every function of endpoint sizes? the speed limits meter
   steps, the S-count meters fuel). (2) The fold/Simulation architecture question (parked,
   needs an idea). (3) C6, declined a hundred-and-nineteenth time.
+
+## 2026-08-02 — Stage 132: the mountain
+
+- The frontier finally yielded a formalizable piece by asking the SMALLEST version of the
+  question: not "is there a bound" but "is the identity bound enough". The probe found the
+  minimal counterexample in seconds (a 6-leaf term whose only exit is uphill), and the Lean
+  cost was one generic predicate plus five #guard/rfl-level facts. First-build green again —
+  third stage running.
+- The probe numbers reframe the frontier: excess 1 → 3 → 23 across sizes 6 → 7 → 8. That is
+  not a gentle failure of linearity; it smells exponential, which cuts both ways — a doubling
+  speed limit permits it, and a genuinely computational {S,C} (the hosting thread's evidence)
+  would REQUIRE it. The decidability question and the hosting question are converging on the
+  same phenomenon: how much work can a {S,C} term do before shrinking.
+- StepsLe belongs in the generic RS kit eventually (it lives in SCDecidability for now to
+  avoid a full-tree rebuild mid-run; move it to RS.lean at the next quiet stage).
+- Ranking: (1) **the mountain range**: push the probe to 9–10 leaves with sampling to
+  estimate the growth curve of forced excess, and formalize the PUMP mechanism behind the
+  witnesses (the S-of-S self-application family) — if the excess is provably ≥ exponential,
+  bounded-search decidability dies honestly. (2) The fold/Simulation architecture question.
+  (3) C6, declined a hundred-and-twentieth time.
