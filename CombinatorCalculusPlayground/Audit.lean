@@ -277,3 +277,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'RS.Steps.exists_le' depends on axioms: [propext] -/
 #guard_msgs in #print axioms RS.Steps.exists_le
+
+/-- info: 'List.nodup_length_le' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms List.nodup_length_le
+
+/-- info: 'scReachCapped_sound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scReachCapped_sound
+
+/-- info: 'scReachCapped_complete_start' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scReachCapped_complete_start

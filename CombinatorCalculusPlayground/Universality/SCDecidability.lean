@@ -287,3 +287,235 @@ theorem sc_no_max_bound :
   obtain ⟨v, hs, hle⟩ := RS.StepsLe.first h6 scMt_ne
   have h7 := scMt_forced hs
   omega
+
+-- ## Stage 133: the pigeonhole and the capped engine
+-- Toward the frontier's backbone theorem — "a computable intermediate bound implies
+-- decidability". Two bricks: the constructive list pigeonhole (a duplicate-free list of
+-- elements drawn from `L` is no longer than `L`), and the capped reachability engine
+-- (saturate the successor relation inside a leaf-count cap, duplicate-free by construction).
+-- Deep probe data behind the ranking (recorded in the ledger): the 8-leaf champion's
+-- bottleneck-optimal crossing is 71 steps long with a 31-leaf peak — real computation happens
+-- between small endpoints, so if a bound `f` exists it is not gentle, and the backbone theorem
+-- is what makes "f exists" equivalent to decidability rather than a heuristic.
+
+-- (Core's `List.erase` lemmas ride `Classical.choice` — the TENTH leak, and the first found
+-- inside the core library rather than in a tactic. Hand-rolled removal keeps the budget.)
+/-- Remove the first occurrence. Choice-free twin of `List.erase`. -/
+def listRemove {α : Type} [DecidableEq α] : List α → α → List α
+  | [], _ => []
+  | b :: l, a => if b = a then l else b :: listRemove l a
+
+theorem listRemove_length {α : Type} [DecidableEq α] :
+    ∀ (l : List α) (a : α), a ∈ l → (listRemove l a).length + 1 = l.length := by
+  intro l
+  induction l with
+  | nil => intro a ha; exact absurd ha List.not_mem_nil
+  | cons b l ih =>
+      intro a ha
+      by_cases h : b = a
+      · show (if b = a then l else b :: listRemove l a).length + 1 = _
+        rw [if_pos h]
+        rfl
+      · show (if b = a then l else b :: listRemove l a).length + 1 = _
+        rw [if_neg h]
+        have hal : a ∈ l := by
+          rcases List.mem_cons.mp ha with he | hm
+          · exact absurd he.symm h
+          · exact hm
+        have := ih a hal
+        show ((listRemove l a).length + 1) + 1 = l.length + 1
+        omega
+
+theorem listRemove_mem {α : Type} [DecidableEq α] :
+    ∀ (l : List α) (a x : α), x ∈ l → x ≠ a → x ∈ listRemove l a := by
+  intro l
+  induction l with
+  | nil => intro a x hx _; exact absurd hx List.not_mem_nil
+  | cons b l ih =>
+      intro a x hx hne
+      by_cases h : b = a
+      · show x ∈ if b = a then l else b :: listRemove l a
+        rw [if_pos h]
+        rcases List.mem_cons.mp hx with he | hm
+        · exact absurd (he.trans h) hne
+        · exact hm
+      · show x ∈ if b = a then l else b :: listRemove l a
+        rw [if_neg h]
+        rcases List.mem_cons.mp hx with he | hm
+        · rw [he]
+          exact List.mem_cons_self
+        · exact List.mem_cons_of_mem b (ih a x hm hne)
+
+/-- Constructive pigeonhole: a duplicate-free list drawn from `L` is no longer than `L`. -/
+theorem List.nodup_length_le {α : Type} [DecidableEq α] :
+    ∀ (xs ys : List α), xs.Nodup → (∀ a, a ∈ xs → a ∈ ys) → xs.length ≤ ys.length := by
+  intro xs
+  induction xs with
+  | nil => intro ys _ _; exact Nat.zero_le _
+  | cons x xs ih =>
+      intro ys hnd hsub
+      have hx : x ∈ ys := hsub x (List.mem_cons_self)
+      have hnd' : xs.Nodup := (List.nodup_cons.mp hnd).2
+      have hxnot : x ∉ xs := (List.nodup_cons.mp hnd).1
+      have hsub' : ∀ a, a ∈ xs → a ∈ listRemove ys x := by
+        intro a ha
+        have hne : a ≠ x := fun he => hxnot (he ▸ ha)
+        exact listRemove_mem ys x a (hsub a (List.mem_cons_of_mem x ha)) hne
+      have hlen := ih (listRemove ys x) hnd' hsub'
+      have hrem := listRemove_length ys x hx
+      show xs.length + 1 ≤ ys.length
+      omega
+
+/-- Insert without duplicating. -/
+def scInsert (ts : List SCTerm) (u : SCTerm) : List SCTerm :=
+  if u ∈ ts then ts else u :: ts
+
+theorem scInsert_mem {ts : List SCTerm} {u v : SCTerm} :
+    v ∈ scInsert ts u ↔ v = u ∨ v ∈ ts := by
+  unfold scInsert
+  by_cases h : u ∈ ts
+  · rw [if_pos h]
+    constructor
+    · intro hv; exact Or.inr hv
+    · rintro (rfl | hv)
+      · exact h
+      · exact hv
+  · rw [if_neg h]
+    exact List.mem_cons
+
+theorem scInsert_nodup {ts : List SCTerm} {u : SCTerm} (h : ts.Nodup) :
+    (scInsert ts u).Nodup := by
+  unfold scInsert
+  by_cases hm : u ∈ ts
+  · rw [if_pos hm]; exact h
+  · rw [if_neg hm]; exact List.nodup_cons.mpr ⟨hm, h⟩
+
+theorem scInsert_sub {ts : List SCTerm} {u : SCTerm} : ∀ v ∈ ts, v ∈ scInsert ts u := by
+  intro v hv
+  exact scInsert_mem.mpr (Or.inr hv)
+
+/-- One saturation round: fold all capped successors in. -/
+def scRoundCapped (c : Nat) (ts : List SCTerm) : List SCTerm :=
+  ((ts.flatMap scSucc).filter (fun u => u.leafCount ≤ c)).foldl scInsert ts
+
+theorem scFoldInsert_base : ∀ (ns ts : List SCTerm) (v : SCTerm), v ∈ ts →
+    v ∈ ns.foldl scInsert ts := by
+  intro ns
+  induction ns with
+  | nil => intro ts v hv; exact hv
+  | cons n ns ih =>
+      intro ts v hv
+      exact ih _ v (scInsert_sub v hv)
+
+theorem scFoldInsert_mem : ∀ (ns ts : List SCTerm) (v : SCTerm),
+    v ∈ ns.foldl scInsert ts ↔ v ∈ ts ∨ v ∈ ns := by
+  intro ns
+  induction ns with
+  | nil =>
+      intro ts v
+      constructor
+      · intro h; exact Or.inl h
+      · rintro (h | h)
+        · exact h
+        · exact absurd h (List.not_mem_nil)
+  | cons n ns ih =>
+      intro ts v
+      show v ∈ ns.foldl scInsert (scInsert ts n) ↔ _
+      rw [ih]
+      rw [scInsert_mem]
+      constructor
+      · rintro ((rfl | h) | h)
+        · exact Or.inr List.mem_cons_self
+        · exact Or.inl h
+        · exact Or.inr (List.mem_cons_of_mem n h)
+      · rintro (h | h)
+        · exact Or.inl (Or.inr h)
+        · rcases List.mem_cons.mp h with rfl | h
+          · exact Or.inl (Or.inl rfl)
+          · exact Or.inr h
+
+theorem scFoldInsert_nodup : ∀ (ns ts : List SCTerm), ts.Nodup →
+    (ns.foldl scInsert ts).Nodup := by
+  intro ns
+  induction ns with
+  | nil => intro ts h; exact h
+  | cons n ns ih => intro ts h; exact ih _ (scInsert_nodup h)
+
+/-- Membership in a saturation round: the old states plus every capped successor. -/
+theorem scRoundCapped_mem {c : Nat} {ts : List SCTerm} {v : SCTerm} :
+    v ∈ scRoundCapped c ts
+      ↔ v ∈ ts ∨ (∃ w ∈ ts, SCStep w v ∧ v.leafCount ≤ c) := by
+  unfold scRoundCapped
+  rw [scFoldInsert_mem]
+  constructor
+  · rintro (h | h)
+    · exact Or.inl h
+    · right
+      have h' := List.mem_filter.mp h
+      obtain ⟨w, hw, hsucc⟩ := List.mem_flatMap.mp h'.1
+      exact ⟨w, hw, scSucc_sound hsucc, by simpa using h'.2⟩
+  · rintro (h | ⟨w, hw, hstep, hcap⟩)
+    · exact Or.inl h
+    · right
+      refine List.mem_filter.mpr ⟨?_, by simpa⟩
+      exact List.mem_flatMap.mpr ⟨w, hw, scSucc_complete hstep⟩
+
+theorem scRoundCapped_nodup {c : Nat} {ts : List SCTerm} (h : ts.Nodup) :
+    (scRoundCapped c ts).Nodup :=
+  scFoldInsert_nodup _ _ h
+
+theorem scRoundCapped_sub {c : Nat} {ts : List SCTerm} : ∀ v ∈ ts, v ∈ scRoundCapped c ts :=
+  fun _ hv => scRoundCapped_mem.mpr (Or.inl hv)
+
+/-- The capped reachability engine: `n` saturation rounds from `t`. -/
+def scReachCapped (c : Nat) (t : SCTerm) : Nat → List SCTerm
+  | 0 => [t]
+  | n + 1 => scRoundCapped c (scReachCapped c t n)
+
+theorem scReachCapped_nodup (c : Nat) (t : SCTerm) : ∀ n, (scReachCapped c t n).Nodup
+  | 0 => List.nodup_cons.mpr ⟨List.not_mem_nil, List.nodup_nil⟩
+  | n + 1 => scRoundCapped_nodup (scReachCapped_nodup c t n)
+
+theorem scReachCapped_mono {c : Nat} {t : SCTerm} {n : Nat} :
+    ∀ v ∈ scReachCapped c t n, v ∈ scReachCapped c t (n + 1) :=
+  fun v hv => scRoundCapped_sub v hv
+
+/-- Soundness: everything the engine finds is genuinely reachable. -/
+theorem scReachCapped_sound {c : Nat} {t : SCTerm} :
+    ∀ {n : Nat} {v : SCTerm}, v ∈ scReachCapped c t n → RS.SC.Steps t v := by
+  intro n
+  induction n with
+  | zero =>
+      intro v hv
+      have : v = t := by
+        rcases List.mem_cons.mp hv with h | h
+        · exact h
+        · exact absurd h (List.not_mem_nil)
+      rw [this]
+      exact @RS.Steps.refl RS.SC t
+  | succ n ih =>
+      intro v hv
+      rcases scRoundCapped_mem.mp hv with h | ⟨w, hw, hstep, _⟩
+      · exact ih h
+      · exact RS.Steps.trans (ih hw) (RS.Steps.tail hstep (@RS.Steps.refl RS.SC v))
+
+/-- Completeness: a capped path from anything the engine has found lands in the engine's
+cone at some fuel. -/
+theorem scReachCapped_complete {c : Nat} {t : SCTerm} :
+    ∀ {v u : SCTerm}, RS.StepsLe RS.SC SCTerm.leafCount c v u →
+    ∀ n, v ∈ scReachCapped c t n → ∃ m, u ∈ scReachCapped c t m := by
+  intro v u h
+  refine h.rec (motive := fun (v u : SCTerm) _ =>
+      ∀ n, v ∈ scReachCapped c t n → ∃ m, u ∈ scReachCapped c t m) ?_ ?_
+  · intro a _ n hn
+    exact ⟨n, hn⟩
+  · intro a b d s _ rest ih n hn
+    refine ih (n + 1) ?_
+    exact scRoundCapped_mem.mpr
+      (Or.inr ⟨a, hn, s, RS.StepsLe.head_le rest⟩)
+
+/-- Every capped path from `t` is seen by the engine at some fuel. -/
+theorem scReachCapped_complete_start {c : Nat} {t u : SCTerm}
+    (h : RS.StepsLe RS.SC SCTerm.leafCount c t u) :
+    ∃ m, u ∈ scReachCapped c t m :=
+  scReachCapped_complete h 0 List.mem_cons_self
