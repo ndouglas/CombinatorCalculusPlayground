@@ -4811,3 +4811,25 @@ what automation could and couldn't do. This file is a first-class deliverable
   interrogation reachability decidable (the state space is member-sequences over a finite
   gadget alphabet with copy — a well-structured-transition-systems question). (2) The pairing
   impossibility. (3) C6, declined a hundred-and-fifth time.
+
+## 2026-08-02 — Stage 118: paying retail
+
+- The abstraction collapsed (member alphabets compound) and the general theory gives nothing
+  (non-erasing TRSs are Turing-complete), which forced the honest question: what do THESE rules
+  give? Answer: exact metering. One leaf per step down, doubling per step up. The shrink limit
+  deserves its plain-language form: SK can hide arbitrary computation in an intermediate and
+  erase the evidence with one K; {S,C} must pay down every intermediate visibly, one leaf per
+  step, in path length. If {S,C} is undecidable, the undecidability is OUT IN THE OPEN in a way
+  SK's never is — long paths, not big erasures.
+- Three probe stages in, the decidability program has its shape: conservation below (C-fragment
+  finite), metering throughout (this stage), and two named missing pieces — SC-confluence
+  (templated; the one big SK theorem never transported) and bounded intermediates (open, and
+  the real question). I notice the probes keep producing laws rather than answers, and that
+  this is what the rung-3 endgame looked like from the inside too.
+- Formal note: ring_nf does not exist here (no Mathlib) — Nat.pow_succ + Nat.mul_assoc by hand;
+  and the Carrier-motive pothole again (twice). The no-dependency discipline keeps the proofs
+  honest and occasionally keeps them quaint.
+- Ranking: (1) **SC-confluence**: transport the SK parallel-reduction proof to {S,C} — the one
+  big infrastructure piece the decidability program and any future normalization argument both
+  need; templated but sizeable. (2) The bounded-intermediate question, once confluence lands.
+  (3) C6, declined a hundred-and-sixth time.

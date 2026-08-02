@@ -4720,3 +4720,30 @@ intact elements with genetically-closed contents) that reachability stays decida
 duplication-of-compounds crosses into undecidable process-rewriting territory. That question is
 now stated with all its supporting laws machine-checked; it is the program's live frontier, and
 both answers remain headlines.
+
+### Stage 118: the two-sided speed limit
+
+The S-accounting probe, honestly narrowed and exactly quantified. Narrowed: the member-sequence
+abstraction (finite alphabet + copy) collapses — S-fires build new members from old, so the
+alphabet compounds into full terms; and non-erasing TRSs are Turing-complete in general, so
+non-erasure alone decides nothing. What `{S,C}`'s specific rules give, exactly:
+
+| | |
+|---|---|
+| **`scSteps_shrink_le`** | **the shrink limit: a length-`n` path loses at most `n` leaves** — no step loses more than its own fired `C` — pinned |
+| `scStep_growth` | no step more than doubles the leaf count |
+| **`scSteps_growth_le`** | **a length-`n` path grows by at most `2ⁿ`** — pinned |
+
+With Stage 117's conservation, every `{S,C}` path is now metered on both sides. The shrink limit
+is the anti-erasure law quantified, and it is the sharpest single contrast with SK the program
+owns: K erases mountains in one step; `{S,C}` pays retail, one leaf per step, always. Whatever
+undecidability `{S,C}` might have cannot come from hiding computation in erased intermediates —
+any large intermediate must be paid down visibly, step by step, in the path length.
+
+The decidability landscape after three probe stages: the C-fragment is finite-reachable
+(conservation); the full system is two-sided-metered (this stage); the named missing
+infrastructure is SC-CONFLUENCE (the SK proof is the template — parallel reduction, orthogonal
+rules) and the BOUNDED-INTERMEDIATE question (does `t ⟶* u` ever require intermediates
+essentially larger than `t` and `u`? — the metering makes largeness expensive but not
+impossible). Confluence plus a bounded-intermediate theorem would yield a decision procedure;
+a counterexample to bounded intermediates would be the first sign of real computational depth.
