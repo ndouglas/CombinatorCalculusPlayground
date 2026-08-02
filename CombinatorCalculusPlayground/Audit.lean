@@ -298,3 +298,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_decidable_of_bound' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_decidable_of_bound
+
+/-- info: 'scCore_pump' does not depend on any axioms -/
+#guard_msgs in #print axioms scCore_pump
+
+/-- info: 'sc_glider' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_glider

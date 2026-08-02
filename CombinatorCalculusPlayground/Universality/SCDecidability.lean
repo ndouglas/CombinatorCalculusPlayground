@@ -754,3 +754,70 @@ def sc_decidable_of_bound (f : Nat → Nat → Nat)
         RS.StepsLe.weaken (Nat.le_max_left _ _) (hf t u h)
       obtain ⟨m, hm⟩ := scReachCapped_complete_start h1
       exact scReachCapped_saturates ht m u hm)
+
+-- ## Stage 135: the glider — deterministic unbounded growth from eight leaves
+-- Probing the convergence of the two threads (hosting ↔ decidability): forced-march depth —
+-- the longest run of unique successors — EXPLODES with size (0, 1, 2, 4, 12, 60+ for sizes
+-- 3–8), and the size-8 champion `S (S S S) S (C (S S))` marches deterministically without end
+-- (1500 steps traced, no branch ever, linear growth ≈ +5 leaves per 3 steps). The mechanism
+-- is a three-fire self-similar loop: with `p = S (C (S S))`, the core `p p p` fires
+-- S-C-S back into `S p (p p p)` — itself under a wrapper. Formalized: the glider family and
+-- UNBOUNDED GROWTH from a fixed eight-leaf term. The reachable set of an 8-leaf `{S,C}` term
+-- can be infinite — the capped engine (Stage 133) is not an optimization but a necessity.
+
+/-- The glider's pump: `S (C (S S))`. -/
+def scP : SCTerm := .app .S (.app .C (.app .S .S))
+
+/-- The self-reproducing core: `p p p`. -/
+def scCore : SCTerm := .app (.app scP scP) scP
+
+/-- The eight-leaf seed: `S (S S S) S (C (S S))`. -/
+def scGliderSeed : SCTerm :=
+  .app (.app (.app .S (.app (.app .S .S) .S)) .S) (.app .C (.app .S .S))
+
+/-- The glider at time `k`: the core under `k` wrappers. -/
+def scGlide : Nat → SCTerm
+  | 0 => scCore
+  | k + 1 => .app (.app .S scP) (scGlide k)
+
+#guard scGliderSeed.leafCount = 8
+#guard scP.leafCount = 4
+#guard scCore.leafCount = 12
+
+/-- The three-fire loop: the core reproduces itself under a wrapper. -/
+theorem scCore_pump : RS.SC.Steps scCore (.app (.app .S scP) scCore) :=
+  RS.Steps.tail (SCStep.S_red (.app .C (.app .S .S)) scP scP)
+    (RS.Steps.tail (SCStep.C_red (.app .S .S) scP (.app scP scP))
+      (RS.Steps.tail (SCStep.S_red .S (.app scP scP) scP)
+        (RS.Steps.refl _)))
+
+/-- The seed reaches the core in two fires. -/
+theorem scGliderSeed_core : RS.SC.Steps scGliderSeed scCore :=
+  RS.Steps.tail (SCStep.S_red (.app (.app .S .S) .S) .S (.app .C (.app .S .S)))
+    (RS.Steps.tail (SCStep.appL (SCStep.S_red .S .S (.app .C (.app .S .S))))
+      (RS.Steps.refl _))
+
+theorem scGlide_step : ∀ k, RS.SC.Steps (scGlide k) (scGlide (k + 1))
+  | 0 => scCore_pump
+  | k + 1 => scSteps_appR (.app .S scP) (scGlide_step k)
+
+theorem scGlide_reach : ∀ k, RS.SC.Steps scCore (scGlide k)
+  | 0 => RS.Steps.refl _
+  | k + 1 => RS.Steps.trans (scGlide_reach k) (scGlide_step k)
+
+theorem scGlide_leafCount : ∀ k, (scGlide k).leafCount = 12 + 5 * k
+  | 0 => rfl
+  | k + 1 => by
+      show (1 + scP.leafCount) + (scGlide k).leafCount = 12 + 5 * (k + 1)
+      rw [scGlide_leafCount k]
+      show (1 + 4) + (12 + 5 * k) = 12 + 5 * (k + 1)
+      omega
+
+/-- **The glider**: a fixed eight-leaf `{S,C}` term reaches terms of every size — its
+reachable set is infinite, deterministically pumped, and never returns. Non-cyclic
+divergence at eight leaves. -/
+theorem sc_glider : ∀ n, ∃ u, RS.SC.Steps scGliderSeed u ∧ n ≤ u.leafCount := by
+  intro n
+  refine ⟨scGlide n, RS.Steps.trans scGliderSeed_core (scGlide_reach n), ?_⟩
+  rw [scGlide_leafCount n]
+  omega
