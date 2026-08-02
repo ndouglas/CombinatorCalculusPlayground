@@ -202,3 +202,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'SCC_acyclic' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms SCC_acyclic
+
+/-- info: 'scSteps_shrink_le' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scSteps_shrink_le
+
+/-- info: 'scSteps_growth_le' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scSteps_growth_le

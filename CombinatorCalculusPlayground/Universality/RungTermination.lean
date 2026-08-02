@@ -3820,3 +3820,62 @@ theorem scStep_leafCount_dichotomy {t u : SCTerm} (h : SCStep t u) :
       · right
         show _ + _ ≤ _ + _
         omega
+
+-- ## Stage 118: the two-sided speed limit — S-fire accounting, quantified
+-- The S-accounting probe's formal yield. The member-sequence abstraction collapses under
+-- compounding (S-fires build new members from old, so the alphabet is not finite in general),
+-- and non-erasing TRSs are Turing-complete in general — so `{S,C}`-decidability is genuinely
+-- about these specific rules. What the rules DO give, exactly: a two-sided speed limit.
+-- Shrinking is capped at ONE LEAF PER STEP (each step loses at most its fired C — the
+-- anti-erasure law quantified), and growth at DOUBLING per step (an S-fire adds at most one
+-- extra copy of a subterm). Reaching a small term from a big intermediate is therefore
+-- proportionally SLOW — the exact opposite of SK, where K erases mountains in one step. The
+-- decidability landscape this shapes goes to the ledger.
+
+/-- **The shrink limit**: no step loses more than one leaf, so a path of length `n` loses at
+most `n` leaves. -/
+theorem scSteps_shrink_le : ∀ {n : Nat} {t u : SCTerm},
+    RS.SC.StepsN n t u → t.leafCount ≤ u.leafCount + n := by
+  intro n t u h
+  refine h.rec (motive := fun n t u _ =>
+      SCTerm.leafCount t ≤ SCTerm.leafCount u + n) ?_ ?_
+  · intro a
+    omega
+  · intro m a b c s rest ih
+    rcases scStep_leafCount_dichotomy s with h1 | h1
+    · omega
+    · omega
+
+/-- **The growth limit**: no step more than doubles the leaf count. -/
+theorem scStep_growth {t u : SCTerm} (h : SCStep t u) :
+    u.leafCount ≤ 2 * t.leafCount := by
+  induction h with
+  | S_red f g x =>
+      show (f.leafCount + x.leafCount) + (g.leafCount + x.leafCount)
+        ≤ 2 * (((1 + f.leafCount) + g.leafCount) + x.leafCount)
+      omega
+  | C_red x y z =>
+      show (x.leafCount + z.leafCount) + y.leafCount
+        ≤ 2 * (((1 + x.leafCount) + y.leafCount) + z.leafCount)
+      omega
+  | appL h ih =>
+      show _ + _ ≤ 2 * (_ + _)
+      omega
+  | appR h ih =>
+      show _ + _ ≤ 2 * (_ + _)
+      omega
+
+/-- A path of length `n` grows the leaf count by at most `2ⁿ`. -/
+theorem scSteps_growth_le : ∀ {n : Nat} {t u : SCTerm},
+    RS.SC.StepsN n t u → u.leafCount ≤ 2 ^ n * t.leafCount := by
+  intro n t u h
+  refine h.rec (motive := fun n t u _ =>
+      SCTerm.leafCount u ≤ 2 ^ n * SCTerm.leafCount t) ?_ ?_
+  · intro a
+    simp
+  · intro m a b c s rest ih
+    have hg := scStep_growth s
+    calc SCTerm.leafCount c ≤ 2 ^ m * SCTerm.leafCount b := ih
+      _ ≤ 2 ^ m * (2 * SCTerm.leafCount a) := Nat.mul_le_mul_left _ hg
+      _ = 2 ^ (m + 1) * SCTerm.leafCount a := by
+          rw [Nat.pow_succ, Nat.mul_assoc]
