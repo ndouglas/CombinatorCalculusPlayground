@@ -4654,3 +4654,38 @@ encodable in the cells. This is now a QUESTION ABOUT TAG SYSTEMS, not about `{S,
 machinery for boustrophedon consumption exists (flat cells, Stage 112's constants trick). If
 boustrophedon tag is universal, `{S,C}` hosting of a universal machine is within the toolkit;
 if it degenerates, the one-way flow theorem becomes the negative half of SK ≤ `{S,C}`.
+
+### Stage 116: the stack, not the shuttle — and decidability as the frontier
+
+The boustrophedon probe falsified its own premise in the first hour, which is the probe working
+as intended. Tracing the actual induced dynamics of the flat machine: a consumed cell pushes its
+production wrappers at the spine front, and the NEXT consumption is also at the front — push and
+pop interleave, so there are no generations to alternate. The machine is a STACK: pop `σ`, push
+`reverse(P(σ))` — monogenic PREFIX REWRITING over a finite wrapper alphabet. Generational
+separation (true boustrophedon) would need a barrier the pile cannot have: pushes land at the
+fire-front, the fire-front is the only access point, and the last member is permanent. Stage
+115's "surviving route" was mis-shaped within a day of being named — the census-caveat culture
+(bounded, modeled, and now MIS-INDUCED) earns its fourth qualifier.
+
+The reframe this forces is bigger than the correction. A stack process with finite alphabet and
+finite control is pushdown-flavored, and pushdown reachability is decidable — so the honest
+question is no longer "which tag variant can `{S,C}` host?" but **"is `{S,C}`-reachability
+decidable?"** The formal core shipped today (Defs.lean, axiom-free, `steps_iff` pinned):
+
+| | |
+|---|---|
+| `Simulation.steps_iff` | reachability between encoded states is EQUIVALENT to source reachability — `fwd_steps` one way, `bwd` the other; the five-field certificate finally uses `bwd` for something structural |
+| `Simulation.transferDecidable` | a decision procedure for the host's reachability decides the source's |
+
+Consequence: a `Simulation` of SK into ANY reachability-decidable host would decide
+SK-reachability (undecidable — external, cited not checked, as the repository has always scoped
+such facts). So `{S,C}`-DECIDABILITY, if provable, closes the negative half of SK ≤ `{S,C}` at
+the Simulation class — the certificate class the program's positive results live in. The
+evidence toward decidability: the one-way-flow law (elements never reassemble), the
+member-calculus's three moves, the pushdown shape of every interrogation architecture found.
+The evidence against: S-duplication clones compound members wholesale, and cloning is not a
+pushdown move — the honest frame for `{S,C}`-reduction is the process-rewrite-systems hierarchy
+(between pushdown and Petri-flavored classes), where decidability boundaries are delicate and
+the question is genuine research. Either answer is a program headline: decidable ⇒ SK has no
+Simulation into `{S,C}` and "K buys undecidability"; undecidable ⇒ the proof itself will exhibit
+the computational power the hosting thread was hunting.

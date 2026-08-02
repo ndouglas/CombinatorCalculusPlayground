@@ -4760,3 +4760,29 @@ what automation could and couldn't do. This file is a first-class deliverable
   probe its power (simulate a 2-tag or a Minsky machine in it on paper; if the simulation
   closes, formalize the RS and the {S,C} cell design together). (2) The arrival-order pairing
   impossibility via the corrected member calculus. (3) C6, declined a hundred-and-third time.
+
+## 2026-08-02 — Stage 116: the probe that falsified its own premise
+
+- Boustrophedon died in the first hour: I traced one full production-consumption interleaving
+  and watched the generations collapse into a stack. The right response to 'my framing was
+  wrong within a day' is to promote the correction to the deliverable, and the corrected
+  question is better than the original: {S,C}-reachability decidability is a real, sharp,
+  two-sided frontier — and it is the kind of question (decidability of reduction in a weak
+  combinator basis) with genuine prior-art hooks (pushdown systems, process rewrite systems,
+  Waldmann's S-calculus decidability results). Prior-art obligation recorded.
+- The formal core is small and load-bearing: steps_iff is the first structural use of bwd since
+  the tag pipeline built it — the five-field Simulation certificate turns out to be exactly an
+  interreducibility of reachability, which is what makes decidability transport. The taxonomy's
+  design decision from Stage 7 (demand bwd in the positive class) pays out five arcs later:
+  without bwd, decidability of the host would prove nothing.
+- The hosting thread's honest state after three corrective stages: the run phase is real
+  (one-tag-step, axiom-free), the fold is impossible-as-designed (one-way flow), the induced
+  machine is a stack, and the question standing over it all is decidability. The construction
+  and refutation programs have converged on the same object from opposite sides — the same
+  convergence that produced the Stage 96 cycle. Last time, the surviving branch was inhabited.
+  I notice I have no prediction this time, and that the program's method does not need one.
+- Ranking: (1) **the decidability probe**: formalize the stack fragment ({S,C} interrogation
+  dynamics as an RS over member-lists), prove the fragment's reachability decidable, and map
+  exactly where S-duplication of compounds escapes it — the deliverable is the fragment
+  decidability theorem plus the named escape, which together locate {S,C} in the hierarchy.
+  (2) The pairing impossibility. (3) C6, declined a hundred-and-fourth time.

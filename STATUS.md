@@ -521,10 +521,18 @@ each forced passenger a job.
 its obstruction DEEPENED (Stage 115): elements are GENETICALLY CLOSED — data
 flows elements → spine, one way — so the fold cannot re-create a NESTED next
 word from pile members at all; the nested-word architecture ends at generation
-one. The surviving route is FLAT/BOUSTROPHEDON: the pile itself is the next
-word, read in alternating direction per generation — with the open question
-whether alternating-direction tag systems are universal (they simulate
-two-stack dynamics with a phase flip; plausibly yes, unverified). Stage 115
+one. The boustrophedon framing was itself corrected (Stage 116): front-push and
+front-pop INTERLEAVE, so the induced dynamics are PREFIX REWRITING — a
+deterministic stack process with a finite wrapper alphabet, pushdown-flavored,
+and generational separation would need a mid-spine barrier that cannot exist.
+THE FRONTIER QUESTION REFRAMED: is `{S,C}`-reachability DECIDABLE? Formal
+transport (Stage 116, `Simulation.steps_iff` + `Simulation.transferDecidable`,
+axiom-free): reachability is equivalent across a Simulation, so deciding the
+host decides the source — a Simulation of SK into a reachability-decidable
+host would decide SK-reachability (undecidable, external). Decidability of
+`{S,C}` would therefore close the negative half at the Simulation class; the
+one-way-flow law and the pushdown shape are evidence toward it, S-duplication
+of compound members the muddying factor. Stage 115
 also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
 S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
 Negative standing results shaping any route: arm-level differentiation
