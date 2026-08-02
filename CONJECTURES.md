@@ -4806,3 +4806,13 @@ Nothing else can happen. The prose theory that carried fifteen stages is now inf
 crossing lemma, the bare-vars invariant, and the pairing deadlock are formalization targets
 sitting one theorem deep on this one. First-try green, whole module — the sign of a theory whose
 statements were forced by use before they were written down.
+
+### Stage 124: variable counts are monotone
+
+The pruning law every search has used since Stage 103, machine-checked: `scvStep_countVar` (the
+exact per-step law: preserved, or an S-fire adds its third argument's count),
+`scvSteps_countVar_mono` (pinned), and the squeeze (endpoint-equal counts force per-step
+preservation — the crossing lemma's hypothesis, derived not assumed). The stage also caught its
+own gap pre-prose: the S-fire CAN move a last-position variable by duplicating it, so the
+crossing configuration is forced only on count-preserving paths — the corrected lemma order is
+counts first, crossing second.

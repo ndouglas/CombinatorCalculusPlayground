@@ -4900,3 +4900,12 @@ what automation could and couldn't do. This file is a first-class deliverable
   two bare-var members swap only when they occupy positions three and four with the fire's
   machinery ahead — the deadlock's engine. (2) The deadlock assembly. (3) C6, declined a
   hundred-and-eleventh time.
+
+## 2026-08-02 — Stage 124: prunes to theorems
+
+- The searches' pruning assumptions are now theorems, and drafting the crossing lemma FIRST
+  caught the S-duplication escape before it became another Stage 111 correction — the
+  draft-then-derive order is working as designed. Six stages today.
+- Ranking: (1) **the crossing lemma on count-preserving paths** (the members-count bridge:
+  countVar distributes over spineHead and members; then the three-member forced shape).
+  (2) The deadlock assembly. (3) C6, declined a hundred-and-twelfth time.
