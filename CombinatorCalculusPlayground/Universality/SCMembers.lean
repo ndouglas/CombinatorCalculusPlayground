@@ -942,3 +942,322 @@ theorem scv_varHead_no_pairPre {i : Nat} {t : SCV} (h : RS.SCV.Steps t SCV.pairP
   intro hh
   have := scv_varHead_frozen h hh
   exact SCV.noConfusion (show SCV.C = SCV.var i from this)
+
+-- ## Stage 129: the closure — arrival-order pairing is impossible in `{S,C}`
+-- The deadlock, closed. `Ahead`: both payload variables sit ahead of `s` in the member list.
+-- It is inductive on count-preserving steps up to the dead ends: the ONLY fire that could break
+-- it is a root C-fire with `s` in third position — but `Ahead` puts both payloads in the two
+-- slots ahead, so one of them sits in first position and the fire PROMOTES it (stuck, forever,
+-- never reaches `C s b a`). S-fires cannot move `s` at all: first position promotes, second
+-- nests (stuck), third duplicates (count). Since every pairing path must end through `C s b a`
+-- (Stage 127), where `Ahead` fails, there is no pairing path. Open since Stage 103.
+
+/-- Both payload variables ride ahead of `s`. -/
+def SCV.Ahead (t : SCV) : Prop :=
+  ∃ A B, t.members = A ++ .var 2 :: B ∧ .var 0 ∈ A ∧ .var 1 ∈ A
+
+/-- **The invariant step**: on a count-preserving step, `Ahead` persists or a variable commits
+(promotion or head-nesting — stuck either way). -/
+theorem scv_ahead_step {t u : SCV} (h : SCVStep t u)
+    (hc0 : u.countVar 0 = t.countVar 0) (hc1 : u.countVar 1 = t.countVar 1)
+    (hc2 : u.countVar 2 = t.countVar 2)
+    (hA : SCV.Ahead t) :
+    SCV.Ahead u ∨ ∃ k, SCV.Stuck k u := by
+  obtain ⟨A, B, hAB, h0, h1⟩ := hA
+  rcases scvStep_members h with ⟨f, g, x, T, hh, hm, hu⟩ | ⟨x, y, z, T, hh, hm, hu⟩
+    | ⟨pre, m, m', post, hs, hm, hm'⟩
+  · -- S-fire
+    have hum : u.members = (f.members ++ [x, .app g x]) ++ T := by
+      rw [hu, SCV.appList_members]
+      show ((SCV.app f x).members ++ [SCV.app g x]) ++ T = _
+      show ((f.members ++ [x]) ++ [SCV.app g x]) ++ T = _
+      simp
+    have heq : A ++ SCV.var 2 :: B = f :: g :: x :: T := hAB.symm.trans hm
+    rcases A with _ | ⟨a₀, A₁⟩
+    · simp at h0
+    rcases A₁ with _ | ⟨a₁, A₂⟩
+    · -- two payloads, one slot
+      exfalso
+      simp at h0 h1
+      rw [← h1] at h0
+      injection h0 with hn
+      omega
+    rcases A₂ with _ | ⟨a₂, A₃⟩
+    · -- s in third position: the fire would duplicate it
+      exfalso
+      injection heq with e₀ heq₁
+      injection heq₁ with e₁ heq₂
+      injection heq₂ with e₂ e₃
+      have hd := scv_sfire_count (k := 2) hh hm hu
+      rw [← e₂] at hd
+      rw [SCV.countVar_var] at hd
+      omega
+    · injection heq with e₀ heq₁
+      injection heq₁ with e₁ heq₂
+      injection heq₂ with e₂ e₃
+      simp only [List.mem_cons] at h0 h1
+      have get0 : SCV.var 0 = a₀ ∨ SCV.var 0 = a₁
+          ∨ SCV.var 0 ∈ (f.members ++ [x, .app g x]) ++ A₃ := by
+        rcases h0 with h0 | h0 | h0 | h0
+        · exact Or.inl h0
+        · exact Or.inr (Or.inl h0)
+        · exfalso
+          have hd := scv_sfire_count (k := 0) hh hm hu
+          rw [← e₂, ← h0] at hd
+          rw [SCV.countVar_var] at hd
+          omega
+        · exact Or.inr (Or.inr (List.mem_append.mpr (Or.inr h0)))
+      have get1 : SCV.var 1 = a₀ ∨ SCV.var 1 = a₁
+          ∨ SCV.var 1 ∈ (f.members ++ [x, .app g x]) ++ A₃ := by
+        rcases h1 with h1 | h1 | h1 | h1
+        · exact Or.inl h1
+        · exact Or.inr (Or.inl h1)
+        · exfalso
+          have hd := scv_sfire_count (k := 1) hh hm hu
+          rw [← e₂, ← h1] at hd
+          rw [SCV.countVar_var] at hd
+          omega
+        · exact Or.inr (Or.inr (List.mem_append.mpr (Or.inr h1)))
+      rcases get0 with h0' | h0' | hm0
+      · -- payload 0 promoted
+        right
+        refine ⟨0, Or.inl ?_⟩
+        have hus : u.spineHead = f.spineHead := by
+          rw [hu, SCV.appList_spineHead]
+          rfl
+        rw [hus, ← e₀, ← h0']
+        rfl
+      · -- payload 0 nested at the head of (g x)
+        right
+        refine ⟨0, Or.inr ⟨.app g x, ?_, ?_, g, x, rfl⟩⟩
+        · rw [hum]
+          simp
+        · show g.spineHead = _
+          rw [← e₁, ← h0']
+          rfl
+      rcases get1 with h1' | h1' | hm1
+      · right
+        refine ⟨1, Or.inl ?_⟩
+        have hus : u.spineHead = f.spineHead := by
+          rw [hu, SCV.appList_spineHead]
+          rfl
+        rw [hus, ← e₀, ← h1']
+        rfl
+      · right
+        refine ⟨1, Or.inr ⟨.app g x, ?_, ?_, g, x, rfl⟩⟩
+        · rw [hum]
+          simp
+        · show g.spineHead = _
+          rw [← e₁, ← h1']
+          rfl
+      · left
+        exact ⟨(f.members ++ [x, .app g x]) ++ A₃, B, by rw [hum, ← e₃]; simp, hm0, hm1⟩
+  · -- C-fire
+    have hum : u.members = (x.members ++ [z, y]) ++ T := by
+      rw [hu, SCV.appList_members]
+      show ((SCV.app x z).members ++ [y]) ++ T = _
+      show ((x.members ++ [z]) ++ [y]) ++ T = _
+      simp
+    have heq : A ++ SCV.var 2 :: B = x :: y :: z :: T := hAB.symm.trans hm
+    rcases A with _ | ⟨a₀, A₁⟩
+    · simp at h0
+    rcases A₁ with _ | ⟨a₁, A₂⟩
+    · exfalso
+      simp at h0 h1
+      rw [← h1] at h0
+      injection h0 with hn
+      omega
+    rcases A₂ with _ | ⟨a₂, A₃⟩
+    · -- THE CROSSING: s in third position, both payloads in the two slots ahead —
+      -- whichever sits first is promoted by the fire
+      injection heq with e₀ heq₁
+      injection heq₁ with e₁ heq₂
+      injection heq₂ with e₂ e₃
+      simp at h0 h1
+      rcases h0 with h0 | h0
+      · right
+        refine ⟨0, Or.inl ?_⟩
+        have hus : u.spineHead = x.spineHead := by
+          rw [hu, SCV.appList_spineHead]
+          rfl
+        rw [hus, ← e₀, ← h0]
+        rfl
+      rcases h1 with h1 | h1
+      · right
+        refine ⟨1, Or.inl ?_⟩
+        have hus : u.spineHead = x.spineHead := by
+          rw [hu, SCV.appList_spineHead]
+          rfl
+        rw [hus, ← e₀, ← h1]
+        rfl
+      · exfalso
+        rw [← h1] at h0
+        injection h0 with hn
+        omega
+    · injection heq with e₀ heq₁
+      injection heq₁ with e₁ heq₂
+      injection heq₂ with e₂ e₃
+      simp only [List.mem_cons] at h0 h1
+      have get0 : SCV.var 0 = a₀
+          ∨ SCV.var 0 ∈ (x.members ++ [z, y]) ++ A₃ := by
+        rcases h0 with h0 | h0 | h0 | h0
+        · exact Or.inl h0
+        · right
+          refine List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inr ?_)))
+          rw [h0, e₁]
+          simp
+        · right
+          refine List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inr ?_)))
+          rw [h0, e₂]
+          simp
+        · exact Or.inr (List.mem_append.mpr (Or.inr h0))
+      have get1 : SCV.var 1 = a₀
+          ∨ SCV.var 1 ∈ (x.members ++ [z, y]) ++ A₃ := by
+        rcases h1 with h1 | h1 | h1 | h1
+        · exact Or.inl h1
+        · right
+          refine List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inr ?_)))
+          rw [h1, e₁]
+          simp
+        · right
+          refine List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inr ?_)))
+          rw [h1, e₂]
+          simp
+        · exact Or.inr (List.mem_append.mpr (Or.inr h1))
+      rcases get0 with h0' | hm0
+      · right
+        refine ⟨0, Or.inl ?_⟩
+        have hus : u.spineHead = x.spineHead := by
+          rw [hu, SCV.appList_spineHead]
+          rfl
+        rw [hus, ← e₀, ← h0']
+        rfl
+      rcases get1 with h1' | hm1
+      · right
+        refine ⟨1, Or.inl ?_⟩
+        have hus : u.spineHead = x.spineHead := by
+          rw [hu, SCV.appList_spineHead]
+          rfl
+        rw [hus, ← e₀, ← h1']
+        rfl
+      · left
+        exact ⟨(x.members ++ [z, y]) ++ A₃, B, by rw [hum, ← e₃]; simp, hm0, hm1⟩
+  · -- member-internal: the split at s survives untouched
+    obtain ⟨hh', hm'⟩ := hm'
+    have heq : pre ++ m :: post = A ++ SCV.var 2 :: B := hm.symm.trans hAB
+    rcases List.append_eq_append_iff.mp heq with ⟨a', hA', hpost'⟩ | ⟨c', hpre', hB'⟩
+    · -- the stepping member sits ahead of s
+      rcases a' with _ | ⟨w, a₂⟩
+      · -- would mean m = s: variables do not step
+        exfalso
+        injection hpost' with e _
+        rw [e] at hs
+        exact scv_no_step_from_var hs
+      · injection hpost' with e₀ e₁
+        left
+        refine ⟨pre ++ m' :: a₂, B, ?_, ?_, ?_⟩
+        · rw [hm', e₁]
+          simp
+        · rw [hA'] at h0
+          rcases List.mem_append.mp h0 with hp | hc
+          · exact List.mem_append.mpr (Or.inl hp)
+          · rcases List.mem_cons.mp hc with hw | ha
+            · exfalso
+              rw [e₀, ← hw] at hs
+              exact scv_no_step_from_var hs
+            · exact List.mem_append.mpr (Or.inr (List.mem_cons.mpr (Or.inr ha)))
+        · rw [hA'] at h1
+          rcases List.mem_append.mp h1 with hp | hc
+          · exact List.mem_append.mpr (Or.inl hp)
+          · rcases List.mem_cons.mp hc with hw | ha
+            · exfalso
+              rw [e₀, ← hw] at hs
+              exact scv_no_step_from_var hs
+            · exact List.mem_append.mpr (Or.inr (List.mem_cons.mpr (Or.inr ha)))
+    · -- the stepping member sits behind s
+      rcases c' with _ | ⟨w, c₂⟩
+      · exfalso
+        injection hB' with e _
+        rw [← e] at hs
+        exact scv_no_step_from_var hs
+      · injection hB' with e₀ e₁
+        left
+        refine ⟨A, c₂ ++ m' :: post, ?_, h0, h1⟩
+        rw [hm', hpre', ← e₀]
+        simp
+
+/-- The invariant, along count-preserving paths. -/
+theorem scv_ahead_steps : ∀ {t u : SCV}, RS.SCV.Steps t u →
+    u.countVar 0 = t.countVar 0 → u.countVar 1 = t.countVar 1 →
+    u.countVar 2 = t.countVar 2 →
+    SCV.Ahead t → SCV.Ahead u ∨ ∃ k, SCV.Stuck k u := by
+  intro t u h
+  refine h.rec (motive := fun a c _ =>
+      SCV.countVar 0 c = SCV.countVar 0 a → SCV.countVar 1 c = SCV.countVar 1 a →
+      SCV.countVar 2 c = SCV.countVar 2 a →
+      SCV.Ahead a → SCV.Ahead c ∨ ∃ k, SCV.Stuck k c) ?_ ?_
+  · intro a _ _ _ hA
+    exact Or.inl hA
+  · intro a b c s rest ih hc0 hc1 hc2 hA
+    have hb0 := scvSteps_countVar_squeeze (k := 0) s rest hc0
+    have hb1 := scvSteps_countVar_squeeze (k := 1) s rest hc1
+    have hb2 := scvSteps_countVar_squeeze (k := 2) s rest hc2
+    rcases scv_ahead_step s hb0 hb1 hb2 hA with hAb | ⟨k, hst⟩
+    · exact ih (by omega) (by omega) (by omega) hAb
+    · exact Or.inr ⟨k, scv_stuck_steps rest hst⟩
+
+/-- **ARRIVAL-ORDER PAIRING IS IMPOSSIBLE IN `{S,C}`** — the deadlock, closed. No machine `P`,
+however large, reduces `P a b s` to `s a b` on opaque arguments. The path would have to end
+with the root C-fire from `C s b a` (the target's unique predecessor); along the way both
+payload variables and `s` keep their counts at one, so `Ahead` — both payloads ahead of `s` —
+is invariant up to commitments that never reach `C s b a`; but at `C s b a` both payloads sit
+BEHIND `s`. Conjectured at Stage 103 (census bound ≤ 9 leaves); the bound is now a theorem at
+every size. -/
+theorem scv_no_pair (P : SCV) (hP0 : P.countVar 0 = 0) (hP1 : P.countVar 1 = 0)
+    (hP2 : P.countVar 2 = 0) :
+    ¬ RS.SCV.Steps (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) SCV.pairTarget := by
+  intro h
+  have hc0 : SCV.countVar 0 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 := by
+    show P.countVar 0 + 1 + 0 + 0 = 1
+    omega
+  have hc1 : SCV.countVar 1 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 := by
+    show P.countVar 1 + 0 + 1 + 0 = 1
+    omega
+  have hc2 : SCV.countVar 2 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 := by
+    show P.countVar 2 + 0 + 0 + 1 = 1
+    omega
+  rcases RS.steps_last h with he | ⟨t', ht', hstep⟩
+  · injection he with h1 h2
+    injection h2 with h3
+    omega
+  · have hpre : t' = SCV.pairPre := scv_pair_pred hstep
+    subst hpre
+    have hA0 : SCV.Ahead (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) := by
+      refine ⟨P.members ++ [.var 0, .var 1], [], ?_, ?_, ?_⟩
+      · show (((P.members ++ [SCV.var 0]) ++ [SCV.var 1]) ++ [SCV.var 2]) = _
+        simp
+      · simp
+      · simp
+    rcases scv_ahead_steps ht'
+        (by rw [show SCV.countVar 0 SCV.pairPre = 1 from rfl, hc0])
+        (by rw [show SCV.countVar 1 SCV.pairPre = 1 from rfl, hc1])
+        (by rw [show SCV.countVar 2 SCV.pairPre = 1 from rfl, hc2])
+        hA0 with hAu | ⟨k, hst⟩
+    · -- Ahead fails at C s b a: both payloads are BEHIND s there
+      obtain ⟨A, B, hAB, h0, h1⟩ := hAu
+      have hAB' : ([.var 2, .var 1, .var 0] : List SCV) = A ++ SCV.var 2 :: B := hAB
+      rcases A with _ | ⟨a₀, A₁⟩
+      · simp at h0
+      injection hAB' with e₀ h₂
+      rcases A₁ with _ | ⟨a₁, A₂⟩
+      · injection h₂ with e hh
+        injection e with hn
+        omega
+      injection h₂ with e₁ h₃
+      rcases A₂ with _ | ⟨a₂, A₃⟩
+      · injection h₃ with e hh
+        injection e with hn
+        omega
+      injection h₃ with e₂ h₄
+      exact absurd h₄.symm (by simp)
+    · exact scv_pairPre_not_stuck k hst

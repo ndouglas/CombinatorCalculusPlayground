@@ -256,3 +256,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scv_sfire_count' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scv_sfire_count
+
+/-- info: 'scv_ahead_steps' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scv_ahead_steps
+
+/-- info: 'scv_no_pair' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scv_no_pair
