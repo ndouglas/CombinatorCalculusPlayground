@@ -4736,3 +4736,27 @@ what automation could and couldn't do. This file is a first-class deliverable
   choreography; the last engineering before a tag Simulation into {S,C}. (2) The arrival-order
   pairing impossibility (the member calculus may now be strong enough to settle it). (3) C6,
   declined a hundred-and-second time.
+
+## 2026-07-31 — Stage 115: the direction of the river
+
+- No gadget today; instead the fold's wall turned out to be a conservation law. Elements are
+  genetically closed — the fire shape flattens element contents onto the spine and provides no
+  inverse — so runtime data flows in exactly one direction, and nested structure is a
+  generation-one artifact of the encoder. Three stages of fold attempts kept failing at
+  'element creation' because element creation is not a missing trick; it is against the grain
+  of the calculus in the same way erasure is. The member calculus gains its fifth and heaviest
+  clause.
+- The correction: my Stage 111 invariant had a hole (S-fires nest atoms at member HEADS), found
+  while trying to formalize it — the fourth time formalization pressure caught prose that
+  hand-waving had passed. The downstream conclusions survive re-derivation, the hole is
+  witnessed in-file, and the lesson is old but sharpened: in this program, an invariant is not
+  real until either Lean or an explicit witness has tried to kill it.
+- The reduction of the hosting question to 'is boustrophedon tag universal?' is the sitting's
+  strategic yield. It moves the frontier OUT of {S,C} entirely: the host-side machinery exists;
+  what is unknown is a property of an abstract rewriting family — exactly the kind of question
+  the program's RS-taxonomy was built to state. Prior-art obligation: alternating/bidirectional
+  tag and queue automata literature, cited-not-checked.
+- Ranking: (1) **boustrophedon tag**: define the alternating-direction tag system as an RS,
+  probe its power (simulate a 2-tag or a Minsky machine in it on paper; if the simulation
+  closes, formalize the RS and the {S,C} cell design together). (2) The arrival-order pairing
+  impossibility via the corrected member calculus. (3) C6, declined a hundred-and-third time.

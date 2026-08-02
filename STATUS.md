@@ -517,14 +517,19 @@ immovable, so piles are LIFO by law; LIFO fold of LIFO pile restores FIFO).
 Non-erasure forbids UNACCOUNTED waste, not waste: every surviving gadget gives
 each forced passenger a job.
 
-**What remains for a full tag `Simulation` into `{S,C}`**: the FOLD phase —
-the end marker consuming the pile into the next front word. Scoped (Stage 113)
-with its wall named: the accumulated next-word needs protected-ELEMENT status
-but fires produce live PREFIXES. Candidate route: tag-valued payloads keeping
-the fold cascade machine-headed (the cascade becomes the fold). Negative
-standing results that shape any route: arm-level differentiation homogenizes
-(catalysts census-dead ≤ 9), arrival-order pairing conjectured impossible
-(≤ 9), opaque mid-spine insertion impossible (proved-in-prose from the freeze).
+**What remains for a full tag `Simulation` into `{S,C}`**: the FOLD phase, and
+its obstruction DEEPENED (Stage 115): elements are GENETICALLY CLOSED — data
+flows elements → spine, one way — so the fold cannot re-create a NESTED next
+word from pile members at all; the nested-word architecture ends at generation
+one. The surviving route is FLAT/BOUSTROPHEDON: the pile itself is the next
+word, read in alternating direction per generation — with the open question
+whether alternating-direction tag systems are universal (they simulate
+two-stack dynamics with a phase flip; plausibly yes, unverified). Stage 115
+also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
+S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
+Negative standing results shaping any route: arm-level differentiation
+homogenizes, arrival-order pairing conjectured impossible (≤ 9), opaque
+mid-spine insertion impossible.
 
 ## The open item — CLOSED (Stage 75)
 

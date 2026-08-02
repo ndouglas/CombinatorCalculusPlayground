@@ -4617,3 +4617,40 @@ What remains live: the fold thread (the last engineering before a tag `Simulatio
 `{S,C}`), the arrival-order pairing conjecture, C6 (declined 101 times), and the headline
 sentence — unchanged, resting on a larger instrument: **if S alone is universal, its encoding
 must be non-injective or must fail to preserve reduction paths.**
+
+### Stage 115: one-way data flow — the fold's true shape, and a correction
+
+The fold-cascade sitting returned structure instead of a gadget, and the structure is decisive.
+
+**The correction first, because the program's ledger exists for exactly this.** Stage 111's
+prose invariant — "atoms never nest into compound elements" — is FALSE as stated: an S-fire with
+an atom in g-position creates the member `(g x)`, a compound with the atom at its head. The hole
+is witnessed in-file (a two-line constructor application). The searches were sound (they explored
+those fires); only the prose over-claimed. The refined invariant: atoms occur bare in argument
+position OR at member heads. Re-derivation of the downstream results: head-position atoms freeze
+the spine on flattening (`scv_varHead2_step`, machine-checked, untouched), and the
+one-literal-behind bound survives — the only new escape shape is `[β₁, u, β₂, W]` freezes with
+`u ≠ β₂` (constructing `app β₁ β₂` would need an atom-duplicating S-fire, forbidden), which does
+not reach the 4-member target. Both Stage 111 conclusions stand; the invariant that proved them
+needed a third clause.
+
+**The deepening: elements are genetically closed.** Every argument-position subterm of every
+reduct descends from an argument-position subterm of the initial term. The mechanism is visible
+in the fire shape itself: `[C, x, y, z | T] → spine(x) ++ [z, y] ++ T` — element contents
+FLATTEN onto the spine (elements → spine), and nothing ever assembles spine material back into
+an element (the assembled `(x z)` pairings are function-position prefixes, permanently). Data
+flows one way. CONSEQUENCE: the fold cannot build a nested next word from pile members — not
+"we lack the gadget" but "the direction of data flow forbids it." The nested-word architecture
+(Stages 105–113's front word) is a GENERATION-ONE structure: it exists because `enc` built it at
+encoding time, and nothing at runtime can ever rebuild its like.
+
+**The surviving architecture: boustrophedon.** The pile itself must BE the next word, consumed
+from its front — which reads generation n+1 in reverse of its production order. Alternating-
+direction reading is forced. The open question this reduces hosting to: are
+ALTERNATING-DIRECTION TAG SYSTEMS (read left-to-right, then right-to-left, flipping per
+generation) universal? They are two-stack-flavored (the machinery IS a stack plus a read
+direction), which smells universal, and the simulation overhead is a per-generation phase bit —
+encodable in the cells. This is now a QUESTION ABOUT TAG SYSTEMS, not about `{S,C}`: the host
+machinery for boustrophedon consumption exists (flat cells, Stage 112's constants trick). If
+boustrophedon tag is universal, `{S,C}` hosting of a universal machine is within the toolkit;
+if it degenerates, the one-way flow theorem becomes the negative half of SK ≤ `{S,C}`.
