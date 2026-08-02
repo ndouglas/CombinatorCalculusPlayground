@@ -519,3 +519,238 @@ theorem scReachCapped_complete_start {c : Nat} {t u : SCTerm}
     (h : RS.StepsLe RS.SC SCTerm.leafCount c t u) :
     ∃ m, u ∈ scReachCapped c t m :=
   scReachCapped_complete h 0 List.mem_cons_self
+
+-- ## Stage 134: the backbone — a computable intermediate bound implies decidability
+-- The frontier question becomes a THEOREM about itself: if some function of the endpoint
+-- sizes bounds the intermediates of witnessing paths, then `{S,C}` reachability is decidable
+-- outright. Enumerate the capped universe (mirroring the Census enumerator's budget pattern),
+-- saturate the capped engine inside it by pigeonhole, and decide by list membership.
+
+/-- All `{S,C}` terms with exactly `n` leaves, given budget `d ≥ n` (the budget makes the
+recursion structural, exactly as in the Census `enum`). -/
+def scEnum : Nat → Nat → List SCTerm
+  | _, 0 => []
+  | _, 1 => [.S, .C]
+  | 0, _ => []
+  | d + 1, n + 2 =>
+    (List.range (n + 1)).flatMap fun i =>
+      (scEnum d (i + 1)).flatMap fun l =>
+        (scEnum d (n + 1 - i)).map fun r => SCTerm.app l r
+
+theorem scEnum_succ (d n : Nat) :
+    scEnum (d + 1) (n + 2) =
+      (List.range (n + 1)).flatMap fun i =>
+        (scEnum d (i + 1)).flatMap fun l =>
+          (scEnum d (n + 1 - i)).map fun r => SCTerm.app l r := rfl
+
+theorem scEnum_complete : ∀ (t : SCTerm) (d : Nat), t.leafCount ≤ d →
+    t ∈ scEnum d t.leafCount := by
+  intro t
+  induction t with
+  | S =>
+      intro d hd
+      have hd1 : 1 ≤ d := hd
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 := ⟨d - 1, by omega⟩
+      show SCTerm.S ∈ [SCTerm.S, SCTerm.C]
+      exact List.mem_cons_self
+  | C =>
+      intro d hd
+      have hd1 : 1 ≤ d := hd
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 := ⟨d - 1, by omega⟩
+      show SCTerm.C ∈ [SCTerm.S, SCTerm.C]
+      exact List.mem_cons_of_mem _ List.mem_cons_self
+  | app l r ihl ihr =>
+      intro d hd
+      have hl1 := scLeaf_pos l
+      have hr1 := scLeaf_pos r
+      have hsum : (SCTerm.app l r).leafCount = l.leafCount + r.leafCount := rfl
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 :=
+        ⟨d - 1, (Nat.succ_pred_eq_of_pos (by rw [hsum] at hd; omega)).symm⟩
+      obtain ⟨m, hm⟩ : ∃ m, l.leafCount + r.leafCount = m + 2 :=
+        ⟨l.leafCount + r.leafCount - 2, by omega⟩
+      rw [hsum, hm, scEnum_succ]
+      refine List.mem_flatMap.mpr ⟨l.leafCount - 1, List.mem_range.mpr ?_, ?_⟩
+      · omega
+      refine List.mem_flatMap.mpr ⟨l, ?_, ?_⟩
+      · have h1 : l.leafCount - 1 + 1 = l.leafCount := by omega
+        rw [h1]
+        exact ihl d' (by rw [hsum] at hd; omega)
+      refine List.mem_map.mpr ⟨r, ?_, rfl⟩
+      · have h2 : m + 1 - (l.leafCount - 1) = r.leafCount := by omega
+        rw [h2]
+        exact ihr d' (by rw [hsum] at hd; omega)
+
+/-- The capped universe: every term with at most `c` leaves. -/
+def scEnumLe (c : Nat) : List SCTerm :=
+  (List.range c).flatMap fun n => scEnum c (n + 1)
+
+theorem scEnumLe_complete {c : Nat} {t : SCTerm} (h : t.leafCount ≤ c) :
+    t ∈ scEnumLe c := by
+  have h1 := scLeaf_pos t
+  refine List.mem_flatMap.mpr ⟨t.leafCount - 1, List.mem_range.mpr (by omega), ?_⟩
+  have h2 : t.leafCount - 1 + 1 = t.leafCount := by omega
+  rw [h2]
+  exact scEnum_complete t c h
+
+/-- Everything the engine holds is capped (given a capped start). -/
+theorem scReachCapped_capped {c : Nat} {t : SCTerm} (ht : t.leafCount ≤ c) :
+    ∀ {n : Nat} {v : SCTerm}, v ∈ scReachCapped c t n → v.leafCount ≤ c := by
+  intro n
+  induction n with
+  | zero =>
+      intro v hv
+      have hvt : v = t := by
+        rcases List.mem_cons.mp hv with h | h
+        · exact h
+        · exact absurd h List.not_mem_nil
+      rw [hvt]
+      exact ht
+  | succ n ih =>
+      intro v hv
+      rcases scRoundCapped_mem.mp hv with h | ⟨_, _, _, hcap⟩
+      · exact ih h
+      · exact hcap
+
+/-- Append a step at the end of a bounded path. -/
+theorem RS.StepsLe.snoc {A : RS} {size : A.Carrier → Nat} {c : Nat} {a b d : A.Carrier}
+    (h : RS.StepsLe A size c a b) (s : A.step b d) (hd : size d ≤ c) :
+    RS.StepsLe A size c a d := by
+  induction h with
+  | refl _ ha => exact RS.StepsLe.tail s ha (RS.StepsLe.refl _ hd)
+  | tail s' ha _ ih => exact RS.StepsLe.tail s' ha (ih s)
+
+/-- Bounded soundness: the engine's members are reached by capped paths. -/
+theorem scReachCapped_soundLe {c : Nat} {t : SCTerm} (ht : t.leafCount ≤ c) :
+    ∀ {n : Nat} {v : SCTerm}, v ∈ scReachCapped c t n →
+    RS.StepsLe RS.SC SCTerm.leafCount c t v := by
+  intro n
+  induction n with
+  | zero =>
+      intro v hv
+      have hvt : v = t := by
+        rcases List.mem_cons.mp hv with h | h
+        · exact h
+        · exact absurd h List.not_mem_nil
+      rw [hvt]
+      exact RS.StepsLe.refl (A := RS.SC) (size := SCTerm.leafCount) (c := c) t ht
+  | succ n ih =>
+      intro v hv
+      rcases scRoundCapped_mem.mp hv with h | ⟨w, hw, hstep, hcap⟩
+      · exact ih h
+      · exact RS.StepsLe.snoc (ih hw) hstep hcap
+
+theorem scReachCapped_mono_add {c : Nat} {t : SCTerm} (a m : Nat) :
+    ∀ v ∈ scReachCapped c t a, v ∈ scReachCapped c t (a + m) := by
+  induction m with
+  | zero => intro v hv; exact hv
+  | succ m ih => intro v hv; exact scReachCapped_mono v (ih v hv)
+
+theorem scReachCapped_mono_le {c : Nat} {t : SCTerm} {a b : Nat} (hab : a ≤ b) :
+    ∀ v ∈ scReachCapped c t a, v ∈ scReachCapped c t b := by
+  intro v hv
+  have h := scReachCapped_mono_add (c := c) (t := t) a (b - a) v hv
+  rw [Nat.add_sub_cancel' hab] at h
+  exact h
+
+/-- If a round adds nothing by count, it added nothing by membership. -/
+theorem scReachCapped_stable_step {c : Nat} {t : SCTerm} {n : Nat}
+    (h : (scReachCapped c t (n + 1)).length ≤ (scReachCapped c t n).length) :
+    ∀ v ∈ scReachCapped c t (n + 1), v ∈ scReachCapped c t n := by
+  intro v hv
+  by_cases hin : v ∈ scReachCapped c t n
+  · exact hin
+  · exfalso
+    have hnd : (v :: scReachCapped c t n).Nodup :=
+      List.nodup_cons.mpr ⟨hin, scReachCapped_nodup c t n⟩
+    have hsub : ∀ a, a ∈ v :: scReachCapped c t n → a ∈ scReachCapped c t (n + 1) := by
+      intro a ha
+      rcases List.mem_cons.mp ha with rfl | h'
+      · exact hv
+      · exact scReachCapped_mono a h'
+    have hle := List.nodup_length_le _ _ hnd hsub
+    have hlen : (v :: scReachCapped c t n).length = (scReachCapped c t n).length + 1 := rfl
+    omega
+
+/-- Stability propagates: once a round is stable, every later fuel stays inside it. -/
+theorem scReachCapped_stable_forever {c : Nat} {t : SCTerm} {n : Nat}
+    (h : ∀ v ∈ scReachCapped c t (n + 1), v ∈ scReachCapped c t n) :
+    ∀ m v, v ∈ scReachCapped c t (n + m) → v ∈ scReachCapped c t n := by
+  intro m
+  induction m with
+  | zero => intro v hv; exact hv
+  | succ m ih =>
+      intro v hv
+      rcases scRoundCapped_mem.mp hv with h' | ⟨w, hw, hstep, hcap⟩
+      · exact ih v h'
+      · have hw' := ih w hw
+        exact h v (scRoundCapped_mem.mpr (Or.inr ⟨w, hw', hstep, hcap⟩))
+
+/-- A stable round exists within the pigeonhole budget. -/
+theorem scReachCapped_exists_stable {c : Nat} {t : SCTerm} (ht : t.leafCount ≤ c) :
+    ∃ k, k ≤ (scEnumLe c).length ∧
+      ∀ v ∈ scReachCapped c t (k + 1), v ∈ scReachCapped c t k := by
+  have hbound : ∀ n, (scReachCapped c t n).length ≤ (scEnumLe c).length := by
+    intro n
+    exact List.nodup_length_le _ _ (scReachCapped_nodup c t n)
+      (fun a ha => scEnumLe_complete (scReachCapped_capped ht ha))
+  have key : ∀ (b j : Nat), (scEnumLe c).length ≤ (scReachCapped c t j).length + b →
+      ∃ k, j ≤ k ∧ k ≤ j + b ∧
+        (scReachCapped c t (k + 1)).length ≤ (scReachCapped c t k).length := by
+    intro b
+    induction b with
+    | zero =>
+        intro j hj
+        refine ⟨j, Nat.le_refl _, by omega, ?_⟩
+        have := hbound (j + 1)
+        omega
+    | succ b ih =>
+        intro j hj
+        by_cases hstep : (scReachCapped c t (j + 1)).length ≤ (scReachCapped c t j).length
+        · exact ⟨j, Nat.le_refl _, by omega, hstep⟩
+        · obtain ⟨k, hk1, hk2, hk3⟩ := ih (j + 1) (by omega)
+          exact ⟨k, by omega, by omega, hk3⟩
+  obtain ⟨k, _, hk2, hk3⟩ := key (scEnumLe c).length 0 (by omega)
+  exact ⟨k, by omega, scReachCapped_stable_step hk3⟩
+
+/-- **Saturation**: fuel `|scEnumLe c|` sees everything any fuel ever sees. -/
+theorem scReachCapped_saturates {c : Nat} {t : SCTerm} (ht : t.leafCount ≤ c) :
+    ∀ n v, v ∈ scReachCapped c t n → v ∈ scReachCapped c t (scEnumLe c).length := by
+  obtain ⟨k, hkle, hstable⟩ := scReachCapped_exists_stable ht
+  intro n v hv
+  by_cases hn : n ≤ k
+  · exact scReachCapped_mono_le (Nat.le_trans hn hkle) v hv
+  · obtain ⟨m, rfl⟩ : ∃ m, n = k + m := ⟨n - k, by omega⟩
+    exact scReachCapped_mono_le hkle v (scReachCapped_stable_forever hstable m v hv)
+
+/-- Capped reachability is decidable outright. -/
+def scStepsLe_decidable (c : Nat) (t u : SCTerm) (ht : t.leafCount ≤ c) :
+    Decidable (RS.StepsLe RS.SC SCTerm.leafCount c t u) :=
+  decidable_of_iff (u ∈ scReachCapped c t (scEnumLe c).length) (by
+    constructor
+    · intro h
+      exact scReachCapped_soundLe ht h
+    · intro h
+      obtain ⟨m, hm⟩ := scReachCapped_complete_start h
+      exact scReachCapped_saturates ht m u hm)
+
+/-- **THE BACKBONE**: a computable intermediate bound implies `{S,C}` reachability is
+decidable. The frontier question — does such an `f` exist? — is now exactly the distance
+between this theorem and undecidability. -/
+def sc_decidable_of_bound (f : Nat → Nat → Nat)
+    (hf : ∀ t u : SCTerm, RS.SC.Steps t u →
+        RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u) :
+    ∀ t u : SCTerm, Decidable (RS.SC.Steps t u) := fun t u =>
+  have ht : t.leafCount ≤ max (f t.leafCount u.leafCount) t.leafCount :=
+    Nat.le_max_right _ _
+  decidable_of_iff
+    (u ∈ scReachCapped (max (f t.leafCount u.leafCount) t.leafCount) t
+      (scEnumLe (max (f t.leafCount u.leafCount) t.leafCount)).length) (by
+    constructor
+    · intro h
+      exact RS.StepsLe.toSteps (scReachCapped_soundLe ht h)
+    · intro h
+      have h1 : RS.StepsLe RS.SC SCTerm.leafCount
+          (max (f t.leafCount u.leafCount) t.leafCount) t u :=
+        RS.StepsLe.weaken (Nat.le_max_left _ _) (hf t u h)
+      obtain ⟨m, hm⟩ := scReachCapped_complete_start h1
+      exact scReachCapped_saturates ht m u hm)

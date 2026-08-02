@@ -286,3 +286,15 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scReachCapped_complete_start' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scReachCapped_complete_start
+
+/-- info: 'scEnumLe_complete' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scEnumLe_complete
+
+/-- info: 'scReachCapped_saturates' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scReachCapped_saturates
+
+/-- info: 'scStepsLe_decidable' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scStepsLe_decidable
+
+/-- info: 'sc_decidable_of_bound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_decidable_of_bound
