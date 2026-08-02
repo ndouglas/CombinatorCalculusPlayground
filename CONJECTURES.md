@@ -4969,3 +4969,17 @@ mountains (then reachability is decidable and the negative Simulation half close
 mountains outgrow every computable bound (then `{S,C}` reachability is undecidable — and the
 hosting thread's machinery is the natural instrument for proving it). Stage 132's data pins
 the floor: `f(6,6) ≥ 7`, `f(8,8) ≥ 31`.
+
+### Stage 135: the glider — deterministic unbounded growth at eight leaves
+
+`sc_glider` (pinned): `S (S S S) S (C (S S))` reaches terms of EVERY size. The engine is the
+three-fire self-similar loop `scCore_pump` (axiom-free): with `p = S (C (S S))`, the core
+`p p p` fires S-C-S back into `S p (p p p)` — itself, one wrapper deeper; sizes run `12 + 5k`.
+NON-CYCLIC DIVERGENCE: all previously known `{S,C}` divergence was cyclic (h-/w-cycles, size
+constant); the glider grows forever and never returns. Probe findings: the forced-march depth
+(unique successor at every step) explodes with size — 0, 1, 2, 4, 12, 60+ at sizes 3–8 — and
+the glider's march was traced 1500 steps without a single branch: `{S,C}` at eight leaves runs
+deterministic, non-terminating, linearly-growing computation. Frontier consequences: reachable
+sets of small terms are INFINITE (the capped engine is a necessity, not an optimization), and
+the glider is the simplest specimen of the phenomenon the mountains, the speed limits, and the
+hosting gadgets all orbit — sustained work between small endpoints.

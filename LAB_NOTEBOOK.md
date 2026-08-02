@@ -5117,3 +5117,23 @@ what automation could and couldn't do. This file is a first-class deliverable
   bound" via the hosting thread? Exploratory; verify computationally first. (2) The pump
   family / mountain growth rate (now subsumed into 1). (3) C6, declined a
   hundred-and-twenty-second time.
+
+## 2026-08-02 — Stage 135: the glider
+
+- The convergence probe delivered something better than programmable mountains: a
+  DETERMINISTIC linear-growth glider at eight leaves, found by asking "how long can the
+  successor stay unique?" — a question neither thread had thought to ask. Three fires,
+  perfect self-similarity, first-build green formalization (fourth stage running), the pump
+  itself axiom-free.
+- The glider sharpens the undecidability intuition without proving it: {S,C} sustains
+  deterministic unbounded computation from tiny seeds. What is still missing for a reduction
+  is CONTROL — making the growth halt on a programmable condition (which is the fold problem
+  again, from the other side). Every thread now points at the same missing piece.
+- Seventeen autonomous stages (119–135): the deadlock closed (three pinned impossibilities,
+  one witnessed possibility), the frontier stated and floored (mountain), the backbone
+  proved (bound ⟹ decidable), and the glider. ~950 theorems, 100 pins.
+- Ranking: (1) **glider determinism** — upgrade the trace to a theorem: every reduct of the
+  seed has EXACTLY ONE successor (a parametric scSucc computation over the family's three
+  phases; would make the glider the first machine-checked deterministic diverger and prove
+  the seed has NO normal form). (2) The control question (fold, from the glider side): can a
+  wrapper make the pump halt on a marker? (3) C6, declined a hundred-and-twenty-third time.
