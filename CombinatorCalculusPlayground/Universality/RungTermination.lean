@@ -3661,3 +3661,34 @@ theorem scTWord_step (E W : SCTerm) (ws : List SCTerm) :
     RS.SC.Steps (.app (.app (scTWord E (W :: ws)) scDup) scDup)
       (.app (.app (.app (.app (scTWord E ws) scDup) scDup) W) scDup) :=
   scTCell_step W (scTWord E ws) scDup scDup
+
+-- ## Stage 113: multi-wrapper cells — the fold phase, scoped
+-- Extending the one-tag-step to multi-symbol productions is layering: each extra C-layer in the
+-- cell drops one more wrapper into the pile, one fire per layer. The two-wrapper cell below
+-- covers 2-symbol productions (tagAB's largest); the pattern iterates. The FOLD itself — the
+-- end marker consuming the pile into the next front word — is scoped in the ledger and is a
+-- genuine design problem: the accumulated next-word must live as a protected ELEMENT, but fires
+-- produce only live PREFIXES (the scCons output re-fires when trailing material arrives), and
+-- the pile is LIFO by necessity since THE SPINE'S LAST MEMBER IS PERMANENT — nothing ever
+-- inserts behind the tail.
+
+/-- Two-wrapper traversal cell: one more C-layer, one more pile entry. -/
+def scTCell2 (W₁ W₂ rest : SCTerm) : SCTerm :=
+  .app (.app .C (.app (.app .C (.app (.app .C rest) scDup)) W₁)) W₂
+
+/-- Three fires: arms sustained, BOTH wrappers (then the spare arm) prepended to the pile. -/
+theorem scTCell2_step (W₁ W₂ rest A₁ A₂ : SCTerm) :
+    RS.SC.Steps (.app (.app (scTCell2 W₁ W₂ rest) A₁) A₂)
+      (.app (.app (.app (.app (.app rest A₁) scDup) W₁) W₂) A₂) :=
+  RS.Steps.tail
+    (SCStep.appL (SCStep.C_red (.app (.app .C (.app (.app .C rest) scDup)) W₁) W₂ A₁))
+    (RS.Steps.tail
+      (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C rest) scDup) W₁ A₁)))
+      (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red rest scDup A₁))))
+        (@RS.Steps.refl RS.SC _)))
+
+/-- Two-wrapper cells are storable. -/
+theorem scTCell2_normal (W₁ W₂ rest : SCTerm)
+    (h1 : ¬ ∃ u, SCStep W₁ u) (h2 : ¬ ∃ u, SCStep W₂ u) (hr : ¬ ∃ u, SCStep rest u) :
+    ¬ ∃ u, SCStep (scTCell2 W₁ W₂ rest) u :=
+  scNormal_C2 (scNormal_C2 (scNormal_C2 hr scDup_normal) h1) h2

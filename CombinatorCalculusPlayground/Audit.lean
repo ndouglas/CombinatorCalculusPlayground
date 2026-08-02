@@ -190,3 +190,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scTWord_step' does not depend on any axioms -/
 #guard_msgs in #print axioms scTWord_step
+
+/-- info: 'scTCell2_step' does not depend on any axioms -/
+#guard_msgs in #print axioms scTCell2_step
