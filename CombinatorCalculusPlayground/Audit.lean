@@ -226,3 +226,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scvStep_members' depends on axioms: [propext] -/
 #guard_msgs in #print axioms scvStep_members
+
+/-- info: 'scvSteps_countVar_mono' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scvSteps_countVar_mono
