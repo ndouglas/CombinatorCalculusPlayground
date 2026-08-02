@@ -4712,3 +4712,27 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **the program review** — the settled-state pass over Stages 98-113: STATUS header
   refresh, the hosting-thread arc recorded as a unit, the ladder-to-hosting pivot made explicit
   in the spec's terms. (2) The fold cascade design. (3) C6, declined a hundred-and-first time.
+
+## 2026-07-31 — Stage 114: the accounting, and a rule amendment
+
+- The review rule ("recurs when a goal-level result lands") failed in practice: five results
+  landed and the review lost the ranking to construction work four times running. Each deferral
+  was locally right — the hosting thread was hot, and interrupting a composition streak for
+  bookkeeping would have been perverse — but the header sat two arcs stale. Amended rule:
+  REVIEW WITHIN THREE STAGES of a goal-level result, hard. Discipline that bends to enthusiasm
+  every time is not discipline; the point of the rule is to fire exactly when I least want it.
+- The restructure mattered more than the numbers: the rung-3 table row had become a six-kilobyte
+  scroll — the document equivalent of the junk-passenger problem, everything appended at the one
+  place appending was easy. The hosting thread is a different research program from the
+  acyclicity ladder and now has its own section, its own capability table, and its own method
+  note. Reading it whole for the first time, the shape is: three impossibilities (no-I,
+  no-selector, opaque-insertion), each of which REDIRECTED the design rather than blocking it,
+  and eleven capabilities, each a composition of at most two prior gadgets plus one new idea.
+- The axiom-free fact deserved surfacing: the hosting stack is pure construction top to bottom —
+  tailInSC included. The negative results spend propext; the positive results are programs. That
+  asymmetry (impossibility costs axioms, possibility costs none) is the cleanest expression of
+  the program's constructive discipline paying rent.
+- Ranking: (1) **the fold cascade design** — tag-valued payloads, the cascade-as-fold
+  choreography; the last engineering before a tag Simulation into {S,C}. (2) The arrival-order
+  pairing impossibility (the member calculus may now be strong enough to settle it). (3) C6,
+  declined a hundred-and-second time.

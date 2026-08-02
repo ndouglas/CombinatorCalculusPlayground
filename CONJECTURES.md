@@ -4581,3 +4581,39 @@ be choreographed as part of the fold protocol itself (the cascade becomes the fo
 genuine design problem of the Stage 104–112 genre, not one-sitting assembly; it goes to the
 ranking as its own thread. The hosting construction stands at: run phase DONE (one-tag-step, any
 production arity), fold phase SCOPED with named wall and candidate route.
+
+### Stage 114: the program review — the hosting thread, accounted
+
+A documentation stage, overdue by its own rule (five goal-level results since Stage 97, the
+review deferred four times for hot construction work — the deferrals were correct individually
+and wrong cumulatively; the rule now reads "review within three stages of a goal-level result").
+The refreshed accounting:
+
+- **Scale**: 32 modules, ~843 theorems, ~439 build-enforced `#guard`s plus 62 pinned axiom
+  footprints, ~17,100 lines. Growth since Stage 97 is the classification (99–101) and the
+  hosting thread (98–113). RungTermination.lean is now ~3,700 lines and holds three distinct
+  research arcs; splitting it is deferred until the fold thread settles (moving stable theorems
+  mid-thread invites churn).
+- **STATUS restructured**: the rung-3 ladder row had accreted to six kilobytes of hosting
+  material; it is slimmed to the cyclicity verdict plus classification, and THE HOSTING THREAD
+  is now its own section — a capability table (twelve rows, every entry axiom-free), the
+  model-bound-edge-construct method note, the member calculus (three moves, one terminator, one
+  permanence), and the fold's named wall.
+- **The axiom-free observation, made explicit**: the entire hosting stack — every gadget,
+  every step theorem, and the PathEncoding `tailInSC` itself — depends on NO axioms at all.
+  The cycle-space theorems needed `[propext, Quot.sound]` (they argue by contradiction over
+  Prop); the hosting theorems are constructions, and constructions are proofs Lean checks by
+  computation. The program's positive results are literally programs.
+- **Goals**: 1–3 unchanged (DONE/DONE/CLOSED). Goal 4's leak catalogue stands at nine across
+  ten doors; no new leaks since Stage 101 — fourteen consecutive clean stages, the longest run,
+  attributable to the construction-heavy diet (constructions cannot leak).
+- **The ladder's afterlife**: closed at Stage 96, the ladder now reads as the SETUP for the
+  hosting thread — the cycle witnesses supplied the seeds (`scDup` is the w-cycle's engine),
+  the shape lemmas closed the case analyses, and the impossibility machinery became the search
+  and construction toolkit. The spec's "each rung a publishable partial result" undersold it:
+  the rungs composed.
+
+What remains live: the fold thread (the last engineering before a tag `Simulation` into
+`{S,C}`), the arrival-order pairing conjecture, C6 (declined 101 times), and the headline
+sentence — unchanged, resting on a larger instrument: **if S alone is universal, its encoding
+must be non-injective or must fail to preserve reduction paths.**

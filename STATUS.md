@@ -14,14 +14,15 @@ inherited since Stage 0. As of Stage 76 this claim is **build-enforced**:
 `Audit.lean` pins the headline theorems' exact footprints with `#guard_msgs`,
 so any drift fails the build.
 
-At time of writing (Stage 97 review): 32 modules, ~770 theorems, ~412
-build-enforced `#guard`s plus 35 `#guard_msgs`-pinned axiom footprints, ~15,200
-lines of Lean. Since the Stage 86 review: the acyclicity ladder was COMPLETED
-(rung 2 acyclic at Stage 83, rung 3 CYCLIC at Stage 96 -- the `{S,C}` 3-cycle
-`S (C h) C h`, `h = C S C`, found by chasing the impossibility hunt's last
-surviving branch), and the shape-lens arc (Stages 87-96) added the frozen-left
-theorem, cycle anatomies, rotate-or-descend, length-indexed paths with a
-choice-free descent engine, and exact cycle budgets.
+At time of writing (Stage 114 review): 32 modules, ~843 theorems, ~439
+build-enforced `#guard`s plus 62 `#guard_msgs`-pinned axiom footprints, ~17,100
+lines of Lean. Since the Stage 97 review: the 3-cycle CLASSIFICATION became a
+theorem (Stage 101 — the program's first complete description of a cycle
+space), and the HOSTING THREAD (Stages 98–113, its own section below) built a
+machine-checked computation stack inside `{S,C}` — a calculus with no erasure,
+no identity, and no selectors — culminating in `tailInSC` (the first positive
+hosting certificate on any upper rung) and the ONE-TAG-STEP. The entire
+hosting stack is axiom-free.
 
 ---
 
@@ -301,7 +302,7 @@ against in Stage 16.
 | 0 | `{S}` | **acyclic** (`no_pure_S_cycle`); hence refuted as a host of SK |
 | 1 | `{S,I}` | **cyclic** (`omegaSI_cycle`). NO monotone measure exists in either direction (`SI_no_strict_measure`, `SI_no_decreasing_measure`) — so the mechanism is not merely unhelpful here, it is provably inapplicable |
 | 2 | `{S,B}` | **CLOSED — ACYCLIC (Stage 83: `SB_acyclic`), hence CANNOT HOST SK (`no_pathEncoding_SK_SB`).** The right-spine depth never decreases along any step and strictly increases at root steps; Stage 81's localization supplies the root step on every cycle. Subsumes all fragment results and census bounds. The route: 80 typechecked (termination dead), 81 localized (root steps forced), 82 dichotomized, 83 closed | No counting measure is monotone (`no_monotone_counting_measure`). No cycle under **any** strategy up to 8 leaves within a 30-leaf cap, cap-insensitive to 120 (`onCycleAny`); the cap is not liftable by brute force. **τ strictly drops on every B-reduction and every τ-light S-reduction, so the τ-light fragment is ACYCLIC** (`sbLight_acyclic`) — hence any cycle must fire an S-reduction duplicating a τ-**heavy** argument (`sbCycle_needs_heavy_S`) |
-| 3 | `{S,C}` | **CLOSED — CYCLIC (Stage 96: `SC_cycle`, `SC_not_acyclic`, axiom-free witness).** With `h = C S C`: `S (C h) C h ⟶ C h h (C h) ⟶ h (C h) h ⟶ S (C h) C h` — a 3-cycle, 9 leaves, found by CHASING THE SURVIVING BRANCH of the impossibility hunt (Stage 95's budgets forced any S-rooted 3-cycle to carry two fires; the one consistent assignment is inhabited). Minimal cycle length is EXACTLY 3 (`sc_minimal_cycle_length`). So `{S,C}` closes OPPOSITE to `{S,B}`, and `PathEncoding.refute_of_acyclic` can never apply — the acyclicity route to refuting `{S,C}` as an SK host is permanently closed. Every necessary condition of Stages 81–95 is satisfied by the witness (both C-fires flat, root fires present, second fire present). The census stopped at 6 leaves; the witness sits at 9. No I-like combinator at any size (`sc_no_I_like`, Stage 98), so the define-I transport route is closed; hosting SK remains open in both directions. The minimal cycle is NOT unique (Stage 99): a second, disjoint 3-cycle exists at 13 leaves — `C (w w) w w` with `w = S (C C)`, C-rooted, one root fire (`SC_second_cycle`, `sc_min_cycle_not_unique`, axiom-free) — and the classification is now a THEOREM (Stage 101, `sc_root_three_cycle_classified`, `sc_three_cycles_are_known`): every root 3-cycle is exactly the h-cycle at basepoint A or B, or the w-cycle — the program's first complete classification of a cycle space, ~45 branches, every dead one killed by linear leaf-count arithmetic, collapse, right-embedding, or constructor clash. HOSTING, scoped (Stage 100): `{S,C}` path-encodes into SK (`scInSK` — C via the bracket toolkit, siInSK's injectivity technique), while SK ≤ `{S,C}` has no applicable tool in either direction: the refutation mechanism is dead, mismatches do not transport, cycles are abundant in both (`sc_cycle_pump`), and UNBOUNDED CONVERGENCE exists (Stage 102, `sc_unbounded_convergence`, axiom-free: C-towers shred to the fixed residue `C C C`), so the naive erasure-impossibility argument is false too. The garbage-parking design analysis is in the ledger (Stage 102). The pairing probe (Stage 103, `scv_no_single_selector`, `scRot_beta`, both axiom-free): the one-application selector `λas.sa` is IMPOSSIBLE at any size, the cyclic rotator `C C u v w ⟶* v w u` exists, and arrival-order pairing is open (no witness ≤ 9 machine leaves, conjectured impossible) — so `{S,C}` data protocols exist only up to argument rotation. BRANCHING WITHOUT SELECTORS exists (Stage 104, `scTagA_dispatch`/`scTagB_dispatch`, axiom-free): under the uniform protocol `tag β₁ β₂ x`, the tag `C` promotes the first arm and `C C` the second, the untaken arm arriving as a parked argument — the crux capability for any {S,C} data layer. THE WORD LAYER EXISTS (Stage 105, `scWord`, `scWord_step_false/true`, `scWord_normal`, all axiom-free): two-symbol words are NORMAL stable data with a uniform traversal — the correct arm fires per symbol, receiving the parked other arm and the remaining word. Four of the five hosting-skeleton pieces are proved (symbols, branching, shredding, words), and the fifth is ONE GAP from closed (Stage 106, `scRelaunch_beta`, `scArm_step`, `scTraversal_step_false/true`, all axiom-free): re-launching the continuation is a normal storable gadget, the parked arm is RECYCLED as the next first arm (not garbage), and the composed self-perpetuating traversal step is a theorem — each step consumes exactly one payload — and the payload REGENERATES (Stage 107, `scDup := S (C C) (C C)`, five leaves: the S-fire lands the parked arm in both slots of a fresh re-launcher; `scDup o r ⟶* r o o`). UNBOUNDED TRAVERSAL is a theorem (`scRun`) and **`{S,C}` HOSTS ITS FIRST MACHINE**: `tailInSC : PathEncoding RS.TailB RS.SC` — the tail machine, unboundedly many states, arbitrarily long runs, ENTIRELY AXIOM-FREE. Rung 3 now has a positive hosting certificate. Per-symbol differentiation RELOCATED (Stage 108): arm-level schemes homogenize (catalysts census-dead ≤ 9), but cells built at encoding time carry their own productions for free — `scPCell p rest ⋅ D ⟶* D p rest` (scRelaunch, third reading), and under an accumulator the three-argument driver protocol `D p rest acc` emerges (`scPCell_step_acc`, axiom-free). What remains for a tag step is only the driver, and its first obligation is CLOSED (Stage 109, `scCons_beta`, axiom-free): runtime cons exists — `scCons q ⋅ acc ⟶* (C q) acc`, four fires, no residue, with the produced cells carrying their own interrogation protocol (`scQCell_step`). Regeneration itself is closed (equal arms), and the pile protocol reduces the WHOLE tag driver to one gadget — a cell whose stored wrapper lands behind later-arriving runtime arguments — which is census-dead across three protocols (Stage 110): MID-SPINE INSERTION is the named obstruction. Every proved gadget edits the spine only at its front. The obstruction SPLIT (Stage 111, `scv_varHead2_step`): in the OPAQUE regime the negatives are structural (atoms freeze the spine at head; at most one literal lands behind the last atom — the final fire's passenger), but the REAL rest/W are C-headed compounds that fire on in head position, so STRUCTURED insertion is reopened — and the hand-built cell EXISTS (Stage 112, `scTCell W rest := C (C rest scDup) W`, axiom-free): two fires read the cell, append its wrapper to the pile, and advance with the arm pair regenerated — `scTWord_step`, THE ONE-TAG-STEP. The Stage 110 obstruction is bypassed for real cells (the arms are constants: the cell supplies a fresh literal arm and demotes a spare to pile-junk). Multi-symbol productions covered (Stage 113, `scTCell2_step`: layered cells, one wrapper per C-layer). Remaining for a full tag Simulation: the FOLD phase, now scoped with its wall named — the accumulated next-word needs protected-ELEMENT status but fires produce live PREFIXES; the pile is LIFO by necessity (the spine's last member is permanent); candidate route: tag-valued payloads keeping the fold cascade machine-headed |
+| 3 | `{S,C}` | **CLOSED — CYCLIC (Stage 96: `SC_cycle`, `SC_not_acyclic`, axiom-free witness).** With `h = C S C`: `S (C h) C h ⟶ C h h (C h) ⟶ h (C h) h ⟶ S (C h) C h` — a 3-cycle, 9 leaves, found by CHASING THE SURVIVING BRANCH of the impossibility hunt. Minimal cycle length is EXACTLY 3 (`sc_minimal_cycle_length`); the minimal cycle is NOT unique (Stage 99: the 13-leaf w-cycle, `C (w w) w w`, `w = S (C C)`); and the CLASSIFICATION is a theorem (Stage 101, `sc_root_three_cycle_classified`): every root 3-cycle is the h-cycle at basepoint A or B, or the w-cycle. `{S,C}` closes OPPOSITE to `{S,B}`; `PathEncoding.refute_of_acyclic` can never apply. The census stopped at 6 leaves; the witness sits at 9. Hosting: see THE HOSTING THREAD section below |
 | top | `{S,K}` | **cyclic** — by the Ω ↔ M cycle, and independently by inheritance from rung one (`SK_not_acyclic_via_rung1`) |
 
 **A standing caveat on census evidence here.** Cycle hunts based on a single
@@ -477,6 +478,53 @@ one-combinator one-rule system (C4); it provably cannot touch `{S,I}`. Also:
 erasure-freeness is *not* what keeps pure S acyclic, since `{S,I}` erases nothing
 either and still cycles. Higher rungs need positive constructions or new
 mechanisms.
+
+## The hosting thread — SK ≤ `{S,C}`, the constructive half (Stages 98–113)
+
+Rung 3's closure (cyclic) killed the refutation route and opened the opposite
+question: can `{S,C}` — no erasure, no identity, no selectors — host
+computation? Sixteen stages later the answer is a machine-checked stack, ALL OF
+IT AXIOM-FREE (pure constructions, no `propext`, no `Quot.sound`):
+
+| Capability | Theorem(s) | Stage |
+|---|---|---|
+| No I-like combinator, at any size (both `{S,B}` and `{S,C}`) | `sc_no_I_like`, `sb_no_I_like` | 98 |
+| `{S,C}` path-encodes into SK (upward closure complete) | `scInSK` | 100 |
+| Unbounded convergence (C-towers shred to `C C C`) — the naive erasure-impossibility is false | `sc_unbounded_convergence` | 102 |
+| No one-application selector; the cyclic ROTATOR exists (`C C u v w ⟶* v w u`) | `scv_no_single_selector`, `scRot_beta` | 103 |
+| Branching WITHOUT selectors: tags `C`/`C C` head-promote an arm under one uniform protocol, the untaken arm parked not erased | `scTagA_dispatch`, `scTagB_dispatch` | 104 |
+| The word layer: normal, stable two-symbol words with per-symbol traversal (swap parity selects the arm) | `scWord_step_false/true`, `scWord_normal` | 105 |
+| The re-launcher and the recycling arm: the parked arm is the next first arm | `scRelaunch_beta`, `scArm_step`, `scTraversal_step_*` | 106 |
+| Payload regeneration: `scDup = S (C C) (C C)` (the w-cycle seed applied to a tag) duplicates the parked arm; UNBOUNDED TRAVERSAL; **the first machine hosted on any upper rung** | `scDup_step`, `scRun`, **`tailInSC : PathEncoding RS.TailB RS.SC`** | 107 |
+| Production-carrying cells (differentiation is free at encoding time); the 3-arg driver protocol | `scPCell_step`, `scPCell_step_acc` | 108 |
+| Runtime cons: the accumulator is writable, four fires, zero residue | `scCons_beta`, `scQCell_step` | 109 |
+| **THE ONE-TAG-STEP**: read the cell, append its wrapper to the pile, advance, arms regenerated | `scTCell_step`, **`scTWord_step`** | 112 |
+| Multi-symbol productions by cell layering | `scTCell2_step` | 113 |
+
+**The method that carried it** — model, bound, edge, construct: Stage 110's
+searches found mid-spine insertion census-dead across three protocols;
+Stage 111 PROVED the bound in the searched model (opaque literals freeze the
+spine at head — `scv_varHead2_step` — so at most one literal lands behind the
+last atom) and located its edge (real cells are C-headed compounds, exempt);
+Stage 112 constructed past it in two fires (`scTCell W rest = C (C rest scDup)
+W` — the arms are CONSTANTS, so the cell supplies a fresh literal arm and
+demotes a spare to accounted pile-junk).
+
+**The member calculus** (the thread's working theory of `{S,C}` interrogation):
+three moves — prefix-edit, passenger-step-back, z-nest — one terminator (an
+atom reaching the head freezes the spine), one permanence (the last member is
+immovable, so piles are LIFO by law; LIFO fold of LIFO pile restores FIFO).
+Non-erasure forbids UNACCOUNTED waste, not waste: every surviving gadget gives
+each forced passenger a job.
+
+**What remains for a full tag `Simulation` into `{S,C}`**: the FOLD phase —
+the end marker consuming the pile into the next front word. Scoped (Stage 113)
+with its wall named: the accumulated next-word needs protected-ELEMENT status
+but fires produce live PREFIXES. Candidate route: tag-valued payloads keeping
+the fold cascade machine-headed (the cascade becomes the fold). Negative
+standing results that shape any route: arm-level differentiation homogenizes
+(catalysts census-dead ≤ 9), arrival-order pairing conjectured impossible
+(≤ 9), opaque mid-spine insertion impossible (proved-in-prose from the freeze).
 
 ## The open item — CLOSED (Stage 75)
 
