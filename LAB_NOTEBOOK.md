@@ -4925,3 +4925,21 @@ what automation could and couldn't do. This file is a first-class deliverable
   along a count-preserving reduction to show s never reaches the head; delivers the pairing
   impossibility as a pinned theorem. (2) Bounded intermediates. (3) C6, declined a
   hundred-and-thirteenth time.
+
+## 2026-08-02 — Stage 126: the invariant rides the tail
+
+- One build iteration (three dead `simp`s after goal-closing `rw`s — the rw-closes-by-rfl
+  pattern). Against Stage 125's six iterations for the sibling lemma: the second theorem
+  through a template costs a sixth of the first, same as the Takahashi transport. The member
+  calculus now has a WORKING inversion library.
+- The polarity flip was the design insight: `scv_cross_last` treats nonempty tails as dead
+  branches to kill; `scv_lastVar_step` treats them as the invariant holding. Same nine-way
+  case split, opposite verdicts, one shared count kill (S-fire duplication).
+- The path lemma's sandwich shape (Steps-to, the step, Steps-onward) was chosen so Stage 127
+  never re-walks the path: the configuration arrives with its continuation attached.
+- Ranking: (1) **the deadlock closure**: the continuation analysis — from the configuration
+  sandwich, the successor is headed by the old first member; place var 0 and var 1 in the
+  three-member C-spine (each count one, each needing a bare slot or a member head) and show
+  every placement either freezes the wrong head or leaves a variable homeless — delivers
+  `scv_no_pair`, the arrival-order pairing impossibility. (2) Bounded intermediates. (3) C6,
+  declined a hundred-and-fourteenth time.

@@ -519,9 +519,15 @@ MACHINE-CHECKED as of Stages 123–125 (`SCMembers.lean`): `scvStep_members`
 the first three members, or one member stepping in place), the count laws
 (`scvSteps_countVar_mono`, the squeeze), and `scv_cross_last` — THE CROSSING
 CONFIGURATION: on count-preserving steps, moving a member behind a
-last-position variable forces the three-member C-fire shape. The pairing
-deadlock's per-step engine is a theorem; only the path-level induction
-remains prose.
+last-position variable forces the three-member C-fire shape. Stage 126 lifted
+it to paths (`scv_lastVar_step`, `scv_lastVar_steps`, pinned): along any
+count-preserving reduction, a last-position variable RIDES THE TAIL until the
+one configuration that can consume it — handed back with its full sandwich
+(the path to it, the step out, the path onward). The pairing deadlock's
+engine and its path glue are theorems; what remains prose is the
+configuration's continuation analysis (the consumed variable's successor is
+headed by the old first member, and the other two variables have nowhere
+legal to live).
 Non-erasure forbids UNACCOUNTED waste, not waste: every surviving gadget gives
 each forced passenger a job.
 

@@ -4828,3 +4828,17 @@ internal branches on vars-don't-step and results-are-apps. The supporting kit (`
 count-sum algebra, the bridge) is the member calculus's standard library. Remaining for the full
 pairing impossibility: the path-level induction iterating this lemma to the `s`-headed target —
 prose at Stage 122 confidence, now with its hard step machine-checked.
+
+### Stage 126: the last-variable invariant
+
+The deadlock's path glue is a theorem: `scv_lastVar_step` (pinned) — on a count-preserving step
+with count one, a last-position variable either stays last or the source was the three-member
+C-fire configuration — and `scv_lastVar_steps` (pinned), its lift along `RS.SCV.Steps`: the
+variable rides the tail until the one configuration that can consume it, returned with its full
+sandwich (the path to the configuration, the step out of it, the path onward) for the
+continuation analysis. The step lemma is `scv_cross_last`'s sibling with the branch polarity
+inverted — the nonempty-tail branches are now the good cases, and only the S-fire-duplicates
+count kill carries over. The path lift threads `scvSteps_countVar_squeeze` at every step. What
+remains for the pairing impossibility: the continuation analysis — the consumed variable's
+successor is headed by the old first member, and the other two count-one variables have no legal
+home in a three-member C-spine.
