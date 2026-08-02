@@ -262,3 +262,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scv_no_pair' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scv_no_pair
+
+/-- info: 'scv_no_pair_swapped' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scv_no_pair_swapped
+
+/-- info: 'scv_swap_reachable' does not depend on any axioms -/
+#guard_msgs in #print axioms scv_swap_reachable

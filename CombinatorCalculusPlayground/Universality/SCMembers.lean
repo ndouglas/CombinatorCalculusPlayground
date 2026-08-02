@@ -1261,3 +1261,145 @@ theorem scv_no_pair (P : SCV) (hP0 : P.countVar 0 = 0) (hP1 : P.countVar 1 = 0)
       injection h₃ with e₂ h₄
       exact absurd h₄.symm (by simp)
     · exact scv_pairPre_not_stuck k hst
+
+-- ## Stage 131: the impossibility family — the wall's exact edge
+-- The `Ahead` invariant never used the payload ORDER, so the deadlock retires every s-headed
+-- arrival target at once: `s a b` (Stage 129) and `s b a` (here) are both unreachable from
+-- `P a b s`, via the generic predecessor lemma (any `s x y` on non-stepping variable arguments
+-- has the single predecessor `C s y x`). The edge is sharp: PAYLOAD-headed rearrangement is
+-- two fires (`C C a b s ⟶ C b a s ⟶ (b s) a` — machine `C C`). The interrogation wall is
+-- exactly about `s` reaching the head, not about rearrangement.
+
+/-- The generic predecessor: the only step into `s (var i) (var j)` is the root C-fire from
+`C s (var j) (var i)` — for ANY variable indices. -/
+theorem scv_sel_pred {t : SCV} {i j : Nat}
+    (h : SCVStep t (.app (.app (.var 2) (.var i)) (.var j))) :
+    t = .app (.app (.app .C (.var 2)) (.var j)) (.var i) := by
+  rcases scvStep_members h with ⟨f, g, x, T, hh, hm, hu⟩ | ⟨x, y, z, T, hh, hm, hu⟩
+    | ⟨pre, m, m', post, hs, hm, hh', hm'⟩
+  · -- S-fire: the member (g x) is an application
+    exfalso
+    have h0 := congrArg SCV.members hu
+    rw [SCV.appList_members] at h0
+    have hum : ([.var i, .var j] : List SCV)
+        = ((f.members ++ [x]) ++ [.app g x]) ++ T := h0
+    rcases hfm : f.members with _ | ⟨a, l⟩
+    · rw [hfm] at hum
+      simp at hum
+    · rw [hfm] at hum
+      simp at hum
+      obtain ⟨_, hrest⟩ := hum
+      rcases l with _ | ⟨b, l₂⟩
+      · simp at hrest
+      · simp at hrest
+  · -- C-fire: the live case
+    have h0 := congrArg SCV.members hu
+    rw [SCV.appList_members] at h0
+    have hum : ([.var i, .var j] : List SCV) = ((x.members ++ [z]) ++ [y]) ++ T := h0
+    have h1 := congrArg SCV.spineHead hu
+    rw [SCV.appList_spineHead] at h1
+    have hhd : (SCV.var 2) = x.spineHead := h1
+    rcases hxm : x.members with _ | ⟨a, l⟩
+    · rw [hxm] at hum
+      simp at hum
+      obtain ⟨hz, hy, hT⟩ := hum
+      have hx2 : x = SCV.var 2 := by
+        cases x with
+        | S => exact absurd hhd.symm (by intro hc; exact SCV.noConfusion hc)
+        | C => exact absurd hhd.symm (by intro hc; exact SCV.noConfusion hc)
+        | var n =>
+            have : (SCV.var 2) = SCV.var n := hhd
+            rw [this]
+        | app f a => simp [SCV.members] at hxm
+      have hrec := SCV.recon t
+      rw [hm, hh, hx2, ← hz, ← hy, hT] at hrec
+      exact hrec.symm
+    · rw [hxm] at hum
+      have hlen := congrArg List.length hum
+      simp at hlen
+      omega
+  · -- member-internal: the stepped member is an application among all-variable members
+    exfalso
+    obtain ⟨p, q, hpq⟩ := scvStep_result_isApp hs
+    have hum : ([.var i, .var j] : List SCV) = pre ++ m' :: post := hm'
+    subst hpq
+    rcases pre with _ | ⟨a, pre₂⟩
+    · injection hum with h1 _
+      exact SCV.noConfusion h1
+    · injection hum with _ h2
+      rcases pre₂ with _ | ⟨b, pre₃⟩
+      · injection h2 with h3 _
+        exact SCV.noConfusion h3
+      · injection h2 with _ h4
+        simp at h4
+
+/-- The swapped pairing target `s b a`, and its unique predecessor `C s a b`. -/
+def SCV.swapTarget : SCV := .app (.app (.var 2) (.var 1)) (.var 0)
+
+def SCV.swapPre : SCV := .app (.app (.app .C (.var 2)) (.var 0)) (.var 1)
+
+/-- **The swapped order is impossible too**: no machine reduces `P a b s` to `s b a`. The
+`Ahead` invariant never used the payload order. -/
+theorem scv_no_pair_swapped (P : SCV) (hP0 : P.countVar 0 = 0) (hP1 : P.countVar 1 = 0)
+    (hP2 : P.countVar 2 = 0) :
+    ¬ RS.SCV.Steps (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) SCV.swapTarget := by
+  intro h
+  have hc0 : SCV.countVar 0 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 := by
+    show P.countVar 0 + 1 + 0 + 0 = 1
+    omega
+  have hc1 : SCV.countVar 1 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 := by
+    show P.countVar 1 + 0 + 1 + 0 = 1
+    omega
+  have hc2 : SCV.countVar 2 (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) = 1 := by
+    show P.countVar 2 + 0 + 0 + 1 = 1
+    omega
+  rcases RS.steps_last h with he | ⟨t', ht', hstep⟩
+  · injection he with h1 h2
+    injection h2 with h3
+    omega
+  · have hpre : t' = SCV.swapPre := scv_sel_pred hstep
+    subst hpre
+    have hA0 : SCV.Ahead (.app (.app (.app P (.var 0)) (.var 1)) (.var 2)) := by
+      refine ⟨P.members ++ [.var 0, .var 1], [], ?_, ?_, ?_⟩
+      · show (((P.members ++ [SCV.var 0]) ++ [SCV.var 1]) ++ [SCV.var 2]) = _
+        simp
+      · simp
+      · simp
+    rcases scv_ahead_steps ht'
+        (by rw [show SCV.countVar 0 SCV.swapPre = 1 from rfl, hc0])
+        (by rw [show SCV.countVar 1 SCV.swapPre = 1 from rfl, hc1])
+        (by rw [show SCV.countVar 2 SCV.swapPre = 1 from rfl, hc2])
+        hA0 with hAu | ⟨k, hst⟩
+    · -- Ahead fails at C s a b
+      obtain ⟨A, B, hAB, h0, h1⟩ := hAu
+      have hAB' : ([.var 2, .var 0, .var 1] : List SCV) = A ++ SCV.var 2 :: B := hAB
+      rcases A with _ | ⟨a₀, A₁⟩
+      · simp at h0
+      injection hAB' with e₀ h₂
+      rcases A₁ with _ | ⟨a₁, A₂⟩
+      · injection h₂ with e hh
+        injection e with hn
+        omega
+      injection h₂ with e₁ h₃
+      rcases A₂ with _ | ⟨a₂, A₃⟩
+      · injection h₃ with e hh
+        injection e with hn
+        omega
+      injection h₃ with e₂ h₄
+      exact absurd h₄.symm (by simp)
+    · -- swapPre is not stuck: head C, three bare-variable members
+      rcases hst with hhead | ⟨m, hmem, hmh, f0, a0, hma⟩
+      · exact SCV.noConfusion (show SCV.C = SCV.var k from hhead)
+      · have hm3 : m ∈ ([.var 2, .var 0, .var 1] : List SCV) := hmem
+        simp at hm3
+        rcases hm3 with h' | h' | h' <;> (subst h'; exact SCV.noConfusion hma)
+
+/-- **The door beside the wall**: PAYLOAD-headed rearrangement is two fires. The machine `C C`
+reduces `C C a b s` to `(b s) a` — arguments reordered and applied, but headed by a payload,
+not by `s`. The wall is exactly about `s` reaching the head. -/
+theorem scv_swap_reachable : RS.SCV.Steps
+    (.app (.app (.app (.app .C .C) (.var 0)) (.var 1)) (.var 2))
+    (.app (.app (.var 1) (.var 2)) (.var 0)) :=
+  RS.Steps.tail (SCVStep.appL (SCVStep.C_red .C (.var 0) (.var 1)))
+    (RS.Steps.tail (SCVStep.C_red (.var 1) (.var 0) (.var 2))
+      (RS.Steps.refl _))
