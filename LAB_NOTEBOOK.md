@@ -5095,3 +5095,25 @@ what automation could and couldn't do. This file is a first-class deliverable
   completeness lemma, prove saturation (fixpoint within pigeonhole fuel), assemble
   `sc_decidable_of_bound`. (2) The pump family / mountain growth rate. (3) C6, declined a
   hundred-and-twenty-first time.
+
+## 2026-08-02 — Stage 134: the backbone stands
+
+- The whole arc (pigeonhole → engine → enumerator → saturation → decidability) went from
+  design to green in two sittings and four build iterations total, because every piece had a
+  debugged ancestor: the enumerator is the Census `enum` with one constructor added, the
+  engine rounds are the scSucc kit folded, the saturation search is the same
+  bounded-descent shape as `no_cycle_of_descent`. Sixteen stages of autonomous run and the
+  program is visibly composing with itself.
+- The constructive discipline paid twice today: the stable-round search is an explicit
+  bounded recursion (no `Nat.find`, no excluded middle on infinite ∃), and the choice-free
+  `listRemove` from Stage 133 sits under everything.
+- The frontier statement to carry forward: EITHER some computable `f` tames the mountains —
+  and `sc_decidable_of_bound` finishes Goal 3's rung-3 story on the spot — OR no computable
+  bound exists, which is exactly the shape of an undecidability proof waiting for a
+  reduction. The hosting thread (tags in `{S,C}`) is the reduction's raw material. The two
+  research threads of this program have converged into one question.
+- Ranking: (1) **the convergence probe**: can the hosted tag machinery (scWord/scTCell) be
+  arranged to make mountains of programmable height — i.e., push toward "no computable
+  bound" via the hosting thread? Exploratory; verify computationally first. (2) The pump
+  family / mountain growth rate (now subsumed into 1). (3) C6, declined a
+  hundred-and-twenty-second time.

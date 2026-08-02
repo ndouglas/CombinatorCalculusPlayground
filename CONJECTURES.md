@@ -4955,3 +4955,17 @@ with its two lemmas keeps the budget. Deep probe data (behind the stage's rankin
 champion's bottleneck-optimal crossing is 71 steps with a 31-leaf peak and multiple re-ascents
 — the profile of a computation, not a detour. Remaining for the backbone: term enumeration by
 leaf count, saturation via the pigeonhole, and the assembly `sc_decidable_of_bound`.
+
+### Stage 134: the backbone — a computable bound implies decidability
+
+`sc_decidable_of_bound` (pinned): for ANY function `f` of the endpoint leaf counts that bounds
+witnessing paths' intermediates (`RS.StepsLe`), `{S,C}` reachability is decidable — by
+enumeration of the capped universe (`scEnum`/`scEnumLe`, Census-style budget recursion,
+completeness proved), pigeonhole saturation of the capped engine (a stable round exists within
+fuel `|scEnumLe c|`, constructively — no choice, no minimum extracted), and list membership.
+Unconditionally: CAPPED reachability is decidable (`scStepsLe_decidable`, pinned). The Goal-3
+frontier at rung 3 is now a single sharp alternative: either some computable `f` bounds the
+mountains (then reachability is decidable and the negative Simulation half closes), or the
+mountains outgrow every computable bound (then `{S,C}` reachability is undecidable — and the
+hosting thread's machinery is the natural instrument for proving it). Stage 132's data pins
+the floor: `f(6,6) ≥ 7`, `f(8,8) ≥ 31`.

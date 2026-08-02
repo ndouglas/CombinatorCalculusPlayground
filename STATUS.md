@@ -605,7 +605,18 @@ hard datum: THE MINIMAL MOUNTAIN (`sc_no_max_bound`, pinned) — a six-leaf
 term whose only step climbs to seven on its way to a six-leaf target, so any
 bounding function exceeds the identity; probe data (all starts ≤ 8 leaves)
 force `f(8,8) ≥ 31`, an explosive trend consistent with the doubling speed
-limit and with genuine computation happening between the endpoints. Stage 115
+limit and with genuine computation happening between the endpoints. THE
+BACKBONE IS A THEOREM (Stages 133–134, `sc_decidable_of_bound`, pinned): if
+ANY computable `f` bounds witnessing paths' intermediates, `{S,C}`
+reachability is decidable — via a verified capped-universe enumerator,
+constructive pigeonhole (over a hand-rolled `listRemove`; core's
+`List.erase` lemmas carry `Classical.choice` — the tenth leak, first found
+in the library rather than a tactic), and saturation of the capped engine;
+CAPPED reachability is decidable unconditionally (`scStepsLe_decidable`).
+The rung-3 frontier is now one sharp alternative: a computable bound
+(decidable, negative Simulation half closes) or mountains beyond every
+bound (undecidable — and the hosting thread is the reduction's raw
+material). The program's two research threads have converged. Stage 115
 also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
 S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
 Negative standing results shaping any route: arm-level differentiation
