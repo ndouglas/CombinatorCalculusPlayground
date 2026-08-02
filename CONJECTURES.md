@@ -4941,3 +4941,17 @@ is the phenomenon, and its growth rate is the question — if `f` exists and is 
 reachability is decidable (`scReachWithin` + the speed limits); if mountains grow beyond every
 computable bound, `{S,C}` reachability is undecidable and the Simulation-class negative half
 closes at rung 3.
+
+### Stage 133: the pigeonhole and the capped engine
+
+Toward the frontier backbone (`computable bound ⟹ decidability`): `List.nodup_length_le`
+(constructive pigeonhole, pinned) and `scReachCapped` (the capped reachability engine —
+duplicate-free saturation of `scSucc` under a leaf-count cap) with SOUNDNESS and COMPLETENESS
+(`scReachCapped_sound`, `scReachCapped_complete_start`, pinned): the engine's cone is exactly
+the capped-reachable set, fuel-indexed. TENTH `Classical.choice` leak, a first of its kind:
+core's `List.erase` lemmas (`length_erase_of_mem`, `mem_erase_of_ne`) carry choice — every
+prior leak was tactic-generated; this one ships with the library. Hand-rolled `listRemove`
+with its two lemmas keeps the budget. Deep probe data (behind the stage's ranking): the 8-leaf
+champion's bottleneck-optimal crossing is 71 steps with a 31-leaf peak and multiple re-ascents
+— the profile of a computation, not a detour. Remaining for the backbone: term enumeration by
+leaf count, saturation via the pigeonhole, and the assembly `sc_decidable_of_bound`.

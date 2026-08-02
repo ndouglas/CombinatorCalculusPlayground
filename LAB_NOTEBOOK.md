@@ -5077,3 +5077,21 @@ what automation could and couldn't do. This file is a first-class deliverable
   witnesses (the S-of-S self-application family) — if the excess is provably ≥ exponential,
   bounded-search decidability dies honestly. (2) The fold/Simulation architecture question.
   (3) C6, declined a hundred-and-twentieth time.
+
+## 2026-08-02 — Stage 133: bricks for the backbone
+
+- Pivoted within the ranking: the pump-family formalization (ranked first) turned out to be
+  the expensive half of the mountain story, while the BACKBONE theorem — a computable bound
+  implies decidability — is what makes the mountain data MEAN something. Started the backbone
+  instead; the probe data is recorded and the pump family stays on the list.
+- LEAK CATALOGUE, entry ten: core `List.erase` lemmas depend on `Classical.choice`. All nine
+  previous leaks were tactic artifacts (omega/simp/grind edge cases); this is the first
+  LIBRARY leak. Rule updated: when citing an unfamiliar core lemma inside the clean budget,
+  audit IT before building on it — `#print axioms` on the lemma itself, not just the result.
+- The saturation-engine pattern (insert-if-new fold, nodup by construction, mem-iff round
+  law) is generic and will be wanted again; it lives SC-specific for now, same debt note as
+  StepsLe.
+- Ranking: (1) **the backbone, part two**: enumerate `SCTerm`s by leaf count with a
+  completeness lemma, prove saturation (fixpoint within pigeonhole fuel), assemble
+  `sc_decidable_of_bound`. (2) The pump family / mountain growth rate. (3) C6, declined a
+  hundred-and-twenty-first time.
