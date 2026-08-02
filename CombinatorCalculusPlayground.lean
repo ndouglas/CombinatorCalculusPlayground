@@ -31,3 +31,4 @@ import CombinatorCalculusPlayground.Audit
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
 import CombinatorCalculusPlayground.Universality.SCConfluence
+import CombinatorCalculusPlayground.Universality.SCDecidability

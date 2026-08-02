@@ -8,6 +8,7 @@
 import CombinatorCalculusPlayground.TagGeneral
 import CombinatorCalculusPlayground.Universality.RungTermination
 import CombinatorCalculusPlayground.Universality.SCConfluence
+import CombinatorCalculusPlayground.Universality.SCDecidability
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
 import CombinatorCalculusPlayground.Universality.OneRule
@@ -218,3 +219,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'SCNF_iff' does not depend on any axioms -/
 #guard_msgs in #print axioms SCNF_iff
+
+/-- info: 'scReachFrom_iff' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scReachFrom_iff
