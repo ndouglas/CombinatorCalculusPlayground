@@ -9,6 +9,7 @@ import CombinatorCalculusPlayground.TagGeneral
 import CombinatorCalculusPlayground.Universality.RungTermination
 import CombinatorCalculusPlayground.Universality.SCConfluence
 import CombinatorCalculusPlayground.Universality.SCDecidability
+import CombinatorCalculusPlayground.Universality.SCMembers
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
 import CombinatorCalculusPlayground.Universality.OneRule
@@ -222,3 +223,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scReachFrom_iff' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scReachFrom_iff
+
+/-- info: 'scvStep_members' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scvStep_members
