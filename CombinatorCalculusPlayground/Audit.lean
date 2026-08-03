@@ -488,3 +488,27 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_bound_floor_186' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_bound_floor_186
+
+/-- info: 'scFate_entry' does not depend on any axioms -/
+#guard_msgs in #print axioms scFate_entry
+
+/-- info: 'scFate_cycle' does not depend on any axioms -/
+#guard_msgs in #print axioms scFate_cycle
+
+/-- info: 'scFate_forever' does not depend on any axioms -/
+#guard_msgs in #print axioms scFate_forever
+
+/-- info: 'scFate_runs' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scFate_runs
+
+/-- info: 'scFate_halts' does not depend on any axioms -/
+#guard_msgs in #print axioms scFate_halts
+
+/-- info: 'scFateNf_normal' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scFateNf_normal
+
+/-- info: 'sc_fate' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_fate
+
+/-- info: 'scFateLap_chained' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scFateLap_chained

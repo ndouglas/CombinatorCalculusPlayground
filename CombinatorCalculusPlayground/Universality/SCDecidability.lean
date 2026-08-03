@@ -1951,3 +1951,169 @@ theorem sc_bound_floor_186 (f : Nat → Nat → Nat)
     exact scMt4_no_capped_path (RS.StepsLe.weaken (by omega) hs)
 
 end
+
+-- ## Stage 182: the fate machine — the bit decides eternity
+-- The bounded reader exists, and it is more than a reader. `scFate bit` (12 leaves) holds
+-- an `S S bit` register over a duplicator: with bit `C` it falls in seven fires onto a
+-- period-7 cycle (sizes 15–20) that CONSULTS the register once per lap, forever — the
+-- consumed register copy is re-minted by the duplicating fire, closing the regeneration
+-- loop the parking orbit lacked. With bit `C C` the SAME machine reduces in 36 fires to a
+-- normal form. One machine, one bit: runs of every length exist, or a halt exists — the
+-- register content decides eternity. (Probe: the bit-`C C` reachable state space is FINITE
+-- — 231 states, every schedule — with this NF its unique sink; the eternal/halting contrast
+-- below is pinned along explicit paths, schedule-independence recorded here as probe data.)
+
+/-- The fate machine: a 9-leaf head holding an `S S bit` register over `C C`. -/
+def scFate (bit : SCTerm) : SCTerm :=
+  .app (.app (.app .S (.app .S scDup)) (.app (.app .S .S) bit)) (.app .C .C)
+
+/-- The eternal orbit's phase 0: three register copies abreast. -/
+def scFateOrb : SCTerm := (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)))
+
+/-- Bit `C`: seven fires from seed to orbit. -/
+theorem scFate_entry : RS.SC.StepsN 7 (scFate .C) scFateOrb :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app (.app .S .S) .C) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))
+  (@RS.StepsN.refl RS.SC scFateOrb))))))))
+
+theorem scFateStep0 : RS.SC.step scFateOrb
+    (.app (.app (.app .C (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) :=
+  SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))
+theorem scFateStep1 : RS.SC.step (.app (.app (.app .C (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)))
+    (.app (.app (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) :=
+  SCStep.C_red (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))
+theorem scFateStep2 : RS.SC.step (.app (.app (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)))
+    (.app (.app (.app (.app .S (.app .C .C)) (.app .C (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) :=
+  SCStep.appL (SCStep.appL (SCStep.S_red .S .C (.app .C .C)))
+theorem scFateStep3 : RS.SC.step (.app (.app (.app (.app .S (.app .C .C)) (.app .C (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)))
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))) (.app (.app (.app .S .S) .C) (.app .C .C))) :=
+  SCStep.appL (SCStep.S_red (.app .C .C) (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))
+theorem scFateStep4 : RS.SC.step (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))) (.app (.app (.app .S .S) .C) (.app .C .C)))
+    (.app (.app (.app .C (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) :=
+  SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))))
+theorem scFateStep5 : RS.SC.step (.app (.app (.app .C (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)))
+    (.app (.app (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) :=
+  SCStep.C_red (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))
+theorem scFateStep6 : RS.SC.step (.app (.app (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)))
+    scFateOrb :=
+  SCStep.appL (SCStep.C_red (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))
+
+/-- One lap: seven fires, verbatim return — with a consultation inside. -/
+theorem scFate_cycle : RS.SC.StepsN 7 scFateOrb scFateOrb :=
+  RS.StepsN.tail scFateStep0 (RS.StepsN.tail scFateStep1 (RS.StepsN.tail scFateStep2
+  (RS.StepsN.tail scFateStep3 (RS.StepsN.tail scFateStep4 (RS.StepsN.tail scFateStep5
+  (RS.StepsN.tail scFateStep6 (@RS.StepsN.refl RS.SC scFateOrb)))))))
+
+/-- Laps compose: every multiple of the period. -/
+theorem scFate_forever :
+    ∀ n, RS.SC.StepsN (7 * n) scFateOrb scFateOrb
+  | 0 => @RS.StepsN.refl RS.SC scFateOrb
+  | n + 1 => by
+      rw [Nat.mul_succ]
+      exact RS.StepsN.trans (scFate_forever n) scFate_cycle
+
+/-- Partial laps: a run of every residue length. -/
+theorem scFateOrb_partial : ∀ r, r < 7 → ∃ u, RS.SC.StepsN r scFateOrb u
+  | 0, _ => ⟨_, @RS.StepsN.refl RS.SC scFateOrb⟩
+  | 1, _ => ⟨_, RS.StepsN.tail scFateStep0 (@RS.StepsN.refl RS.SC _)⟩
+  | 2, _ => ⟨_, RS.StepsN.tail scFateStep0 (RS.StepsN.tail scFateStep1
+      (@RS.StepsN.refl RS.SC _))⟩
+  | 3, _ => ⟨_, RS.StepsN.tail scFateStep0 (RS.StepsN.tail scFateStep1
+      (RS.StepsN.tail scFateStep2 (@RS.StepsN.refl RS.SC _)))⟩
+  | 4, _ => ⟨_, RS.StepsN.tail scFateStep0 (RS.StepsN.tail scFateStep1
+      (RS.StepsN.tail scFateStep2 (RS.StepsN.tail scFateStep3
+      (@RS.StepsN.refl RS.SC _))))⟩
+  | 5, _ => ⟨_, RS.StepsN.tail scFateStep0 (RS.StepsN.tail scFateStep1
+      (RS.StepsN.tail scFateStep2 (RS.StepsN.tail scFateStep3
+      (RS.StepsN.tail scFateStep4 (@RS.StepsN.refl RS.SC _)))))⟩
+  | 6, _ => ⟨_, RS.StepsN.tail scFateStep0 (RS.StepsN.tail scFateStep1
+      (RS.StepsN.tail scFateStep2 (RS.StepsN.tail scFateStep3
+      (RS.StepsN.tail scFateStep4 (RS.StepsN.tail scFateStep5
+      (@RS.StepsN.refl RS.SC _))))))⟩
+  | r + 7, h => absurd h (by omega)
+
+/-- **Runs of every length**: bit `C` never has to stop. -/
+theorem scFate_runs (n : Nat) : ∃ u, RS.SC.StepsN n scFateOrb u := by
+  obtain ⟨u, hu⟩ := scFateOrb_partial (n % 7) (Nat.mod_lt n (by omega))
+  refine ⟨u, ?_⟩
+  rw [← Nat.div_add_mod n 7]
+  exact RS.StepsN.trans (scFate_forever (n / 7)) hu
+
+/-- The bit-`C C` normal form: fifteen leaves, no redex. -/
+def scFateNf : SCTerm := (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))
+
+#guard scSucc scFateNf = []
+
+/-- `scFateNf` really is normal. -/
+theorem scFateNf_normal : ∀ v, ¬ RS.SC.step scFateNf v := by
+  intro v h
+  have hm := scSucc_complete h
+  rw [show scSucc scFateNf = [] from rfl] at hm
+  exact absurd hm List.not_mem_nil
+
+/-- Bit `C C`: thirty-six fires to the normal form. -/
+theorem scFate_halts : RS.SC.StepsN 36 (scFate (.app .C .C)) scFateNf :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app (.app .S .S) (.app .C .C)) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C .C) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C .C) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app .C .C) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C .C) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app (.app .C .C) (.app .C .C)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C .C) (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app .C .C) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C .C) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C .C) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C .C) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C .C) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C .C) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.S_red .S (.app .C .C) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.S_red .S (.app .C .C) (.app .C .C)))
+  (@RS.StepsN.refl RS.SC scFateNf)))))))))))))))))))))))))))))))))))))
+
+/-- **The bit decides eternity**: with bit `C` the machine has runs of EVERY length; with
+bit `C C` it reaches a normal form. One 12-leaf term, one register — spin or stop. -/
+theorem sc_fate :
+    (RS.SC.StepsN 7 (scFate .C) scFateOrb ∧ ∀ n, ∃ u, RS.SC.StepsN n scFateOrb u) ∧
+    (∃ u, RS.SC.Steps (scFate (.app .C .C)) u ∧ ∀ v, ¬ RS.SC.step u v) :=
+  ⟨⟨scFate_entry, scFate_runs⟩, ⟨scFateNf, RS.StepsN.toSteps scFate_halts, scFateNf_normal⟩⟩
+
+/-- The lap's trace, for the kernel-counted consultation. -/
+def scFateLap : List SCTerm := [(.app (.app (.app .C (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))),
+  (.app (.app (.app (.app (.app .S .S) .C) (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))),
+  (.app (.app (.app (.app .S (.app .C .C)) (.app .C (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))),
+  (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))) (.app (.app (.app .S .S) .C) (.app .C .C))),
+  (.app (.app (.app .C (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C)))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))),
+  (.app (.app (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))),
+  (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C))) (.app (.app (.app .S .S) .C) (.app .C .C)))]
+
+theorem scFateLap_chained : SCChained scFateOrb scFateLap := by decide
+
+-- One consultation per lap, and the lap closes.
+#guard scCountConsults .C (scFateOrb :: scFateLap) = 1
+#guard scFateLap.getLastD scFateOrb == scFateOrb
