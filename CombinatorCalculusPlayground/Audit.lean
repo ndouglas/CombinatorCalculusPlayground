@@ -425,3 +425,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_reg_write' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_reg_write
+
+/-- info: 'sc_two_clocks' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_two_clocks
+
+/-- info: 'sc_independent_registers' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_independent_registers

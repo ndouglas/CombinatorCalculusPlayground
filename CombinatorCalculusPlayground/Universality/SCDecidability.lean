@@ -1480,3 +1480,34 @@ theorem scForced_chained : ∀ (l : List SCTerm) (t : SCTerm),
   | cons v rest ih =>
       intro t hf
       exact ⟨by rw [hf.1]; exact List.mem_cons_self, ih v hf.2⟩
+
+-- ## Stage 171: two clocks, by design — the composition's foundation stone
+-- The lockstep law (Stage 162) binds deterministic single-spine marches; the composition
+-- escapes it by ARCHITECTURE: configurations held as members of a pair-holder reduce
+-- independently (congruence), so two word-registers tick on independent clocks and
+-- reachability — which quantifies over all schedules — sees every combination of their
+-- states. Pinned generically and instantiated: one register decrements while the other
+-- holds, and vice versa; the four primitives now have a chassis to compose on.
+
+/-- **Two clocks**: member-held configurations reduce independently under a pair-holder. -/
+theorem sc_two_clocks {c₁ c₁' c₂ c₂' : SCTerm}
+    (h₁ : RS.SC.Steps c₁ c₁') (h₂ : RS.SC.Steps c₂ c₂') :
+    RS.SC.Steps (.app (.app .S c₁) c₂) (.app (.app .S c₁') c₂') :=
+  scSteps_congApp (scSteps_congApp (@RS.Steps.refl RS.SC .S) h₁) h₂
+
+/-- Register one decrements (one pop) while register two holds — and the mirror image.
+The lockstep law is broken by design: independent word-registers exist. -/
+theorem sc_independent_registers (c : Bool) (w : List Bool) :
+    RS.SC.Steps
+      (.app (.app .S (.app (.app (scWord scDup (c :: w)) scDup) scDup))
+        (.app (.app (scWord scDup (c :: w)) scDup) scDup))
+      (.app (.app .S (.app (.app (scWord scDup w) scDup) scDup))
+        (.app (.app (scWord scDup (c :: w)) scDup) scDup))
+    ∧
+    RS.SC.Steps
+      (.app (.app .S (.app (.app (scWord scDup (c :: w)) scDup) scDup))
+        (.app (.app (scWord scDup (c :: w)) scDup) scDup))
+      (.app (.app .S (.app (.app (scWord scDup (c :: w)) scDup) scDup))
+        (.app (.app (scWord scDup w) scDup) scDup)) :=
+  ⟨sc_two_clocks (scRun_step scDup c w) (@RS.Steps.refl RS.SC _),
+   sc_two_clocks (@RS.Steps.refl RS.SC _) (scRun_step scDup c w)⟩
