@@ -2693,3 +2693,55 @@ theorem sc_relay_fates :
     · exact scFateNf_normal c' hs
     · obtain ⟨m', hm, _⟩ := scWrap_inv hs
       exact scFateNf_normal m' hm
+
+-- ## Stage 186: the chassis isolates — a theorem, not a suspicion
+-- Bits-are-sources forced hosting to route behavior; the pair chassis was the candidate
+-- router. This stage closes the question: it cannot route ANYTHING. Pair reachability is
+-- EXACTLY member reachability (`sc_pair_reachable_iff`, an iff): no schedule, however
+-- adversarial, lets one member's state influence the other's options. And the housed
+-- machine-and-shadow pair decouples instantly (`sc_shadow_drifts`): the shadow replays the
+-- machine's reductions on its own clock, any combination of progress reachable. The
+-- chassis is a PERFECT ISOLATOR — good for composing certificates (Stages 184–185), a
+-- dead end for communication. Hosting needs members that SHARE structure through fires,
+-- which is exactly what the one-tag-step / cell-synthesis line builds.
+
+/-- `Steps`-level pair decomposition. -/
+theorem scPair_steps_decompose {c₁ c₂ u : SCTerm}
+    (h : RS.SC.Steps (SCTerm.app (SCTerm.app .S c₁) c₂) u) :
+    ∃ u₁ u₂, u = SCTerm.app (SCTerm.app .S u₁) u₂ ∧
+      RS.SC.Steps c₁ u₁ ∧ RS.SC.Steps c₂ u₂ := by
+  obtain ⟨n, hn⟩ := RS.Steps.toStepsN h
+  obtain ⟨u₁, u₂, n₁, n₂, hu, _, h1, h2⟩ := scPair_decompose hn c₁ c₂ rfl
+  exact ⟨u₁, u₂, hu, RS.StepsN.toSteps h1, RS.StepsN.toSteps h2⟩
+
+/-- **The chassis isolates**: pair reachability IS the product of member reachabilities. -/
+theorem sc_pair_reachable_iff {c₁ c₂ u : SCTerm} :
+    RS.SC.Steps (SCTerm.app (SCTerm.app .S c₁) c₂) u ↔
+    ∃ u₁ u₂, u = SCTerm.app (SCTerm.app .S u₁) u₂ ∧
+      RS.SC.Steps c₁ u₁ ∧ RS.SC.Steps c₂ u₂ := by
+  constructor
+  · exact scPair_steps_decompose
+  · rintro ⟨u₁, u₂, rfl, h1, h2⟩
+    exact sc_two_clocks h1 h2
+
+/-- `Steps`-level shadow decomposition. -/
+theorem scWrap_steps_decompose {m u : SCTerm}
+    (h : RS.SC.Steps (SCTerm.app .C m) u) :
+    ∃ m', u = SCTerm.app .C m' ∧ RS.SC.Steps m m' := by
+  obtain ⟨n, hn⟩ := RS.Steps.toStepsN h
+  obtain ⟨m', hu, hm⟩ := scWrap_decompose hn m rfl
+  exact ⟨m', hu, RS.StepsN.toSteps hm⟩
+
+/-- **The shadow drifts**: the housed pair reaches exactly the machine's reductions in
+each slot, independently — every combination of progress, no synchronization. -/
+theorem sc_shadow_drifts {M u : SCTerm} :
+    RS.SC.Steps (scHoused M) u ↔
+    ∃ m₁ m₂, u = SCTerm.app (SCTerm.app .S m₁) (SCTerm.app .C m₂) ∧
+      RS.SC.Steps M m₁ ∧ RS.SC.Steps M m₂ := by
+  constructor
+  · intro h
+    obtain ⟨u₁, u₂, rfl, h1, h2⟩ := scPair_steps_decompose h
+    obtain ⟨m₂, rfl, hm⟩ := scWrap_steps_decompose h2
+    exact ⟨u₁, m₂, rfl, h1, hm⟩
+  · rintro ⟨m₁, m₂, rfl, h1, h2⟩
+    exact sc_two_clocks h1 (scSteps_appR .C h2)

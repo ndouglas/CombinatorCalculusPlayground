@@ -557,3 +557,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_relay_fates' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_relay_fates
+
+/-- info: 'sc_pair_reachable_iff' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_pair_reachable_iff
+
+/-- info: 'sc_shadow_drifts' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_shadow_drifts
