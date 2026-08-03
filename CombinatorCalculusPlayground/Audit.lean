@@ -728,3 +728,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_bounded_odometer' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_bounded_odometer
+
+/-- info: 'scMt7_no_capped_path' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt7_no_capped_path
+
+/-- info: 'sc_bound_floor_366' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_bound_floor_366
