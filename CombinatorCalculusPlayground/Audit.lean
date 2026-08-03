@@ -322,3 +322,15 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_decidable_iff_bound' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_decidable_iff_bound
+
+/-- info: 'scChained_steps' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scChained_steps
+
+/-- info: 'scForced_mountain' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scForced_mountain
+
+/-- info: 'scMt2_no_capped_path' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt2_no_capped_path
+
+/-- info: 'sc_bound_floor_44' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_bound_floor_44

@@ -1080,3 +1080,181 @@ theorem sc_decidable_iff_bound :
     exact sc_bound_of_decidable hdec
   · rintro ⟨f, hf⟩
     exact ⟨sc_decidable_of_bound f hf⟩
+
+-- ## Stage 140: the forced-march toolkit — mountains by chain, paths by list
+-- A forced (unique-successor) prefix is shared by EVERY reduction path, so a mountain
+-- certificate needs no state-space saturation: check the chain of `scSucc` singletons, check
+-- the target is off the chain, and every capped path dies at the chain's peak. Dually, any
+-- COMPUTED reduction becomes a `Steps` theorem by checking each step's membership in the
+-- verified successor list. Both checks are decidable — mountains and reachability facts of
+-- arbitrary concrete size are now one `decide` away, with cost linear in the path, not the
+-- state space.
+
+/-- A forced chain: from `t`, each listed term is THE unique successor of the last. -/
+def SCForced : SCTerm → List SCTerm → Prop
+  | _, [] => True
+  | t, v :: rest => scSucc t = [v] ∧ SCForced v rest
+
+/-- A checked chain: each listed term is A successor of the last (existence, not uniqueness). -/
+def SCChained : SCTerm → List SCTerm → Prop
+  | _, [] => True
+  | t, v :: rest => v ∈ scSucc t ∧ SCChained v rest
+
+instance instDecidableSCForced : ∀ (t : SCTerm) (l : List SCTerm), Decidable (SCForced t l)
+  | _, [] => isTrue trivial
+  | t, v :: rest =>
+      have : Decidable (SCForced v rest) := instDecidableSCForced v rest
+      inferInstanceAs (Decidable (scSucc t = [v] ∧ SCForced v rest))
+
+instance instDecidableSCChained : ∀ (t : SCTerm) (l : List SCTerm), Decidable (SCChained t l)
+  | _, [] => isTrue trivial
+  | t, v :: rest =>
+      have : Decidable (SCChained v rest) := instDecidableSCChained v rest
+      inferInstanceAs (Decidable (v ∈ scSucc t ∧ SCChained v rest))
+
+/-- A checked chain is a reduction: computed paths become `Steps` theorems. -/
+theorem scChained_steps : ∀ (l : List SCTerm) (t u : SCTerm), SCChained t l →
+    u ∈ t :: l → RS.SC.Steps t u := by
+  intro l
+  induction l with
+  | nil =>
+      intro t u _ hu
+      have : u = t := by
+        rcases List.mem_cons.mp hu with h | h
+        · exact h
+        · exact absurd h List.not_mem_nil
+      rw [this]
+      exact @RS.Steps.refl RS.SC t
+  | cons v rest ih =>
+      intro t u hc hu
+      rcases List.mem_cons.mp hu with rfl | hu'
+      · exact @RS.Steps.refl RS.SC u
+      · exact RS.Steps.tail (scSucc_sound hc.1) (ih v u hc.2 hu')
+
+/-- Generic inversion for bounded paths between distinct endpoints. -/
+theorem RS.StepsLe.cases_ne {A : RS} {size : A.Carrier → Nat} {c : Nat} {a b : A.Carrier}
+    (h : RS.StepsLe A size c a b) (hne : a ≠ b) :
+    ∃ v, A.step a v ∧ RS.StepsLe A size c v b := by
+  cases h with
+  | refl _ _ => exact absurd rfl hne
+  | tail s _ rest => exact ⟨_, s, rest⟩
+
+/-- Every capped path to a point beyond a forced chain rides the whole chain: all chain
+terms obey the cap. -/
+theorem scForced_all_le {c : Nat} {u : SCTerm} : ∀ (l : List SCTerm) (t : SCTerm),
+    SCForced t l → RS.StepsLe RS.SC SCTerm.leafCount c t u → u ∉ t :: l →
+    ∀ x ∈ t :: l, x.leafCount ≤ c := by
+  intro l
+  induction l with
+  | nil =>
+      intro t hf h _ x hx
+      have : x = t := by
+        rcases List.mem_cons.mp hx with h' | h'
+        · exact h'
+        · exact absurd h' List.not_mem_nil
+      rw [this]
+      exact RS.StepsLe.head_le h
+  | cons v rest ih =>
+      intro t hf h hu x hx
+      rcases List.mem_cons.mp hx with rfl | hx'
+      · exact RS.StepsLe.head_le h
+      · have hne : t ≠ u := fun he => hu (he ▸ List.mem_cons_self)
+        obtain ⟨b, s, rest'⟩ := RS.StepsLe.cases_ne h hne
+        have hb := scSucc_complete s
+        rw [hf.1] at hb
+        have hbv : b = v := by
+          rcases List.mem_cons.mp hb with h' | h'
+          · exact h'
+          · exact absurd h' List.not_mem_nil
+        rw [hbv] at rest'
+        exact ih v hf.2 rest' (fun hmem => hu (List.mem_cons_of_mem t hmem)) x hx'
+
+/-- **The mountain maker**: a forced chain with a peak above the cap excludes every capped
+path to any point beyond the chain. All hypotheses decide. -/
+theorem scForced_mountain {c : Nat} {t u : SCTerm} (l : List SCTerm)
+    (hf : SCForced t l) (hpeak : ∃ x ∈ t :: l, c < x.leafCount) (hu : u ∉ t :: l) :
+    ¬ RS.StepsLe RS.SC SCTerm.leafCount c t u := by
+  intro h
+  obtain ⟨x, hx, hcx⟩ := hpeak
+  exact absurd (scForced_all_le l t hf h hu x hx) (by omega)
+
+/-- The forced march, computed: follow unique successors for `n` steps (stop at any branch). -/
+def scForcedMarch : SCTerm → Nat → List SCTerm
+  | _, 0 => []
+  | t, n + 1 =>
+      match scSucc t with
+      | [v] => v :: scForcedMarch v n
+      | _ => []
+
+/-- The computed march is always a forced chain — no per-instance check needed. -/
+theorem scForcedMarch_forced : ∀ (n : Nat) (t : SCTerm), SCForced t (scForcedMarch t n) := by
+  intro n
+  induction n with
+  | zero => intro t; exact trivial
+  | succ n ih =>
+      intro t
+      unfold scForcedMarch
+      rcases h : scSucc t with _ | ⟨v, rest⟩
+      · exact trivial
+      · rcases rest with _ | ⟨w, rest₂⟩
+        · exact ⟨h, ih v⟩
+        · exact trivial
+
+/-- An eight-leaf term with a 49-step forced prefix peaking at 44 leaves. -/
+def scMt2T : SCTerm := .app (.app (.app (.app .S .S) .C) (.app .S (.app (.app .C .S) .S))) .C
+
+/-- A 32-leaf term reachable seven steps past the branch point — off the forced prefix. -/
+def scMt2U : SCTerm :=
+  .app (.app (.app (.app (.app (.app (.app (.app (.app .S .C) .S) (.app .C .C)) .C)
+    (.app .C .C)) (.app .S (.app (.app .C (.app .S (.app (.app .C (.app (.app .C
+    (.app .S (.app (.app .C .S) .S))) .C)) .C))) .C))) .C) (.app .C (.app .S
+    (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C)))) .C
+
+/-- The full witnessing path: the forced march, then seven checked steps to the target. -/
+def scMt2Path : List SCTerm :=
+  scForcedMarch scMt2T 49 ++
+  [.app (.app (.app (.app (.app .C (.app (.app (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C)) .C) .C)) .C) (.app .S (.app (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C))) .C))) (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C)))) .C,
+   .app (.app (.app (.app (.app (.app (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C)) .C) .C) (.app .S (.app (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C))) .C))) .C) (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C)))) .C,
+   .app (.app (.app (.app (.app (.app (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C) .C) (.app .C .C)) (.app .S (.app (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C))) .C))) .C) (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C)))) .C,
+   .app (.app (.app (.app (.app (.app (.app (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C) .C) .C) (.app .C .C)) (.app .S (.app (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C))) .C))) .C) (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C)))) .C,
+   .app (.app (.app (.app (.app (.app (.app (.app (.app .S (.app (.app .C .S) .S)) .C) .C) .C) (.app .C .C)) (.app .S (.app (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C))) .C))) .C) (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C)))) .C,
+   .app (.app (.app (.app (.app (.app (.app (.app (.app (.app .C .S) .S) .C) (.app .C .C)) .C) (.app .C .C)) (.app .S (.app (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C))) .C))) .C) (.app .C (.app .S (.app (.app .C (.app (.app .C (.app .S (.app (.app .C .S) .S))) .C)) .C)))) .C,
+   scMt2U]
+
+#guard scMt2T.leafCount = 8
+#guard scMt2U.leafCount = 32
+#guard (scForcedMarch scMt2T 49).length = 49
+
+/-- The crossing exists. -/
+theorem scMt2_steps : RS.SC.Steps scMt2T scMt2U :=
+  scChained_steps scMt2Path scMt2T scMt2U (by decide) (by decide)
+
+/-- **The tall mountain**: no path from `scMt2T` (8 leaves) to `scMt2U` (32 leaves) stays
+within 43 leaves — the forced prefix peaks at 44. Certified by the chain, not the state
+space. -/
+theorem scMt2_no_capped_path : ¬ RS.StepsLe RS.SC SCTerm.leafCount 43 scMt2T scMt2U :=
+  scForced_mountain (scForcedMarch scMt2T 49) (scForcedMarch_forced 49 scMt2T)
+    (by decide) (by decide)
+
+/-- **The floor theorems**: every valid bounding function clears the mountains. -/
+theorem sc_bound_floor_6 (f : Nat → Nat → Nat)
+    (hf : ∀ t u : SCTerm, RS.SC.Steps t u →
+        RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u) :
+    7 ≤ f 6 6 := by
+  by_cases h : 7 ≤ f 6 6
+  · exact h
+  · exfalso
+    have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 6 6) scMtT scMtU :=
+      hf scMtT scMtU scMt_steps
+    exact scMt_no_capped_path (RS.StepsLe.weaken (by omega) hs)
+
+theorem sc_bound_floor_44 (f : Nat → Nat → Nat)
+    (hf : ∀ t u : SCTerm, RS.SC.Steps t u →
+        RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u) :
+    44 ≤ f 8 32 := by
+  by_cases h : 44 ≤ f 8 32
+  · exact h
+  · exfalso
+    have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 8 32) scMt2T scMt2U :=
+      hf scMt2T scMt2U scMt2_steps
+    exact scMt2_no_capped_path (RS.StepsLe.weaken (by omega) hs)
