@@ -5701,3 +5701,13 @@ what automation could and couldn't do. This file is a first-class deliverable
   predicate lessons: incremental output is part of probe correctness.
 - Fifty-one autonomous stages (119–169). Ranking: (1) the Stage-170 review. (2) Harvest the
   relaunched sweep's witnesses when they surface. (3) The two-clock campaign, fresh.
+
+## 2026-08-03 — Stage 170: the review at fifty-two
+
+- Reviewed. The control campaign is the run's third complete arc (after the deadlock and
+  the frontier equivalence): a problem registered as impossible-flavored, renamed four
+  times by its own negatives, and discharged as four one-to-sixteen-fire mechanisms. The
+  method held: verify-before-formalize, null-case discipline, probe-writes-the-proof.
+- Ranking: (1) **the two-clock composition** (fresh sitting, architecture banked). (2) The
+  n=10 witnesses when the crash-proof sweep surfaces them. (3) Bounded intermediates via
+  the counter/glider growth readings.

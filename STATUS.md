@@ -14,9 +14,9 @@ inherited since Stage 0. As of Stage 76 this claim is **build-enforced**:
 `Audit.lean` pins the headline theorems' exact footprints with `#guard_msgs`,
 so any drift fails the build.
 
-At time of writing (Stage 160 review): 37 modules, ~1,055 theorems, 388
-build-enforced `#guard`s plus 129 `#guard_msgs`-pinned axiom footprints,
-~21,600 lines of Lean, zero warnings. Since the Stage 130 review the run
+At time of writing (Stage 170 review): 37 modules, ~1,063 theorems, 398
+build-enforced `#guard`s plus 137 `#guard_msgs`-pinned axiom footprints,
+~21,900 lines of Lean, zero warnings, 408 commits. Since the Stage 130 review the run
 continued autonomously through Stage 159 (41 consecutive stages), delivering:
 the FRONTIER EQUIVALENCE at all four ladder rungs (decidable ⟺ computably
 bounded intermediates, generic engine + kits) with pinned floors and the

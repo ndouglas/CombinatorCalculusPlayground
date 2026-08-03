@@ -5507,3 +5507,21 @@ and the counter/glider readings: forced computation deepens fast with seed size.
 frontier floors (f(6,6) ≥ 7, f(9,10) ≥ 25, f(8,32) ≥ 44) will gain an n=10 point when the
 relaunched sweep surfaces its witnesses. Methodology note for the census kit: LONG SWEEPS
 PRINT INCREMENTALLY — a final-report-only design loses everything to a late death.
+
+### Stage 170: review — the control campaign, closed as a primitive set
+
+Fifty-two consecutive autonomous stages (119–170). Numbers: ~1,063 theorems, 137 pins, 398
+guards, ~21,900 lines, zero warnings. The C8 campaign's final review: registered at Stage 146
+as "driver self-regeneration", C8 was successively renamed by its own refutations — marker
+persistence (147), constructor gap (156), nondestructive read (160), re-consultable bit (161)
+— and then DISCHARGED AS A PRIMITIVE SET in four stages: READ (`sc_read_bitC/B`), LATCH
+(`scLatch_run_C/B` + mode pulses), LOOPED READ (twelve consultations, kernel-certified),
+WRITE (`sc_reg_write`). What remains of C8 is composition: two independent registers under
+one driver, for which the two-clock architecture note (member-configs are independent clocks
+under reachability semantics; coupling = the read gadget on member end-states) is the banked
+opening. The frontier equivalence stands at all four rungs with a floor curve now reading
+1/3/23/15/≥44 across seed sizes 6–10. Discipline ledger for the campaign: six predicate
+lessons, four contamination catches, one pin-rule violation caught in-commit, one census
+lost to final-report-only output — every one converted to a standing rule. The program's
+open questions remain two, and they are the same two as at Stage 160 — bounded intermediates
+and the composition — but both now have complete toolkits and named architectures.
