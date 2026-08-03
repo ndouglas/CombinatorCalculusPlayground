@@ -3977,3 +3977,52 @@ theorem scQWord_step (E W : SCTerm) (ws : List SCTerm) :
     RS.SC.Steps (.app (.app (scQWord E (W :: ws)) scDup) scDup)
       (.app (.app (.app (.app (scQWord E ws) scDup) scDup) W) scDup) :=
   scQCell_fire (scQWord E ws) W
+
+-- ## Stage 148: the biodegradable architecture — zero-residue traversal, FIFO pile
+-- C8's co-design probe (cell constant × arm shape, eighteen viable pairs) found the pair that
+-- dissolves Stage 147's arm-junk barrier outright: embedded constant `C`, arms `C C` — ALL
+-- auxiliary machinery is pure C, and the C-fragment's exact conservation (Stage 117) burns it
+-- away completely. One cell traverses in FIVE fires, consuming its first arm as fuel and
+-- passing the second inward; a two-cell word ends at literally `E W₂ W₁` — the end marker
+-- promoted with the harvested wrappers as its ONLY members, in FIFO order. The tag queue's
+-- append order and a residue-free workspace, in one design. (Re-erection from this state is
+-- live too — `scDup W₂ W₁` reaches a running cell in two fires — but with a junk accumulator;
+-- cleaning that is the next campaign.)
+
+/-- The biodegradable cell: embedded constant `C`, everything auxiliary pure C. -/
+def scBCell (acc W : SCTerm) : SCTerm :=
+  .app (.app .C (.app (.app .C .C) acc)) W
+
+/-- **The five-fire protocol**: the first arm (`C C`) burns as fuel, the second passes inward,
+the wrapper drops behind — and nothing else remains. Generic in the second arm. -/
+theorem scBCell_fire (acc W A₂ : SCTerm) :
+    RS.SC.Steps (.app (.app (scBCell acc W) (.app .C .C)) A₂)
+      (.app (.app acc A₂) W) :=
+  RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) acc) W (.app .C .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C acc (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C .C) acc W))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C W acc))
+  (RS.Steps.tail (SCStep.C_red acc W A₂)
+  (@RS.Steps.refl RS.SC _)))))
+
+/-- Biodegradable words. -/
+def scBWord (E : SCTerm) : List SCTerm → SCTerm
+  | [] => E
+  | W :: ws => scBCell (scBWord E ws) W
+
+/-- One word step: the next cell receives the passed arm; the wrapper joins the pile. -/
+theorem scBWord_step (E W A₂ : SCTerm) (ws : List SCTerm) :
+    RS.SC.Steps (.app (.app (scBWord E (W :: ws)) (.app .C .C)) A₂)
+      (.app (.app (scBWord E ws) A₂) W) :=
+  scBCell_fire (scBWord E ws) W A₂
+
+/-- **Zero-residue traversal**: a two-cell word, interrogated with two `C C` arms, ends at the
+end marker applied to EXACTLY the two wrappers — FIFO order, no junk, every auxiliary leaf
+burned by C-conservation. -/
+theorem scBWord_two (E W₁ W₂ : SCTerm) :
+    RS.SC.Steps
+      (.app (.app (scBWord E [W₂, W₁]) (.app .C .C)) (.app .C .C))
+      (.app (.app E W₂) W₁) :=
+  RS.Steps.trans
+    (scBWord_step E W₂ (.app .C .C) [W₁])
+    (scBCell_fire E W₁ W₂)

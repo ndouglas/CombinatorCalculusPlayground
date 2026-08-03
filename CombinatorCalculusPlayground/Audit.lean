@@ -368,3 +368,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_qcell_synth₃' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_qcell_synth₃
+
+/-- info: 'scBCell_fire' does not depend on any axioms -/
+#guard_msgs in #print axioms scBCell_fire
+
+/-- info: 'scBWord_two' does not depend on any axioms -/
+#guard_msgs in #print axioms scBWord_two
