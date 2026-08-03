@@ -68,11 +68,15 @@ registers as inert words, the branch read off the word's own head shape
 — empty-marker versus cell — nondestructively, registers intact in both
 distinct outcomes. The composition ledger is COMPLETE AS PARTS: dec
 (`scRun_step`), test (the zero-test), inc (the growth step), four
-control primitives, independent clocks, the branch. What remains is
-ASSEMBLY — one machine cycling test→dec→branch on live registers — pure
-choreography over a finished parts list, carrying the weight of full
-tag/Minsky hosting and, via the frontier equivalence, rung-3
-undecidability. Since the Stage 114 review, one autonomous run
+control primitives, independent clocks, the branch. Stage 173 then pinned
+TEST-AND-DECREMENT itself (`sc_testdec`, axiom-free): sixteen fires from
+the nonzero register to a state carrying the DECREMENTED, RE-GUARDED
+register, with marker provenance certified (`S S` dye, machinery-free by
+`#guard` — three genuine machines out of 48 naive hits under the
+provenance null). The Minsky HALF-STEP is a theorem; the assembly's
+remainder is cycling it plus the zero-branch exit — fire-sequencing over
+a finished parts list, carrying the weight of full tag/Minsky hosting
+and, via the frontier equivalence, rung-3 undecidability. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a

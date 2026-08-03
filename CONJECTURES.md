@@ -5552,3 +5552,16 @@ registers with dec (`scRun_step`), test (here), inc (growth step); four control 
 independent clocks (`sc_two_clocks`); and now the branch. What remains is ASSEMBLY — a single
 machine cycling test→dec→branch on live registers — engineering on top of a complete parts
 list, no unknown mechanism anywhere in it.
+
+### Stage 173: test-and-decrement — the Minsky half-step
+
+`sc_testdec` (axiom-free, pinned): from the nonzero word-register (marker `S S`,
+machinery-disjoint and `#guard`-verified absent from the machine), sixteen fires reach a
+state carrying the DECREMENTED, RE-GUARDED register — the marker's only possible provenance
+being the pop itself. Three genuine machines out of 48 naive hits; the provenance null did
+the sorting. The decrement completes member-internally (six appR-context fires — the first
+pinned path with a mixed-context tail), leaving the new register member-resident where the
+write primitive operates. The Minsky HALF-STEP is a theorem. The assembly's remainder:
+CYCLE it (half-step output re-entering as input) and the zero-branch exit (Stage 172's
+test). Both are choreography over today's pinned pieces; the composition has no unknowns
+left, only fire-sequencing.

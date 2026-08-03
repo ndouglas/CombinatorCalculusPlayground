@@ -5733,3 +5733,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   register — the Minsky step entire; fresh sitting still recommended, the choreography is
   the largest yet). (2) n=10 witnesses (sweep printing incrementally). (3) Bounded
   intermediates.
+
+## 2026-08-03 — Stage 173: the half-step
+
+- Test-and-decrement, provenance-verified: the S S marker is a dye injected into the word,
+  and it came out the other side of the pop inside a re-guarded register. 48 naive hits,
+  3 genuine — the null-case ledger keeps earning its space. The emitter's appR extension
+  (built for the zero-test's last fire) carried the six member-internal fires for free.
+- Fifty-five autonomous stages (119–173). The Minsky machine is now: half-step ✓ (here),
+  zero-branch ✓ (172), independent registers ✓ (171), inc ✓ (154). Assembly = cycling.
+- Ranking: (1) **the cycle**: the half-step's goal-state re-entering as a testable input —
+  search for machines where reg0-carrying states re-fire into a second test (the detector
+  exists: scIsConsult generalized to wreg-shapes). (2) n=10 witnesses. (3) Bounded
+  intermediates.
