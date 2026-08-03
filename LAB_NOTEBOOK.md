@@ -6139,3 +6139,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   cycle's CARGO grow?), and the negative direction (a conservation invariant that
   refutes C10 — the C-count/S-count ledgers constrain what recurrent spines can hold).
   (2) floor12 harvest when the census completes. (3) The wrapper-word map.
+
+## 2026-08-04 — Stage 203: the second n=12 mountain; C10 widens its zero
+
+- The excess champion came from the random sweep, not the graft neighborhood — the two
+  n=12 witnesses are different SPECIES of mountain (291-peak/234-endpoint vs
+  87-peak/18-endpoint), a useful reminder that "best excess" and "tallest peak" diverge.
+- C10: +70,914 configurations, zero. The probe program for it is exhausted at small
+  scale; next attempts should be designed constructions or invariant proofs.
+- Eighty-five autonomous stages (119–203). Ranking: (1) **the wrapper-word map**:
+  exhaustive ISA algebra over words ≤ 4 (16 + 8 + 4 + 2 words × placeholder registers,
+  leak-checked) — complete the instruction set the hosting campaign runs on; any new
+  control-transfer law is immediately composable. (2) C10 invariant attempt (negative
+  direction). (3) n=14 graft census (background, seeded by both n=12 species).

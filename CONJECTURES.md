@@ -6009,3 +6009,18 @@ program's sharpest open question. Registered as **C10 (the odometer question)**:
 there exist a term family M with `M ⟶⁺ M·junk` where M's own reachable dynamics DEPEND
 on an internal numeral that grows across recurrences? (The persistent reader recurs
 without internal state; the tape counts but is consumed; C10 asks for both at once.)
+
+### Stage 203: the second n=12 mountain — excess 69 — and C10's widened negative
+
+Two results, one stage. The census's random phase plateaued at a mountain of a NEW type:
+modest peak (87), tiny endpoint (18 leaves) — `sc_bound_floor_87`, excess 69, the
+program's highest. The floor ladder now holds two n=12 points (f(12,18) ≥ 87 beside
+f(12,234) ≥ 291), and best-witness excess reads 12 → 44 → 69 at n = 8 → 10 → 12: worse
+than tripling per two leaves. Meanwhile C10's positive direction took another principled
+zero: 70,914 further configurations across three architectures (asymmetric heads
+`B₁ B₂ reg(k)`, reversed numerals, cargo slots) — 225k total trials, no self-incrementing
+recurrence. The conservation reading strengthens: the successor mints numerals as
+ARGUMENTS, and no probed architecture hauls the minted numeral back into its own address
+slot while restoring the head. C10 remains open, leaning refuted-in-small-envelopes;
+the honest positive hope left is a DESIGNED architecture (not searched), and the honest
+negative hope is an invariant on head-restoring reductions.
