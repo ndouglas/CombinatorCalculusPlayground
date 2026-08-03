@@ -437,3 +437,282 @@ example :
     ↔ ∃ f : Nat → Nat → Nat, ∀ t u : SCTerm, RS.SC.Steps t u →
         RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u :=
   scKit.decidable_iff_bound
+
+-- ## Stage 143: the ladder-wide equivalence — rungs 1 and 2 equipped
+-- SB and SI get their kits (verified successors mirroring `scSucc`, budget enumerators
+-- mirroring `scEnum`), so the decidable⟺bounded equivalence now holds AT EVERY RUNG of the
+-- relaxation ladder: SK (rung 0), {S,I} (rung 1), {S,B} (rung 2), {S,C} (rung 3). One
+-- question, four calibrated instances — the taxonomy's comparative method applied to the
+-- program's own frontier.
+
+-- ### The {S,B} kit
+
+def sbSuccRoot : SBTerm → List SBTerm
+  | .app (.app (.app .S f) g) x => [.app (.app f x) (.app g x)]
+  | .app (.app (.app .B x) y) z => [.app x (.app y z)]
+  | _ => []
+
+def sbSucc : SBTerm → List SBTerm
+  | .S => []
+  | .B => []
+  | .app f x =>
+      sbSuccRoot (.app f x)
+        ++ (sbSucc f).map (fun f' => .app f' x)
+        ++ (sbSucc x).map (fun x' => .app f x')
+
+theorem sbSuccRoot_sound : ∀ {t u : SBTerm}, u ∈ sbSuccRoot t → SBStep t u := by
+  intro t u h
+  match t, h with
+  | .app (.app (.app .S f) g) x, h =>
+      cases h with
+      | head => exact SBStep.S_red f g x
+      | tail _ h' => cases h'
+  | .app (.app (.app .B x) y) z, h =>
+      cases h with
+      | head => exact SBStep.B_red x y z
+      | tail _ h' => cases h'
+
+theorem sbSucc_sound : ∀ {t u : SBTerm}, u ∈ sbSucc t → SBStep t u := by
+  intro t
+  induction t with
+  | S => intro u h; exact absurd h (by simp [sbSucc])
+  | B => intro u h; exact absurd h (by simp [sbSucc])
+  | app f x ihf ihx =>
+      intro u h
+      simp only [sbSucc, List.mem_append, List.mem_map] at h
+      rcases h with (h | ⟨f', hf', rfl⟩) | ⟨x', hx', rfl⟩
+      · exact sbSuccRoot_sound h
+      · exact SBStep.appL (ihf hf')
+      · exact SBStep.appR (ihx hx')
+
+theorem sbSucc_complete : ∀ {t u : SBTerm}, SBStep t u → u ∈ sbSucc t := by
+  intro t u h
+  induction h with
+  | S_red f g x => simp [sbSucc, sbSuccRoot]
+  | B_red x y z => simp [sbSucc, sbSuccRoot]
+  | @appL a a' b h ih =>
+      simp only [sbSucc, List.mem_append, List.mem_map]
+      exact Or.inl (Or.inr ⟨a', ih, rfl⟩)
+  | @appR a b b' h ih =>
+      simp only [sbSucc, List.mem_append, List.mem_map]
+      exact Or.inr ⟨b', ih, rfl⟩
+
+def sbEnum : Nat → Nat → List SBTerm
+  | _, 0 => []
+  | _, 1 => [.S, .B]
+  | 0, _ => []
+  | d + 1, n + 2 =>
+    (List.range (n + 1)).flatMap fun i =>
+      (sbEnum d (i + 1)).flatMap fun l =>
+        (sbEnum d (n + 1 - i)).map fun r => SBTerm.app l r
+
+theorem sbEnum_succ (d n : Nat) :
+    sbEnum (d + 1) (n + 2) =
+      (List.range (n + 1)).flatMap fun i =>
+        (sbEnum d (i + 1)).flatMap fun l =>
+          (sbEnum d (n + 1 - i)).map fun r => SBTerm.app l r := rfl
+
+theorem sbEnum_complete : ∀ (t : SBTerm) (d : Nat), t.leafCount ≤ d →
+    t ∈ sbEnum d t.leafCount := by
+  intro t
+  induction t with
+  | S =>
+      intro d hd
+      have hd1 : 1 ≤ d := hd
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 := ⟨d - 1, by omega⟩
+      show SBTerm.S ∈ [SBTerm.S, SBTerm.B]
+      exact List.mem_cons_self
+  | B =>
+      intro d hd
+      have hd1 : 1 ≤ d := hd
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 := ⟨d - 1, by omega⟩
+      show SBTerm.B ∈ [SBTerm.S, SBTerm.B]
+      exact List.mem_cons_of_mem _ List.mem_cons_self
+  | app l r ihl ihr =>
+      intro d hd
+      have hl1 := SBTerm.leafCount_pos l
+      have hr1 := SBTerm.leafCount_pos r
+      have hsum : (SBTerm.app l r).leafCount = l.leafCount + r.leafCount := rfl
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 :=
+        ⟨d - 1, (Nat.succ_pred_eq_of_pos (by rw [hsum] at hd; omega)).symm⟩
+      obtain ⟨m, hm⟩ : ∃ m, l.leafCount + r.leafCount = m + 2 :=
+        ⟨l.leafCount + r.leafCount - 2, by omega⟩
+      rw [hsum, hm, sbEnum_succ]
+      refine List.mem_flatMap.mpr ⟨l.leafCount - 1, List.mem_range.mpr ?_, ?_⟩
+      · omega
+      refine List.mem_flatMap.mpr ⟨l, ?_, ?_⟩
+      · have h1 : l.leafCount - 1 + 1 = l.leafCount := by omega
+        rw [h1]
+        exact ihl d' (by rw [hsum] at hd; omega)
+      refine List.mem_map.mpr ⟨r, ?_, rfl⟩
+      · have h2 : m + 1 - (l.leafCount - 1) = r.leafCount := by omega
+        rw [h2]
+        exact ihr d' (by rw [hsum] at hd; omega)
+
+def sbEnumLe (c : Nat) : List SBTerm :=
+  (List.range c).flatMap fun n => sbEnum c (n + 1)
+
+theorem sbEnumLe_complete {c : Nat} {t : SBTerm} (h : t.leafCount ≤ c) :
+    t ∈ sbEnumLe c := by
+  have h1 := SBTerm.leafCount_pos t
+  refine List.mem_flatMap.mpr ⟨t.leafCount - 1, List.mem_range.mpr (by omega), ?_⟩
+  have h2 : t.leafCount - 1 + 1 = t.leafCount := by omega
+  rw [h2]
+  exact sbEnum_complete t c h
+
+instance : DecidableEq RS.SB.Carrier := inferInstanceAs (DecidableEq SBTerm)
+
+def sbKit : RS.SuccKit RS.SB where
+  size := SBTerm.leafCount
+  succ := sbSucc
+  enumLe := sbEnumLe
+  succ_sound := sbSucc_sound
+  succ_complete := sbSucc_complete
+  enumLe_complete := sbEnumLe_complete
+
+/-- The rung-2 equivalence. -/
+theorem sb_decidable_iff_bound :
+    Nonempty (∀ t u : SBTerm, Decidable (RS.SB.Steps t u))
+    ↔ ∃ f : Nat → Nat → Nat, ∀ t u : SBTerm, RS.SB.Steps t u →
+        RS.StepsLe RS.SB SBTerm.leafCount (f t.leafCount u.leafCount) t u :=
+  sbKit.decidable_iff_bound
+
+-- ### The {S,I} kit
+
+theorem SITerm.leafCount_pos (t : SITerm) : 1 ≤ t.leafCount := by
+  induction t with
+  | S => exact Nat.le_refl 1
+  | I => exact Nat.le_refl 1
+  | app f x ihf _ =>
+      show 1 ≤ f.leafCount + x.leafCount
+      omega
+
+def siSuccRoot : SITerm → List SITerm
+  | .app (.app (.app .S f) g) x => [.app (.app f x) (.app g x)]
+  | .app .I x => [x]
+  | _ => []
+
+def siSucc : SITerm → List SITerm
+  | .S => []
+  | .I => []
+  | .app f x =>
+      siSuccRoot (.app f x)
+        ++ (siSucc f).map (fun f' => .app f' x)
+        ++ (siSucc x).map (fun x' => .app f x')
+
+theorem siSuccRoot_sound : ∀ {t u : SITerm}, u ∈ siSuccRoot t → SIStep t u := by
+  intro t u h
+  unfold siSuccRoot at h
+  split at h
+  · rcases List.mem_cons.mp h with rfl | h''
+    · exact SIStep.S_red _ _ _
+    · exact absurd h'' List.not_mem_nil
+  · rcases List.mem_cons.mp h with rfl | h''
+    · exact SIStep.I_red _
+    · exact absurd h'' List.not_mem_nil
+  · exact absurd h List.not_mem_nil
+
+theorem siSucc_sound : ∀ {t u : SITerm}, u ∈ siSucc t → SIStep t u := by
+  intro t
+  induction t with
+  | S => intro u h; exact absurd h (by simp [siSucc])
+  | I => intro u h; exact absurd h (by simp [siSucc])
+  | app f x ihf ihx =>
+      intro u h
+      simp only [siSucc, List.mem_append, List.mem_map] at h
+      rcases h with (h | ⟨f', hf', rfl⟩) | ⟨x', hx', rfl⟩
+      · exact siSuccRoot_sound h
+      · exact SIStep.appL (ihf hf')
+      · exact SIStep.appR (ihx hx')
+
+theorem siSucc_complete : ∀ {t u : SITerm}, SIStep t u → u ∈ siSucc t := by
+  intro t u h
+  induction h with
+  | S_red f g x => simp [siSucc, siSuccRoot]
+  | I_red x => simp [siSucc, siSuccRoot]
+  | @appL a a' b h ih =>
+      simp only [siSucc, List.mem_append, List.mem_map]
+      exact Or.inl (Or.inr ⟨a', ih, rfl⟩)
+  | @appR a b b' h ih =>
+      simp only [siSucc, List.mem_append, List.mem_map]
+      exact Or.inr ⟨b', ih, rfl⟩
+
+def siEnum : Nat → Nat → List SITerm
+  | _, 0 => []
+  | _, 1 => [.S, .I]
+  | 0, _ => []
+  | d + 1, n + 2 =>
+    (List.range (n + 1)).flatMap fun i =>
+      (siEnum d (i + 1)).flatMap fun l =>
+        (siEnum d (n + 1 - i)).map fun r => SITerm.app l r
+
+theorem siEnum_succ (d n : Nat) :
+    siEnum (d + 1) (n + 2) =
+      (List.range (n + 1)).flatMap fun i =>
+        (siEnum d (i + 1)).flatMap fun l =>
+          (siEnum d (n + 1 - i)).map fun r => SITerm.app l r := rfl
+
+theorem siEnum_complete : ∀ (t : SITerm) (d : Nat), t.leafCount ≤ d →
+    t ∈ siEnum d t.leafCount := by
+  intro t
+  induction t with
+  | S =>
+      intro d hd
+      have hd1 : 1 ≤ d := hd
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 := ⟨d - 1, by omega⟩
+      show SITerm.S ∈ [SITerm.S, SITerm.I]
+      exact List.mem_cons_self
+  | I =>
+      intro d hd
+      have hd1 : 1 ≤ d := hd
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 := ⟨d - 1, by omega⟩
+      show SITerm.I ∈ [SITerm.S, SITerm.I]
+      exact List.mem_cons_of_mem _ List.mem_cons_self
+  | app l r ihl ihr =>
+      intro d hd
+      have hl1 := SITerm.leafCount_pos l
+      have hr1 := SITerm.leafCount_pos r
+      have hsum : (SITerm.app l r).leafCount = l.leafCount + r.leafCount := rfl
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 :=
+        ⟨d - 1, (Nat.succ_pred_eq_of_pos (by rw [hsum] at hd; omega)).symm⟩
+      obtain ⟨m, hm⟩ : ∃ m, l.leafCount + r.leafCount = m + 2 :=
+        ⟨l.leafCount + r.leafCount - 2, by omega⟩
+      rw [hsum, hm, siEnum_succ]
+      refine List.mem_flatMap.mpr ⟨l.leafCount - 1, List.mem_range.mpr ?_, ?_⟩
+      · omega
+      refine List.mem_flatMap.mpr ⟨l, ?_, ?_⟩
+      · have h1 : l.leafCount - 1 + 1 = l.leafCount := by omega
+        rw [h1]
+        exact ihl d' (by rw [hsum] at hd; omega)
+      refine List.mem_map.mpr ⟨r, ?_, rfl⟩
+      · have h2 : m + 1 - (l.leafCount - 1) = r.leafCount := by omega
+        rw [h2]
+        exact ihr d' (by rw [hsum] at hd; omega)
+
+def siEnumLe (c : Nat) : List SITerm :=
+  (List.range c).flatMap fun n => siEnum c (n + 1)
+
+theorem siEnumLe_complete {c : Nat} {t : SITerm} (h : t.leafCount ≤ c) :
+    t ∈ siEnumLe c := by
+  have h1 := SITerm.leafCount_pos t
+  refine List.mem_flatMap.mpr ⟨t.leafCount - 1, List.mem_range.mpr (by omega), ?_⟩
+  have h2 : t.leafCount - 1 + 1 = t.leafCount := by omega
+  rw [h2]
+  exact siEnum_complete t c h
+
+instance : DecidableEq RS.SI.Carrier := inferInstanceAs (DecidableEq SITerm)
+
+def siKit : RS.SuccKit RS.SI where
+  size := SITerm.leafCount
+  succ := siSucc
+  enumLe := siEnumLe
+  succ_sound := siSucc_sound
+  succ_complete := siSucc_complete
+  enumLe_complete := siEnumLe_complete
+
+/-- The rung-1 equivalence. -/
+theorem si_decidable_iff_bound :
+    Nonempty (∀ t u : SITerm, Decidable (RS.SI.Steps t u))
+    ↔ ∃ f : Nat → Nat → Nat, ∀ t u : SITerm, RS.SI.Steps t u →
+        RS.StepsLe RS.SI SITerm.leafCount (f t.leafCount u.leafCount) t u :=
+  siKit.decidable_iff_bound

@@ -347,3 +347,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_bound_floor_25' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_bound_floor_25
+
+/-- info: 'sb_decidable_iff_bound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sb_decidable_iff_bound
+
+/-- info: 'si_decidable_iff_bound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms si_decidable_iff_bound
