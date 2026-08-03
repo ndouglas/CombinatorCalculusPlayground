@@ -5287,3 +5287,22 @@ what automation could and couldn't do. This file is a first-class deliverable
   full-tag-hosting architecture or a sharpened impossibility conjecture with census support.
   (2) The aperiodic diverger (what grows without period? possibly a counter-like structure —
   worth an anatomy probe). (3) Floor asymptotics at n=10 (sampled).
+
+## 2026-08-03 — Stage 144: the fold splits in half
+
+- Fresh eyes did what the ranking hoped: the fold stopped being a wall and became two named
+  sub-problems, one of which fell today. Cell synthesis — the part fifteen stages of prose
+  treated as blocked by genetic closure — is ONE S-fire once you notice the cell's interior
+  is constant. The closure law was never violated; its seam (S-fires nest) was never
+  exploited. The negative half is now sharp: runtime-accumulator nesting is census-dead to
+  nine leaves on the bare interface, and the driver quine is the remaining design unknown.
+- Probe discipline note, for the third time this run: opacity is a MODELING CHOICE and the
+  wrong one for machine parts. The three-opaque probe returned clean zeros while the
+  honest-interface probe found the six-leaf synthesizer in seconds — and the synthesizer it
+  found is literally the term in the pinned theorem.
+- Twenty-six autonomous stages (119–144). Both formal pieces axiom-free, first build.
+- Ranking: (1) **the runtime-acc nest**: hand-design with full prefab control (the census
+  only rules out bare machines ≤ 9; a designed orchestration with junk slots has far more
+  room), targeting cycle-2: from members [acc-cell, W, dup, ...], build C (C acc dup) W with
+  acc the PREVIOUS synthesized cell; verify in Python, then formalize. (2) The driver quine
+  (S q q self-rebuild via duplication). (3) Floor asymptotics at n=10.

@@ -5107,3 +5107,22 @@ the reachability frontier across rungs with a single generic instrument. Lean no
 catalogue: two-discriminant matches with MIXED-DEPTH patterns lose pattern variables in
 compilation (`Unknown identifier` at the arm body); `split at` on the unfolded definition is
 the robust alternative.
+
+### Stage 144: cell synthesis — the fold's production step is one fire
+
+The fold problem re-opened with fresh eyes and split in half. POSITIVE (pinned, axiom-free):
+`sc_cell_synth`/`scv_cell_synth` — a traversal cell is all constant except its wrapper, so ONE
+S-fire mints `scTCell w rest` from the constant prefab `scCellPrefab rest` for any arriving
+`w`, even a variable the machine has never inspected; a continuation receives its own copy of
+the wrapper, and the fire goes through under trailing material. Stage 112 built cells at
+encoding time; the machine now builds them mid-run. Census agreement: synthesis machines exist
+at six leaves (the probe's hit IS the formalized fire). NEGATIVE (bounded): with an OPAQUE
+accumulator — the cycle-2 requirement, nesting a runtime-arrived `acc` under fresh C-wrappers —
+no machine to nine leaves completes the build. The fold's difficulty is now LOCATED, not
+diffuse: (a) runtime-accumulator nesting (needs the acc routed to an S-fire's third position
+with the right prefab second — orchestration, count-legal since ground terms may duplicate),
+and (b) driver self-regeneration across cycles (the QUINE PROBLEM: scDup solves it for
+C-interrogation; the fold driver needs the S-analogue — plausible via duplication providing
+the two copies that rebuild `S q q` by two nests, unproven). Modeling lesson re-learned
+mid-stage, Stage 111's exactly: the first probe modeled the accumulator as opaque and missed
+the six-leaf synthesizers; the honest interface (constant end marker) found them immediately.

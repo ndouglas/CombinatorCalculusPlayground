@@ -561,11 +561,16 @@ but never hands control to the one that arrived last.
 Non-erasure forbids UNACCOUNTED waste, not waste: every surviving gadget gives
 each forced passenger a job.
 
-**What remains for a full tag `Simulation` into `{S,C}`**: the FOLD phase, and
-its obstruction DEEPENED (Stage 115): elements are GENETICALLY CLOSED — data
-flows elements → spine, one way — so the fold cannot re-create a NESTED next
-word from pile members at all; the nested-word architecture ends at generation
-one. The boustrophedon framing was itself corrected (Stage 116): front-push and
+**What remains for a full tag `Simulation` into `{S,C}`**: the FOLD phase —
+and Stage 144 SPLIT IT IN HALF. Its production step FELL: `sc_cell_synth` /
+`scv_cell_synth` (pinned, axiom-free) — a traversal cell is all constant
+except its wrapper, so ONE S-fire mints `scTCell w rest` at runtime from the
+prefab `scCellPrefab rest`, even for an opaque `w`; the genetic-closure law
+(Stage 115) stands, but its documented seam (S-fires nest spine members into
+elements) does the work its prose had written off. What remains is located,
+not diffuse: (a) RUNTIME-ACCUMULATOR NESTING (census-dead to nine leaves on
+the bare interface) and (b) DRIVER SELF-REGENERATION across cycles (the
+quine problem — scDup solves it for C-interrogation; the S-analogue is open). The boustrophedon framing was itself corrected (Stage 116): front-push and
 front-pop INTERLEAVE, so the induced dynamics are PREFIX REWRITING — a
 deterministic stack process with a finite wrapper alphabet, pushdown-flavored,
 and generational separation would need a mid-spine barrier that cannot exist.
