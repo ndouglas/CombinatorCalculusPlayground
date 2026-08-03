@@ -5065,3 +5065,15 @@ for 49 steps to a 44-leaf peak, then branches to a 32-leaf target seven checked 
 `f(6,6) ≥ 7` and `f(8,32) ≥ 44` — the first pinned quantitative constraints on the
 equivalence's `f`, and a template: any forced-prefix specimen the probes find is now one
 `decide` from joining the floor.
+
+### Stage 141: the march hierarchy — the glider never stalls
+
+`scGlider_march_unbounded` (pinned, `[propext]`): the computed forced chain from the glider
+seed has every length — the trajectory's singleton successors mean `scForcedMarch` never hits
+a branch. The forced-march "busy beaver" at eight leaves is infinite, measured by Stage 140's
+own instrument. NEGATIVE, recorded per caveat culture: one-parameter families around the
+tall-mountain seed all break forcing (fuel towers in any argument slot collapse the forced
+prefix to 0–7 steps; trailing `C`s ride the same march with constant excess) — unbounded-
+excess mountain families remain UNFOUND, so the frontier floor stays pointwise
+(`f(6,6) ≥ 7`, `f(8,32) ≥ 44`). The exhaustive n=9 minimax census continues in the
+background; its harvest joins the floor when it lands.

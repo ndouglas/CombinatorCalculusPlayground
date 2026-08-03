@@ -5231,3 +5231,19 @@ what automation could and couldn't do. This file is a first-class deliverable
   search to bigger seeds/deeper marches — if forced excess grows without bound along a
   recognizable family, formalize the family and kill additive bounds wholesale. (2) The
   fold/control mechanism. (3) Genericization debt.
+
+## 2026-08-02 — Stage 141: the hierarchy and the negative
+
+- Small stage by design: the probes own the wall-clock. The one formal piece ties Stages 136
+  and 140 together (the glider's infinite march, measured by the march function), and the
+  family negatives are worth their ledger space — forcing is FRAGILE under perturbation,
+  which itself says something: long forced marches are precise machines, not generic
+  phenomena. Twenty-three autonomous stages (119–141).
+- Process note: two background probes hit wall-clock limits this stage (the n=9 census still
+  runs; the second-mountain BFS was killed as unbounded). The march-first design of Stage
+  140 was the right call — certificates that need only the PATH scale; certificates that
+  need the NEIGHBORHOOD don't.
+- Ranking: (1) **harvest the n=9 census** when it lands (floor points; check whether the
+  excess trend forces superlinear f). (2) The fold/control mechanism — paper-first sketch of
+  full tag hosting or its impossibility; the run's biggest open door. (3) Genericization
+  debt.
