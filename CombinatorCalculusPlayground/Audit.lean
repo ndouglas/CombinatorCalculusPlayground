@@ -590,3 +590,24 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_assembly_line' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_assembly_line
+
+/-- info: 'scFate_is_frame' does not depend on any axioms -/
+#guard_msgs in #print axioms scFate_is_frame
+
+/-- info: 'sc_frame_halt' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_frame_halt
+
+/-- info: 'sc_frame_halt_universal' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_frame_halt_universal
+
+/-- info: 'scFrame_cycle' does not depend on any axioms -/
+#guard_msgs in #print axioms scFrame_cycle
+
+/-- info: 'scGrow_period' does not depend on any axioms -/
+#guard_msgs in #print axioms scGrow_period
+
+/-- info: 'sc_frame_grow_unbounded' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_frame_grow_unbounded
+
+/-- info: 'sc_frame_trichotomy' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_frame_trichotomy

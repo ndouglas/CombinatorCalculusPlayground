@@ -3149,3 +3149,247 @@ theorem sc_assembly_line (B : SCTerm) :
   RS.Steps.trans
     (scSteps_appR _ (scSteps_appR (.app .C .C) (sc_metabolic_assembly B)))
     (sc_metabolic_assembly (SCTerm.app (SCTerm.app .S B) (.app (.app .S .S) B)))
+
+-- ## Stage 190: the frame trichotomy — one head, three registers, three futures
+-- The fate frame `S (S scDup) r (C C)` is not a two-way switch but a COMPLETE behavior
+-- selector. A census of all 3,238 registers up to six leaves sorts into 1,168 halting,
+-- 336 cycling, 1,661 growing — and the three futures are already selected by registers of
+-- at most three leaves: `C` halts in a FORCED 11-fire line (12 states, every schedule
+-- identical), `C S` falls onto a period-8 bounded orbit ridden forever inside nine terms,
+-- and `S S S` grows without bound on a period-7 front (`F ⟶⁷ F·J`, five leaves of junk
+-- per lap). `scFate b` is this frame at `r = S S b` — definitional equality — so the
+-- eternity switch of Stages 182–189 is one slice of a spectrum: HALT, ORBIT, EXPLODE,
+-- selected by register shape, each certified in its own currency.
+
+/-- The fate frame, register abstracted. -/
+def scFrame (r : SCTerm) : SCTerm :=
+  .app (.app (.app .S (.app .S scDup)) r) (.app .C .C)
+
+/-- `scFate` is the frame at `S S bit`. -/
+theorem scFate_is_frame (b : SCTerm) : scFate b = scFrame (.app (.app .S .S) b) := rfl
+
+/-- Register `C`: the 7-leaf normal form. -/
+def scFrameHaltNf : SCTerm := (.app (.app .C (.app .C (.app .C .C))) (.app .C (.app .C .C)))
+
+/-- Register `C`: eleven fires to the normal form. -/
+theorem sc_frame_halt : RS.SC.StepsN 11 (scFrame .C) scFrameHaltNf :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) .C (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app .C (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app .C (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C (.app .C .C)) (.app (.app .C .C) (.app .C (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .C (.app .C .C))) (.app .C (.app .C .C)) (.app (.app .C .C) (.app .C (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C (.app .C .C)) (.app (.app .C .C) (.app .C (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .C (.app .C .C))) (.app .C (.app .C .C)) (.app .C (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C (.app .C .C)) (.app .C (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app .C (.app .C .C)) (.app .C (.app .C .C)) (.app .C (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red (.app .C .C) (.app .C (.app .C .C)) (.app .C (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red .C (.app .C (.app .C .C)) (.app .C (.app .C .C)))
+  (@RS.StepsN.refl RS.SC scFrameHaltNf))))))))))))
+
+#guard scSucc scFrameHaltNf = []
+
+theorem scFrameHaltNf_normal : ∀ v, ¬ RS.SC.step scFrameHaltNf v := by
+  intro v h
+  have hm := scSucc_complete h
+  rw [show scSucc scFrameHaltNf = [] from rfl] at hm
+  exact absurd hm List.not_mem_nil
+
+/-- The halt leg's complete state space: a single forced line of 12 states. -/
+def scFrameHaltSpace : List (List SCTerm) :=
+  [[(.app (.app .C (.app .C (.app .C .C))) (.app .C (.app .C .C)))],
+   [(.app (.app (.app .C .C) (.app .C (.app .C .C))) (.app .C (.app .C .C)))],
+   [(.app (.app (.app .C (.app .C .C)) (.app .C (.app .C .C))) (.app .C (.app .C .C)))],
+   [(.app (.app (.app .C (.app .C (.app .C .C))) (.app .C (.app .C .C))) (.app .C (.app .C .C)))],
+   [(.app (.app (.app (.app .C .C) (.app .C (.app .C .C))) (.app .C (.app .C .C))) (.app .C (.app .C .C)))],
+   [(.app (.app (.app .C (.app (.app .C .C) (.app .C (.app .C .C)))) (.app .C (.app .C .C))) (.app .C (.app .C .C)))],
+   [(.app (.app (.app (.app .C .C) (.app .C (.app .C .C))) (.app (.app .C .C) (.app .C (.app .C .C)))) (.app .C (.app .C .C)))],
+   [(.app (.app (.app .C (.app (.app .C .C) (.app .C (.app .C .C)))) (.app .C (.app .C .C))) (.app (.app .C .C) (.app .C (.app .C .C))))],
+   [(.app (.app (.app (.app .C .C) (.app .C (.app .C .C))) (.app (.app .C .C) (.app .C (.app .C .C)))) (.app (.app .C .C) (.app .C (.app .C .C))))],
+   [(.app (.app scDup (.app .C (.app .C .C))) (.app (.app .C .C) (.app .C (.app .C .C))))],
+   [(.app (.app (.app .S scDup) (.app .C .C)) (.app .C (.app .C .C)))],
+   [(.app (.app (.app .S (.app .S scDup)) .C) (.app .C .C))]]
+
+def scFrameHaltStates : List SCTerm := scFrameHaltSpace.flatten
+
+section
+set_option maxHeartbeats 1000000
+
+#guard scFrameHaltStates.length = 12
+#guard scRankIn scFrameHaltSpace (scFrame .C) = 11
+
+theorem scFrameHaltSpace_ranked : ∀ x ∈ scFrameHaltStates, ∀ y ∈ scSucc x,
+    y ∈ scFrameHaltStates ∧ scRankIn scFrameHaltSpace y < scRankIn scFrameHaltSpace x := by
+  decide
+
+end
+
+/-- The halt is universal: no schedule exceeds eleven fires. -/
+theorem sc_frame_halt_universal : ∀ (n : Nat) (u : SCTerm),
+    RS.SC.StepsN n (scFrame .C) u → n ≤ 11 := by
+  intro n u h
+  have hb := (scRanked_bound scFrameHaltSpace_ranked h (by decide)).2
+  have hk : scRankIn scFrameHaltSpace (scFrame .C) = 11 := rfl
+  omega
+
+/-- Register `C S`: the period-8 orbit's phase 0. -/
+def scFrameOrb : SCTerm := (.app (.app (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+
+/-- Thirteen fires from seed to orbit. -/
+theorem sc_frame_cycle_entry : RS.SC.StepsN 13 (scFrame (.app .C .S)) scFrameOrb :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app .C .S) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app .C .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .S) (.app .C .C)) (.app (.app .C .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .S) (.app .C .C)) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .S) (.app .C .C)) (.app (.app .C .S) (.app .C .C)) (.app (.app .C .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C .S) (.app .C .C)) (.app .C .C) (.app (.app .C .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C .S) (.app .C .C)) (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scFrameOrb))))))))))))))
+
+theorem scFrameStep0 : RS.SC.step scFrameOrb
+    (.app (.app (.app .S (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) :=
+  SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+theorem scFrameStep1 : RS.SC.step (.app (.app (.app .S (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+    (.app (.app (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))) :=
+  SCStep.S_red (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+theorem scFrameStep2 : RS.SC.step (.app (.app (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))))
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))) :=
+  SCStep.appL (SCStep.C_red .C (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+theorem scFrameStep3 : RS.SC.step (.app (.app (.app .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))))
+    (.app (.app (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))) (.app (.app .C .S) (.app .C .C))) :=
+  SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+theorem scFrameStep4 : RS.SC.step (.app (.app (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))) (.app (.app .C .S) (.app .C .C)))
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .S) (.app .C .C))) :=
+  SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))))
+theorem scFrameStep5 : RS.SC.step (.app (.app (.app .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .S) (.app .C .C)))
+    (.app (.app (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) :=
+  SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .S) (.app .C .C))
+theorem scFrameStep6 : RS.SC.step (.app (.app (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+    (.app (.app (.app .C (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) :=
+  SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .S) (.app .C .C)))
+theorem scFrameStep7 : RS.SC.step (.app (.app (.app .C (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+    scFrameOrb :=
+  SCStep.C_red (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))
+
+/-- The orbit's lap, ending back home. -/
+def scFrameLap : List SCTerm := [(.app (.app (.app .S (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))),
+  (.app (.app (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))),
+  (.app (.app (.app .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))),
+  (.app (.app (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))) (.app (.app .C .S) (.app .C .C))),
+  (.app (.app (.app .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .S) (.app .C .C))),
+  (.app (.app (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))),
+  (.app (.app (.app .C (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))),
+  (.app (.app (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))]
+
+/-- One lap: eight fires, verbatim return. -/
+theorem scFrame_cycle : RS.SC.StepsN 8 scFrameOrb scFrameOrb :=
+  (RS.StepsN.tail scFrameStep0 (RS.StepsN.tail scFrameStep1 (RS.StepsN.tail scFrameStep2 (RS.StepsN.tail scFrameStep3 (RS.StepsN.tail scFrameStep4 (RS.StepsN.tail scFrameStep5 (RS.StepsN.tail scFrameStep6 (RS.StepsN.tail scFrameStep7 (@RS.StepsN.refl RS.SC scFrameOrb)))))))))
+
+theorem scFrame_forever : ∀ n, RS.SC.StepsN (8 * n) scFrameOrb scFrameOrb
+  | 0 => @RS.StepsN.refl RS.SC scFrameOrb
+  | n + 1 => by
+      rw [Nat.mul_succ]
+      exact RS.StepsN.trans (scFrame_forever n) scFrame_cycle
+
+section
+set_option maxHeartbeats 2000000
+set_option maxRecDepth 4000
+
+theorem scFrameOrb_partial : ∀ r, r < 8 →
+    ∃ u : SCTerm, RS.SC.StepsN r scFrameOrb u ∧ u ∈ scFrameOrb :: scFrameLap
+  | 0, _ => ⟨_, @RS.StepsN.refl RS.SC scFrameOrb, by decide⟩
+  | 1, _ => ⟨_, (RS.StepsN.tail scFrameStep0 (@RS.StepsN.refl RS.SC _)), by decide⟩
+  | 2, _ => ⟨_, (RS.StepsN.tail scFrameStep0 (RS.StepsN.tail scFrameStep1 (@RS.StepsN.refl RS.SC _))), by decide⟩
+  | 3, _ => ⟨_, (RS.StepsN.tail scFrameStep0 (RS.StepsN.tail scFrameStep1 (RS.StepsN.tail scFrameStep2 (@RS.StepsN.refl RS.SC _)))), by decide⟩
+  | 4, _ => ⟨_, (RS.StepsN.tail scFrameStep0 (RS.StepsN.tail scFrameStep1 (RS.StepsN.tail scFrameStep2 (RS.StepsN.tail scFrameStep3 (@RS.StepsN.refl RS.SC _))))), by decide⟩
+  | 5, _ => ⟨_, (RS.StepsN.tail scFrameStep0 (RS.StepsN.tail scFrameStep1 (RS.StepsN.tail scFrameStep2 (RS.StepsN.tail scFrameStep3 (RS.StepsN.tail scFrameStep4 (@RS.StepsN.refl RS.SC _)))))), by decide⟩
+  | 6, _ => ⟨_, (RS.StepsN.tail scFrameStep0 (RS.StepsN.tail scFrameStep1 (RS.StepsN.tail scFrameStep2 (RS.StepsN.tail scFrameStep3 (RS.StepsN.tail scFrameStep4 (RS.StepsN.tail scFrameStep5 (@RS.StepsN.refl RS.SC _))))))), by decide⟩
+  | 7, _ => ⟨_, (RS.StepsN.tail scFrameStep0 (RS.StepsN.tail scFrameStep1 (RS.StepsN.tail scFrameStep2 (RS.StepsN.tail scFrameStep3 (RS.StepsN.tail scFrameStep4 (RS.StepsN.tail scFrameStep5 (RS.StepsN.tail scFrameStep6 (@RS.StepsN.refl RS.SC _)))))))), by decide⟩
+  | r + 8, h => absurd h (by omega)
+
+end
+
+/-- **The bounded eternity**: runs of every length, all inside nine terms. -/
+theorem scFrame_runs (n : Nat) :
+    ∃ u : SCTerm, RS.SC.StepsN n scFrameOrb u ∧ u ∈ scFrameOrb :: scFrameLap := by
+  obtain ⟨u, hu, hmem⟩ := scFrameOrb_partial (n % 8) (Nat.mod_lt n (by omega))
+  refine ⟨u, ?_, hmem⟩
+  rw [← Nat.div_add_mod n 8]
+  exact RS.StepsN.trans (scFrame_forever (n / 8)) hu
+
+/-- Register `S S S`: the growth front (15 leaves). -/
+def scGrowFront : SCTerm := (.app (.app (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C))) (.app (.app (.app .S .S) .S) (.app .C .C)))
+
+/-- Five leaves of junk per lap. -/
+def scGrowJ : SCTerm := (.app (.app (.app .S .S) .S) (.app .C .C))
+
+/-- Nine fires from seed to front. -/
+theorem scGrow_entry : RS.SC.StepsN 9 (scFrame (.app (.app .S .S) .S)) scGrowFront :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app (.app .S .S) .S) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app (.app .S .S) .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app (.app .S .S) .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .S .S) .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .S .S) .S) (.app .C .C))) (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .S .S) .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .S .S) .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .S .S) .S) (.app .C .C))) (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C)))
+  (@RS.StepsN.refl RS.SC scGrowFront))))))))))
+
+/-- The period: seven fires, one junk block. -/
+theorem scGrow_period : RS.SC.StepsN 7 scGrowFront (.app scGrowFront scGrowJ) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red .S .S (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .S (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .S (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C))) (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C))) (.app (.app (.app .S .S) .S) (.app .C .C)) (.app (.app (.app .S .S) .S) (.app .C .C)))
+  (@RS.StepsN.refl RS.SC (.app scGrowFront scGrowJ)))))))))
+
+/-- The growing family. -/
+def scGrow : Nat → SCTerm
+  | 0 => scGrowFront
+  | n + 1 => .app (scGrow n) scGrowJ
+
+theorem scGrow_step : ∀ n, RS.SC.StepsN 7 (scGrow n) (scGrow (n + 1))
+  | 0 => scGrow_period
+  | n + 1 => scStepsN_appL scGrowJ (scGrow_step n)
+
+theorem scGrow_reach : ∀ n, RS.SC.Steps scGrowFront (scGrow n)
+  | 0 => @RS.Steps.refl RS.SC scGrowFront
+  | n + 1 => RS.Steps.trans (scGrow_reach n) (RS.StepsN.toSteps (scGrow_step n))
+
+theorem scGrow_size : ∀ n, (scGrow n).leafCount = 15 + 5 * n
+  | 0 => rfl
+  | n + 1 => by
+      show (scGrow n).leafCount + scGrowJ.leafCount = 15 + 5 * (n + 1)
+      have hj : scGrowJ.leafCount = 5 := rfl
+      rw [scGrow_size n, hj]
+      omega
+
+/-- **The unbounded eternity**: the `S S S` register outgrows every bound. -/
+theorem sc_frame_grow_unbounded (m : Nat) :
+    ∃ u, RS.SC.Steps (scFrame (.app (.app .S .S) .S)) u ∧ m < u.leafCount := by
+  refine ⟨scGrow m, RS.Steps.trans (RS.StepsN.toSteps scGrow_entry) (scGrow_reach m), ?_⟩
+  rw [scGrow_size m]
+  omega
+
+/-- **The frame trichotomy**: one 8-leaf head, three registers of at most three leaves,
+three futures — a forced 11-fire halt (universal), a period-8 orbit ridden forever inside
+nine terms, and unbounded growth. -/
+theorem sc_frame_trichotomy :
+    (RS.SC.StepsN 11 (scFrame .C) scFrameHaltNf ∧
+      (∀ v, ¬ RS.SC.step scFrameHaltNf v) ∧
+      ∀ (n : Nat) (u : SCTerm), RS.SC.StepsN n (scFrame .C) u → n ≤ 11) ∧
+    (RS.SC.StepsN 13 (scFrame (.app .C .S)) scFrameOrb ∧
+      ∀ n, ∃ u : SCTerm, RS.SC.StepsN n scFrameOrb u ∧ u ∈ scFrameOrb :: scFrameLap) ∧
+    (∀ m, ∃ u, RS.SC.Steps (scFrame (.app (.app .S .S) .S)) u ∧ m < u.leafCount) :=
+  ⟨⟨sc_frame_halt, scFrameHaltNf_normal, sc_frame_halt_universal⟩,
+   ⟨sc_frame_cycle_entry, scFrame_runs⟩,
+   sc_frame_grow_unbounded⟩
