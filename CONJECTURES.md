@@ -6024,3 +6024,17 @@ ARGUMENTS, and no probed architecture hauls the minted numeral back into its own
 slot while restoring the head. C10 remains open, leaning refuted-in-small-envelopes;
 the honest positive hope left is a DESIGNED architecture (not searched), and the honest
 negative hope is an invariant on head-restoring reductions.
+
+### Stage 204: the ISA algebra, complete — the cheap omega and the successor call
+
+The exhaustive wrapper-word map (all thirty words of length ≤ 4 over {C, W},
+placeholder-register emission with leak detection) settles the frame's instruction
+algebra: EVERY word eventually hands control to the register — the word chooses only the
+arguments and the price. The table's two novelties, both pinned axiom-free:
+`sc_cheap_omega` — the two-letter word `C·W` compiles self-application `(r r) W` in
+seventeen fires, nearly half the omega word's thirty; and `sc_successor_call` — the word
+`W·C·W·C` compiles `r (C r) (C r)`, THE REGISTER EXECUTED ON ITS OWN SUCCESSOR, every
+register, thirty-one fires. The successor call is exactly the C10 primitive: a register
+that reads numerals can now be handed its own increment as input by a fixed four-letter
+program. The other twenty-six words yield rearrangements of `r`, its wrappings, and
+X-complex junk — no third novelty at this depth. The frame ISA is closed under words ≤ 4.

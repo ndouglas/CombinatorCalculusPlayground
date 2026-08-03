@@ -6152,3 +6152,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   leak-checked) — complete the instruction set the hosting campaign runs on; any new
   control-transfer law is immediately composable. (2) C10 invariant attempt (negative
   direction). (3) n=14 graft census (background, seeded by both n=12 species).
+
+## 2026-08-04 — Stage 204: the ISA algebra, complete
+
+- The map took one probe and two emissions; the leak detector (lesson #9, now standard
+  equipment) is what makes "exhaustive and honest" cheap. The successor call jumps
+  straight onto the C10 pile: the calculus itself offers `r (C r) (C r)` as a primitive.
+- Eighty-six autonomous stages (119–204). Ranking: (1) **the successor-call odometer**:
+  C10's best remaining positive shot — design r so that `r (C r) (C r)` re-enters a
+  successor-call frame around `C r` (the word is fixed, the register increments; probe
+  r-families built from gene/builder prefabs with the WCWC target detector).
+  (2) C10 negative: the head-restoration invariant. (3) n=14 graft census.

@@ -217,6 +217,10 @@ calculus's only C-chain extender, minting the incremented numeral
 beside any continuation (the routed variant delivers it in operator
 position, ready to branch). The tape reads, the successor writes, the
 gene copies, the branch decides: tag hosting's parts list is complete.
+Stage 204 closed the frame's instruction algebra (all thirty
+wrapper-words ≤ 4 mapped; two new pinned instructions — the cheap omega
+`C·W`, self-application in 17 fires, and the successor call `W·C·W·C`:
+`r (C r) (C r)`, the register executed on its own increment).
 Stage 202 mapped the integration wall and registered it: C10, THE
 ODOMETER QUESTION — self-application (omega) plus the successor does
 NOT yield a self-incrementing counter (154k bodies, zero), consistent
