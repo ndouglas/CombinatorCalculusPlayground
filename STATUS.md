@@ -155,7 +155,14 @@ three dead cells in six fires (`sc_fate_assembly`, axiom-free), with
 the full dead-cells-to-fate pipeline schedule-universal via a second
 ranked certificate (237 states, wall 42 = 6 + 36,
 `sc_fate_assembly_universal`) and nested housing via
-`sc_assembly_line`. Construction chooses fate; computation never does. Behind the alternator stand tag/Minsky hosting,
+`sc_assembly_line`. Construction chooses fate; computation never does. Stage 190 widened
+the switch to a spectrum: THE FRAME TRICHOTOMY (`sc_frame_trichotomy`
+— `scFrame r = S (S scDup) r (C C)`, with `scFate b = scFrame (S S b)`
+by `rfl`): register `C` halts behind a forced 11-fire universal wall,
+`C S` rides a period-8 orbit forever inside nine terms, `S S S` grows
+without bound on a period-7 front with exact size law 15 + 5n. HALT,
+ORBIT, EXPLODE — one 8-leaf head, futures selected by register shape
+(census: 1,168 / 336 / 1,661 over all registers ≤ 6 leaves). Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

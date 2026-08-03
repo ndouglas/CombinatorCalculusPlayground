@@ -5804,3 +5804,21 @@ its relay, 186 proved the isolation, 188 opened the metabolic channel, 189 close
 loop — the machine now BUILDS from the same dead matter it burns. The register's bit is
 placed in a cell before the pop; bits-are-sources (185) says nothing else was ever
 possible: construction chooses fate, computation never does.
+
+### Stage 190: the frame trichotomy — one head, three registers, three futures
+
+The fate frame is not a switch; it is a SPECTRUM SELECTOR. `scFrame r = S (S scDup) r (C C)`
+(with `scFate b = scFrame (S S b)` by `rfl` — the campaigns join definitionally) sorts all
+3,238 registers up to six leaves into 1,168 halting, 336 cycling, 1,661 growing; and
+already at ≤ 3 leaves all three futures are selectable, each pinned in its own currency:
+`C` — a FORCED 11-fire halt (the 12-state space is a single line; universal wall by
+ranked certificate); `C S` — a period-8 orbit ridden forever inside nine terms
+(`scFrame_runs` carries lap membership through every run length); `S S S` — unbounded
+growth on a period-7 front with the exact size law `|scGrow n| = 15 + 5n`
+(`sc_frame_grow_unbounded`). HALT, ORBIT, EXPLODE. One 8-leaf head realizes the full
+behavioral taxonomy of the calculus, register-selected. For the hosting program this is
+the instruction-set map the parity question needed: the frame's answer to an input is not
+one bit but one of three FUTURES — and the interesting hosting question becomes whether
+word-processing machinery can steer a register INTO a chosen class before the frame reads
+it. Bits-are-sources says the register cannot be minted from thin air; the trichotomy
+census says the classes are dense enough that steering may not need minting.

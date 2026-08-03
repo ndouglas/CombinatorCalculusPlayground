@@ -5966,3 +5966,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   fate head — does a k-cell word's parity select spin vs halt? If yes, reachability
   in {S,C} decides parity-style predicates via eternity — a hosting seed. (2) floor12
   harvest if >57. (3) The alternator.
+
+## 2026-08-03 — Stage 190: the frame trichotomy
+
+- The instruction-set census (fatemap.py) was the day's best investment: four behavior
+  classes over 3,238 registers, three pinnable exemplars at ≤3 leaves, and the S S S
+  front found by a five-minute recurrence scan after frame(S S) resisted (its junk
+  accumulates mid-structure — noted, avoided). New pattern-book entry: ∃-binders typed
+  as RS.SC.Carrier block Decidable-instance search — annotate `∃ u : SCTerm`.
+- floor12 phase B: still nothing above 57.
+- Seventy-two autonomous stages (119–190). Ranking: (1) **steering**: probe whether a
+  cell-word prefix can transform a register between trichotomy classes before the frame
+  reads it — concretely, seeds (CC X)(CC A₁)…(CC Aₖ)(frame-cells) where the popped
+  A-chain rewrites the register arm; two words landing in different classes = hosting
+  seed. (2) floor12 harvest if >57. (3) The alternator.
