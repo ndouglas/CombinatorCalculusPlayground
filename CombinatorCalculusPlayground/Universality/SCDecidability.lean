@@ -4074,3 +4074,72 @@ theorem sc_omega_to_loop :
 theorem sc_omega_unbounded :
     ∀ n, ∃ m, n ≤ m ∧ RS.SC.StepsN m scGenLoop scGenLoop :=
   sc_cycle_unbounded (by omega) sc_generation_cycle
+
+-- ## Stage 195: the addressed fetch — a numeral decides who runs
+-- Composing the three proved instructions closes the hosting loop: for the register
+-- `C^m · p` (a numeral APPLIED to a payload), the wrapped frame hands off in thirteen
+-- fires, the numeral strips sort `p` against the dead complex `X` by parity, and one
+-- S-fire dispatches: EVEN address — the payload takes control (`p X (X X)`); ODD address
+-- — the dead complex runs and the payload is parked as cargo (`X X (p X)`). The numeral
+-- is an INSTRUCTION POINTER: it decides which term becomes the program. Fetch, decode
+-- (by parity), execute — all axiom-free, all parametric, assembled without a single new
+-- fire from `sc_frame_handoff` and the strip runs of C9.
+
+/-- **Even dispatch**: address `2j` gives the payload control. -/
+theorem sc_dispatch_even (j : Nat) (p : SCTerm) :
+    RS.SC.StepsN (14 + 2 * j)
+      (scFrame (.app scW (.app (scParityReg (2 * j)) p)))
+      (.app (.app p (scXof (.app (scParityReg (2 * j)) p)))
+        (.app (scXof (.app (scParityReg (2 * j)) p))
+          (scXof (.app (scParityReg (2 * j)) p)))) := by
+  have h1 := sc_frame_handoff (.app (scParityReg (2 * j)) p)
+  have h2 : RS.SC.StepsN (2 * j)
+      (.app (.app (.app (scParityReg (2 * j)) p)
+        (scXof (.app (scParityReg (2 * j)) p)))
+        (scXof (.app (scParityReg (2 * j)) p)))
+      (.app (.app (.app .S p) (scXof (.app (scParityReg (2 * j)) p)))
+        (scXof (.app (scParityReg (2 * j)) p))) :=
+    scStepsN_appL _ (scStripRun_even j p _)
+  have h3 := RS.StepsN.tail
+    (SCStep.S_red p (scXof (.app (scParityReg (2 * j)) p))
+      (scXof (.app (scParityReg (2 * j)) p)))
+    (@RS.StepsN.refl RS.SC
+      (.app (.app p (scXof (.app (scParityReg (2 * j)) p)))
+        (.app (scXof (.app (scParityReg (2 * j)) p))
+          (scXof (.app (scParityReg (2 * j)) p)))))
+  have h := RS.StepsN.trans h1 (RS.StepsN.trans h2 h3)
+  rw [show 14 + 2 * j = 13 + (2 * j + 1) from by omega]
+  exact h
+
+/-- **Odd dispatch**: address `2j + 1` parks the payload and runs the dead complex. -/
+theorem sc_dispatch_odd (j : Nat) (p : SCTerm) :
+    RS.SC.StepsN (15 + 2 * j)
+      (scFrame (.app scW (.app (scParityReg (2 * j + 1)) p)))
+      (.app (.app (scXof (.app (scParityReg (2 * j + 1)) p))
+          (scXof (.app (scParityReg (2 * j + 1)) p)))
+        (.app p (scXof (.app (scParityReg (2 * j + 1)) p)))) := by
+  have h1 := sc_frame_handoff (.app (scParityReg (2 * j + 1)) p)
+  have h2 : RS.SC.StepsN (2 * j + 1)
+      (.app (.app (.app (scParityReg (2 * j + 1)) p)
+        (scXof (.app (scParityReg (2 * j + 1)) p)))
+        (scXof (.app (scParityReg (2 * j + 1)) p)))
+      (.app (.app (.app .S (scXof (.app (scParityReg (2 * j + 1)) p))) p)
+        (scXof (.app (scParityReg (2 * j + 1)) p))) :=
+    scStepsN_appL _ (scStripRun_odd j p _)
+  have h3 := RS.StepsN.tail
+    (SCStep.S_red (scXof (.app (scParityReg (2 * j + 1)) p)) p
+      (scXof (.app (scParityReg (2 * j + 1)) p)))
+    (@RS.StepsN.refl RS.SC _)
+  have h := RS.StepsN.trans h1 (RS.StepsN.trans h2 h3)
+  rw [show 15 + 2 * j = 13 + (2 * j + 1 + 1) from by omega]
+  exact h
+
+/-- **The addressed fetch**: one machine shape; the numeral address decides, by parity,
+whether the payload becomes the program or the cargo. -/
+theorem sc_addressed_fetch (j : Nat) (p : SCTerm) :
+    (∃ u, RS.SC.Steps (scFrame (.app scW (.app (scParityReg (2 * j)) p))) u ∧
+      ∃ y, u = .app (.app p y) (.app y y)) ∧
+    (∃ u, RS.SC.Steps (scFrame (.app scW (.app (scParityReg (2 * j + 1)) p))) u ∧
+      ∃ y, u = .app (.app y y) (.app p y)) :=
+  ⟨⟨_, RS.StepsN.toSteps (sc_dispatch_even j p), _, rfl⟩,
+   ⟨_, RS.StepsN.toSteps (sc_dispatch_odd j p), _, rfl⟩⟩

@@ -653,3 +653,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_omega_to_loop' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_omega_to_loop
+
+/-- info: 'sc_dispatch_even' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_dispatch_even
+
+/-- info: 'sc_dispatch_odd' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_dispatch_odd
+
+/-- info: 'sc_addressed_fetch' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_addressed_fetch
