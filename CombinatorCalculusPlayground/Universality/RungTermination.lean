@@ -4113,3 +4113,30 @@ theorem sc_generation_cycle : RS.SC.StepsN 5 scGenLoop scGenLoop :=
 /-- The loop, as plain reachability. -/
 theorem sc_generation_loop : RS.SC.Steps scGenLoop scGenLoop :=
   RS.StepsN.toSteps sc_generation_cycle
+
+-- ## Stage 152: the attractor — every word decays into the generation loop
+-- The two-symbol configuration does not cycle and does not halt: it POPS. Seven fires take
+-- `config (false :: w)` to `config w` for ANY rest (the rest only rides — verified in trace,
+-- and it is exactly `scRun_step`), so every `scDup`-ended word decays symbol by symbol to the
+-- empty word, whose configuration is three fires from the generation loop. The complete
+-- dynamical description of the `scDup`-ended word family: POP UNTIL EMPTY, THEN PULSE
+-- FOREVER. The Stage-151 cycle is this family's unique attractor, and the naive multi-symbol
+-- generation loop is dead: word length is fuel here too — the loop preserves nothing but
+-- itself. C8 for non-trivial tags needs the marker to REBUILD from harvested material rather
+-- than pulse; the pulse is what rebuilding looks like when the harvest is empty.
+
+/-- The empty configuration is three fires from the loop. -/
+theorem sc_empty_to_loop :
+    RS.SC.Steps (.app (.app scDup scDup) scDup) scGenLoop :=
+  RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) scDup))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C scDup (.app (.app .C .C) scDup)))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .C .C) scDup) scDup scDup)
+  (@RS.Steps.refl RS.SC scGenLoop)))
+
+/-- **The attractor**: every `scDup`-ended word configuration decays into the generation
+loop — pop until empty, then pulse forever. -/
+theorem sc_words_decay (w : List Bool) :
+    RS.SC.Steps (.app (.app (scWord scDup w) scDup) scDup) scGenLoop := by
+  induction w with
+  | nil => exact sc_empty_to_loop
+  | cons c w ih => exact RS.Steps.trans (scRun_step scDup c w) ih

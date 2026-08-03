@@ -383,3 +383,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_generation_cycle' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_generation_cycle
+
+/-- info: 'sc_words_decay' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_words_decay
