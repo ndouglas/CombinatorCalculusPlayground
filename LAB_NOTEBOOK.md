@@ -5525,3 +5525,13 @@ what automation could and couldn't do. This file is a first-class deliverable
   descent + pulse). (2) Floor asymptotics at n=10 (census running in background). (3) The
   constructor search proper — multi-fire markers, widened pools — as the next campaign's
   opening.
+
+## 2026-08-03 — Stage 157: the probe writes the proof
+
+- The emitter (trace → appL-wrapped constructor chain) closes the tooling loop that opened
+  with the glider: any concrete reduction the searches find is now one script away from a
+  pinned theorem. The 14-cycle cost one paren.
+- Thirty-nine autonomous stages (119–157). The cycle zoo now holds three pinned pulses (5,
+  h/w-classified 3s, 14) and each is a hosted generation loop read.
+- Ranking: (1) **harvest the n=10 floor census** (running). (2) The constructor search
+  (next campaign: multi-fire markers). (3) The aperiodic diverger's anatomy.

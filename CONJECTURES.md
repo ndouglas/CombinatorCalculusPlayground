@@ -5315,3 +5315,13 @@ laws for three architectures); everything above it is one design object whose ex
 the remaining content of C8 — and, through the frontier equivalence, plausibly of rung-3
 undecidability itself. Probe caveats as always: pool- and depth-bounded searches; the run's
 own history (C7, the arm-junk barrier, mid-insertion) says named walls fall to widenings.
+
+### Stage 157: the fourteen-beat pulse
+
+`sc_pulse14` (axiom-free, pinned): the Q-family's universal attractor is a genuine 14-cycle —
+twelve C-fires and two S-fires (the arm-duplications that keep the beat alive) — and its
+basepoint is the growth step's own output (`sc_growth_to_pulse`). The family trilogy is
+complete: slide down by sixes, grow once by four, pulse by fourteens. Tooling milestone: the
+fourteen-fire chain was EMITTED by a script that identifies each fire's spine position and
+constructor arguments from traced states — the probe now writes the proof, and long concrete
+reductions cost nothing to pin.
