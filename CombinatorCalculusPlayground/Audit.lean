@@ -377,3 +377,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scBWord_run' does not depend on any axioms -/
 #guard_msgs in #print axioms scBWord_run
+
+/-- info: 'scBCell_fuel_blind' does not depend on any axioms -/
+#guard_msgs in #print axioms scBCell_fuel_blind

@@ -4055,3 +4055,35 @@ theorem scBWord_run (E W₂ W₁ : SCTerm) :
         (scBWord_step E (.app .C .C) (.app .C .C)
           (List.replicate k (.app .C .C) ++ [W₂, W₁]))
         (scBWord_run E W₂ W₁ k)
+
+-- ## Stage 150: fuel blindness — the furnace reads nothing
+-- Information-bearing fuel is dead: all three clean fuels reach the SAME unique end state
+-- (probe: one end state, one member signature, for `C C`, `C (C (C C))`, and `C (C C) C`
+-- alike). Pinned as twin protocol lemmas: the seven-fire burn of the four-leaf fuel delivers
+-- exactly the five-fire outcome of `C C` — `(acc A₂) W`, bitwise. Whatever a wrapper's shape,
+-- burning it as an arm erases it. C8's one remaining route is READ-BEFORE-BURN: the
+-- dispatch-capable word layer (Stage 107) minting productions at read time (Stage 144), the
+-- pile chained afterward (Stage 146) — a composition, not a new mechanism.
+
+/-- The four-leaf alternative fuel. -/
+def scFuelB' : SCTerm := .app .C (.app .C (.app .C .C))
+
+/-- **Fuel blindness**: the alternative fuel burns in seven fires to the identical outcome. -/
+theorem scBCell_fireB' (acc W A₂ : SCTerm) :
+    RS.SC.Steps (.app (.app (scBCell acc W) scFuelB') A₂)
+      (.app (.app acc A₂) W) :=
+  RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) acc) W scFuelB'))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C acc scFuelB')))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red scFuelB' acc W))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .C)) W acc))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C .C) acc W))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C W acc))
+  (RS.Steps.tail (SCStep.C_red acc W A₂)
+  (@RS.Steps.refl RS.SC _)))))))
+
+/-- The two fuels are observationally identical through a cell: same source arms, same
+delivered state. -/
+theorem scBCell_fuel_blind (acc W A₂ : SCTerm) :
+    ∃ v, RS.SC.Steps (.app (.app (scBCell acc W) (.app .C .C)) A₂) v
+       ∧ RS.SC.Steps (.app (.app (scBCell acc W) scFuelB') A₂) v :=
+  ⟨.app (.app acc A₂) W, scBCell_fire acc W A₂, scBCell_fireB' acc W A₂⟩
