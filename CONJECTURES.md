@@ -5928,3 +5928,20 @@ the spent executed complexes — even the waste is legible). The ISA's first ful
 revolution: FETCH → EXPRESS → ASSEMBLE → RE-ENTER. What separates this from tag-system
 hosting is now only ITERATION — a child whose own register re-encodes a gene — and the
 gene is parametric, so the search space is the register slot alone.
+
+### Stage 198: the dynasty — machines beget machines, to any depth
+
+The self-gene search returned the right kind of zero: verbatim quines are IMPOSSIBLE for
+single-slot genes (the child's register equals its cargo; an addressed parent needs
+`W (S p)` against `W`) — and the fix was in the failure. `scGene2 q` carries THREE cells:
+frame head, cargo, and the child's whole addressed register. `sc_lineage` (twenty-one
+fires, parametric in the payload): the parent of `scGene2 q` reduces to the parent of
+`q` with riders as stack — one C-fire to order the cells, six pops to assemble, on top
+of the fetch. And lineage ITERATES: `sc_dynasty` proves by induction that the
+generation-n ancestor `scParent (scGene2ⁿ q)` reduces to a term carrying the founder
+`scParent q` in head position, n rider-stacks deep. Not self-reproduction — heredity:
+a family of real addressed machines, each encoding and assembling the next, certified to
+arbitrary depth. Combined with C9 (numerals as data) and the dispatch (numerals as
+control), the calculus now demonstrably supports GENERATIONS of machines whose registers
+carry programs. The tag-hosting question has become concrete: encode a tag step as one
+generation.

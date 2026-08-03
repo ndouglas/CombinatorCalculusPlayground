@@ -193,8 +193,15 @@ THE GENE (`scGene t`, 14 leaves — frame head in one cell, the child's
 register in the other). `sc_reproduction`: twenty-nine fires take the
 addressed parent to the assembled child `FH t t`, the gene choosing the
 child's register; at `t = W` the child is verbatim `scFrame scW`
-(`sc_machines_beget`) — MACHINES BEGET MACHINES, riders as stack. The
-remaining hosting distance is ITERATION: a self-encoding gene. Behind the alternator stand tag/Minsky hosting,
+(`sc_machines_beget`) — MACHINES BEGET MACHINES, riders as stack. And
+Stage 198 delivered ITERATION: verbatim quines are impossible (single-
+slot genes force register = cargo) but the three-cell gene `scGene2`
+gives THE LINEAGE LAW (`sc_lineage`, 21 fires, parametric — parent of
+`scGene2 q` begets parent of `q`) and THE DYNASTY (`sc_dynasty`: every
+generation-n ancestor reduces to a term carrying the founder in head
+position). Machines beget machines to any depth; the tag-hosting
+question is now: encode one tag step as one generation with a COMPUTED
+payload. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

@@ -6073,3 +6073,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   whether scFrame (W (S (scGene (W (S (scGene X)))))) self-reproduces for some X (true
   self-reproduction = tag hosting's engine iterating). (2) floor12 harvest. (3) The
   wrapper-word map.
+
+## 2026-08-03 — Stage 198: the dynasty
+
+- The day's pattern at its purest: probe negative (2,143 payloads) → structural diagnosis
+  (register ≠ cargo) → architecture fix (third cell) → parametric verification
+  (placeholder + 3 payloads) → first-try green Lean. The dynasty proof is ten lines:
+  lineage + appL lifts + a two-constructor `scUnder` inductive.
+- Eighty autonomous stages (119–198). Ranking: (1) **the tag generation**: encode one
+  tag-system step as one dynasty generation — the child's payload should be a COMPUTED
+  function of the parent's (lineage currently passes q verbatim; a tag step needs q's
+  head symbol to select the appended word). The gene's register cell is assembled from
+  cells — probe payload-transforming genes (cells that fire on q before parking it).
+  (2) floor12 harvest. (3) The wrapper-word map.
