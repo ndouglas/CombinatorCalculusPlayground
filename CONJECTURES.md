@@ -5539,3 +5539,16 @@ end-states and branching, which is the read gadget aimed at a member instead of 
 single design object now carries the entire weight of: full tag/Minsky hosting, rung-3
 undecidability via the frontier equivalence, and with it the resolution of the program's
 last goal-level question.
+
+### Stage 172: the coupled zero-test — the branch exists
+
+`sc_ztest_zero`/`sc_ztest_nonzero` (axiom-free, pinned): registers as INERT WORDS
+(`scWord S w` — normal forms, stable data), the zero-test read off the word's own head shape.
+One template (`scWReg w = S C w`, doubled, with `C C` and `S` as markers): the empty-word
+register normalizes in eight fires, the one-cell register in eleven, to distinct normal forms
+each carrying its intact register (#guarded: normality, presence). The driver consults a
+register's VALUE CLASS nondestructively — the Minsky branch on zero. The composition ledger:
+registers with dec (`scRun_step`), test (here), inc (growth step); four control primitives;
+independent clocks (`sc_two_clocks`); and now the branch. What remains is ASSEMBLY — a single
+machine cycling test→dec→branch on live registers — engineering on top of a complete parts
+list, no unknown mechanism anywhere in it.

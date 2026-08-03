@@ -62,10 +62,17 @@ chassis: word-length registers already implement dec/test/inc (pop =
 TWO CLOCKS EXIST BY DESIGN (`sc_two_clocks`/`sc_independent_registers`,
 axiom-free, pinned: member-held configurations reduce independently —
 the lockstep law binds single-spine marches, not architectures, since
-reachability quantifies over all schedules). ONE design object remains:
-THE COUPLING — the driver consulting member end-states via the read
-gadget — and it carries the entire weight of full tag/Minsky hosting
-and, via the frontier equivalence, rung-3 undecidability. Since the Stage 114 review, one autonomous run
+reachability quantifies over all schedules). Stage 172 then pinned THE
+COUPLED ZERO-TEST (`sc_ztest_zero`/`sc_ztest_nonzero`, axiom-free):
+registers as inert words, the branch read off the word's own head shape
+— empty-marker versus cell — nondestructively, registers intact in both
+distinct outcomes. The composition ledger is COMPLETE AS PARTS: dec
+(`scRun_step`), test (the zero-test), inc (the growth step), four
+control primitives, independent clocks, the branch. What remains is
+ASSEMBLY — one machine cycling test→dec→branch on live registers — pure
+choreography over a finished parts list, carrying the weight of full
+tag/Minsky hosting and, via the frontier equivalence, rung-3
+undecidability. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a

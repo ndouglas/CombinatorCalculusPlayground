@@ -5721,3 +5721,15 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Fifty-three autonomous stages (119–171). Ranking: (1) **the coupling** (the read gadget
   aimed at a member's end-state; fresh sitting recommended — it is the last design object).
   (2) n=10 witnesses from the crash-proof sweep. (3) Bounded intermediates.
+
+## 2026-08-03 — Stage 172: the branch
+
+- The zero-test came out of the register demo by substituting word-shapes for bits — the
+  fourth time this run a hard-looking primitive reduced to an earlier demo with better
+  operands. The emitter grew appR-context handling (one fire in the nonzero path is
+  member-internal — the first pinned path with a mixed-context fire).
+- Fifty-four autonomous stages (119–172). The composition is now an assembly problem with
+  a complete parts list. Ranking: (1) **the assembly** (test→dec→branch cycled on a live
+  register — the Minsky step entire; fresh sitting still recommended, the choreography is
+  the largest yet). (2) n=10 witnesses (sweep printing incrementally). (3) Bounded
+  intermediates.
