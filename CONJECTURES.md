@@ -5871,3 +5871,17 @@ orbits forever, period 9 (`sc_wrapper_isa`). Probe lesson #9 joined the ledger: 
 placeholder register leaks the moment a fire lands inside it — the generic prefix ends
 there (the "24-fire universal shield" the raw probe suggested was really 13 generic fires
 plus 11 placeholder-specific ones; the corrected law is stronger AND true).
+
+### Stage 194: the omega instruction — the frame compiles self-application
+
+The wrapper algebra probe returned the run's most striking single law: `W·C·W` is a
+COMPILE instruction. `sc_frame_omega` (axiom-free, every register): thirty fires take
+`scFrame (W (C (W r)))` to `r r r` — the register applied to itself twice, naked, no
+shell, no residue. The frame's instruction set now reads: one `C` = READ (parity by
+flips, C9), one `W` = CALL (handoff to `r X X`), `W·C·W` = COMPILE ω. Self-application
+is the seed of every fixed-point and looping construction in combinatory logic; the
+frame manufactures it from any register on demand. Instantiated at the duplicator the
+compiled term is verbatim the generation-loop seed, so `sc_omega_to_loop` chains three
+pinned laws into: dead frame → ω in 30 → loop in 3 → eternity in fives. The hosting
+program's remaining distance: wire READ's numeral-dependence into COMPILE's choice of
+`r` — an addressed fetch-execute — and arbitrary tag-style control flow follows.

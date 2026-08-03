@@ -179,7 +179,12 @@ Stage 193 added the second instruction: THE WRAPPER ISA
 `W r` to `r X X`: two C's mean CALL, and the register becomes the
 program (executing `S` halts, `sc_frame_shield`; executing the
 duplicator orbits forever, `sc_wrapper_isa`). Registers are data AND
-code — read by strips, called by handoff. Behind the alternator stand tag/Minsky hosting,
+code — read by strips, called by handoff. Stage 194 completed the
+triad: THE OMEGA INSTRUCTION (`sc_frame_omega`, axiom-free) — the
+wrapper word `W·C·W` takes the frame to naked self-application `r r r`
+in thirty fires, every register; at the duplicator the output is
+verbatim the generation-loop seed (`sc_omega_to_loop`: frame → ω → loop
+→ eternity, all axiom-free). READ, CALL, COMPILE. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

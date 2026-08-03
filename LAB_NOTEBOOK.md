@@ -6022,3 +6022,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   instructions) is one probe away, and a composed read-call law would let a numeral
   SELECT which register gets executed: an addressed fetch, the missing hosting piece.
   (2) floor12 harvest. (3) The alternator.
+
+## 2026-08-03 — Stage 194: the omega instruction
+
+- The wrapper-word probe (9 words × control-shape detector) put `r r r` on screen and
+  the emission was routine: 30 generic fires, verified on 7 registers first. The frame's
+  ISA now has three pinned instructions; their compositions are a finite probe space —
+  the algebra is mappable exhaustively.
+- Seventy-six autonomous stages (119–194). Ranking: (1) **the addressed fetch**: compose
+  READ with COMPILE — a numeral prefix that decides WHICH of two registers reaches the
+  ω-slot (probe words mixing C-strips with the W·C·W tail over two-register cells);
+  success = fetch-execute, the last missing hosting primitive. (2) floor12 harvest.
+  (3) The wrapper-word exhaustive map (words ≤ 4 over {C,W} — complete the ISA).
