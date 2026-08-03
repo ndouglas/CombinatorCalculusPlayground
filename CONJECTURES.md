@@ -6038,3 +6038,20 @@ register, thirty-one fires. The successor call is exactly the C10 primitive: a r
 that reads numerals can now be handed its own increment as input by a fixed four-letter
 program. The other twenty-six words yield rearrangements of `r`, its wrappings, and
 X-complex junk — no third novelty at this depth. The frame ISA is closed under words ≤ 4.
+
+### Stage 205: C10 at equilibrium — the odometer resists design and refutation alike
+
+The successor call gave C10 its best-prepared positive shot, and the shot missed: over
+20,134 registers, no `r (C r) (C r)` product re-enters a successor-call frame around
+`C r`, and no direct recurrence `r x x ⟶⁺ r (C x) (C x)` exists in the same envelope —
+roughly 245,000 configurations across five architectures now, all zero. But the negative
+direction closed a door too: the obvious conservation arguments FAIL. The head-atom
+ledger shows each increment round consumes an S in mint position, but S-stock is
+farmable — the persistent reader already cycles its own S-material through duplication —
+so no counting invariant refutes C10. And self-reassembly of a fixed head from argument
+material is demonstrably possible (the parity orbits do it every lap, cyclically). C10
+therefore sits exactly on the program's edge: the positive needs an S-farming,
+head-restoring, argument-incrementing design no small envelope contains; the negative
+needs an invariant subtler than any counting. This is what an honest hard question looks
+like. Recorded at equilibrium; the n=14 census runs in the background (graft
+neighborhoods of BOTH n=12 mountain species, then a 3M random sweep).

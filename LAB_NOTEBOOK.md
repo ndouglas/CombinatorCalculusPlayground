@@ -6163,3 +6163,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   successor-call frame around `C r` (the word is fixed, the register increments; probe
   r-families built from gene/builder prefabs with the WCWC target detector).
   (2) C10 negative: the head-restoration invariant. (3) n=14 graft census.
+
+## 2026-08-04 — Stage 205: C10 at equilibrium
+
+- Five architectures, ~245k configurations, zero odometers; and the S-farm observation
+  kills the cheap refutation. C10 is now properly calibrated as hard from both sides —
+  the program's genuine frontier question alongside bounded intermediates.
+- floor14 census launched (graft neighborhoods of both n=12 species + 3M random).
+- Eighty-seven autonomous stages (119–205). Ranking: (1) **harvest floor14** on its
+  first supra-69 witness (march-500 pipeline is ready; maxRecDepth scales). (2) **the
+  S-farm design study**: one focused session attempting a HAND-BUILT odometer from
+  reader parts (the only C10-positive route left standing). (3) The two-register word
+  machine: use the successor call with r = a two-cell register to test whether WCWC
+  can drive the fate frame's numeral through multiple reads (a bounded odometer — k
+  increments for pre-built k — would still sharpen C10's boundary).

@@ -227,7 +227,12 @@ NOT yield a self-incrementing counter (154k bodies, zero), consistent
 with the calculus's conservation laws; hosting so far pre-builds its
 recursion (dynasty depth, tape symbols), and whether {S,C} admits any
 live self-modifying counter is now the program's sharpest open
-question. Behind the alternator stand tag/Minsky hosting,
+question — and Stage 205 calibrated it as hard from BOTH sides:
+~245k configurations across five architectures (including the
+successor-call route) find no odometer, while the S-farm observation
+(S-stock is duplicable, as the persistent reader demonstrates) blocks
+every counting-invariant refutation. C10 sits at equilibrium beside
+bounded intermediates as the program's twin frontier questions. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
