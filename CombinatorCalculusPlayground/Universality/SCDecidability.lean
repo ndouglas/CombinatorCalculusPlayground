@@ -3923,3 +3923,96 @@ theorem sc_frame_parity_law :
   ⟨fun j => ⟨RS.StepsN.toSteps (sc_parity_even j), scParityNfT_normal (2 * j)⟩,
    fun j => ⟨RS.StepsN.toSteps (sc_parity_entry j),
      sc_cycle_unbounded (by omega) (sc_parity_cycle j)⟩⟩
+
+-- ## Stage 193: the wrapper ISA — C reads, `C C` calls
+-- C9 showed the `C`-wrapper READS a numeral (parity by flips). This stage pins the other
+-- wrapper: `C C` EXECUTES. For EVERY register `r`, thirteen fires take the frame on the
+-- wrapped register `W r` to `r X X` with `X = (W r) W` — THE HANDOFF: the machine
+-- transfers control to its own register, applied to two copies of its wrapped complex.
+-- What happens next is the register's choice of program: executing the dead atom `S`
+-- halts in two more fires at a 9-leaf normal form (the shield); executing the duplicator
+-- locks into a period-9 orbit forever. The frame is an interpreter and the wrapper is its
+-- instruction set — one layer of `C` means read, two mean call.
+
+/-- The executed complex: `(W r) W`. -/
+def scXof (r : SCTerm) : SCTerm := .app (.app scW r) scW
+
+/-- **The handoff**: thirteen fires from the frame on `W r` to `r X X`, every register. -/
+theorem sc_frame_handoff (r : SCTerm) :
+    RS.SC.StepsN 13 (scFrame (.app scW r))
+      (.app (.app r (scXof r)) (scXof r)) :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app (.app .C .C) r) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app (.app .C .C) r) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app (.app .C .C) r) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) r) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) r) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) r) (.app .C .C))) (.app (.app (.app .C .C) r) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) r) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) r) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) r) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) r) (.app .C .C))) (.app (.app (.app .C .C) r) (.app .C .C)) (.app (.app (.app .C .C) r) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) r) (.app .C .C)) (.app (.app (.app .C .C) r) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) r) (.app .C .C)) (.app (.app (.app .C .C) r) (.app .C .C)) (.app (.app (.app .C .C) r) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C r (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) r (.app (.app (.app .C .C) r) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) r) (.app .C .C)) r))
+  (RS.StepsN.tail (SCStep.C_red r (.app (.app (.app .C .C) r) (.app .C .C)) (.app (.app (.app .C .C) r) (.app .C .C)))
+  (@RS.StepsN.refl RS.SC (.app (.app r (scXof r)) (scXof r))))))))))))))))
+
+/-- The shield: executing the dead atom halts — 15 fires to a 9-leaf normal form. -/
+def scShieldNf : SCTerm :=
+  .app (.app .S (.app (.app .C (.app .C .C)) .S)) (.app (.app .C (.app .C .C)) .S)
+
+theorem sc_frame_shield : RS.SC.StepsN 15 (scFrame (.app scW .S)) scShieldNf :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app (.app .C .C) .S) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app (.app .C .C) .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app (.app .C .C) .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) .S) (.app .C .C))) (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) .S) (.app .C .C))) (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app (.app .C .C) .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app (.app .C .C) .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app (.app .C .C) .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C .S (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) .S (.app (.app (.app .C .C) .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) .S) (.app .C .C)) .S))
+  (RS.StepsN.tail (SCStep.C_red .S (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app (.app .C .C) .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red .C .S (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.C_red .C .S (.app .C .C)))
+  (@RS.StepsN.refl RS.SC scShieldNf))))))))))))))))
+
+theorem scShieldNf_normal : ∀ v, ¬ RS.SC.step scShieldNf v := by
+  intro v h
+  have hm := scSucc_complete h
+  rw [show scSucc scShieldNf = [] from rfl] at hm
+  exact absurd hm List.not_mem_nil
+
+/-- Executing the duplicator: the period-9 orbit. -/
+def scExecOrb : SCTerm := (.app (.app (.app (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C))) (.app (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C)))) (.app (.app (.app .C .C) scDup) (.app .C .C)))
+
+theorem sc_exec_entry : RS.SC.StepsN 5 (scFrame (.app scW scDup)) scExecOrb :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app (.app .C .C) scDup) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) scDup) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C))) (.app (.app (.app .C .C) scDup) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scExecOrb))))))
+
+theorem sc_exec_cycle : RS.SC.StepsN 9 scExecOrb scExecOrb :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) scDup) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C))) (.app (.app (.app .C .C) scDup) (.app .C .C)) (.app (.app (.app .C .C) scDup) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) scDup) (.app .C .C)) (.app (.app (.app .C .C) scDup) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) scDup) (.app .C .C)) (.app (.app (.app .C .C) scDup) (.app .C .C)) (.app (.app (.app .C .C) scDup) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) scDup (.app (.app (.app .C .C) scDup) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) scDup) (.app .C .C)) scDup))
+  (RS.StepsN.tail (SCStep.C_red scDup (.app (.app (.app .C .C) scDup) (.app .C .C)) (.app (.app (.app .C .C) scDup) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app (.app .C .C) scDup) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scExecOrb))))))))))
+
+/-- **The ISA theorem**: one frame, one wrapper depth apart — the dead register's
+execution halts, the duplicator's runs forever. -/
+theorem sc_wrapper_isa :
+    (RS.SC.StepsN 15 (scFrame (.app scW .S)) scShieldNf ∧
+      ∀ v, ¬ RS.SC.step scShieldNf v) ∧
+    (RS.SC.StepsN 5 (scFrame (.app scW scDup)) scExecOrb ∧
+      ∀ n, ∃ m, n ≤ m ∧ RS.SC.StepsN m scExecOrb scExecOrb) :=
+  ⟨⟨sc_frame_shield, scShieldNf_normal⟩,
+   ⟨sc_exec_entry, sc_cycle_unbounded (by omega) sc_exec_cycle⟩⟩

@@ -638,3 +638,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_frame_parity_law' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_frame_parity_law
+
+/-- info: 'sc_frame_handoff' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_frame_handoff
+
+/-- info: 'sc_frame_shield' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_frame_shield
+
+/-- info: 'sc_wrapper_isa' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_wrapper_isa
