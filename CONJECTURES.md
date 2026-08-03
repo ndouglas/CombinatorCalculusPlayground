@@ -5606,3 +5606,18 @@ is verbatim (`Front ↦ Front·J`), and a written state means the recurrence mus
 CHANGED register while everything else survives. The reader was not designed: it is the
 Stage-166 consultation loop's own tail, revealed by periodicity analysis — the calculus keeps
 having already built what the program sets out to construct.
+
+### Stage 177: writing recurrences, first pass — decay is not a write
+
+The state-advancing-spiral detector (strip trailing junk, demand exactly one changed subterm
+across a period) found 25 recurrences in 162 seeds — and inspection shows every one is
+DEGENERATIVE: the changed slot is machinery burning down (`scDup → C`, wrappers stripping),
+not a register advancing. The write-shaped filter (both sides register-patterned, value
+successor-related) finds none in this envelope. The design analysis sharpens what a writing
+reader needs: the persistent reader's consultation fire (`S_red S C X`) already produces
+`(S X)` — HALF a fresh register — as a byproduct each period; a writing front must route an
+`S S`-prefab (the write primitive's constant, Stage 167) to meet the new bit inside the
+period, so the recurrence carries `Front X ↦ Front X' · J` with `X'` minted, not inherited.
+The parts touch: the period has the byproducts, the write is one fire, the routing is the
+remaining choreography — the same positional dance, one level up. Envelope caveats: 162
+seeds, one register family, marches to 60.

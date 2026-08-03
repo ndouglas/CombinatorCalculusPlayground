@@ -5785,3 +5785,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   fronts with period-recurrence Front X ↦ Front X' · J where X' ≠ X (state-advancing
   spirals) — the detectors and emitters are ready. (2) n=10 witnesses. (3) Bounded
   intermediates.
+
+## 2026-08-03 — Stage 177: decay is not a write
+
+- The detector needed a value-shape filter to avoid mistaking machinery decay for state
+  writes — the seventh predicate lesson, mildest of the run (caught on first inspection).
+  The genuine finding is architectural: the reader's own consultation fires mint
+  half-registers as byproducts. The writing reader is a routing problem inside a
+  seven-ish-fire period, with every component fire already pinned somewhere.
+- Fifty-nine autonomous stages (119–177). Ranking: (1) **the routed write**: design fronts
+  whose period includes the write prefab S S at a consultation byproduct's landing site —
+  directed construction over the reader's period skeleton, then the detector with the
+  value-shape filter. (2) n=10 witnesses. (3) Bounded intermediates.
