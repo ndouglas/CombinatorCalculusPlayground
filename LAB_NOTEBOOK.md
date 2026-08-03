@@ -5655,3 +5655,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   in a surviving register — likely via consultation products recombining (the fire's
   (bit X) output IS the bit applied; a context that captures it as S S (bit X)... shape
   analysis first). (2) Harvest deferred censuses. (3) Consolidation review at Stage 170.
+
+## 2026-08-03 — Stage 167: nothing missing
+
+- The write took one shape-observation: don't mutate, mint. The prefab S S was sitting in
+  the synthesis template since Stage 144. Four primitives, four stages (164–167), and the
+  hardest one cost five lines.
+- C8's status line changes character: from 'missing mechanism' to 'uncomposed mechanisms'.
+  Every prior campaign wall (C7, arm junk, fuel blindness, lockstep) fell within two stages
+  of being precisely named. The composition is precisely named now.
+- Forty-nine autonomous stages (119–167); twenty feat stages today. Ranking: (1) **the
+  composition**: a decrement-and-branch demo (looped-read a tower register, write the
+  successor, diverge on empty) — the Minsky step in miniature; probe with the march+detector
+  instruments. (2) Harvest deferred censuses. (3) Review at 170.

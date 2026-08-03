@@ -5464,3 +5464,18 @@ twin consults fourteen times in 132 leftmost steps (branching; probe-recorded).
 WRITE — change which bit the surviving register carries, mid-run, by machine action. Pin-rule
 violation logged and corrected same-commit: the audit output was on screen and the pin text
 still guessed — the rule is READ the audit line, not run it.
+
+### Stage 167: the write — the primitive set completes
+
+`sc_reg_write` (axiom-free, pinned): registers are minted, not mutated — one S-fire with
+prefab `S S` produces a fresh register around any bit-source. The nondestructive-read
+problem's four primitives now all exist: READ (Stage 164, the register demo), LATCH (165,
+set-once mode selection with reusable source), LOOPED READ (166, twelve consultations
+kernel-certified), WRITE (here, one fire). C8 reduces to CHOREOGRAPHY: compose looped-read
+with write into a Minsky decrement/test or a tag step. The composition is where every
+campaign has paid its real costs (position alignment, junk routing, contamination
+discipline) — but for the first time since C8 was registered at Stage 146, NO missing
+mechanism stands between the program and a hosted unbounded machine. The remaining risk is
+that composition itself hides a conservation-law obstruction; nothing found so far suggests
+one, and the latch (which already composes stash + consult + diverge + survive across
+sixteen fires) is evidence against.

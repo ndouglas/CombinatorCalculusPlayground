@@ -48,8 +48,17 @@ the working copy (fire ten), and diverges into bit-dependent perpetual
 five-beat pulses that carry the stashed register forever — the
 Stage-163 paper design found executing in the wild, verified
 fire-by-fire. `{S,C}`'s first pinned control primitive: a set-once
-latch with a reusable source bit. C8's remaining distance: the RESET
-(re-open and re-stash — the consultation loop) and the WRITE. Since the Stage 114 review, one autonomous run
+latch with a reusable source bit. Stages 166–167 then finished the
+primitive set: the CONSULTATION LOOP (`S C C (S S C) scDup` consults its
+register TWELVE times in 52 forced fires, register alive throughout —
+kernel-certified via march-replay and the structural consultation
+detector) and the WRITE (`sc_reg_write`, axiom-free: registers are
+minted, not mutated — one S-fire with prefab `S S`). ALL FOUR CONTROL
+PRIMITIVES of the nondestructive-read problem now exist as pinned or
+build-enforced mechanisms: read, latch, looped read, write. C8's
+remaining content is COMPOSITION alone — a decrement-and-branch (Minsky
+step) or tag step choreographed from the four; no missing mechanism
+stands between the program and a hosted unbounded machine. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a
