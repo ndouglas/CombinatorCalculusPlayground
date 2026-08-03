@@ -392,3 +392,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_growth_step' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_growth_step
+
+/-- info: 'sc_cellArm_pop' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_cellArm_pop
+
+/-- info: 'sc_spiral_descends' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_spiral_descends

@@ -4187,3 +4187,47 @@ theorem sc_growth_step :
   (RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C (.app .C .C)) (.app .C .C) scQuine))
   (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C .C) scQuine (.app (.app .C .C) scQuine)))
   (@RS.Steps.refl RS.SC _))))
+
+-- ## Stage 155: the cell-armed pop — the third protocol, and the Q-family's law
+-- Chasing the growth step's failed iteration exposed a new generic protocol: a `C C`-cell
+-- interrogated by TWO `C C`-CELLS pops in six fires to the inner word promoted with the
+-- arms' CONTENTS — `(CC X) (CC A) (CC B) ⟶⁶ (X A) B`. Arms are containers here, not fuel
+-- and not dispatchers: their shells burn (C-conservation again), their contents become the
+-- next arms. The scQuine family's complete dynamics follow: the sliding configurations
+-- s(k) = tower(k) tower(k−1) tower(k−1) pop one level per six fires (an instance of the
+-- generic law), entering a universal 14-cycle after 4 + 6(k−1) steps (probe: closures
+-- 18/24/30/36, arithmetic in k). Three protocols now coexist on one cell shape, selected
+-- entirely by ARM STRUCTURE: scDup-arms regenerate (Stage 107), flat `C C`-arms burn as
+-- fuel (Stage 148), cell-arms hand their contents forward (here). The arm is the program.
+
+/-- **The cell-armed pop**: shells burn, contents become the next arms. Fully generic. -/
+theorem sc_cellArm_pop (X A B : SCTerm) :
+    RS.SC.Steps
+      (.app (.app (.app (.app .C .C) X) (.app (.app .C .C) A)) (.app (.app .C .C) B))
+      (.app (.app X A) B) :=
+  RS.Steps.tail (SCStep.appL (SCStep.C_red .C X (.app (.app .C .C) A)))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .C .C) A) X (.app (.app .C .C) B))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C A (.app (.app .C .C) B)))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .C .C) B) A X)
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C B X))
+  (RS.Steps.tail (SCStep.C_red X B A)
+  (@RS.Steps.refl RS.SC _))))))
+
+/-- The scQuine towers. -/
+def scQTower : Nat → SCTerm
+  | 0 => scQuine
+  | k + 1 => .app (.app .C .C) (scQTower k)
+
+/-- The sliding configuration. -/
+def scSlide (k : Nat) : SCTerm :=
+  .app (.app (scQTower (k + 1)) (scQTower k)) (scQTower k)
+
+/-- **The spiral pop**: each sliding configuration pops to the previous, six fires. -/
+theorem sc_spiral_pop (k : Nat) :
+    RS.SC.Steps (scSlide (k + 1)) (scSlide k) :=
+  sc_cellArm_pop (scQTower (k + 1)) (scQTower k) (scQTower k)
+
+/-- Every sliding configuration reaches the base. -/
+theorem sc_spiral_descends : ∀ k, RS.SC.Steps (scSlide k) (scSlide 0)
+  | 0 => @RS.Steps.refl RS.SC _
+  | k + 1 => RS.Steps.trans (sc_spiral_pop k) (sc_spiral_descends k)
