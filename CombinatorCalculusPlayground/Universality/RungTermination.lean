@@ -4140,3 +4140,23 @@ theorem sc_words_decay (w : List Bool) :
   induction w with
   | nil => exact sc_empty_to_loop
   | cons c w ih => exact RS.Steps.trans (scRun_step scDup c w) ih
+
+-- ## Stage 153: the harvest rebuilder — and where the quine actually lives
+-- Two searches. POSITIVE: from the biodegradable run's clean pile `E W₂ W₁`, the marker
+-- `scDup` REBUILDS in two fires: a live biodegradable cell holding the harvested wrapper
+-- (in both slots — the S-fire's duplication puts `W₂` in the accumulator seat, which for
+-- tag words is not junk: tags are C-material, so a wrapper-accumulator DISPATCHES when
+-- consumed). 288 designed markers rebuild; this is the smallest. NEGATIVE: no marker ≤ 14
+-- leaves achieves the EXACT growth step `config [b] ⟶* config [b,b]` (3,766 candidates,
+-- zero) — because the marker there must survive its own firing verbatim, which is precisely
+-- the quine demand. C8's location is now exact: not reading, not minting, not rebuilding —
+-- only the marker's SELF-PERSISTENCE through the rebuild.
+
+/-- **The harvest rebuilder**: `scDup` converts the clean pile into a live cell, two fires,
+generic in both harvested wrappers. -/
+theorem sc_harvest_rebuild (W₂ W₁ : SCTerm) :
+    RS.SC.Steps (.app (.app scDup W₂) W₁)
+      (.app (scBCell W₂ W₂) W₁) :=
+  RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) W₂))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C W₂ (.app (.app .C .C) W₂)))
+  (@RS.Steps.refl RS.SC _))
