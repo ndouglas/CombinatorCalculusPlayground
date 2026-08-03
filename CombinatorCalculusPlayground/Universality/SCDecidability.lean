@@ -4600,3 +4600,68 @@ theorem sc_successor_call (r : SCTerm) :
   (RS.StepsN.tail (SCStep.C_red (.app .C r) (.app .C r) (.app .C r))
   (RS.StepsN.tail (SCStep.C_red r (.app .C r) (.app .C r))
   (@RS.StepsN.refl RS.SC (.app (.app r (.app .C r)) (.app .C r))))))))))))))))))))))))))))))))))
+
+-- ## Stage 206: the counting chain — bounded odometers exist, and their fuel is pre-built
+-- C10 asks for a live counter; this is the sharpest thing below it, pinned. Iterating the
+-- routed successor gives THE COUNTING CHAIN: `scChain n y` is a linear-size machine
+-- (3 leaves per increment) that delivers `C^n r` — the n-fold successor of ANY numeral —
+-- to any continuation `y` in exactly `2n` fires, the intermediate numerals trailing as
+-- legible junk. With `r = C^k S` the continuation receives `C^(k+n) S` on the nose
+-- (`sc_iterC_numeral`). Counters exist; what C10 asks, precisely, is whether the chain's
+-- fuel (the n nested prefabs, consumed one per increment) can ever be REGROWN by the
+-- machine itself. Every piece of an odometer is now pinned except the regrowth.
+
+/-- The n-fold increment prefab: `S (C ·) C` nested. -/
+def scChain : Nat → SCTerm → SCTerm
+  | 0, y => y
+  | n + 1, y => .app (.app .S (.app .C (scChain n y))) .C
+
+/-- The n-fold successor. -/
+def scIterC : Nat → SCTerm → SCTerm
+  | 0, r => r
+  | n + 1, r => .app .C (scIterC n r)
+
+/-- On numerals, iterated successor is numeral addition. -/
+theorem sc_iterC_numeral : ∀ n k, scIterC n (scParityReg k) = scParityReg (k + n)
+  | 0, _ => rfl
+  | n + 1, k => by
+      show .app .C (scIterC n (scParityReg k)) = scParityReg (k + (n + 1))
+      rw [sc_iterC_numeral n k]
+      rfl
+
+/-- One chain stage: two fires, one increment. -/
+theorem sc_chain_fire (n : Nat) (y r : SCTerm) :
+    RS.SC.StepsN 2 (.app (scChain (n + 1) y) r)
+      (.app (.app (scChain n y) (.app .C r)) r) :=
+  sc_routed_successor (scChain n y) r
+
+/-- **The counting chain**: `2n` fires deliver the n-fold successor to the continuation,
+for every start numeral — the intermediate numerals trail as junk. -/
+theorem sc_chain_run : ∀ (n : Nat) (y r : SCTerm),
+    ∃ u, RS.SC.Steps (.app (scChain n y) r) u ∧ scUnder (.app y (scIterC n r)) u
+  | 0, y, r => ⟨SCTerm.app y r, @RS.Steps.refl RS.SC (SCTerm.app y r), scUnder.refl⟩
+  | n + 1, y, r => by
+      obtain ⟨u, hu, hunder⟩ := sc_chain_run n y (.app .C r)
+      have hsteps := RS.Steps.trans (RS.StepsN.toSteps (sc_chain_fire n y r))
+        (scSteps_appL r hu)
+      refine ⟨.app u r, hsteps, ?_⟩
+      have : scIterC (n + 1) r = scIterC n (.app .C r) := by
+        clear hsteps hu hunder u
+        induction n with
+        | zero => rfl
+        | succ m ih =>
+            show SCTerm.app .C (scIterC (m + 1) r)
+              = SCTerm.app .C (scIterC m (SCTerm.app .C r))
+            rw [ih]
+      rw [this]
+      exact scUnder.app hunder
+
+/-- **The bounded odometer**: for every `n` and `k`, a machine of `3n + 3` leaves plus
+the numeral delivers `C^(n+k) S` to the continuation. Counting is free; only REGROWING
+the counter is (C10-)hard. -/
+theorem sc_bounded_odometer (n k : Nat) (y : SCTerm) :
+    ∃ u, RS.SC.Steps (.app (scChain n y) (scParityReg k)) u ∧
+      scUnder (.app y (scParityReg (k + n))) u := by
+  obtain ⟨u, hu, hunder⟩ := sc_chain_run n y (scParityReg k)
+  rw [sc_iterC_numeral n k] at hunder
+  exact ⟨u, hu, hunder⟩

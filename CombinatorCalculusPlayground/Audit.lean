@@ -719,3 +719,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_successor_call' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_successor_call
+
+/-- info: 'sc_chain_fire' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_chain_fire
+
+/-- info: 'sc_chain_run' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_chain_run
+
+/-- info: 'sc_bounded_odometer' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_bounded_odometer
