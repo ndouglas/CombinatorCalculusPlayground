@@ -380,3 +380,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scBCell_fuel_blind' does not depend on any axioms -/
 #guard_msgs in #print axioms scBCell_fuel_blind
+
+/-- info: 'sc_generation_cycle' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_generation_cycle

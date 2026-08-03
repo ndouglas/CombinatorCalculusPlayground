@@ -4087,3 +4087,29 @@ theorem scBCell_fuel_blind (acc W A₂ : SCTerm) :
     ∃ v, RS.SC.Steps (.app (.app (scBCell acc W) (.app .C .C)) A₂) v
        ∧ RS.SC.Steps (.app (.app (scBCell acc W) scFuelB') A₂) v :=
   ⟨.app (.app acc A₂) W, scBCell_fire acc W A₂, scBCell_fireB' acc W A₂⟩
+
+-- ## Stage 151: the generation loop — a full tag generation is a cycle
+-- The self-reproducing one-symbol tag ({b ↦ [b]}: the word never changes) hosts as a genuine
+-- `{S,C}` CYCLE: its encoded configuration — the Stage-107 word layer with `scDup` arms and
+-- `scDup` as the END MARKER — returns to itself bit-identically in five fires. Read, re-arm,
+-- re-erect: one generation, one loop. The end marker is the machine's return address:
+-- `tailInSC` used end marker `S` (halt); end marker `scDup` loops. The generation-loop
+-- problem (C8) is thereby solved for the trivial tag, and solved by a CYCLE — connecting the
+-- cycle-space thread (Stages 96–101) to the hosting thread: this is what (some) `{S,C}`
+-- cycles ARE — hosted generations.
+
+/-- The self-tag's running configuration: the one-symbol word, `scDup`-armed, `scDup`-ended. -/
+def scGenLoop : SCTerm := .app (.app (scWord scDup [false]) scDup) scDup
+
+/-- **One generation, five fires, bit-identical return.** -/
+theorem sc_generation_cycle : RS.SC.StepsN 5 scGenLoop scGenLoop :=
+  RS.StepsN.tail (SCStep.appL (SCStep.C_red .C scDup scDup))
+  (RS.StepsN.tail (SCStep.C_red scDup scDup scDup)
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) scDup))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C scDup (.app (.app .C .C) scDup)))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) scDup) scDup scDup)
+  (@RS.StepsN.refl RS.SC scGenLoop)))))
+
+/-- The loop, as plain reachability. -/
+theorem sc_generation_loop : RS.SC.Steps scGenLoop scGenLoop :=
+  RS.StepsN.toSteps sc_generation_cycle
