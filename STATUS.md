@@ -139,7 +139,12 @@ contents are inputs forever, outputs never, and fate in {S,C} is
 decided strictly by initial conditions. The constructive complement,
 `sc_relay_fates`/`sc_relay_wall`: the assembler `S S C M` houses any
 machine with its shadow in one fire, and the housed halt dies behind a
-compositional 73-fire wall. Behind the alternator stand tag/Minsky hosting,
+compositional 73-fire wall. Stage 186 sealed the architecture question:
+THE CHASSIS ISOLATES (`sc_pair_reachable_iff` — pair reachability is
+exactly the product of member reachabilities, an iff; the housed shadow
+drifts free, `sc_shadow_drifts`). Composition of certificates: yes.
+Communication: never through the holder — only through fires, where the
+cell-synthesis line lives. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

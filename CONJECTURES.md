@@ -5747,3 +5747,17 @@ housed pair `S M (C M)` — machine and shadow — and the four-fates calculus c
 it: immortal in 8 fires with a spinning payload (`sc_relay_fates`), and with a halting
 payload every schedule dies at machine-and-shadow normal form behind a 73-fire wall
 (`sc_relay_wall`) — pinned while the probe's 53,592-state product space stays untouched.
+
+### Stage 186: the chassis isolates — a theorem, not a suspicion
+
+The behavior-routing question from Stage 185's ledger, answered in the negative before
+lunch: `sc_pair_reachable_iff` — reachability from `S c₁ c₂` is EXACTLY the product of
+member reachabilities, an iff. The chassis isolates perfectly: no schedule, however
+adversarial, lets one member's state change what the other can do. `sc_shadow_drifts`
+instantiates it at the housed pair: machine and shadow decouple at birth, every
+combination of independent progress reachable, no synchronization ever. Two readings:
+the isolation is WHY termination certificates compose over the chassis (walls add
+because nothing crosses), and it is why the chassis can never host communication. The
+routing question is now sharply posed for the only remaining channel: members that share
+structure through FIRES — the duplicator's copies, the cell-synthesis line, arm-as-
+program. Communication in `{S,C}`, if it exists, is metabolic, not architectural.

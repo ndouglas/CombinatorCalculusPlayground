@@ -5909,3 +5909,18 @@ what automation could and couldn't do. This file is a first-class deliverable
   probe whether a housed spinning member can FEED the pair's other member (shared-subterm
   coupling) or whether the chassis isolates members permanently (suspected: isolation is
   a theorem via scPair_decompose — check if it already IS one). (3) The alternator.
+
+## 2026-08-03 — Stage 186: the chassis isolates
+
+- Cheapest stage in weeks: both theorems assembled from Stage 184-185 parts (decompose +
+  two_clocks + wrap), zero new machinery, first-try green. The ranking's "check if it
+  already IS a theorem" instinct was right.
+- The n=12 excess census runs in the background (graft neighborhood done or running +
+  4M random sample, incremental prints to floor12.log).
+- Sixty-eight autonomous stages (119–186). Ranking: (1) **harvest floor12** when it
+  surfaces a witness (pin the n=12 mountain if excess > 44; the maxRecDepth section
+  pattern from Stage 181 scales to march-400). (2) **metabolic communication**: probe
+  whether one member's fire products can land in a sibling's fire zone WITHOUT a shared
+  holder — the spiral/pop line (sc_cellArm_pop) already moves material between spine
+  positions; ask whether a two-cell configuration exists where cell A's emitted junk is
+  cell B's fuel (the FIFO pile from scBWord_two suggests yes). (3) The alternator.
