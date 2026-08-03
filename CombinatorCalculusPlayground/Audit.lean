@@ -527,3 +527,18 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_fate_universal' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_fate_universal
+
+/-- info: 'scPair_inv' does not depend on any axioms -/
+#guard_msgs in #print axioms scPair_inv
+
+/-- info: 'scPair_decompose' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scPair_decompose
+
+/-- info: 'scPair_bounded' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scPair_bounded
+
+/-- info: 'scPair_normal' does not depend on any axioms -/
+#guard_msgs in #print axioms scPair_normal
+
+/-- info: 'sc_four_fates' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_four_fates

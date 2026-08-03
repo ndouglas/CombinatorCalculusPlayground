@@ -2436,3 +2436,112 @@ theorem sc_fate_universal :
     (∀ (n : Nat) (u : SCTerm), RS.SC.StepsN n (scFate (.app .C .C)) u → n ≤ 36) ∧
     (∀ u, RS.SC.Steps (scFate (.app .C .C)) u → (∀ v, ¬ RS.SC.step u v) → u = scFateNf) :=
   ⟨sc_fate_all_bounded, sc_fate_unique_exit⟩
+
+-- ## Stage 184: the four fates — the fate bit becomes a component
+-- Two fate machines under the pair chassis `S c₁ c₂` (the two-clocks holder, Stage 171).
+-- The chassis is INERT: `S` with two arguments is no redex, so every step of the pair
+-- happens in exactly one member (`scPair_inv`), every pair reduction decomposes into two
+-- member reductions (`scPair_decompose`), walls ADD (`scPair_bounded`), and normal members
+-- make a normal pair (`scPair_normal`). Instantiated at the fate machine: (C,·) — one
+-- spinning member keeps the pair running forever, whatever sits beside it; (CC,CC) — the
+-- pair dies at `S scFateNf scFateNf` behind a sharp wall of 72 = 36 + 36, and every stuck
+-- reachable term IS that double normal form. Two registers, four futures, all pinned from
+-- ONE machine's certificates — the fate bit composes.
+
+/-- `StepsN` under the right argument (mirror of `scStepsN_appL`). -/
+theorem scStepsN_appR (f : SCTerm) {x x' : SCTerm} {n : Nat} (h : RS.SC.StepsN n x x') :
+    RS.SC.StepsN n (SCTerm.app f x) (SCTerm.app f x') := by
+  refine h.rec (motive := fun n a b _ => RS.SC.StepsN n (SCTerm.app f a) (SCTerm.app f b))
+    ?_ ?_
+  · intro a
+    exact @RS.StepsN.refl RS.SC (SCTerm.app f a)
+  · intro m a b c s rest ih
+    exact RS.StepsN.tail (SCStep.appR s) ih
+
+/-- **Pair inversion**: a step of `S c₁ c₂` is a step of `c₁` or a step of `c₂`. -/
+theorem scPair_inv {c₁ c₂ v : SCTerm}
+    (h : RS.SC.step (SCTerm.app (SCTerm.app .S c₁) c₂) v) :
+    (∃ c₁', RS.SC.step c₁ c₁' ∧ v = .app (.app .S c₁') c₂) ∨
+    (∃ c₂', RS.SC.step c₂ c₂' ∧ v = .app (.app .S c₁) c₂') := by
+  cases h with
+  | appL h' =>
+      cases h' with
+      | appL h'' => cases h''
+      | appR h'' => exact .inl ⟨_, h'', rfl⟩
+  | appR h' => exact .inr ⟨_, h', rfl⟩
+
+/-- **Pair decomposition**: every reduction of the pair splits into member reductions. -/
+theorem scPair_decompose {n : Nat} {a u : SCTerm} (h : RS.SC.StepsN n a u) :
+    ∀ c₁ c₂ : SCTerm, a = SCTerm.app (SCTerm.app .S c₁) c₂ →
+      ∃ u₁ u₂ n₁ n₂, u = SCTerm.app (SCTerm.app .S u₁) u₂ ∧ n = n₁ + n₂ ∧
+        RS.SC.StepsN n₁ c₁ u₁ ∧ RS.SC.StepsN n₂ c₂ u₂ := by
+  refine h.rec (motive := fun n a u _ => ∀ c₁ c₂ : SCTerm,
+      a = SCTerm.app (SCTerm.app .S c₁) c₂ →
+      ∃ u₁ u₂ n₁ n₂, u = SCTerm.app (SCTerm.app .S u₁) u₂ ∧ n = n₁ + n₂ ∧
+        RS.SC.StepsN n₁ c₁ u₁ ∧ RS.SC.StepsN n₂ c₂ u₂) ?_ ?_
+  · intro a c₁ c₂ ha
+    exact ⟨c₁, c₂, 0, 0, ha, rfl, @RS.StepsN.refl RS.SC c₁, @RS.StepsN.refl RS.SC c₂⟩
+  · intro m a b c s rest ih c₁ c₂ ha
+    subst ha
+    rcases scPair_inv s with ⟨c₁', hs, rfl⟩ | ⟨c₂', hs, rfl⟩
+    · obtain ⟨u₁, u₂, n₁, n₂, hu, hn, h1, h2⟩ := ih c₁' c₂ rfl
+      exact ⟨u₁, u₂, n₁ + 1, n₂, hu, by omega, RS.StepsN.tail hs h1, h2⟩
+    · obtain ⟨u₁, u₂, n₁, n₂, hu, hn, h1, h2⟩ := ih c₁ c₂' rfl
+      exact ⟨u₁, u₂, n₁, n₂ + 1, hu, by omega, h1, RS.StepsN.tail hs h2⟩
+
+/-- **Walls add**: member bounds compose to a pair bound. -/
+theorem scPair_bounded {c₁ c₂ : SCTerm} {k₁ k₂ : Nat}
+    (h₁ : ∀ (n : Nat) (u : SCTerm), RS.SC.StepsN n c₁ u → n ≤ k₁)
+    (h₂ : ∀ (n : Nat) (u : SCTerm), RS.SC.StepsN n c₂ u → n ≤ k₂) :
+    ∀ (n : Nat) (u : SCTerm), RS.SC.StepsN n (SCTerm.app (SCTerm.app .S c₁) c₂) u → n ≤ k₁ + k₂ := by
+  intro n u h
+  obtain ⟨u₁, u₂, n₁, n₂, _, hn, hh1, hh2⟩ := scPair_decompose h c₁ c₂ rfl
+  have hb1 := h₁ n₁ u₁ hh1
+  have hb2 := h₂ n₂ u₂ hh2
+  omega
+
+/-- Normal members make a normal pair. -/
+theorem scPair_normal {m₁ m₂ : SCTerm} (h₁ : ∀ v, ¬ RS.SC.step m₁ v)
+    (h₂ : ∀ v, ¬ RS.SC.step m₂ v) : ∀ v, ¬ RS.SC.step (SCTerm.app (SCTerm.app .S m₁) m₂) v := by
+  intro v h
+  rcases scPair_inv h with ⟨c', hs, _⟩ | ⟨c', hs, _⟩
+  · exact h₁ c' hs
+  · exact h₂ c' hs
+
+/-- One spinning member keeps the pair running forever, whatever sits beside it. -/
+theorem sc_pair_spin (x : SCTerm) :
+    ∀ n, ∃ u, RS.SC.StepsN n (SCTerm.app (SCTerm.app .S scFateOrb) x) u := by
+  intro n
+  obtain ⟨u, hu⟩ := scFate_runs n
+  exact ⟨SCTerm.app (SCTerm.app .S u) x, scStepsN_appL x (scStepsN_appR .S hu)⟩
+
+/-- **The four fates.** Quadrants of `S (scFate a) (scFate b)`:
+(C,·): seven member fires reach the orbit and the pair has runs of EVERY length;
+(CC,CC): the pair reaches `S scFateNf scFateNf` — a normal form — no schedule exceeds
+72 = 36 + 36 fires, and every stuck reachable term is that double normal form. -/
+theorem sc_four_fates :
+    (∀ b : SCTerm, RS.SC.StepsN 7 (SCTerm.app (SCTerm.app .S (scFate .C)) (scFate b))
+        (SCTerm.app (SCTerm.app .S scFateOrb) (scFate b)) ∧
+      ∀ n, ∃ u, RS.SC.StepsN n (SCTerm.app (SCTerm.app .S scFateOrb) (scFate b)) u) ∧
+    (RS.SC.Steps (SCTerm.app (SCTerm.app .S (scFate (.app .C .C))) (scFate (.app .C .C)))
+        (SCTerm.app (SCTerm.app .S scFateNf) scFateNf) ∧
+      (∀ v, ¬ RS.SC.step (SCTerm.app (SCTerm.app .S scFateNf) scFateNf) v) ∧
+      (∀ (n : Nat) (u : SCTerm),
+        RS.SC.StepsN n (SCTerm.app (SCTerm.app .S (scFate (.app .C .C))) (scFate (.app .C .C))) u →
+          n ≤ 72) ∧
+      (∀ u, RS.SC.Steps (SCTerm.app (SCTerm.app .S (scFate (.app .C .C))) (scFate (.app .C .C))) u →
+        (∀ v, ¬ RS.SC.step u v) → u = SCTerm.app (SCTerm.app .S scFateNf) scFateNf)) := by
+  refine ⟨fun b => ⟨scStepsN_appL _ (scStepsN_appR .S scFate_entry), sc_pair_spin _⟩,
+    ?_, scPair_normal scFateNf_normal scFateNf_normal,
+    scPair_bounded sc_fate_all_bounded sc_fate_all_bounded, ?_⟩
+  · exact RS.Steps.trans
+      (RS.StepsN.toSteps (scStepsN_appL _ (scStepsN_appR .S scFate_halts)))
+      (RS.StepsN.toSteps (scStepsN_appR _ scFate_halts))
+  · intro u hs hstuck
+    obtain ⟨n, hn⟩ := RS.Steps.toStepsN hs
+    obtain ⟨u₁, u₂, n₁, n₂, rfl, _, h1, h2⟩ := scPair_decompose hn _ _ rfl
+    have hs₁ : ∀ v, ¬ RS.SC.step u₁ v := fun v hv =>
+      hstuck _ (SCStep.appL (SCStep.appR hv))
+    have hs₂ : ∀ v, ¬ RS.SC.step u₂ v := fun v hv => hstuck _ (SCStep.appR hv)
+    rw [sc_fate_unique_exit u₁ (RS.StepsN.toSteps h1) hs₁,
+        sc_fate_unique_exit u₂ (RS.StepsN.toSteps h2) hs₂]
