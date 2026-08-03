@@ -204,9 +204,17 @@ THE BRANCH (`sc_branch_even/odd`, zero new fires): payload `C^k y z`
 gives control to `y` or `z` by the numeral's parity, and
 `sc_conditional_dynasty` splices it into reproduction — the machine
 tree forks on a numeral. ISA: READ, CALL, COMPILE, FETCH,
-EXPRESS/ASSEMBLE, BRANCH. The remaining distance to tag hosting: a
-gene whose branch numerals strip from a STORED WORD across generations
-(the tape). Behind the alternator stand tag/Minsky hosting,
+EXPRESS/ASSEMBLE, BRANCH. And Stage 200 BUILT THE TAPE (`sc_tape_run`,
+induction over every word and payload): a word over {even, odd} encoded
+as nested branch-genes — linear size — is read ONE SYMBOL PER GENERATION
+(22 fires each): even symbols beget the next machine (the gene fires
+anywhere, `sc_gene_anywhere`, axiom-free), odd symbols park the head
+(`sc_tape_stop`), and all-even words deliver the founder machine after
+the whole tape is consumed. Stored program, instruction pointer,
+fetch-decode-execute, reproduction, halting — all pinned. The last
+tag-hosting mechanism is WRITE-BACK (computed symbols appended to the
+child's tape), and the metabolic assembly line is the waiting
+mechanism. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

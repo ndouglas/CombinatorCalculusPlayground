@@ -6098,3 +6098,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   reads symbol n by strips and forks; the residue word passes to the child). Design
   directly from sc_branch + sc_lineage; probe only if the direct construction misfires.
   (2) floor12 harvest (census at 1.1M/4M, best 69). (3) The wrapper-word map.
+
+## 2026-08-03 — Stage 200: the tape
+
+- Stage TWO HUNDRED, and the day's theme paid in full: probe → verify → compose. The
+  tape needed one new 7-fire lemma (gene position-independence); everything else was
+  lineage, branch, and induction. 22 fires per symbol, linear encoding, every word.
+- Eighty-two autonomous stages (119–200). Ranking: (1) **the write-back**: splice the
+  metabolic assembly into a generation so the child's tape carries a COMPUTED symbol —
+  tag hosting's last mechanism (the gene's register cell is assembled by pops; let a
+  pop product LAND in the next gene's numeral slot). (2) floor12 harvest. (3) The
+  wrapper-word map (complete the ISA algebra).

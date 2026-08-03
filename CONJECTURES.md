@@ -5959,3 +5959,20 @@ pinned theorem, every composition parametric. The remaining distance to tag host
 single construction: a gene whose branch numerals are STRIPPED FROM A STORED WORD as
 generations advance (the word is the tape; each generation reads one symbol and forks).
 All the parts exist — words as C-chains, strips as reads, genes as successors.
+
+### Stage 200: the tape — a word, read one symbol per generation
+
+Two hundred stages in, the hosting chassis runs. A word over {even, odd} is encoded as
+NESTED BRANCH-GENES (`scTape` — linear size, 21 leaves per symbol), and the addressed
+machine consumes it one symbol per generation, 22 fires each: fetch, branch on the
+symbol's numeral, and — even symbol — the next gene takes control and BEGETS the next
+machine (`sc_gene_anywhere`: the gene is position-independent, firing wherever it lands,
+axiom-free); odd symbol — the dead atom takes the head and the machine parks
+(`sc_tape_stop`). `sc_tape_run`, by induction on the word: for EVERY all-even word and
+EVERY payload, the tape machine consumes the whole word and delivers the founder
+`scParent q` in head position. The full pipeline, every fire kernel-certified: a stored
+program (the word), an instruction pointer (the numerals), a fetch-decode-execute cycle
+(dispatch + branch), reproduction (the gene), and halting (the parked atom). What
+remains for full tag-system hosting is the WRITE-BACK — generations that append computed
+symbols to the tape — and the metabolic assembly line (Stages 188–189) is precisely a
+symbol-writing mechanism awaiting the splice.
