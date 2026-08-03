@@ -698,3 +698,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_tape_stop' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_tape_stop
+
+/-- info: 'sc_successor' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_successor
+
+/-- info: 'sc_routed_successor' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_routed_successor
+
+/-- info: 'sc_successor_numeral' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_successor_numeral

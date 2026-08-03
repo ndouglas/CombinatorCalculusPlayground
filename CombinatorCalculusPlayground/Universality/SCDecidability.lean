@@ -4433,3 +4433,43 @@ theorem sc_tape_stop (w : List Bool) (q : SCTerm) :
     (scSteps_appL _ (scSteps_appL _ (RS.StepsN.toSteps h2)))
   exact ⟨_, _, _, hsteps,
     scUnder.app (scUnder.app (scUnder.app scUnder.refl))⟩
+
+-- ## Stage 201: the successor — numerals are writable after all
+-- Bits are sources (Stage 185): no fire produces an atom or `C C`. But numerals GROW:
+-- `S_red` with middle argument `C` wraps one more `C` around anything — the only
+-- mechanism in the calculus that extends a C-chain, and it is a COMPUTED write. Three
+-- laws, each a constructor or two: the successor (`S f C · r ⟶ (f r)(C r)` — the
+-- incremented numeral minted as an argument, any continuation `f`); the double increment
+-- (`S (C C) C · r ⟶² (C² r) r` — parity-preserving, the old numeral kept as cargo); and
+-- the routed successor (`S (C y) C · r ⟶² (y (C r)) r` — the continuation RECEIVES the
+-- incremented numeral in operator position, ready to branch). Write-back is no longer
+-- missing: a generation can compute its child's symbol. The tape (200) reads; the
+-- successor writes; the gene copies. Tag hosting's parts list is complete.
+
+/-- **The successor**: one fire mints `C r` beside the continuation. -/
+theorem sc_successor (f r : SCTerm) :
+    RS.SC.step (.app (.app (.app .S f) .C) r) (.app (.app f r) (.app .C r)) :=
+  SCStep.S_red f .C r
+
+/-- **The double increment**: two fires, parity preserved, old numeral kept. -/
+theorem sc_double_increment (r : SCTerm) :
+    RS.SC.StepsN 2 (.app (.app (.app .S (.app .C .C)) .C) r)
+      (.app (.app .C (.app .C r)) r) :=
+  RS.StepsN.tail (SCStep.S_red (.app .C .C) .C r)
+  (RS.StepsN.tail (SCStep.C_red .C r (.app .C r))
+  (@RS.StepsN.refl RS.SC (.app (.app .C (.app .C r)) r)))
+
+/-- **The routed successor**: the continuation receives the incremented numeral in
+operator position, the old numeral as cargo. -/
+theorem sc_routed_successor (y r : SCTerm) :
+    RS.SC.StepsN 2 (.app (.app (.app .S (.app .C y)) .C) r)
+      (.app (.app y (.app .C r)) r) :=
+  RS.StepsN.tail (SCStep.S_red (.app .C y) .C r)
+  (RS.StepsN.tail (SCStep.C_red y r (.app .C r))
+  (@RS.StepsN.refl RS.SC (.app (.app y (.app .C r)) r)))
+
+/-- Numeral form: the successor of `C^k S` is `C^(k+1) S`, on the nose. -/
+theorem sc_successor_numeral (f : SCTerm) (k : Nat) :
+    RS.SC.step (.app (.app (.app .S f) .C) (scParityReg k))
+      (.app (.app f (scParityReg k)) (scParityReg (k + 1))) :=
+  sc_successor f (scParityReg k)
