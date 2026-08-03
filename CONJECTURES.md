@@ -5841,3 +5841,19 @@ never merge), so a proof needs parametric trace templates (the fire skeleton is 
 uniform: +2 halt fires and +1 period per rung — a template proof looks feasible), not
 descent. The stakes: a proved C9 is an INFINITE hosted predicate family — reachability
 in {S,C} deciding parity for all inputs — the first true hosting theorem of the program.
+
+### Stage 192: C9 PROVED — the frame parity law, every k
+
+Registered at Stage 191, closed at Stage 192. The template proof rests on three facts the
+traces made visible: (1) THE PRELUDE IS UNIVERSAL — nine fires take `scFrame r` to the
+triple `M M M` (`M = r·W`) for every register `r`, axiom-free; (2) `C` IS FLIP —
+`C^(m+1) S · y · z ⟶ C^m S · z · y` is one constructor, so k strips sort two arguments by
+the parity of k; (3) THE CLOSES ARE PARAMETRIC — even parity puts the dead cargo `W` in
+operator position (normal form `C (S W M) M`, exactly 11 + 4j fires, normality by
+inversion); odd parity puts the live complex `M` there, locking the machine into
+`Φ = M N₁ N₂` on the N-tower with period 2j + 8 (k strips, one duplicating S-fire, six
+parametric C-fires). `sc_frame_parity_law`: FOR EVERY k, the frame on `C^k S` reaches a
+normal form iff k is even; odd k admits runs of unbounded length. The program's first
+complete hosting theorem: an infinite input family whose parity is decided by eternity.
+C9: OPEN → PROVED in one stage — the fastest conjecture close of the run, because the
+probe data (halt 11+2k, period 7+k) had already written the proof's outline.

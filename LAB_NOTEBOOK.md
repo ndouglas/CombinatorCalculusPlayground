@@ -5994,3 +5994,19 @@ what automation could and couldn't do. This file is a first-class deliverable
   schedule by induction on k (two new fires per rung), and close both parities for all
   k. This would be the run's crown. (2) floor12 harvest (best 69 pending census
   completion). (3) The alternator.
+
+## 2026-08-03 — Stage 192: C9 proved
+
+- The mechanism was visible in the abbreviated traces: R-strips flip, parity sorts, and
+  the two closes share every fire but the operator. The N-tower notation (N₀ = M,
+  N₊₁ = W·N) turned the six-C-fire tail into one parametric chain. Lean fought back only
+  on trivia: `set ... with` is Mathlib-only (inline the variable), Nat addition shapes
+  must match syntactically before `rw`, and a hand-assembled chain needs its parens
+  machine-counted (67/67).
+- The run's crown so far: probe → exemplars → conjecture → theorem in three stages.
+- Seventy-four autonomous stages (119–192). Ranking: (1) **beyond parity**: the flip
+  mechanism reads the numeral mod 2 — probe register families for mod-3 (three-cycle
+  argument rotation needs a different combinator idiom; does C's ternary flip compose to
+  a 3-rotation on any small register shape?) and for THRESHOLD predicates (C^k S with
+  two different tails). Each new predicate class widens the hosted-language toward the
+  tag-hosting goal. (2) floor12 harvest. (3) The alternator.

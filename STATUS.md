@@ -166,10 +166,14 @@ ORBIT, EXPLODE — one 8-leaf head, futures selected by register shape
 191 delivered the program's first HOSTED PREDICATE (`sc_parity_hosted`):
 the unary numeral `C^k S` in the frame HALTS for even k (11 + 2k fires)
 and ORBITS FOREVER for odd k (period 7 + k) — parity decided by
-eternity, pinned for k = 0..7, probe-verified to k = 10, the all-k law
-registered as conjecture C9 (a parametric template proof looks
-feasible: the fire skeleton is uniform, +2 fires and +1 period per
-rung). Behind the alternator stand tag/Minsky hosting,
+eternity, pinned for k = 0..7, probe-verified to k = 10, and Stage 192
+PROVED the all-k law (`sc_frame_parity_law`, conjecture C9 closed in
+one stage): the prelude is register-universal (nine fires to the
+triple `M M M`, axiom-free), `C` is flip (one constructor per strip),
+and the two parametric closes give — for EVERY k — a normal form in
+11 + 4j fires when k = 2j, and the N-tower orbit `Φ = M N₁ N₂` of
+period 2j + 8 when k = 2j + 1. An infinite input family whose parity
+is decided by eternity: the program's first complete hosting theorem. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
