@@ -5247,3 +5247,23 @@ what automation could and couldn't do. This file is a first-class deliverable
   excess trend forces superlinear f). (2) The fold/control mechanism — paper-first sketch of
   full tag hosting or its impossibility; the run's biggest open door. (3) Genericization
   debt.
+
+## 2026-08-02 — Stage 142: the engine goes generic
+
+- The discipline note first: the genericization was REFUSED at Stages 133, 139, and 141
+  ("when a second consumer appears") and executed only when SK's succs/skSmallTerms made the
+  second consumer real. The port took one sitting and two build iterations (recursive
+  dot-notation inside a def; instance shims for RS.SK.Carrier ≡ Term — instance search does
+  not unfold plain defs). Everything downstream of the abstraction barrier transferred
+  verbatim, which is the test of whether the barrier was drawn right.
+- The rung-0 equivalence reframes the whole frontier: SK and {S,C} now face the IDENTICAL
+  formal question with opposite expected answers. Whatever resolves rung 3 will do so
+  against a calibrated twin.
+- The n=9 census landed mid-stage and its best compact specimen went straight through the
+  Stage 140 toolkit — probe to pinned theorem in under an hour, the pipeline working as
+  designed. Twenty-four autonomous stages (119–142).
+- Ranking: (1) **the fold/control mechanism** — the run's one remaining structural unknown;
+  paper-first, budget two stages, outcome either a full-tag-hosting sketch or a sharpened
+  impossibility. (2) SB/SI kits for the engine (cheap breadth: the equivalence at rungs 1-2
+  if successor functions exist or are quick). (3) March-length asymptotics (the 200-step
+  still-forced marches at n=8-9 want a "second glider" check).

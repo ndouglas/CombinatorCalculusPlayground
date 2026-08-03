@@ -5077,3 +5077,20 @@ prefix to 0–7 steps; trailing `C`s ride the same march with constant excess) �
 excess mountain families remain UNFOUND, so the frontier floor stays pointwise
 (`f(6,6) ≥ 7`, `f(8,32) ≥ 44`). The exhaustive n=9 minimax census continues in the
 background; its harvest joins the floor when it lands.
+
+### Stage 142: the generic engine — the equivalence at every rung
+
+`RS.SuccKit.decidable_iff_bound` (pinned): for ANY rewriting system equipped with a size, a
+verified successor function, and a complete bounded enumeration, reachability is decidable iff
+a computable function of endpoint sizes bounds witnessing intermediates. The Stage 133/134/139
+chain, made generic the moment its second consumer appeared (the no-premature-abstraction rule
+held for nine stages and then paid out in one): SK has both ingredients already
+(`succs`, `skSmallTerms`), so `sk_decidable_iff_bound` (pinned) states the RUNG-0 equivalence —
+and since SK reachability is (externally) undecidable, SK has no computable intermediate
+bound. The rung-0/rung-3 contrast is now exact: the SAME well-posed question, instruments
+identical, expected answers opposite — which is the sharpest form of the program's thesis that
+`{S,C}` sits at the boundary. Census harvest (n=9, exhaustive, 13,721 forced-prefix
+mountains): the STEEP MOUNTAIN — nine leaves, thirteen forced steps to a 25-leaf peak, ten-leaf
+target — certified as `sc_bound_floor_25` (pinned). The floor now reads `f(6,6) ≥ 7`,
+`f(8,32) ≥ 44`, `f(9,10) ≥ 25`, and the n=9 data shows 200-step still-forced marches at eight
+leaves beyond the glider — forced computation is generic at this scale, not exceptional.

@@ -623,12 +623,19 @@ the endpoint sizes bounds witnessing paths' intermediates — the converse
 assembles the bound from any decision procedure via a hand-rolled
 choice-free find (core has no `Nat.find`; `Acc.rec` eliminates into data).
 The one open goal-level question is now a single well-posed sentence, and
-it has PINNED QUANTITATIVE FLOORS (Stage 140, `sc_bound_floor_6`/`_44`):
-every valid `f` obeys `f(6,6) ≥ 7` and `f(8,32) ≥ 44` — the latter via the
-TALL MOUNTAIN (an 8-leaf term whose 49-step FORCED prefix peaks at 44
-before branching to a 32-leaf target), certified by the forced-march
-toolkit (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains
-computed by the verified successor, certificates linear in the path). THE GLIDER
+it has PINNED QUANTITATIVE FLOORS (Stages 140/142, `sc_bound_floor_6`/
+`_44`/`_25`): every valid `f` obeys `f(6,6) ≥ 7`, `f(8,32) ≥ 44`, and
+`f(9,10) ≥ 25` — via the TALL and STEEP MOUNTAINS (forced prefixes of 49
+and 13 steps peaking at 44 and 25), certified by the forced-march toolkit
+(`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
+the verified successor, certificates linear in the path; the n=9 census
+found 13,721 such mountains, exhaustively). And the equivalence is now
+GENERIC (Stage 142, `RS.SuccKit.decidable_iff_bound`, pinned): any rung
+with a verified successor function and bounded enumeration gets it —
+instantiated at RUNG 0 (`sk_decidable_iff_bound`, pinned): SK faces the
+IDENTICAL question with the opposite expected answer (its reachability is
+externally undecidable, so no computable bound exists there). The
+rung-0/rung-3 twin calibrates the frontier exactly. THE GLIDER
 (Stage 135, `sc_glider`, pinned; pump axiom-free): an eight-leaf term whose
 reachable set is infinite — `p p p` with `p = S (C (S S))` reproduces
 itself under a wrapper every three fires, growing five leaves per loop,
