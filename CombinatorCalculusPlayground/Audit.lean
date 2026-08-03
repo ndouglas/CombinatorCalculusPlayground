@@ -359,3 +359,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scv_cell_synth' does not depend on any axioms -/
 #guard_msgs in #print axioms scv_cell_synth
+
+/-- info: 'scQCell_fire' does not depend on any axioms -/
+#guard_msgs in #print axioms scQCell_fire
+
+/-- info: 'scQWord_step' does not depend on any axioms -/
+#guard_msgs in #print axioms scQWord_step
+
+/-- info: 'sc_qcell_synth₃' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_qcell_synth₃

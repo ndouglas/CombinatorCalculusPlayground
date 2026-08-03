@@ -3914,3 +3914,66 @@ theorem scv_cell_synth (f rest : SCV) :
       (.app (.app f (.var 0))
         (.app (.app .C (.app (.app .C rest) (.var 1))) (.var 0))) :=
   SCVStep.S_red f (.app .C (.app (.app .C rest) (.var 1))) (.var 0)
+
+-- ## Stage 146: the queue cell — C7 refuted, the fold's architecture complete
+-- C7 (Stage 145) conjectured no orchestration synthesizes a two-generation cell. It fell in a
+-- day, to a re-reading of its own proof sketch: the mid-insertion obstruction is an artifact
+-- of `scTCell`'s CHILD ORDER (rest before scDup). Reorder the children — `scQCell acc W :=
+-- C (C scDup acc) W` — and every node's children arrive in STREAM ORDER with constants only at
+-- node heads, so all three runtime nests are legal x-position S-fires (each one fire, like
+-- Stage 144's synthesis). And the reordered cell FUNCTIONS: seven fires deliver the identical
+-- one-tag-step protocol as `scTCell` — rest promoted with two fresh `scDup` arms, wrapper
+-- dropped to the pile with a spare arm. Production ✓ (Stage 144), accumulation ✓ (here);
+-- the fold's remaining unknown is the driver quine alone.
+
+/-- The queue cell: `scTCell` with children in stream order — runtime-synthesizable. -/
+def scQCell (acc W : SCTerm) : SCTerm :=
+  .app (.app .C (.app (.app .C scDup) acc)) W
+
+/-- Synthesis, nest one: the accumulator into the constant prefab `C scDup`. -/
+theorem sc_qcell_synth₁ (f acc : SCTerm) :
+    RS.SC.Steps (.app (.app (.app .S f) (.app .C scDup)) acc)
+      (.app (.app f acc) (.app (.app .C scDup) acc)) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.S_red f (.app .C scDup) acc)
+
+/-- Synthesis, nest two: the inner node into the constant `C`. -/
+theorem sc_qcell_synth₂ (f inner : SCTerm) :
+    RS.SC.Steps (.app (.app (.app .S f) .C) inner)
+      (.app (.app f inner) (.app .C inner)) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.S_red f .C inner)
+
+/-- Synthesis, nest three: the wrapper into the prior product — the finished queue cell. -/
+theorem sc_qcell_synth₃ (f acc W : SCTerm) :
+    RS.SC.Steps
+      (.app (.app (.app .S f) (.app .C (.app (.app .C scDup) acc))) W)
+      (.app (.app f W) (scQCell acc W)) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.S_red f (.app .C (.app (.app .C scDup) acc)) W)
+
+/-- **The queue cell's one-tag-step**: seven fires, the `scTCell` protocol exactly — the rest
+of the word promoted with two fresh arms, the wrapper dropped behind with a spare. (Named
+`_fire` — an unrelated Stage-109-era `scQCell_step` already holds the plain name.) -/
+theorem scQCell_fire (acc W : SCTerm) :
+    RS.SC.Steps (.app (.app (scQCell acc W) scDup) scDup)
+      (.app (.app (.app (.app acc scDup) scDup) W) scDup) :=
+  RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .C scDup) acc) W scDup))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red scDup acc scDup)))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.appL
+      (SCStep.S_red (.app .C .C) (.app .C .C) scDup))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.appL
+      (SCStep.C_red .C scDup (.app (.app .C .C) scDup)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL
+      (SCStep.C_red (.app (.app .C .C) scDup) scDup acc)))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup acc))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red acc scDup scDup)))
+  (@RS.Steps.refl RS.SC _)))))))
+
+/-- Queue words: the runtime-buildable twin of `scTWord`. -/
+def scQWord (E : SCTerm) : List SCTerm → SCTerm
+  | [] => E
+  | W :: ws => scQCell (scQWord E ws) W
+
+/-- The queue word's one-tag-step, wrapper by wrapper. -/
+theorem scQWord_step (E W : SCTerm) (ws : List SCTerm) :
+    RS.SC.Steps (.app (.app (scQWord E (W :: ws)) scDup) scDup)
+      (.app (.app (.app (.app (scQWord E ws) scDup) scDup) W) scDup) :=
+  scQCell_fire (scQWord E ws) W
