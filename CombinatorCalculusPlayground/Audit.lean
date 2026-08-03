@@ -647,3 +647,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_wrapper_isa' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_wrapper_isa
+
+/-- info: 'sc_frame_omega' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_frame_omega
+
+/-- info: 'sc_omega_to_loop' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_omega_to_loop

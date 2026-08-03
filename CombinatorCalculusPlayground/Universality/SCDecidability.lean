@@ -4016,3 +4016,61 @@ theorem sc_wrapper_isa :
       ∀ n, ∃ m, n ≤ m ∧ RS.SC.StepsN m scExecOrb scExecOrb) :=
   ⟨⟨sc_frame_shield, scShieldNf_normal⟩,
    ⟨sc_exec_entry, sc_cycle_unbounded (by omega) sc_exec_cycle⟩⟩
+
+-- ## Stage 194: the omega instruction — the frame compiles self-application
+-- The wrapper algebra's third instruction, and the deepest: the word `W·C·W` takes the
+-- frame to NAKED SELF-APPLICATION. For every register `r`, thirty fires take
+-- `scFrame (W (C (W r)))` to `r r r` — no residue, no shell, the register applied to
+-- itself twice. The interpreter doesn't just read (C) or call (W): composed, its
+-- instructions COMPILE the ω-shape, the seed of all self-referential dynamics. At
+-- `r = scDup` the output is verbatim `scDup scDup scDup` — the Stage 151 generation-loop
+-- seed — so the compiled program composes straight into a pinned eternal cycle: frame to
+-- omega in 30, omega to loop in 3, loop forever in 5s.
+
+/-- The omega word: `W (C (W r))`. -/
+def scOmegaWord (r : SCTerm) : SCTerm := .app scW (.app .C (.app scW r))
+
+/-- **The omega instruction**: thirty fires from the frame to `r r r`, every register. -/
+theorem sc_frame_omega (r : SCTerm) :
+    RS.SC.StepsN 30 (scFrame (scOmegaWord r)) (.app (.app r r) r) :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app (.app .C .C) r)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C (.app (.app .C .C) r)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app .C (.app (.app .C .C) r))))
+  (RS.StepsN.tail (SCStep.C_red (.app .C (.app (.app .C .C) r)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) r) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C r (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) r (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app (.app .C .C) r)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C (.app (.app .C .C) r)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) (.app .C (.app (.app .C .C) r))))
+  (RS.StepsN.tail (SCStep.C_red (.app .C (.app (.app .C .C) r)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) r)
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) r) r (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C r (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) r))) (.app .C .C)) r r)
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app (.app .C .C) r)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C (.app (.app .C .C) r)) r))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C r (.app .C (.app (.app .C .C) r))))
+  (RS.StepsN.tail (SCStep.C_red (.app .C (.app (.app .C .C) r)) r r)
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) r) r r)
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C r r))
+  (RS.StepsN.tail (SCStep.C_red r r r)
+  (@RS.StepsN.refl RS.SC (.app (.app r r) r))))))))))))))))))))))))))))))))
+
+/-- The compiled duplicator enters the generation loop: frame to eternal cycle. -/
+theorem sc_omega_to_loop :
+    RS.SC.Steps (scFrame (scOmegaWord scDup)) scGenLoop :=
+  RS.Steps.trans (RS.StepsN.toSteps (sc_frame_omega scDup)) sc_empty_to_loop
+
+/-- ...and therefore runs of unbounded length. -/
+theorem sc_omega_unbounded :
+    ∀ n, ∃ m, n ≤ m ∧ RS.SC.StepsN m scGenLoop scGenLoop :=
+  sc_cycle_unbounded (by omega) sc_generation_cycle
