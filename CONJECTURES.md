@@ -5912,3 +5912,19 @@ as spine rebuilds. The sequencer's correct target is therefore a payload whose e
 EMITS FATE-SEED CELLS — the assembly line running inside the dispatch product — and the
 re-entry detector should watch for cell-triples, not root frames. The hosting engine is
 one architecture-probe away, and the parts (fetch, assembly, pop) are all pinned.
+
+### Stage 197: machines beget machines — the gene
+
+The sequencer's wall (Stage 196) fell to its own diagnosis: watch for cells, not spines.
+The engine is a 14-leaf payload that deserves its name — `scGene t = C (cell FH) (cell t)`,
+one cell holding the frame head, one holding the child's register. Under address-0
+dispatch the gene EXPRESSES (`sc_gene_express`: nine fires, axiom-free, parametric in t)
+into the fate-seed `(cell FH)(cell t)(cell t)` plus two riders, and six lifted pop fires
+assemble the child `FH t t` in place: `sc_reproduction`, twenty-nine fires from addressed
+parent to standing child, THE PARENT'S GENE CHOOSING THE CHILD'S REGISTER. At `t = W` the
+child is verbatim `scFrame scW` — `sc_machines_beget`: one standard addressed machine
+reduces to another, riders as stack (R1 is an unfinished frame head awaiting cargo, R2
+the spent executed complexes — even the waste is legible). The ISA's first full
+revolution: FETCH → EXPRESS → ASSEMBLE → RE-ENTER. What separates this from tag-system
+hosting is now only ITERATION — a child whose own register re-encodes a gene — and the
+gene is parametric, so the search space is the register slot alone.

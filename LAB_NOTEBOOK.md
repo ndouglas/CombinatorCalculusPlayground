@@ -6060,3 +6060,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   assembly → fate — the tag-hosting engine. (2) floor12 harvest (excess 69 witness,
   pin when the census completes or plateaus definitively). (3) The wrapper-word
   exhaustive map (complete the ISA algebra, words ≤ 4).
+
+## 2026-08-03 — Stage 197: machines beget machines
+
+- Three probes to the engine: root-detector zero (196), cell-detector 247, FH-cell
+  detector 96 — each negative narrowed the architecture; the winning payload was hit #4
+  of the third sweep. Placeholder-parametric emission (lesson #9 discipline) gave the
+  9-fire expression law generic in t on the first build attempt (one paren).
+- Seventy-nine autonomous stages (119–197). Ranking: (1) **the self-gene**: search for
+  t★ with the child's register re-encoding a gene — scGene-quines; the fixed-point
+  candidate is t★ = W (S (scGene ...)) shapes, i.e. the parent's OWN register — probe
+  whether scFrame (W (S (scGene (W (S (scGene X)))))) self-reproduces for some X (true
+  self-reproduction = tag hosting's engine iterating). (2) floor12 harvest. (3) The
+  wrapper-word map.

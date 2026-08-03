@@ -188,8 +188,13 @@ verbatim the generation-loop seed (`sc_omega_to_loop`: frame → ω → loop
 added FETCH (`sc_addressed_fetch`, zero new fires — pure composition):
 for register `C^m · p` the frame dispatches by address parity — even
 puts the payload in control, odd parks it and runs dead material. The
-numeral is an instruction pointer; the remaining hosting distance is
-SEQUENCING (a payload that rebuilds an addressed frame). Behind the alternator stand tag/Minsky hosting,
+numeral is an instruction pointer — and Stage 197 delivered SEQUENCING:
+THE GENE (`scGene t`, 14 leaves — frame head in one cell, the child's
+register in the other). `sc_reproduction`: twenty-nine fires take the
+addressed parent to the assembled child `FH t t`, the gene choosing the
+child's register; at `t = W` the child is verbatim `scFrame scW`
+(`sc_machines_beget`) — MACHINES BEGET MACHINES, riders as stack. The
+remaining hosting distance is ITERATION: a self-encoding gene. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
