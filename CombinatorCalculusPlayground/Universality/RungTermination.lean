@@ -4026,3 +4026,32 @@ theorem scBWord_two (E W₁ W₂ : SCTerm) :
   RS.Steps.trans
     (scBWord_step E W₂ (.app .C .C) [W₁])
     (scBCell_fire E W₁ W₂)
+
+-- ## Stage 149: the fuel law — n-cell traversal, and what it costs
+-- The biodegradable protocol generalizes past two cells with a price: each round's passed
+-- arm is the PREVIOUS wrapper, so wrappers 1..n−2 (read order) are consumed as fuel and must
+-- be arm-compatible; only the final two arrive as data. `C C` is fuel; bare `C` is not
+-- (probe: exactly the words whose consumed positions are all `C C` complete — 4/8 at n=3,
+-- 4/16 at n=4); other pure-C fuels exist (`C (C (C C))`, `C (C C) C` — clean, distinguishable
+-- shapes, so a two-letter fuel alphabet is available). The n-cell theorem: any word of
+-- leading `C C`s traverses to the end marker holding exactly the final two wrappers.
+
+/-- **The fuel law**: `k` leading `C C` cells burn away entirely; the final two wrappers
+arrive as the end marker's only arguments, in order. -/
+theorem scBWord_run (E W₂ W₁ : SCTerm) :
+    ∀ k : Nat,
+    RS.SC.Steps
+      (.app (.app (scBWord E (List.replicate k (.app .C .C) ++ [W₂, W₁])) (.app .C .C))
+        (.app .C .C))
+      (.app (.app E W₂) W₁)
+  | 0 => scBWord_two E W₁ W₂
+  | k + 1 => by
+      show RS.SC.Steps
+        (.app (.app (scBWord E
+          ((.app .C .C) :: (List.replicate k (.app .C .C) ++ [W₂, W₁])))
+          (.app .C .C)) (.app .C .C))
+        (.app (.app E W₂) W₁)
+      exact RS.Steps.trans
+        (scBWord_step E (.app .C .C) (.app .C .C)
+          (List.replicate k (.app .C .C) ++ [W₂, W₁]))
+        (scBWord_run E W₂ W₁ k)
