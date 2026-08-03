@@ -5490,3 +5490,21 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **the three-way co-design** (cell constant × marker × arms, iteration as the
   target: config-2 → config-3 with all three restored). (2) Floor asymptotics at n=10.
   (3) The aperiodic diverger's anatomy.
+
+## 2026-08-03 — Stage 155: the arm is the program
+
+- The failed iteration paid for itself: dissecting WHY the growth step will not compose
+  produced the third protocol, and the third protocol is the first that moves information
+  INWARD (contents become arms) instead of destroying it. One cell shape, three behaviors,
+  chosen by what you hand it — the interrogation layer is programmable in exactly the way
+  the fold needs.
+- The probes' arithmetic regularities (closures 18/24/30/36; entries 4/10/16) were the tell
+  that a generic law was underneath; the six-fire pop fell out of one symbolic replay. The
+  whole Q-family is now: pop by sixes, pulse by fourteens — the third complete family
+  description of the run (after scDup-words and biodegradable words).
+- Thirty-seven autonomous stages (119–155). Today: eleven feat stages, every theorem
+  axiom-free. C8's final form: arms that traverse as containers and arrive as copies.
+- Ranking: (1) **the alternating-discipline probe**: arms of shape CC(scDup)? or scDup-in-
+  cell — containers whose CONTENT is the regenerator — testing whether one wrapper level
+  buys traversal-then-growth. (2) Pin the 14-cycle (mechanical, if wanted for the zoo).
+  (3) Floor asymptotics at n=10.

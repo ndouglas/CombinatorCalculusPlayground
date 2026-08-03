@@ -5283,3 +5283,18 @@ and derails (14-state closure, no third cell). C8's mantle passes to the spiral'
 step: a configuration family where growth commutes with traversal. The pattern of the whole
 campaign — each wall falls to a co-design one notch wider than the last search — suggests the
 next widening: co-design the CELL constant with the marker/arm pair (three-way).
+
+### Stage 155: the cell-armed pop — the arm is the program
+
+`sc_cellArm_pop` (axiom-free, pinned): `(CC X) (CC A) (CC B) ⟶⁶ (X A) B` — a `C C`-cell
+interrogated by two `C C`-CELLS pops with the arms' contents becoming the next arms; shells
+burn. THREE protocols now coexist on the one cell shape, selected purely by arm structure:
+`scDup`-arms regenerate (Stage 107), flat `C C`-arms burn as fuel (Stage 148), cell-arms hand
+contents forward (here). THE ARM IS THE PROGRAM. Corollaries: the scQuine sliding family's
+complete law (`sc_spiral_pop`/`sc_spiral_descends`, pinned) — six fires per level down to the
+base, then the probe's universal 14-cycle (closures arithmetic in k: 18/24/30/36). The
+iteration diagnosis is now structural: GROWTH (Stage 154) runs on marker-arms; TRAVERSAL runs
+on container- or fuel-arms; the spiral needs a configuration that alternates disciplines —
+arms that traverse as containers and arrive at the marker as copies. That alternation is C8's
+final form, and the content-forwarding protocol is the first mechanism that MOVES information
+inward instead of burning it.
