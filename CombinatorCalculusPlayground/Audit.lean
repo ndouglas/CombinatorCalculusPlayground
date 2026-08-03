@@ -707,3 +707,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_successor_numeral' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_successor_numeral
+
+/-- info: 'scMt6_no_capped_path' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt6_no_capped_path
+
+/-- info: 'sc_bound_floor_87' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_bound_floor_87

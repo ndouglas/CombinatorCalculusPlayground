@@ -4473,3 +4473,57 @@ theorem sc_successor_numeral (f : SCTerm) (k : Nat) :
     RS.SC.step (.app (.app (.app .S f) .C) (scParityReg k))
       (.app (.app f (scParityReg k)) (scParityReg (k + 1))) :=
   sc_successor f (scParityReg k)
+
+-- ## Stage 203: the second n=12 mountain — excess 69
+-- The random phase of the n=12 census plateaued at a witness the graft neighborhood
+-- missed: a 12-leaf term whose fully forced 400-step prefix peaks at 87 leaves (step 143)
+-- and descends to 19, one checked step from an 18-leaf off-prefix target. A different
+-- kind of mountain from Stage 187's: modest peak, tiny endpoint — excess 69, the
+-- program's highest. The ladder gains a second n=12 point: f(12,18) ≥ 87 beside
+-- f(12,234) ≥ 291. Excess by n now reads 12, 44, 69 — worse than tripling per two
+-- leaves on the best-witness line.
+
+/-- Twelve leaves: the census's excess champion. -/
+def scMt6T : SCTerm :=
+  .app (.app (.app (.app .C .S) (.app .C .C)) (.app (.app .S .S) .C))
+    (.app (.app .C (.app (.app .S .S) .S)) .C)
+
+/-- Eighteen leaves, one checked step past the 400-step forced prefix. -/
+def scMt6U : SCTerm :=
+  .app (.app (.app (.app (.app (.app .S .S) .S) (.app (.app .S .C) .C)) .C)
+    (.app .C (.app (.app .C (.app (.app .S .S) .S)) .C)))
+    (.app (.app .C (.app (.app .S .S) .S)) .C)
+
+/-- The witnessing path: the full forced march, then one checked step. -/
+def scMt6Path : List SCTerm := scForcedMarch scMt6T 400 ++ [scMt6U]
+
+section
+set_option maxRecDepth 16000
+set_option maxHeartbeats 4000000
+
+#guard scMt6T.leafCount = 12
+#guard scMt6U.leafCount = 18
+#guard (scForcedMarch scMt6T 400).length = 400
+
+/-- The crossing exists. -/
+theorem scMt6_steps : RS.SC.Steps scMt6T scMt6U :=
+  scChained_steps scMt6Path scMt6T scMt6U (by decide) (by decide)
+
+/-- **The excess champion**: no path from 12 leaves to 18 leaves stays within 86. -/
+theorem scMt6_no_capped_path : ¬ RS.StepsLe RS.SC SCTerm.leafCount 86 scMt6T scMt6U :=
+  scForced_mountain (scForcedMarch scMt6T 400) (scForcedMarch_forced 400 scMt6T)
+    (by decide) (by decide)
+
+end
+
+/-- **The second n=12 floor**: every valid bounding function clears 87 at (12, 18). -/
+theorem sc_bound_floor_87 (f : Nat → Nat → Nat)
+    (hf : ∀ t u : SCTerm, RS.SC.Steps t u →
+        RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u) :
+    87 ≤ f 12 18 := by
+  by_cases h : 87 ≤ f 12 18
+  · exact h
+  · exfalso
+    have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 12 18) scMt6T scMt6U :=
+      hf scMt6T scMt6U scMt6_steps
+    exact scMt6_no_capped_path (RS.StepsLe.weaken (by omega) hs)
