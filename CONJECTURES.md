@@ -5976,3 +5976,17 @@ program (the word), an instruction pointer (the numerals), a fetch-decode-execut
 remains for full tag-system hosting is the WRITE-BACK — generations that append computed
 symbols to the tape — and the metabolic assembly line (Stages 188–189) is precisely a
 symbol-writing mechanism awaiting the splice.
+
+### Stage 201: the successor — numerals are writable after all
+
+Bits-are-sources seemed to make symbols read-only; the successor law is the loophole the
+hosting program needed. `S_red` with middle argument `C` is the calculus's ONLY
+C-chain-extending mechanism — `S f C · r ⟶ (f r)(C r)` — and it is a genuine computed
+write: the incremented numeral is minted as an argument beside any continuation
+(`sc_successor`, one constructor, axiom-free). `sc_double_increment` preserves parity
+and keeps the old numeral as cargo; `sc_routed_successor` delivers the new numeral in
+OPERATOR position, ready to strip and branch; `sc_successor_numeral` states it on
+`C^k S` exactly. The instruction set closes its arc: the tape READS symbols across
+generations, the successor WRITES them, the gene COPIES machines, the branch DECIDES.
+Every mechanism of a tag machine now exists as a pinned parametric theorem; what remains
+is the single integrated construction — and it is engineering, not discovery.

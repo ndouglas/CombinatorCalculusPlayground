@@ -6109,3 +6109,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   tag hosting's last mechanism (the gene's register cell is assembled by pops; let a
   pop product LAND in the next gene's numeral slot). (2) floor12 harvest. (3) The
   wrapper-word map (complete the ISA algebra).
+
+## 2026-08-03 — Stage 201: the successor
+
+- The write-back seed cost three constructor-level theorems. The pattern that found it:
+  ask what shapes S_red can MINT as arguments (g x for the middle argument g) — with
+  g = C the product is a numeral successor. The obstruction theorem (bits are sources)
+  and its loophole (chains grow even though tips don't) are now both pinned.
+- Eighty-three autonomous stages (119–201). Ranking: (1) **the odometer**: compose
+  routed-successor with the gene — a lineage whose branch numeral increments each
+  generation (child payload = S (C y) C (reg k)-shaped with y rebuilding the gene);
+  a pinned counting dynasty would demonstrate read-write symbols through generations,
+  the last integration risk before a full tag step. (2) floor12 harvest. (3) The
+  wrapper-word map.

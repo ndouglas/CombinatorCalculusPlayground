@@ -211,10 +211,13 @@ as nested branch-genes — linear size — is read ONE SYMBOL PER GENERATION
 anywhere, `sc_gene_anywhere`, axiom-free), odd symbols park the head
 (`sc_tape_stop`), and all-even words deliver the founder machine after
 the whole tape is consumed. Stored program, instruction pointer,
-fetch-decode-execute, reproduction, halting — all pinned. The last
-tag-hosting mechanism is WRITE-BACK (computed symbols appended to the
-child's tape), and the metabolic assembly line is the waiting
-mechanism. Behind the alternator stand tag/Minsky hosting,
+fetch-decode-execute, reproduction, halting — all pinned. And Stage 201 found WRITE-BACK: THE SUCCESSOR
+(`sc_successor`, axiom-free) — `S_red` with middle argument `C` is the
+calculus's only C-chain extender, minting the incremented numeral
+beside any continuation (the routed variant delivers it in operator
+position, ready to branch). The tape reads, the successor writes, the
+gene copies, the branch decides: tag hosting's parts list is complete,
+and what remains is one integrated construction. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
