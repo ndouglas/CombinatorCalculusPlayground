@@ -5757,3 +5757,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   a machine whose reg1-run cycles to reg0 and whose reg0-run diverges into a distinct
   outcome (the halt); combine the cycle machine with the zero-test template. (2) n=10
   witnesses. (3) Bounded intermediates.
+
+## 2026-08-03 — Stage 175: one wall
+
+- The zero-exit probe returned something better than a seam: a clean bounded counter-reader
+  (three values, three unique NFs) and the proof-shaped realization that every campaign of
+  this run has been meeting the same wall from different sides. Quine, constructor,
+  persistence — one problem, now alone on the board with every instrument the program owns
+  pointed at it.
+- Fifty-seven autonomous stages (119–175). Ranking: (1) **the persistence problem**, fresh
+  sitting, full instrument set — the run's remaining question. (2) n=10 witnesses (sweep
+  running). (3) Bounded intermediates (the frontier's other half — possibly the same wall
+  by the Stage-160 observation).

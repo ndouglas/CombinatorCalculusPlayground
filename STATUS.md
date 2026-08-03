@@ -77,10 +77,15 @@ provenance null). The Minsky HALF-STEP is a theorem — and Stage 174
 proved IT CYCLES (`sc_testdec_twice`, axiom-free: the same machine takes
 the two-cell register through the `#guard`ed intermediate to the doubly-
 decremented register, twenty-six fires, marker provenance intact; the
-Lean assembled programmatically from the trace). The assembly has ONE
-seam left: the zero-exit wired into the cycle — the last fire-sequence
-between the program and full tag/Minsky hosting, and via the frontier
-equivalence, rung-3 undecidability. Since the Stage 114 review, one autonomous run
+Lean assembled programmatically from the trace). Stage 175 closed the seam
+survey: the cycle machine is a BOUNDED COUNTER-READER (registers 0/1/2
+reach unique, distinct normal forms — value-dependent halts, closures
+complete), and the composition's sole remainder is THE PERSISTENCE
+PROBLEM (C8-final): a machine that outlives its own step. The quine, the
+constructor gap, and loop persistence were one wall met from three
+sides; it now stands alone between bounded hosting (everything above,
+theorem) and unbounded hosting — tag/Minsky, undecidability, the
+frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a

@@ -5575,3 +5575,20 @@ the theorem was assembled programmatically from the trace (emit → splice → b
 reductions of any length are now one script from pinned. The assembly ledger — half-step,
 cycle, zero-branch, independent registers, increment — has ONE seam left: the zero-exit wired
 into the cycle. The composition campaign is measured in seams now, not mechanisms.
+
+### Stage 175: the counter-reader — and the final boss, alone at last
+
+The cycle machine on registers 0, 1, 2 reaches UNIQUE normal forms (confluence-consistent,
+closures complete) of 26, 28, 29 leaves — three values, three distinguishable halts: a
+`{S,C}` function computing on unary register values, with the two-register's NF still
+carrying the doubly-decremented register. But the same completeness is the finding's other
+edge: the machine always HALTS — it is a bounded counter-reader, not a loop. Every register-
+carrying state en route is transient except in the deepest input. The composition campaign
+has now converted every mechanism — read, latch, looped read, write, zero-test, decrement,
+decrement-cycling, value-dependent halts, independent clocks — and what remains is exactly
+ONE thing, the thing the fold campaign met as the quine, the growth campaign met as the
+constructor, and the assembly meets as loop persistence: A MACHINE THAT OUTLIVES ITS OWN
+STEP. Fifty-six stages of triangulation say this is not one wall among many but THE wall —
+`{S,C}`'s single remaining question, standing between bounded hosting (everything above,
+theorem) and unbounded hosting (tag/Minsky, undecidability, the frontier's negative side).
+Registered as C8-final: THE PERSISTENCE PROBLEM.
