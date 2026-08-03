@@ -5214,3 +5214,20 @@ what automation could and couldn't do. This file is a first-class deliverable
   hosting gadgets) OR attempt a tag-run-length reduction sketch on paper first
   (verify-before-formalize). (2) The fold/control mechanism, now the shared bottleneck.
   (3) Genericization debt, on demand.
+
+## 2026-08-02 — Stage 140: mountains by chain
+
+- The design insight that paid: compute the chain, don't quote it. `scForcedMarch` iterates
+  the verified successor function, so its forcedness is a ten-line generic induction and the
+  concrete witness costs three `decide`s and two literals (start and target) instead of
+  forty-nine forty-leaf terms. The probe emits, the kernel replays.
+- First-build green with all kernel decides — sixth consecutive first-or-second-build stage.
+  The instrument stack (verified successor → engine → detection → chains) now covers every
+  certificate shape the frontier data needs: saturation for small dense spaces, chains for
+  long thin ones.
+- The floor is now quantitative and pinned: f(6,6) ≥ 7, f(8,32) ≥ 44. Twenty-two autonomous
+  stages (119–140).
+- Ranking: (1) **floor growth**: harvest the n=9 probe (running) and push the forced-prefix
+  search to bigger seeds/deeper marches — if forced excess grows without bound along a
+  recognizable family, formalize the family and kill additive bounds wholesale. (2) The
+  fold/control mechanism. (3) Genericization debt.

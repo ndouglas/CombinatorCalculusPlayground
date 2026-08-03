@@ -5050,3 +5050,18 @@ Everything known presses on it from both sides: mountains force the bound above 
 probe-floor `f(8,8) ≥ 31`; the glider shows infinite reachable sets; the fueled machines show
 controlled work; the hosting stack is raw material for a reduction. Either resolution closes
 rung 3.
+
+### Stage 140: the forced-march toolkit — the tall mountain
+
+Mountains no longer need state-space saturation. A forced (unique-successor) prefix is shared
+by EVERY path, so `scForced_mountain` (pinned) certifies unreachability-under-cap from a chain
+check — and the chain itself is COMPUTED (`scForcedMarch`, provably forced generically by
+`scForcedMarch_forced`: iterate the verified successor, no per-instance literals). Dually
+`scChained_steps` (pinned) turns any computed reduction into a `Steps` theorem, cost linear in
+the path. Instantiated: THE TALL MOUNTAIN — `S S C (S (C S S)) C` (8 leaves) marches forced
+for 49 steps to a 44-leaf peak, then branches to a 32-leaf target seven checked steps later
+(`scMt2_steps`, `scMt2_no_capped_path`, pinned). FLOOR THEOREMS (`sc_bound_floor_6`,
+`sc_bound_floor_44`, pinned): every valid bounding function for the frontier equivalence obeys
+`f(6,6) ≥ 7` and `f(8,32) ≥ 44` — the first pinned quantitative constraints on the
+equivalence's `f`, and a template: any forced-prefix specimen the probes find is now one
+`decide` from joining the floor.
