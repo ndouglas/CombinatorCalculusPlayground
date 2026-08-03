@@ -4301,3 +4301,19 @@ theorem sc_read_bitB :
   (RS.Steps.tail (SCStep.S_red (.app .C .C) .S (.app .C .C))
   (RS.Steps.tail (SCStep.C_red .C (.app .C .C) (.app .S (.app .C .C)))
   (@RS.Steps.refl RS.SC _))))))))
+
+-- ## Stage 167: the write — one fire, and the primitive set is complete
+-- Writing a register was never a mutation problem: registers are MINTED, not modified. One
+-- S-fire with the constant prefab `S S` nests any bit-source into a fresh register
+-- `S S bit'` — the same synthesis fire as Stage 144's cells, register-flavored. With the
+-- read (Stage 164), the latch (165), and the looped read (166), all four control primitives
+-- of the nondestructive-read problem now exist as pinned or kernel-certified mechanisms.
+-- C8's remaining content is COMPOSITION alone: choreograph read-loop + write into a
+-- Minsky/tag step. Every primitive beneath that choreography is a theorem.
+
+/-- **The register write**: mint a fresh register around any bit-source; the continuation
+receives its own copy of the source. One fire. -/
+theorem sc_reg_write (f bit' : SCTerm) :
+    RS.SC.Steps (.app (.app (.app .S f) (.app .S .S)) bit')
+      (.app (.app f bit') (.app (.app .S .S) bit')) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.S_red f (.app .S .S) bit')

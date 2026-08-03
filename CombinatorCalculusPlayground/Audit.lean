@@ -422,3 +422,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scForced_chained' depends on axioms: [propext] -/
 #guard_msgs in #print axioms scForced_chained
+
+/-- info: 'sc_reg_write' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_reg_write
