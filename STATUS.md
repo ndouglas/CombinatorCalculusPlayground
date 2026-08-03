@@ -148,7 +148,14 @@ cell-synthesis line lives — and Stage 188 pinned that channel in use:
 METABOLIC ASSEMBLY (`sc_metabolic_assembly`, axiom-free): three dead
 cells burn, the freed `S S` minter executes on the freed cargo, and
 seven fires produce `S B (S S B)` — the chassis housing the cargo
-beside its own minted register. The first producer→consumer handoff. Behind the alternator stand tag/Minsky hosting,
+beside its own minted register. The first producer→consumer handoff. And Stage 189 closed the loop:
+scFate is verbatim a POP PRODUCT (head cell `S (S scDup)`, arm cell
+`S S b`, cargo cell `C C`), so THE FATE MACHINE ASSEMBLES ITSELF from
+three dead cells in six fires (`sc_fate_assembly`, axiom-free), with
+the full dead-cells-to-fate pipeline schedule-universal via a second
+ranked certificate (237 states, wall 42 = 6 + 36,
+`sc_fate_assembly_universal`) and nested housing via
+`sc_assembly_line`. Construction chooses fate; computation never does. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

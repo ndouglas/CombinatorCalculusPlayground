@@ -5787,3 +5787,20 @@ housing; producer cell feeds consumer cell; axiom-free and parametric in the car
 `B = C` the assembled term is a bit sitting beside the register that would spin the fate
 machine on it. The composition vocabulary is now: pop delivers, S S mints, the chassis
 holds, walls add, fires are the only channel — and each clause is a pinned theorem.
+
+### Stage 189: the fate machine assembles itself — dead cells to universal fate
+
+`scFate b` turned out to be verbatim a pop product — head cell `S (S scDup)`, arm cell
+`S S b`, cargo cell `C C` — so `sc_fate_assembly` is a ONE-LINE instantiation of the
+Stage 156 pop law: three dead cells, six burning fires, and the machine stands. The full
+lifecycle is pinned as a pipeline: dead cells → assembly (6) → fate — spin side reaches
+the eternal consulting orbit; halt side reaches `scFateNf`, with the ranked-closure
+certificate (237 states, heights 0–42) making it UNIVERSAL: no schedule from the dead
+cells exceeds 42 = 6 + 36 fires and every dead end is the one normal form
+(`sc_fate_assembly_universal`). `sc_assembly_line` adds recursion to the vocabulary:
+assemblies take assemblies as cargo, nested housing from nested shells. Note the shape
+of the week: Stage 182 found the machine, 183 certified it, 184 composed it, 185 bounded
+its relay, 186 proved the isolation, 188 opened the metabolic channel, 189 closed the
+loop — the machine now BUILDS from the same dead matter it burns. The register's bit is
+placed in a cell before the pop; bits-are-sources (185) says nothing else was ever
+possible: construction chooses fate, computation never does.
