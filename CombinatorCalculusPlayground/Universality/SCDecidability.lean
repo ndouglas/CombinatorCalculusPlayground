@@ -4289,3 +4289,73 @@ theorem sc_dynasty : ∀ (n : Nat) (q : SCTerm),
       · exact RS.Steps.trans (RS.StepsN.toSteps (sc_lineage (scGene2Iter n q)))
           (scSteps_appL _ (scSteps_appL _ hu))
       · exact scUnder.app (scUnder.app hunder)
+
+-- ## Stage 199: the branch — the payload's numeral selects the successor
+-- Lineage passes payloads verbatim; control flow needs a CHOICE. The branch is the
+-- dispatch applied to a numeral-headed payload `C^k · y · z`: the fetch hands off, the
+-- payload's own strips sort `y` against `z` by the parity of `k`, and one more S-fire
+-- gives control to the selected sub-payload — `y X (z X) (X X)` for even `k`,
+-- `z X (y X) (X X)` for odd. Zero new fires: fetch + strip runs + one S_red. Composed
+-- with the gene, reproduction becomes CONDITIONAL: a parent whose gene carries
+-- `C^k g₁ g₂` begets a child that executes gene one or gene two by the numeral's parity
+-- — the machine tree forks, and the numeral is the branch condition.
+
+/-- **Even branch**: `C^(2j) y z` gives `y` control. -/
+theorem sc_branch_even (j : Nat) (y z : SCTerm) :
+    RS.SC.StepsN (15 + 2 * j)
+      (scParent (.app (.app (scParityReg (2 * j)) y) z))
+      (.app (.app (.app y (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z))))
+          (.app z (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z)))))
+        (.app (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z)))
+          (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z))))) := by
+  have h1 := sc_dispatch_even 0 (.app (.app (scParityReg (2 * j)) y) z)
+  have h2 : RS.SC.StepsN (2 * j + 1)
+      (.app (.app (.app (.app (scParityReg (2 * j)) y) z)
+          (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z))))
+        (.app (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z)))
+          (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z)))))
+      (.app (.app (.app y (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z))))
+          (.app z (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z)))))
+        (.app (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z)))
+          (scXof (.app .S (.app (.app (scParityReg (2 * j)) y) z))))) :=
+    scStepsN_appL _ (RS.StepsN.trans (scStepsN_appL _ (scStripRun_even j y z))
+      (RS.StepsN.tail (SCStep.S_red y z _) (@RS.StepsN.refl RS.SC _)))
+  have h := RS.StepsN.trans h1 h2
+  rw [show 15 + 2 * j = 14 + 2 * 0 + (2 * j + 1) from by omega]
+  exact h
+
+/-- **Odd branch**: `C^(2j+1) y z` gives `z` control. -/
+theorem sc_branch_odd (j : Nat) (y z : SCTerm) :
+    RS.SC.StepsN (16 + 2 * j)
+      (scParent (.app (.app (scParityReg (2 * j + 1)) y) z))
+      (.app (.app (.app z (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z))))
+          (.app y (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z)))))
+        (.app (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z)))
+          (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z))))) := by
+  have h1 := sc_dispatch_even 0 (.app (.app (scParityReg (2 * j + 1)) y) z)
+  have h2 : RS.SC.StepsN (2 * j + 1 + 1)
+      (.app (.app (.app (.app (scParityReg (2 * j + 1)) y) z)
+          (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z))))
+        (.app (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z)))
+          (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z)))))
+      (.app (.app (.app z (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z))))
+          (.app y (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z)))))
+        (.app (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z)))
+          (scXof (.app .S (.app (.app (scParityReg (2 * j + 1)) y) z))))) :=
+    scStepsN_appL _ (RS.StepsN.trans (scStepsN_appL _ (scStripRun_odd j y z))
+      (RS.StepsN.tail (SCStep.S_red z y _) (@RS.StepsN.refl RS.SC _)))
+  have h := RS.StepsN.trans h1 h2
+  rw [show 16 + 2 * j = 14 + 2 * 0 + (2 * j + 1 + 1) from by omega]
+  exact h
+
+/-- **Conditional reproduction**: a parent whose gene carries `C^k g₁ g₂` begets a child
+that gives control to gene one or gene two by the numeral's parity — the machine tree
+forks on a numeral. -/
+theorem sc_conditional_dynasty (j : Nat) (g₁ g₂ : SCTerm) :
+    ∃ u, RS.SC.Steps
+      (scParent (scGene2 (.app (.app (scParityReg (2 * j)) g₁) g₂))) u ∧
+      scUnder (.app g₁ (scXof (.app .S (.app (.app (scParityReg (2 * j)) g₁) g₂)))) u := by
+  refine ⟨_, RS.Steps.trans (RS.StepsN.toSteps
+    (sc_lineage (.app (.app (scParityReg (2 * j)) g₁) g₂)))
+    (scSteps_appL _ (scSteps_appL _ (RS.StepsN.toSteps (sc_branch_even j g₁ g₂)))), ?_⟩
+  exact scUnder.app (scUnder.app (scUnder.app (scUnder.app scUnder.refl)))

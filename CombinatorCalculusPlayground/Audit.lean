@@ -680,3 +680,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_dynasty' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_dynasty
+
+/-- info: 'sc_branch_even' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_branch_even
+
+/-- info: 'sc_branch_odd' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_branch_odd
+
+/-- info: 'sc_conditional_dynasty' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_conditional_dynasty
