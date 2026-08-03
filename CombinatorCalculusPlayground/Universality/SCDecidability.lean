@@ -1336,3 +1336,98 @@ theorem sc_bound_floor_25 (f : Nat → Nat → Nat)
 #guard scSucc (.app (.app .C (.app .S (.app .C .C))) (.app .C .C)) = []
 #guard ((.app (.app .S (.app .C .C)) (.app (.app .S .C) .S) : SCTerm)
     ≠ (.app (.app .C (.app .S (.app .C .C))) (.app .C .C)))
+
+-- ## Stage 165: the latch — stash, consult, diverge, survive
+-- The Stage-163 read-gadget design, found executing in the wild. The machine
+-- `scLatch bit = S (C C) (C scDup) (S S bit) scDup`: its FIRST fire stashes a copy of the
+-- register `S S bit` inside `(C scDup) reg`; at fire ten the working copy FIRES — the
+-- consultation, exposing the bit — and the two runs diverge into DIFFERENT perpetual
+-- five-beat pulses, each still carrying the stashed register as a standing subterm (checked
+-- below with a decidable subterm test; the register shape `S S bit` is disjoint from all
+-- machinery by construction — the third contamination lesson). A set-once LATCH with a
+-- reusable source bit: `{S,C}`'s first pinned control primitive.
+
+/-- Decidable subterm test. -/
+def scHasSub (t sub : SCTerm) : Bool :=
+  t == sub ||
+    match t with
+    | .app f x => scHasSub f sub || scHasSub x sub
+    | _ => false
+
+/-- The latch over a bit. -/
+def scLatch (bit : SCTerm) : SCTerm :=
+  .app (.app (.app (.app .S (.app .C .C)) (.app .C scDup)) (.app (.app .S .S) bit)) scDup
+
+/-- The mode-C pulse basepoint. -/
+def scModeC : SCTerm :=
+  .app (.app (.app (.app (.app .C scDup) scDup) scDup) scDup) (.app (.app .S .S) .C)
+
+/-- The mode-B pulse basepoint. -/
+def scModeB : SCTerm :=
+  .app (.app (.app (.app (.app (.app .C .C) scDup) scDup) scDup) scDup)
+    (.app (.app .S .S) (.app .C .C))
+
+#guard scHasSub scModeC (.app (.app .S .S) .C)
+#guard scHasSub scModeB (.app (.app .S .S) (.app .C .C))
+#guard ¬ scHasSub scDup (.app (.app .S .S) .C)
+#guard ¬ scHasSub scDup (.app (.app .S .S) (.app .C .C))
+
+/-- Bit `C` latches into mode C: sixteen fires (the stash is fire one; the consultation —
+the register copy firing — is fire ten). -/
+theorem scLatch_run_C : RS.SC.Steps (scLatch .C) scModeC :=
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S .S) .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C (.app (.app .S .S) .C) (.app (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S .S) .C))))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S .S) .C)) (.app (.app .S .S) .C) (.app (.app .S (.app .C .C)) (.app .C .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S .S) .C) (.app (.app .S (.app .C .C)) (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S .S) .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S .S) .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .S .S) .C) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red .S .C (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red (.app (.app .S (.app .C .C)) (.app .C .C)) (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C))))
+  (@RS.Steps.refl RS.SC scModeC)))))))))))))))))
+
+/-- Mode C pulses with period five, carrying the register. -/
+theorem scModeC_pulse : RS.SC.StepsN 5 scModeC scModeC :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (@RS.StepsN.refl RS.SC scModeC))))))
+
+/-- Bit `C C` latches into mode B: sixteen fires, the same stash-consult skeleton, a
+different perpetual pulse. -/
+theorem scLatch_run_B : RS.SC.Steps (scLatch (.app .C .C)) scModeB :=
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S .S) (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C (.app (.app .S .S) (.app .C .C)) (.app (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S .S) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .C (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S .S) (.app .C .C))) (.app (.app .S .S) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S .S) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S .S) (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S .S) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .S .S) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C))))
+  (@RS.Steps.refl RS.SC scModeB)))))))))))))))))
+
+/-- Mode B pulses with period five too — but through DIFFERENT states. -/
+theorem scModeB_pulse : RS.SC.StepsN 5 scModeB scModeB :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C)))))
+  (@RS.StepsN.refl RS.SC scModeB))))))
