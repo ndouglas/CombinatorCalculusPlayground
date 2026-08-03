@@ -334,3 +334,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_bound_floor_44' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_bound_floor_44
+
+/-- info: 'scGlider_march_unbounded' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scGlider_march_unbounded

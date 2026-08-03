@@ -1258,3 +1258,29 @@ theorem sc_bound_floor_44 (f : Nat → Nat → Nat)
     have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 8 32) scMt2T scMt2U :=
       hf scMt2T scMt2U scMt2_steps
     exact scMt2_no_capped_path (RS.StepsLe.weaken (by omega) hs)
+
+-- ## Stage 141: the march hierarchy — the glider never stalls, and the floor thickens
+-- Tying the toolkit to the glider: on the glider's trajectory the computed march never hits
+-- a branch, so `scForcedMarch` yields chains of EVERY length — the forced-march "busy beaver"
+-- at eight leaves is infinite. (Family search negative, recorded in the ledger: one-parameter
+-- perturbations of the tall-mountain seed break forcing; unbounded-excess mountain FAMILIES
+-- remain unfound.)
+
+theorem scGliderTraj_march_length : ∀ (n : Nat) {t : SCTerm}, GliderTraj t →
+    (scForcedMarch t n).length = n := by
+  intro n
+  induction n with
+  | zero => intro t _; rfl
+  | succ n ih =>
+      intro t ht
+      obtain ⟨v, hv, htv⟩ := gliderTraj_succ ht
+      unfold scForcedMarch
+      rw [hv]
+      show (scForcedMarch v n).length + 1 = n + 1
+      rw [ih htv]
+
+/-- **The infinite march**: from the glider seed, the computed forced chain has every
+length — deterministic computation without end, measured by the toolkit. -/
+theorem scGlider_march_unbounded (n : Nat) :
+    (scForcedMarch scGliderSeed n).length = n :=
+  scGliderTraj_march_length n (Or.inl rfl)
