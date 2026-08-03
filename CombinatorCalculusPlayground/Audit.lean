@@ -662,3 +662,15 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_addressed_fetch' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_addressed_fetch
+
+/-- info: 'scCellArm_popN' does not depend on any axioms -/
+#guard_msgs in #print axioms scCellArm_popN
+
+/-- info: 'sc_gene_express' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_gene_express
+
+/-- info: 'sc_reproduction' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_reproduction
+
+/-- info: 'sc_machines_beget' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_machines_beget

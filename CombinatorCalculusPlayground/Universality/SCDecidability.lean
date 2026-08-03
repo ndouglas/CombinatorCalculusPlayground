@@ -4143,3 +4143,84 @@ theorem sc_addressed_fetch (j : Nat) (p : SCTerm) :
       ∃ y, u = .app (.app y y) (.app p y)) :=
   ⟨⟨_, RS.StepsN.toSteps (sc_dispatch_even j p), _, rfl⟩,
    ⟨_, RS.StepsN.toSteps (sc_dispatch_odd j p), _, rfl⟩⟩
+
+-- ## Stage 197: machines beget machines — the gene
+-- The sequencer exists, and its engine is a 14-leaf payload best called a GENE:
+-- `scGene t = C (cell FH) (cell t)` — one cell holding the frame head, one holding the
+-- child's register. Addressed at zero and dispatched, the gene EXPRESSES: nine fires
+-- emit the fate-seed `(cell FH)(cell t)(cell t)` with two riders, and six pop fires
+-- assemble the child `FH t t` in place — `sc_reproduction`, fully parametric in `t`.
+-- At `t = W` the child is verbatim `scFrame scW`: twenty-nine kernel fires take a
+-- STANDARD ADDRESSED FRAME to a STANDARD FRAME with stack riders (`sc_machines_beget`).
+-- Fetch → express → assemble → re-enter. The riders tell the story too: R1 is an
+-- unfinished frame (`FH (W t)`, a head awaiting cargo), R2 the spent executed complexes.
+-- Machines beget machines, and the parent chooses the child's register.
+
+/-- The gene: frame head in one cell, the child's register in the other. -/
+def scGene (t : SCTerm) : SCTerm :=
+  .app (.app .C (.app scW (.app .S (.app .S scDup)))) (.app scW t)
+
+/-- The pop, step-counted (six fires — the Stage 156 law transcribed to `StepsN`). -/
+theorem scCellArm_popN (X A B : SCTerm) :
+    RS.SC.StepsN 6
+      (.app (.app (.app (.app .C .C) X) (.app (.app .C .C) A)) (.app (.app .C .C) B))
+      (.app (.app X A) B) :=
+  RS.StepsN.tail (SCStep.appL (SCStep.C_red .C X (.app (.app .C .C) A)))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) A) X (.app (.app .C .C) B))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C A (.app (.app .C .C) B)))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) B) A X)
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C B X))
+  (RS.StepsN.tail (SCStep.C_red X B A)
+  (@RS.StepsN.refl RS.SC (.app (.app X A) B)))))))
+
+/-- Rider one: an unfinished frame — the head awaiting its cargo. -/
+def scRider1 (t : SCTerm) : SCTerm := .app (.app .S (.app .S scDup)) (.app scW t)
+
+/-- Rider two: the spent executed complexes. -/
+def scRider2 (t : SCTerm) : SCTerm :=
+  .app (scXof (.app .S (scGene t))) (scXof (.app .S (scGene t)))
+
+/-- **Gene expression**: nine fires from the dispatch product to seed-plus-riders. -/
+theorem sc_gene_express (t : SCTerm) :
+    RS.SC.StepsN 9
+      (.app (.app (scGene t) (scXof (.app .S (scGene t))))
+        (.app (scXof (.app .S (scGene t))) (scXof (.app .S (scGene t)))))
+      (.app (.app (.app (.app (.app (.app .C .C) (.app .S (.app .S scDup)))
+          (.app (.app .C .C) t)) (.app (.app .C .C) t))
+        (scRider1 t)) (scRider2 t)) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app .S (.app .S scDup))) (.app (.app .C .C) t) (.app (.app (.app .C .C) (.app .S (scGene t))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .S (.app .S scDup)) (.app (.app (.app .C .C) (.app .S (scGene t))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app (.app .C .C) (.app .S (scGene t))) (.app .C .C)) (.app .S (.app .S scDup)) (.app (.app .C .C) t)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .S (scGene t)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C .C) (.app .S (scGene t)) (.app (.app .C .C) t))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) t) (.app .S (scGene t)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .S (scGene t)) (.app (.app .C .C) t) (.app .S (.app .S scDup))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (scGene t) (.app .S (.app .S scDup)) (.app (.app .C .C) t)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app .S (.app .S scDup))) (.app (.app .C .C) t) (.app (.app .C .C) t))))
+  (@RS.StepsN.refl RS.SC _))))))))))
+
+/-- **Reproduction**: twenty-nine fires from the addressed parent to the assembled child
+`FH t t` with stack riders — the parent's gene chooses the child's register. -/
+theorem sc_reproduction (t : SCTerm) :
+    RS.SC.StepsN 29 (scFrame (.app scW (.app .S (scGene t))))
+      (.app (.app (.app (.app (.app .S (.app .S scDup)) t) t) (scRider1 t))
+        (scRider2 t)) := by
+  have h1 := sc_dispatch_even 0 (scGene t)
+  have h2 := sc_gene_express t
+  have h3 : RS.SC.StepsN 6
+      (.app (.app (.app (.app (.app (.app .C .C) (.app .S (.app .S scDup)))
+          (.app (.app .C .C) t)) (.app (.app .C .C) t))
+        (scRider1 t)) (scRider2 t))
+      (.app (.app (.app (.app (.app .S (.app .S scDup)) t) t) (scRider1 t))
+        (scRider2 t)) :=
+    scStepsN_appL _ (scStepsN_appL _ (scCellArm_popN (.app .S (.app .S scDup)) t t))
+  have h := RS.StepsN.trans h1 (RS.StepsN.trans h2 h3)
+  rw [show 29 = 14 + 2 * 0 + (9 + 6) from by omega]
+  exact h
+
+/-- **Machines beget machines**: at `t = W` the child is verbatim the standard frame —
+twenty-nine kernel fires from one addressed machine to another, riders as stack. -/
+theorem sc_machines_beget :
+    RS.SC.StepsN 29 (scFrame (.app scW (.app .S (scGene scW))))
+      (.app (.app (scFrame scW) (scRider1 scW)) (scRider2 scW)) :=
+  sc_reproduction scW
