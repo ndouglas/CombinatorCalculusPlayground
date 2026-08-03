@@ -5268,3 +5268,18 @@ after six stages of triangulation: reading is solved, minting is solved, rebuild
 the pile is clean and FIFO — the entire remaining problem is the marker's SELF-PERSISTENCE
 through the rebuild. One combinator-design question, stated in one line, with every
 surrounding mechanism a pinned theorem.
+
+### Stage 154: the growth step — the spiral's base case
+
+`sc_growth_step` (axiom-free, pinned): with `scQuine = S (C (C C)) (C C)` — scDup's asymmetric
+cousin — as marker AND arms, four fires take the one-cell configuration to the TWO-cell
+configuration, marker and both arms restored verbatim. The word GREW and everything survived:
+the first growth-with-full-survival witness, found only when marker and arms were co-designed
+(256 pairs, one hit; all marker-only families were zero). The mechanism is the whole hosting
+thread in four fires: pop (two C-fires promote the marker with two arm copies), mint (the
+marker's S-fire duplicates one arm while nesting the other into the `C C` prefab), re-erect
+(one C-fire). REMAINING: iteration — the two-cell configuration engages its outer cell first
+and derails (14-state closure, no third cell). C8's mantle passes to the spiral's induction
+step: a configuration family where growth commutes with traversal. The pattern of the whole
+campaign — each wall falls to a co-design one notch wider than the last search — suggests the
+next widening: co-design the CELL constant with the marker/arm pair (three-way).

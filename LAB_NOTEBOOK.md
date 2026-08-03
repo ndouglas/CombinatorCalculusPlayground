@@ -5471,3 +5471,22 @@ what automation could and couldn't do. This file is a first-class deliverable
   pool, target the exact growth config; widen depth. (2) If the quine resists: the SPIRAL
   variant (target config₂ with a DIFFERENT-but-equivalent marker — weaken exactness to
   behavioral equivalence via a second generation check). (3) Floor asymptotics at n=10.
+
+## 2026-08-03 — Stage 154: four fires, one new cell, nothing lost
+
+- The growth step exists, and its finder was the narrowest search of the campaign: one hit
+  in 256, requiring marker = arms. Reading the four fires is like watching the whole
+  hosting thread compressed: pop, duplicate, nest, re-erect. scQuine is scDup with one C
+  pushed one level deeper — the almost-answers keep differing from answers by a single
+  nesting.
+- The iteration failure is now THE question. The base step restores everything, but the
+  next round's traversal meets the new cell before the marker — growth and traversal
+  interleave in the wrong order. The three-way co-design (cell constant × marker × arms) is
+  the widest search yet and the campaign's pattern says walls fall exactly one widening
+  after they're named.
+- Thirty-six autonomous stages (119–154); today: nine feat stages, all axiom-free, C7
+  registered and refuted, C8 chased from 'the quine problem' to 'make growth commute with
+  traversal'.
+- Ranking: (1) **the three-way co-design** (cell constant × marker × arms, iteration as the
+  target: config-2 → config-3 with all three restored). (2) Floor asymptotics at n=10.
+  (3) The aperiodic diverger's anatomy.
