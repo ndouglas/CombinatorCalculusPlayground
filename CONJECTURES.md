@@ -181,7 +181,8 @@ no `K` leaves ever appear — `sTerms` enumerates over `Term.S` alone):
 independent claims, and for nine stages every attempt went after the bundle:
 
 - **C1(a) EXISTENCE** — some pure-S term has no normal form (concretely:
-  `c1` diverges). Status: **probed (open)**.
+  `c1` diverges). Status: **PROVED** (Stage 43, `c1a`, pinned — this header
+  was stale from Stage 43 to Stage 138; caught by the ledger audit).
 - **C1(b) MINIMALITY** — no pure-S term with ≤ 6 leaves diverges, so 7 is
   the floor. Status: **PROVED** (`no_small_divergence`,
   `Census/Completeness.lean`).
@@ -846,7 +847,7 @@ every infinite pure-S trajectory has unbounded size — bounded size plus
 revisit. Blocked on the same finiteness lemma as the pigeonhole queue
 (`sTerms`-completeness chain); registered, not claimed.
 
-## C6: Divergence density grows with size — status: probed (open)
+## C6: Divergence density grows with size — status: RETIRED (Stage 138, out of scope)
 - Materiality: **LOW.** A density asymptotic over small n bears on nothing
   else in this tree; no theorem depends on it and it does not touch
   universality. It is cheap and it is genuinely ours, and Stage 7's ranking
@@ -856,6 +857,14 @@ revisit. Blocked on the same finiteness lemma as the pigeonhole queue
   work certainly exists (Wolfram's dataset covers leaf counts 1–10 and would
   give the same counts); whether the monotone-to-1 conjecture is settled is
   unknown. Checking is cheap and should precede any further work here.
+- Retirement (Stage 138): declined by one hundred and twenty-four consecutive
+  rankings, always on the materiality already recorded above. Nothing in the
+  four goals consumes a density asymptotic, and the divergence content it
+  gestured at is now covered by strictly stronger, materially-connected
+  theorems (`c1a`; the `{S,C}` glider with certified determinism and
+  normal-form-freeness). Retirement is a scope decision, not a resolution:
+  the conjecture remains open mathematics, recorded here for whoever wants
+  it, and reopening requires only a ranking that places it first.
 
 
 **Slice 4 fuel-sensitivity test — the table is NOT an artifact of fuel
@@ -5010,3 +5019,19 @@ and strongly normalizes to 5–7 leaves. Bounded, modeled caveats: peaks are BFS
 yet minimax), fuel ≤ 4, one unit shape. The control question (make the pump HALT) has a
 computational answer — fueled machines exist in abundance; what remains is whether fuel can be
 made to encode arbitrary computation.
+
+### Stage 138: the ledger audit
+
+Registry swept against the run. Corrections: C1(a)'s registry header still said "probed
+(open)" — it was PROVED at Stage 43 (`c1a`, pinned); stale for ninety-five stages because
+stage entries are append-only and nobody re-read the header. C6 RETIRED after 124 consecutive
+declines (scope decision, not resolution; rationale in its section). The registry now reads:
+C1(a) proved, C1(b) proved, C2 proved, C3 retired (artifact), C4 proved, C5 proved, C6 retired
+(scope). Named open questions swept: the pairing question (Stage 102) is ANSWERED — impossible
+for both s-headed orders (Stages 129/131), possible payload-headed; the `{S,C}` decidability
+frontier stands as the program's one open question with goal-level weight, now equipped with
+its backbone (`sc_decidable_of_bound`), floor (mountains), and instruments (capped engine,
+fixpoint certificates); the fold/control question stands as the identified missing piece on
+both the hosting and undecidability sides, with fueled machines (Stage 137) as its newest
+evidence. Rule added: REGISTRY HEADERS ARE PART OF EVERY REVIEW — a review that only reads
+STATUS.md can miss a stale conjecture header, as this one did for ninety-five stages.

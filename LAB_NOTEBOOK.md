@@ -5177,3 +5177,24 @@ what automation could and couldn't do. This file is a first-class deliverable
   Steps to the NF plus engine-certified peak forcing at growing caps. (2) Whether fuel can
   encode computation (the control-to-reduction question). (3) C6, declined a
   hundred-and-twenty-fourth time.
+
+## 2026-08-02 — Stage 138: the ledger audit
+
+- A process stage, and it earned its keep: C1(a)'s registry header had been stale for
+  ninety-five stages (proved at Stage 43, header still "open"). The append-only discipline
+  that keeps the ledger honest also lets living headers rot; reviews now include the
+  registry. C6 retired after 124 declines — the materiality field, written at Stage 7 to
+  explain why cheapness is not a reason to work on something, finally got its verdict.
+- The board after the audit: ONE open question with goal-level weight (bounded
+  intermediates / `{S,C}` decidability, fully instrumented), one identified missing piece
+  (fold/control, shared by the hosting and undecidability routes), and a clean registry.
+  Twenty autonomous stages (119–138).
+- The star machine's run was traced for Stage 137's ranking item and is genuinely irregular
+  (mid-run branching, interleaved pumps and grinds) — the fueled FAMILY formalization is
+  shelved in favor of single-instance certificates when needed; the fixpoint machinery
+  makes those routine. Honest close on that thread.
+- Ranking: (1) **the control-to-reduction probe**: design (not search) a fueled machine
+  from the hosting gadgets — a tag step consuming one fuel unit per cycle — and measure
+  whether fuel-exhaustion is detectable in the normal form; success reframes the fold
+  problem as fuel accounting. (2) Bounded intermediates via mountain growth-rate estimation
+  at scale. (3) The genericization debt (StepsLe/engine), when a second consumer appears.
