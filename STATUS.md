@@ -247,7 +247,12 @@ Stage 206 gave it final form: THE COUNTING CHAIN (`sc_bounded_odometer`,
 axiom-free) delivers `C^(k+n) S` to any continuation in 2n fires at
 three leaves per increment, so counting is FREE in {S,C}; C10 is
 exactly the regrowth question — can a machine refuel its own prefab
-stock? Behind the alternator stand tag/Minsky hosting,
+stock? Stage 209 fixed the search language: odometers are CONTEXT
+FAMILIES (the reader's front holds five register copies), and the
+corrected family sweep finds zero through seven-leaf contexts (302,903
+tried; the eight-leaf tier runs in the background) — while the reader's
+consultation does mint `C²r` each period, its unwrapping is
+load-bearing for front restoration. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

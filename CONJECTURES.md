@@ -6094,3 +6094,20 @@ inputs), machines taught to reproduce, fork, read tapes, and count — and the p
 open frontier consolidated to exactly two questions: bounded intermediates (the
 undecidability route) and C10 regrowth (the self-refueling counter). Both are now
 precisely calibrated, which is what a review is for.
+
+### Stage 209: the S-farm study — the family search closes the design gap
+
+The C10 design study fixed the last representational flaw in the odometer search: an
+odometer is a FAMILY `F[r]` (the reader's front holds FIVE register copies), and every
+previous sweep enumerated fixed terms, which cannot express multi-copy families. The
+corrected search enumerates CONTEXTS — terms over {S, C, hole}, one to six holes — and
+tests the family law `F[reg k] ⟶⁺ F[reg (k+2)]·junk` at two rungs. Through seven leaves:
+302,903 contexts, ZERO (the eight-leaf tier still sweeping in the background). The
+design analysis alongside: the reader's consultation DOES mint `C²r` every period — the
+raw increment exists in a working machine — but the reader's recurrence depends on
+unwrapping those mints back to `r` (the unwrap fires are load-bearing for front
+restoration), and re-wiring five coherent copies of an incremented register through one
+period exceeds every seven-leaf context. C10's positive now requires either an
+eight-plus-leaf family (sweeping) or a genuinely multi-period design (increments
+amortized across laps). The question keeps its equilibrium; the search space is now the
+RIGHT one.

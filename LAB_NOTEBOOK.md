@@ -6211,3 +6211,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   counter from reader parts (front regeneration) + chain prefabs; success or a sharp
   documented failure both move the frontier. (2) floor14 random harvest if >86.
   (3) The n=16 graft (one more rung, then the ladder rests).
+
+## 2026-08-04 — Stage 209: the S-farm study
+
+- Methodological fix worth more than the zero: families, not terms (the reader's front
+  = five register copies; fixed-term sweeps could never have found it). Context
+  enumeration with holes is the right C10 search language from here on.
+- Probe hygiene note: two timeout-swallowed outputs this session before backgrounding
+  with logs — the discipline is nohup + log + until-watcher, no exceptions.
+- Ninety-one autonomous stages (119–209). Ranking: (1) **harvest the n=8 context tier**
+  when the background sweep reports (zero closes the small-family question; a hit is
+  C10 solved). (2) floor14 random harvest if >86. (3) The multi-period odometer design
+  (increments amortized over several reader laps — the one architecture the family
+  search still can't express).
