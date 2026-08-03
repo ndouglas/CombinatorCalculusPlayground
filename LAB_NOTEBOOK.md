@@ -5564,3 +5564,17 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Forty-one autonomous stages (119–159). Ranking: (1) the review refresh (numbers 29 stages
   stale; the nondestructive-read reframe belongs in STATUS). (2) Harvest n=10 floor census +
   n=9 register sweep (both running). (3) The nondestructive-read design campaign, fresh.
+
+## 2026-08-03 — Stage 160: the review
+
+- Reviewed at 41 consecutive stages. The registry gains C7 (refuted, kept as a lesson) and
+  C8 (the nondestructive-read problem — the campaign's residue stated as one primitive).
+  The closing observation of the review: the program's two open questions may be one. A
+  bounded-intermediates counterexample family needs sustained computation between small
+  endpoints; sustained computation needs control; control needs nondestructive reads. If
+  reads must destroy, computations must grow — which is what every mountain, glider, and
+  counter this run has certified actually does.
+- Ranking: (1) **harvest the running censuses** (n=10 floor; n=9 registers) when they land.
+  (2) The nondestructive-read campaign: paper-first analysis of what 'test' means in a
+  calculus where every fire consumes its redex — the h-cycle (which RESTORES its redex) is
+  the obvious specimen to re-read. (3) Genericization/consolidation as breadth demands.

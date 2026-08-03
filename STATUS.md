@@ -14,9 +14,26 @@ inherited since Stage 0. As of Stage 76 this claim is **build-enforced**:
 `Audit.lean` pins the headline theorems' exact footprints with `#guard_msgs`,
 so any drift fails the build.
 
-At time of writing (Stage 130 review): 36 modules, ~916 theorems, 371
-build-enforced `#guard`s plus 83 `#guard_msgs`-pinned axiom footprints, ~19,100
-lines of Lean, zero warnings. Since the Stage 114 review, one autonomous run
+At time of writing (Stage 160 review): 37 modules, ~1,055 theorems, 388
+build-enforced `#guard`s plus 129 `#guard_msgs`-pinned axiom footprints,
+~21,600 lines of Lean, zero warnings. Since the Stage 130 review the run
+continued autonomously through Stage 159 (41 consecutive stages), delivering:
+the FRONTIER EQUIVALENCE at all four ladder rungs (decidable ⟺ computably
+bounded intermediates, generic engine + kits) with pinned floors and the
+forced-march toolkit; the GLIDER (deterministic, normal-form-free, its whole
+trajectory certified) and the COUNTER (an eight-leaf machine with fixed
+member registers and a √step-height tower — spine-level data, probe-read);
+and the FOLD CAMPAIGN: cell synthesis in one fire, the queue cell (C7
+registered and refuted inside two stages), the biodegradable architecture
+(zero-residue FIFO traversal — machinery built from the self-consuming
+combinator), the fuel law and fuel blindness, the generation cycle (a tag
+generation IS a `{S,C}` cycle), the attractor, the growth step, the
+cell-armed pop (the arm is the program), and the Q-family's complete pinned
+dynamics. The campaign's residue is ONE design problem, now named: THE
+NONDESTRUCTIVE-READ PROBLEM (C8's kernel) — tag hosting lacks a marker that
+survives its own firing; register hosting lacks a test that spares its
+operand; both are "read without consuming" against non-erasure's grain.
+Every mechanism beneath that problem is a pinned, axiom-free theorem. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a

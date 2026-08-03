@@ -5356,3 +5356,23 @@ head to consult one tower while preserving the other — dispatch-on-emptiness, 
 counter idiom's version of the constructor gap. Both idioms (tag/word and counter/register)
 now stand one control-primitive short of a Minsky/tag reduction, and it is recognizably the
 SAME primitive: conditional behavior on runtime data that survives the test.
+
+### Stage 160: review — and the registry grows two entries
+
+Numbers refreshed (37 modules, ~1,055 theorems, 129 pins, 388 guards, ~21,600 lines, zero
+warnings; 41 consecutive autonomous stages). Registry additions, per the Stage-138 rule that
+headers are part of every review:
+
+## C7: No two-generation cell synthesis — REFUTED (Stage 146, same-day)
+Registered Stage 145 on the mid-insertion obstruction; refuted by the queue cell (child order
+was a free parameter). Kept as the run's exhibit that impossibility arguments about MOVES must
+quantify over DESIGNS.
+
+## C8: The nondestructive-read problem — OPEN, the program's second frontier
+Successively sharpened Stage 146→159: driver self-regeneration → marker persistence through
+rebuild → constructor gap (arms strip, growth restores flat) → the kernel: READ WITHOUT
+CONSUMING. Tag idiom: a marker that survives its own firing. Register idiom: an emptiness test
+that spares its operand. Everything beneath it is pinned; a solution in either idiom yields a
+hosted unbounded machine and, via the frontier equivalence, bears directly on rung-3
+undecidability. The two open frontiers (bounded intermediates; nondestructive read) are
+plausibly one: both ask whether `{S,C}` can consult data without destroying it.
