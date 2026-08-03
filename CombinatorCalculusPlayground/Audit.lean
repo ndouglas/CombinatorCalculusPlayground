@@ -578,3 +578,15 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_metabolic_assembly_bit' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_metabolic_assembly_bit
+
+/-- info: 'sc_fate_assembly' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_fate_assembly
+
+/-- info: 'sc_fate_assembly_halt' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_fate_assembly_halt
+
+/-- info: 'sc_fate_assembly_universal' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_fate_assembly_universal
+
+/-- info: 'sc_assembly_line' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_assembly_line
