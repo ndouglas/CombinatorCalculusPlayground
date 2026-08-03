@@ -443,3 +443,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_testdec_twice' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_testdec_twice
+
+/-- info: 'scReader_period' does not depend on any axioms -/
+#guard_msgs in #print axioms scReader_period
+
+/-- info: 'scReader_unbounded' does not depend on any axioms -/
+#guard_msgs in #print axioms scReader_unbounded

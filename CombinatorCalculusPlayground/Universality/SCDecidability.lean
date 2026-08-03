@@ -1663,3 +1663,62 @@ theorem sc_testdec_twice :
 
 #guard scHasSub (.app (.app .C (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C))) (.app (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)) (.app (.app (.app .C .C) (.app .S .C)) (.app (.app .C (.app .S .C)) (.app .S .C))))) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S)))
 #guard scHasSub (.app (.app .C (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C))) (.app (.app .C (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C))) (.app (.app (.app .C (.app .S .C)) (.app (.app .C (.app .S .S)) (.app (.app .S .C) (.app .S .S)))) (.app .S .C)))) (.app (.app .S .C) (.app .S .S))
+
+-- ## Stage 176: the persistent reader — a machine that outlives its own step
+-- The persistence problem's first solution, for read-only state. The consultation loop's
+-- march is a CONSULTING SPIRAL with exact period seven: the front
+-- `Front = S P (C P) (C r)` (register `r = S S C`, `P = C (C r) (C r)`) reproduces itself
+-- VERBATIM every seven fires while emitting one accounted junk block `J = C P (C r)` — and
+-- two of the seven fires are the register CONSULTING (`S_red S C …`, the r-fire shape).
+-- Since the junk rides as trailing members, the period lifts to the whole family by
+-- congruence: the reader steps forever, reads twice per period, and its register — present
+-- in every generation by construction — is never consumed. Persistence, interaction, and
+-- nondestructive reading in one pinned machine.
+
+/-- The reader's register. -/
+def scRdrReg : SCTerm := .app (.app .S .S) .C
+
+/-- `P = C (C r) (C r)`. -/
+def scRdrP : SCTerm :=
+  .app (.app .C (.app .C scRdrReg)) (.app .C scRdrReg)
+
+/-- The junk block emitted each period. -/
+def scRdrJ : SCTerm := .app (.app .C scRdrP) (.app .C scRdrReg)
+
+/-- The reader's front: reproduces itself every seven fires. -/
+def scRdrFront : SCTerm :=
+  .app (.app (.app .S scRdrP) (.app .C scRdrP)) (.app .C scRdrReg)
+
+/-- **The period**: seven fires, front restored verbatim, one junk block emitted — with the
+register consulting twice en route (fires one and four are `r`-fires). -/
+theorem scReader_period : RS.SC.Steps scRdrFront (.app scRdrFront scRdrJ) :=
+  RS.Steps.tail (SCStep.S_red (.app (.app .C (.app .C (.app (.app .S .S) .C))) (.app .C (.app (.app .S .S) .C))) (.app .C (.app (.app .C (.app .C (.app (.app .S .S) .C))) (.app .C (.app (.app .S .S) .C)))) (.app .C (.app (.app .S .S) .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C (.app (.app .S .S) .C)) (.app .C (.app (.app .S .S) .C)) (.app .C (.app (.app .S .S) .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .S .S) .C) (.app .C (.app (.app .S .S) .C)) (.app .C (.app (.app .S .S) .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red .S .C (.app .C (.app (.app .S .S) .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C (.app (.app .S .S) .C)) (.app .C (.app .C (.app (.app .S .S) .C))) (.app .C (.app (.app .S .S) .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .S .S) .C) (.app .C (.app (.app .S .S) .C)) (.app (.app .C (.app .C (.app (.app .S .S) .C))) (.app .C (.app (.app .S .S) .C)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red .S .C (.app (.app .C (.app .C (.app (.app .S .S) .C))) (.app .C (.app (.app .S .S) .C))))))
+  (@RS.Steps.refl RS.SC _)))))))
+
+/-- The reader at generation `n`: the front trailing `n` accounted junk blocks. -/
+def scReader : Nat → SCTerm
+  | 0 => scRdrFront
+  | n + 1 => .app (scReader n) scRdrJ
+
+/-- Each generation steps to the next: the period, lifted by congruence over the junk. -/
+theorem scReader_step : ∀ n, RS.SC.Steps (scReader n) (scReader (n + 1))
+  | 0 => scReader_period
+  | n + 1 => scSteps_appL scRdrJ (scReader_step n)
+
+/-- **THE PERSISTENT READER**: the machine reaches every generation — it outlives its own
+step, unboundedly, consulting its register twice per period. -/
+theorem scReader_unbounded : ∀ n, RS.SC.Steps scRdrFront (scReader n)
+  | 0 => @RS.Steps.refl RS.SC _
+  | n + 1 => RS.Steps.trans (scReader_unbounded n) (scReader_step n)
+
+-- The period is forced, contains exactly two consultations, and the register is present.
+#guard (scForcedMarch scRdrFront 7).length = 7
+#guard scCountConsults .C (scRdrFront :: scForcedMarch scRdrFront 7) = 2
+#guard scHasSub scRdrFront scRdrReg
+#guard scHasSub scRdrJ scRdrReg
