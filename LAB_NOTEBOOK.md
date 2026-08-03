@@ -6047,3 +6047,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   from the omega word / frame prefabs; the assembly line (189) builds frames from cells,
   so a p that emits fate-seed cells is the candidate). (2) floor12 harvest. (3) The
   wrapper-word exhaustive map.
+
+## 2026-08-03 — Stage 196: the sequencer's first wall
+
+- Clean negative, correctly scoped: root-reconstitution is the wrong re-entry model;
+  cells are how machines get built in this calculus (the whole Stage 188–189 lesson,
+  re-taught by a zero). Next probe watches for emitted cell-triples.
+- floor12: 600k random samples, best excess still 69 (harvest pending completion).
+- Seventy-eight autonomous stages (119–196). Ranking: (1) **the cell-emitting
+  sequencer**: re-run the payload search with the pop-product detector (reachable
+  `(CC X)(CC A)(CC B)` cell-triples in dispatch products); a hit chains fetch →
+  assembly → fate — the tag-hosting engine. (2) floor12 harvest (excess 69 witness,
+  pin when the census completes or plateaus definitively). (3) The wrapper-word
+  exhaustive map (complete the ISA algebra, words ≤ 4).

@@ -5899,3 +5899,16 @@ reads: READ (C9), CALL (handoff), COMPILE (omega), FETCH (this). What remains fo
 tag-style hosting is sequencing — an executed payload that reconstitutes a new addressed
 frame — and the omega instruction manufactures exactly the self-application such a
 payload needs.
+
+### Stage 196: the sequencer's first wall — spines don't reconstitute
+
+The fetch-execute cycle's direct architecture is probe-dead: over 666 payloads built from
+frame-head and duplicator prefabs (≤ 14 leaves, address-0 dispatch products marched 150
+fires under a 300-leaf cap), NO trajectory re-enters the exact frame shape
+`FH (W r') W` at the root. The structural reading: dispatch products grow leftward while
+the frame must reconstitute at the ROOT with its register and cargo in place — but
+Stage 189 already showed how frames actually arrive: as POP PRODUCTS of dead cells, not
+as spine rebuilds. The sequencer's correct target is therefore a payload whose execution
+EMITS FATE-SEED CELLS — the assembly line running inside the dispatch product — and the
+re-entry detector should watch for cell-triples, not root frames. The hosting engine is
+one architecture-probe away, and the parts (fetch, assembly, pop) are all pinned.
