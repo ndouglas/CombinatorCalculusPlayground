@@ -6010,3 +6010,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   a 3-rotation on any small register shape?) and for THRESHOLD predicates (C^k S with
   two different tails). Each new predicate class widens the hosted-language toward the
   tag-hosting goal. (2) floor12 harvest. (3) The alternator.
+
+## 2026-08-03 — Stage 193: the wrapper ISA
+
+- The frame now has two pinned instructions: READ (C-wrap, parity by flips) and CALL
+  (W-wrap, handoff in 13). Executing S = halt; executing scDup = eternity. Combined with
+  C9 this gives the hosting program its vocabulary: registers are simultaneously DATA
+  (read by strips) and CODE (called by handoff) — von Neumann in {S,C}.
+- Seventy-five autonomous stages (119–193). Ranking: (1) **nested instructions**: what
+  does C (W r) do — read-then-call? W (C r)? The wrapper ALGEBRA (composition of the two
+  instructions) is one probe away, and a composed read-call law would let a numeral
+  SELECT which register gets executed: an addressed fetch, the missing hosting piece.
+  (2) floor12 harvest. (3) The alternator.

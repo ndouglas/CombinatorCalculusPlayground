@@ -173,7 +173,13 @@ triple `M M M`, axiom-free), `C` is flip (one constructor per strip),
 and the two parametric closes give — for EVERY k — a normal form in
 11 + 4j fires when k = 2j, and the N-tower orbit `Φ = M N₁ N₂` of
 period 2j + 8 when k = 2j + 1. An infinite input family whose parity
-is decided by eternity: the program's first complete hosting theorem. Behind the alternator stand tag/Minsky hosting,
+is decided by eternity: the program's first complete hosting theorem.
+Stage 193 added the second instruction: THE WRAPPER ISA
+(`sc_frame_handoff`, axiom-free) — thirteen fires take the frame on
+`W r` to `r X X`: two C's mean CALL, and the register becomes the
+program (executing `S` halts, `sc_frame_shield`; executing the
+duplicator orbits forever, `sc_wrapper_isa`). Registers are data AND
+code — read by strips, called by handoff. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

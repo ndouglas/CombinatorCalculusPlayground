@@ -5857,3 +5857,17 @@ normal form iff k is even; odd k admits runs of unbounded length. The program's 
 complete hosting theorem: an infinite input family whose parity is decided by eternity.
 C9: OPEN → PROVED in one stage — the fastest conjecture close of the run, because the
 probe data (halt 11+2k, period 7+k) had already written the proof's outline.
+
+### Stage 193: the wrapper ISA — C reads, `C C` calls
+
+The beyond-parity probe found no mod-3 in the small-symbol envelope but exposed something
+better: the frame is an INTERPRETER whose instruction set is wrapper depth. C9 was the
+one-C instruction (READ: strips flip, parity sorts). The two-C instruction is CALL:
+`sc_frame_handoff` (axiom-free, every register) — thirteen fires take `scFrame (W r)` to
+`r X X`, `X = (W r) W`: control transfers to the register itself, applied to two copies
+of its own wrapped complex. Then the register is the program: executing the dead atom
+halts behind a 9-leaf normal form (`sc_frame_shield`, 15 fires); executing the duplicator
+orbits forever, period 9 (`sc_wrapper_isa`). Probe lesson #9 joined the ledger: an opaque
+placeholder register leaks the moment a fire lands inside it — the generic prefix ends
+there (the "24-fire universal shield" the raw probe suggested was really 13 generic fires
+plus 11 placeholder-specific ones; the corrected law is stronger AND true).
