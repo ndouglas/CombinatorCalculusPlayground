@@ -5980,3 +5980,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   reads it — concretely, seeds (CC X)(CC A₁)…(CC Aₖ)(frame-cells) where the popped
   A-chain rewrites the register arm; two words landing in different classes = hosting
   seed. (2) floor12 harvest if >57. (3) The alternator.
+
+## 2026-08-03 — Stage 191: unary parity, hosted
+
+- The probe's negative (no binary parity in-envelope) and positive (unary alternation)
+  arrived in the same table — the null-case discipline caught the O/H/O oscillation on
+  the all-ones subfamily that a parity-only detector would have reported as noise.
+- C9 registered: the frame parity law, the program's first hosting conjecture. The
+  arithmetic regularity (halt 11+2k, period 7+k) makes a parametric template proof look
+  feasible — the trace skeletons are visibly uniform in k.
+- Seventy-three autonomous stages (119–191). Ranking: (1) **C9 by template**: attempt
+  the parametric proof — define the k-indexed mid-trace states, prove the uniform fire
+  schedule by induction on k (two new fires per rung), and close both parities for all
+  k. This would be the run's crown. (2) floor12 harvest (best 69 pending census
+  completion). (3) The alternator.

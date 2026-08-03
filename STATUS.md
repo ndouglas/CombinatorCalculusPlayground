@@ -162,7 +162,14 @@ by `rfl`): register `C` halts behind a forced 11-fire universal wall,
 `C S` rides a period-8 orbit forever inside nine terms, `S S S` grows
 without bound on a period-7 front with exact size law 15 + 5n. HALT,
 ORBIT, EXPLODE — one 8-leaf head, futures selected by register shape
-(census: 1,168 / 336 / 1,661 over all registers ≤ 6 leaves). Behind the alternator stand tag/Minsky hosting,
+(census: 1,168 / 336 / 1,661 over all registers ≤ 6 leaves). And Stage
+191 delivered the program's first HOSTED PREDICATE (`sc_parity_hosted`):
+the unary numeral `C^k S` in the frame HALTS for even k (11 + 2k fires)
+and ORBITS FOREVER for odd k (period 7 + k) — parity decided by
+eternity, pinned for k = 0..7, probe-verified to k = 10, the all-k law
+registered as conjecture C9 (a parametric template proof looks
+feasible: the fire skeleton is uniform, +2 fires and +1 period per
+rung). Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

@@ -5822,3 +5822,22 @@ one bit but one of three FUTURES — and the interesting hosting question become
 word-processing machinery can steer a register INTO a chosen class before the frame reads
 it. Bits-are-sources says the register cannot be minted from thin air; the trichotomy
 census says the classes are dense enough that steering may not need minting.
+
+### Stage 191: unary parity, hosted — the first eight rungs
+
+The steering probe (96 word-sensitive families over ≤2-leaf symbols, none binary-parity)
+surfaced the unary law instead: in the fate frame, the numeral `C^k S` HALTS for even `k`
+— 11 + 2k fires to a rung-specific normal form — and ORBITS FOREVER for odd `k`, period
+7 + k. Verified through k = 10; pinned rung by rung for k = 0..7 (`sc_parity_hosted`).
+This is the program's first HOSTED PREDICATE: an input property (parity of a unary
+numeral) decided by reachability-observable behavior (eternity vs normal form). The
+generic halves are now toolkit: `sc_cycle_forever`/`sc_cycle_unbounded` turn any pinned
+cycle into an eternity certificate, axiom-free.
+
+**C9 (the frame parity law).** For every k: `scFrame (C^k S)` reduces to a normal form
+iff k is even; for odd k it admits runs of every length (period-(7+k) orbit). Status:
+OPEN — pinned for k ≤ 7, probe-verified to k = 10; the orbits are rung-specific (traces
+never merge), so a proof needs parametric trace templates (the fire skeleton is visibly
+uniform: +2 halt fires and +1 period per rung — a template proof looks feasible), not
+descent. The stakes: a proved C9 is an INFINITE hosted predicate family — reachability
+in {S,C} deciding parity for all inputs — the first true hosting theorem of the program.
