@@ -419,3 +419,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scModeB_pulse' does not depend on any axioms -/
 #guard_msgs in #print axioms scModeB_pulse
+
+/-- info: 'scForced_chained' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scForced_chained

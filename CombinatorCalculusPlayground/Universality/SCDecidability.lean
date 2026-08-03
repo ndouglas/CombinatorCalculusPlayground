@@ -1431,3 +1431,52 @@ theorem scModeB_pulse : RS.SC.StepsN 5 scModeB scModeB :=
   (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C)))))))
   (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .C .C)))))
   (@RS.StepsN.refl RS.SC scModeB))))))
+
+-- ## Stage 166: the consultation loop — twelve reads, register alive
+-- The reset exists, and it was never a separate mechanism: the machine `S C C` over a
+-- register and one `scDup` consults the register TWELVE TIMES in its first 51 fires (bit
+-- `C`; forced throughout — the certificates below replay the march in the kernel), with the
+-- register present at every point. The consultation event is detected structurally: a step
+-- rewriting `reg X` to `(S X) (bit X)` — the register firing, exposing its bit. Read in a
+-- loop: C8's reset requirement, observed and build-enforced. (Bit `C C` consults fourteen
+-- times in 132 leftmost steps — branching mid-run, so it is recorded by probe rather than
+-- kernel replay.)
+
+/-- One step is a consultation of the `S S bit` register: somewhere, `reg X ⟶ (S X) (bit X)`. -/
+def scIsConsult (bit : SCTerm) : SCTerm → SCTerm → Bool
+  | a, b =>
+    (match a, b with
+     | .app r x, _ =>
+         r == .app (.app .S .S) bit && b == .app (.app .S x) (.app bit x)
+     | _, _ => false)
+    ||
+    (match a, b with
+     | .app f x, .app f' x' =>
+         (x == x' && scIsConsult bit f f') || (f == f' && scIsConsult bit x x')
+     | _, _ => false)
+
+/-- Count consultations along a trace. -/
+def scCountConsults (bit : SCTerm) : List SCTerm → Nat
+  | a :: b :: rest =>
+      (if scIsConsult bit a b then 1 else 0) + scCountConsults bit (b :: rest)
+  | _ => 0
+
+/-- The consultation loop machine. -/
+def scConsultLoop (bit : SCTerm) : SCTerm :=
+  .app (.app (.app (.app .S .C) .C) (.app (.app .S .S) bit)) scDup
+
+-- The bit-C run: 52 forced fires, twelve consultations, register alive at the end.
+#guard (scForcedMarch (scConsultLoop .C) 52).length = 52
+#guard scCountConsults .C (scConsultLoop .C :: scForcedMarch (scConsultLoop .C) 52) = 12
+#guard scHasSub ((scForcedMarch (scConsultLoop .C) 52).getLastD (scConsultLoop .C))
+    (.app (.app .S .S) .C)
+
+/-- Forced chains are checked chains. -/
+theorem scForced_chained : ∀ (l : List SCTerm) (t : SCTerm),
+    SCForced t l → SCChained t l := by
+  intro l
+  induction l with
+  | nil => intro t _; exact trivial
+  | cons v rest ih =>
+      intro t hf
+      exact ⟨by rw [hf.1]; exact List.mem_cons_self, ih v hf.2⟩
