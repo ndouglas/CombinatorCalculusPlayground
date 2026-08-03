@@ -4160,3 +4160,30 @@ theorem sc_harvest_rebuild (W₂ W₁ : SCTerm) :
   RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) W₂))
   (RS.Steps.tail (SCStep.appL (SCStep.C_red .C W₂ (.app (.app .C .C) W₂)))
   (@RS.Steps.refl RS.SC _))
+
+-- ## Stage 154: the growth step — one cell minted, everything survives
+-- The marker quine exists at length one. `scQuine = S (C (C C)) (C C)` — scDup's asymmetric
+-- cousin — as marker AND arms: four fires take the one-cell configuration to the TWO-cell
+-- configuration with the marker and both arms restored verbatim. The mechanism: the cell
+-- pops (two C-fires), promoting the marker with two arm copies; the marker's S-fire
+-- DUPLICATES an arm while nesting the other copy into the cell prefab `C C` — minting the
+-- new cell — and one C-fire re-erects. Growth with full survival, the spiral's base step.
+-- (Iteration currently breaks: the two-cell configuration's traversal engages the outer
+-- cell first and derails — searches: exact-growth markers are zero at ≤14 leaves for plain
+-- and S-q-q families with scDup arms; this hit required co-designing marker = arms. The
+-- spiral's induction step is the remaining problem, inheriting C8's mantle.)
+
+/-- The growth quine: scDup's asymmetric cousin. -/
+def scQuine : SCTerm := .app (.app .S (.app .C (.app .C .C))) (.app .C .C)
+
+/-- **The growth step**: one-cell configuration to two-cell configuration, four fires,
+marker and arms surviving verbatim. -/
+theorem sc_growth_step :
+    RS.SC.Steps
+      (.app (.app (.app (.app .C .C) scQuine) scQuine) scQuine)
+      (.app (.app (.app (.app .C .C) (.app (.app .C .C) scQuine)) scQuine) scQuine) :=
+  RS.Steps.tail (SCStep.appL (SCStep.C_red .C scQuine scQuine))
+  (RS.Steps.tail (SCStep.C_red scQuine scQuine scQuine)
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C (.app .C .C)) (.app .C .C) scQuine))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C .C) scQuine (.app (.app .C .C) scQuine)))
+  (@RS.Steps.refl RS.SC _))))

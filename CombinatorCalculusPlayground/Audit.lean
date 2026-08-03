@@ -389,3 +389,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_harvest_rebuild' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_harvest_rebuild
+
+/-- info: 'sc_growth_step' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_growth_step
