@@ -972,3 +972,111 @@ theorem scReachCapped_excludes {c : Nat} {t u : SCTerm} {n : Nat}
 fixpoint and checking membership. -/
 theorem scMt_no_capped_path : ¬ RS.StepsLe RS.SC SCTerm.leafCount 6 scMtT scMtU :=
   scReachCapped_excludes (n := 0) (by decide) (by decide)
+
+-- ## Stage 139: the converse — decidability implies a computable bound
+-- The frontier becomes an EQUIVALENCE. Stage 134 proved bound ⟹ decidable; here the converse:
+-- from a decision procedure, a bounding function is assembled — decide each same-size pair,
+-- and for the reachable ones search upward for a cap that admits a bounded path (the search
+-- terminates because every path is bounded by something, Stage 132's `exists_le`; the searcher
+-- is a hand-rolled choice-free `find` — core has no `Nat.find`, and `Acc.rec` eliminates into
+-- data without choice). So: `{S,C}` reachability is decidable IFF a computable intermediate
+-- bound exists. The open frontier question is now a single well-posed sentence.
+
+/-- The ascent relation for least-witness search. -/
+private def scLbp (p : Nat → Prop) (m n : Nat) : Prop :=
+  m = n + 1 ∧ ∀ k, k ≤ n → ¬ p k
+
+private theorem scLbp_acc (p : Nat → Prop) (H : ∃ n, p n) : ∀ m, Acc (scLbp p) m := by
+  obtain ⟨n, hn⟩ := H
+  have key : ∀ j m, n ≤ m + j → Acc (scLbp p) m := by
+    intro j
+    induction j with
+    | zero =>
+        intro m hm
+        refine Acc.intro m ?_
+        intro y hy
+        exact absurd hn (hy.2 n (by omega))
+    | succ j ih =>
+        intro m _
+        refine Acc.intro m ?_
+        intro y hy
+        by_cases hnm : n ≤ m
+        · exact absurd hn (hy.2 n hnm)
+        · rw [hy.1]
+          exact ih (m + 1) (by omega)
+  intro m
+  by_cases h : n ≤ m
+  · exact key 0 m (by omega)
+  · exact key (n - m) m (by omega)
+
+/-- Choice-free witness search for decidable predicates: `Acc.rec` eliminates into data. -/
+private def scFind (p : Nat → Prop) [DecidablePred p] (H : ∃ n, p n) : {n // p n} :=
+  (WellFounded.fix (C := fun m => (∀ k, k < m → ¬ p k) → {n // p n})
+    ⟨scLbp_acc p H⟩
+    (fun m ih hbelow =>
+      if h : p m then ⟨m, h⟩
+      else
+        have hall : ∀ k, k ≤ m → ¬ p k := by
+          intro k hk
+          by_cases h' : k < m
+          · exact hbelow k h'
+          · have hkm : k = m := by omega
+            rw [hkm]
+            exact h
+        ih (m + 1) ⟨rfl, hall⟩ (fun k hk => hall k (by omega)))
+    0) (fun k hk => absurd hk (Nat.not_lt_zero k))
+
+instance scStepsLeDecPred (t u : SCTerm) :
+    DecidablePred (fun c => RS.StepsLe RS.SC SCTerm.leafCount c t u) := fun c =>
+  if h : t.leafCount ≤ c then scStepsLe_decidable c t u h
+  else isFalse (fun hle => h (RS.StepsLe.head_le hle))
+
+/-- Some cap admitting a bounded path, computed. -/
+private def scAnyCap (t u : SCTerm)
+    (H : ∃ c, RS.StepsLe RS.SC SCTerm.leafCount c t u) :
+    {c // RS.StepsLe RS.SC SCTerm.leafCount c t u} :=
+  scFind _ H
+
+private theorem le_foldr_max : ∀ (l : List Nat) {x : Nat}, x ∈ l → x ≤ l.foldr max 0 := by
+  intro l
+  induction l with
+  | nil => intro x hx; exact absurd hx List.not_mem_nil
+  | cons a l ih =>
+      intro x hx
+      show x ≤ max a (l.foldr max 0)
+      rcases List.mem_cons.mp hx with rfl | hx
+      · exact Nat.le_max_left _ _
+      · exact Nat.le_trans (ih hx) (Nat.le_max_right _ _)
+
+/-- The bounding function assembled from a decision procedure. -/
+def scBoundFn (hdec : ∀ t u : SCTerm, Decidable (RS.SC.Steps t u)) (n m : Nat) : Nat :=
+  ((scEnum n n).flatMap fun t => (scEnum m m).flatMap fun u =>
+    match hdec t u with
+    | isTrue h => [(scAnyCap t u (RS.Steps.exists_le _ h)).1]
+    | isFalse _ => []).foldr max 0
+
+/-- **The converse backbone**: decidability yields a computable intermediate bound. -/
+theorem sc_bound_of_decidable (hdec : ∀ t u : SCTerm, Decidable (RS.SC.Steps t u)) :
+    ∃ f : Nat → Nat → Nat, ∀ t u : SCTerm, RS.SC.Steps t u →
+      RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u := by
+  refine ⟨scBoundFn hdec, ?_⟩
+  intro t u h
+  refine RS.StepsLe.weaken ?_ (scAnyCap t u (RS.Steps.exists_le _ h)).2
+  refine le_foldr_max _ ?_
+  refine List.mem_flatMap.mpr ⟨t, scEnum_complete t t.leafCount (Nat.le_refl _), ?_⟩
+  refine List.mem_flatMap.mpr ⟨u, scEnum_complete u u.leafCount (Nat.le_refl _), ?_⟩
+  cases hdec t u with
+  | isFalse h' => exact absurd h h'
+  | isTrue h' => exact List.mem_cons_self
+
+/-- **THE FRONTIER, WELL-POSED**: `{S,C}` reachability is decidable if and only if some
+computable function of the endpoint sizes bounds the intermediates of witnessing paths. -/
+theorem sc_decidable_iff_bound :
+    Nonempty (∀ t u : SCTerm, Decidable (RS.SC.Steps t u))
+    ↔ ∃ f : Nat → Nat → Nat, ∀ t u : SCTerm, RS.SC.Steps t u →
+        RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u := by
+  constructor
+  · rintro ⟨hdec⟩
+    exact sc_bound_of_decidable hdec
+  · rintro ⟨f, hf⟩
+    exact ⟨sc_decidable_of_bound f hf⟩

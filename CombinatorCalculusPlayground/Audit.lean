@@ -316,3 +316,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scMt_no_capped_path' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scMt_no_capped_path
+
+/-- info: 'sc_bound_of_decidable' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_bound_of_decidable
+
+/-- info: 'sc_decidable_iff_bound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_decidable_iff_bound
