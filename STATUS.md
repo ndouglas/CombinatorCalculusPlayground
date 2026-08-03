@@ -634,8 +634,11 @@ GENERIC (Stage 142, `RS.SuccKit.decidable_iff_bound`, pinned): any rung
 with a verified successor function and bounded enumeration gets it —
 instantiated at RUNG 0 (`sk_decidable_iff_bound`, pinned): SK faces the
 IDENTICAL question with the opposite expected answer (its reachability is
-externally undecidable, so no computable bound exists there). The
-rung-0/rung-3 twin calibrates the frontier exactly. THE GLIDER
+externally undecidable, so no computable bound exists there). Stage 143
+equipped rungs 1 and 2 as well (`si_decidable_iff_bound`,
+`sb_decidable_iff_bound`, pinned): the relaxation ladder — built to
+compare acyclicity — now compares the reachability frontier uniformly at
+all four rungs with one generic instrument. THE GLIDER
 (Stage 135, `sc_glider`, pinned; pump axiom-free): an eight-leaf term whose
 reachable set is infinite — `p p p` with `p = S (C (S S))` reproduces
 itself under a wrapper every three fires, growing five leaves per loop,

@@ -5094,3 +5094,16 @@ mountains): the STEEP MOUNTAIN — nine leaves, thirteen forced steps to a 25-le
 target — certified as `sc_bound_floor_25` (pinned). The floor now reads `f(6,6) ≥ 7`,
 `f(8,32) ≥ 44`, `f(9,10) ≥ 25`, and the n=9 data shows 200-step still-forced marches at eight
 leaves beyond the glider — forced computation is generic at this scale, not exceptional.
+
+### Stage 143: the ladder-wide equivalence
+
+Rungs 1 and 2 equipped (`siKit`, `sbKit`: verified successors and budget enumerators, mirrored
+from the `{S,C}` originals in one sitting), so the decidable⟺bounded equivalence holds AT
+EVERY RUNG: `sk_decidable_iff_bound`, `si_decidable_iff_bound`, `sb_decidable_iff_bound`,
+`sc_decidable_iff_bound` (all pinned). One well-posed question, four calibrated instances:
+rung 0 externally undecidable (hence unboundable), rungs 1–3 open, rung 3 carrying the pinned
+floors. The relaxation ladder — built to compare ACYCLICITY across rungs — now also compares
+the reachability frontier across rungs with a single generic instrument. Lean note for the
+catalogue: two-discriminant matches with MIXED-DEPTH patterns lose pattern variables in
+compilation (`Unknown identifier` at the arm body); `split at` on the unfolded definition is
+the robust alternative.

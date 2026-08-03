@@ -5267,3 +5267,23 @@ what automation could and couldn't do. This file is a first-class deliverable
   impossibility. (2) SB/SI kits for the engine (cheap breadth: the equivalence at rungs 1-2
   if successor functions exist or are quick). (3) March-length asymptotics (the 200-step
   still-forced marches at n=8-9 want a "second glider" check).
+
+## 2026-08-02 — Stage 143: four rungs, one question
+
+- Breadth day: the generic engine's marginal cost per rung is now ~150 lines of mechanical
+  mirroring (successor + enumerator + kit), one build iteration each. The ladder that
+  Stage 96 completed for acyclicity is now uniformly equipped for the reachability frontier
+  — every rung faces the same equivalence, and the cross-rung comparison (undecidable at 0,
+  floored-open at 3) is exactly the shape Goal 2's taxonomy wanted.
+- The slow burner (n=8's S (S S S) C (S C C)) stayed forced past 3000 steps with APERIODIC
+  growth — unlike the glider, no delta period up to 40. {S,C} has at least two qualitatively
+  different deterministic divergers at eight leaves; the aperiodic one resists the wrapper
+  template and is recorded as an open specimen.
+- Twenty-five autonomous stages (119–143). The board: the frontier equivalence (4 rungs,
+  floors at rung 3), the fold/control unknown, two certified divergers, one aperiodic
+  specimen.
+- Ranking: (1) **the fold/control mechanism** — now unambiguously the run's remaining
+  structural question; paper-first with fresh eyes, budget two stages, deliverable either a
+  full-tag-hosting architecture or a sharpened impossibility conjecture with census support.
+  (2) The aperiodic diverger (what grows without period? possibly a counter-like structure —
+  worth an anatomy probe). (3) Floor asymptotics at n=10 (sampled).
