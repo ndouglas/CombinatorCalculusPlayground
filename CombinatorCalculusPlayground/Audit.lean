@@ -512,3 +512,18 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scFateLap_chained' depends on axioms: [propext] -/
 #guard_msgs in #print axioms scFateLap_chained
+
+/-- info: 'scRanked_bound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scRanked_bound
+
+/-- info: 'scFateSpace_ranked' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scFateSpace_ranked
+
+/-- info: 'sc_fate_all_bounded' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_fate_all_bounded
+
+/-- info: 'sc_fate_unique_exit' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_fate_unique_exit
+
+/-- info: 'sc_fate_universal' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_fate_universal

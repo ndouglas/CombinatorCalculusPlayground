@@ -2117,3 +2117,322 @@ theorem scFateLap_chained : SCChained scFateOrb scFateLap := by decide
 -- One consultation per lap, and the lap closes.
 #guard scCountConsults .C (scFateOrb :: scFateLap) = 1
 #guard scFateLap.getLastD scFateOrb == scFateOrb
+
+-- ## Stage 183: universal fate — every schedule halts, and 36 is the wall
+-- Stage 182 pinned that a halt EXISTS for the bit-`C C` fate machine; this stage pins that
+-- nothing else can happen. The certificate is a RANKED CLOSURE: the full reachable state
+-- space (231 terms, none above 29 leaves), grouped by height so that every successor of
+-- every member sits in a strictly lower group — all kernel-checked. The generic lemma
+-- `scRanked_bound` (new toolkit piece, reusable) turns any such certificate into a uniform
+-- bound: no reduction from the seed outlives its rank. Here the seed's rank is 36 — and the
+-- leftmost path REACHES 36 (`scFate_halts`), so the wall is sharp. Together with the
+-- unique-exit theorem (every stuck reachable term IS `scFateNf`, by decide over the space),
+-- the fate machine's halt half is now UNIVERSAL: every maximal reduction, under every
+-- schedule, ends at `scFateNf` within exactly the leftmost budget. The program's first
+-- pinned termination-of-all-paths for a specific term of a non-normalizing calculus.
+
+/-- Rank of a term in a grouped space: index of the first group containing it. -/
+def scRankIn (G : List (List SCTerm)) (x : SCTerm) : Nat :=
+  G.findIdx (·.contains x)
+
+/-- **The ranked-closure lemma**: if a list is closed under successors and every step
+strictly descends a rank, no reduction from a member outlives its rank. -/
+theorem scRanked_bound {L : List SCTerm} {rank : SCTerm → Nat}
+    (hcl : ∀ x ∈ L, ∀ y ∈ scSucc x, y ∈ L ∧ rank y < rank x)
+    {n : Nat} {t u : SCTerm} (h : RS.SC.StepsN n t u) :
+    t ∈ L → u ∈ L ∧ n + rank u ≤ rank t := by
+  refine h.rec (motive := fun (n : Nat) (a b : SCTerm) _ =>
+      a ∈ L → b ∈ L ∧ n + rank b ≤ rank a) ?_ ?_
+  · intro a ha
+    exact ⟨ha, by omega⟩
+  · intro m a b c s rest ih ha
+    have hb := hcl _ ha _ (scSucc_complete s)
+    have hu := ih hb.1
+    exact ⟨hu.1, by have h1 := hb.2; have h2 := hu.2; omega⟩
+
+/-- The bit-`C C` fate machine's complete state space, grouped by height (successors
+always in strictly lower groups). 231 states, heights 0–36. -/
+def scFateSpace : List (List SCTerm) :=
+  [[(.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app .C (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app .C (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app (.app .C (.app (.app .C (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .C (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C (.app (.app .C (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C (.app (.app .C (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .C (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C (.app (.app .C (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .C (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .C (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .C .C) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app .C (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app .C (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .C .C) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))],
+   [(.app (.app (.app .C (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app .C (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app scDup (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))))],
+   [(.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))),
+    (.app (.app (.app .S scDup) (.app .C .C)) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))))],
+   [(.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C))))),
+    (.app (.app scDup (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))),
+    (.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))],
+   [(.app (.app (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))),
+    (.app (.app (.app .C (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))),
+    (.app (.app scDup (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app .S (.app .C .C)) (.app (.app .C .C) (.app .C .C)))))],
+   [(.app (.app (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))],
+   [(.app (.app scDup (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))) (.app (.app .C .C) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C))))],
+   [(.app (.app (.app .S scDup) (.app .C .C)) (.app (.app (.app .S .S) (.app .C .C)) (.app .C .C)))],
+   [(.app (.app (.app .S (.app .S scDup)) (.app (.app .S .S) (.app .C .C))) (.app .C .C))]]
+
+
+/-- Flattened for membership. -/
+def scFateStates : List SCTerm := scFateSpace.flatten
+
+section
+set_option maxRecDepth 8000
+set_option maxHeartbeats 4000000
+
+#guard scFateStates.length = 231
+#guard scRankIn scFateSpace (scFate (.app .C .C)) = 36
+#guard scRankIn scFateSpace scFateNf = 0
+
+/-- The certificate: closed under successors, rank strictly descends. -/
+theorem scFateSpace_ranked : ∀ x ∈ scFateStates, ∀ y ∈ scSucc x,
+    y ∈ scFateStates ∧ scRankIn scFateSpace y < scRankIn scFateSpace x := by decide
+
+theorem scFateSpace_seed : scFate (.app .C .C) ∈ scFateStates := by decide
+
+/-- Within the space, the only stuck term is the normal form. -/
+theorem scFateSpace_nf : ∀ x ∈ scFateStates, scSucc x = [] → x = scFateNf := by decide
+
+end
+
+/-- **The wall**: NO reduction from the bit-`C C` fate machine exceeds 36 steps — every
+schedule. And `scFate_halts` reaches 36, so the wall is sharp. -/
+theorem sc_fate_all_bounded : ∀ (n : Nat) (u : SCTerm),
+    RS.SC.StepsN n (scFate (.app .C .C)) u → n ≤ 36 := by
+  intro n u h
+  have hb := (scRanked_bound scFateSpace_ranked h scFateSpace_seed).2
+  have hk : scRankIn scFateSpace (scFate (.app .C .C)) = 36 := rfl
+  omega
+
+/-- **Unique exit**: every stuck term reachable from the bit-`C C` seed IS `scFateNf`. -/
+theorem sc_fate_unique_exit : ∀ u, RS.SC.Steps (scFate (.app .C .C)) u →
+    (∀ v, ¬ RS.SC.step u v) → u = scFateNf := by
+  intro u hs hnf
+  obtain ⟨n, hn⟩ := RS.Steps.toStepsN hs
+  have hu := (scRanked_bound scFateSpace_ranked hn scFateSpace_seed).1
+  have hempty : scSucc u = [] := by
+    cases hsu : scSucc u with
+    | nil => rfl
+    | cons a l => exact absurd (scSucc_sound (hsu ▸ List.mem_cons_self)) (hnf a)
+  exact scFateSpace_nf u hu hempty
+
+/-- **Universal fate**: with bit `C C`, every reduction is bounded by 36 and every dead
+end is the normal form — the machine halts at `scFateNf` under every schedule. With bit
+`C` (Stage 182) runs of every length exist. The register decides, universally. -/
+theorem sc_fate_universal :
+    (∀ (n : Nat) (u : SCTerm), RS.SC.StepsN n (scFate (.app .C .C)) u → n ≤ 36) ∧
+    (∀ u, RS.SC.Steps (scFate (.app .C .C)) u → (∀ v, ¬ RS.SC.step u v) → u = scFateNf) :=
+  ⟨sc_fate_all_bounded, sc_fate_unique_exit⟩
