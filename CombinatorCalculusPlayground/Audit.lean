@@ -401,3 +401,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_pulse14' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_pulse14
+
+/-- info: 'sc_read_bitC' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_read_bitC
+
+/-- info: 'sc_read_bitB' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_read_bitB

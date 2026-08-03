@@ -4265,3 +4265,39 @@ theorem sc_growth_to_pulse :
     RS.SC.Steps
       (.app (.app (.app (.app .C .C) scQuine) scQuine) scQuine) scPulse :=
   sc_growth_step
+
+-- ## Stage 164: the register demo — read with effect, register intact
+-- The nondestructive-read campaign's first machine-checked demo. One template,
+-- `reg reg S (C C)` with register `reg = S bit`: the BIT alone selects the outcome. With
+-- bit `C` the run normalizes in two fires to `S (C C) (S C S)`; with bit `C C`, eight fires
+-- to `C (S (C C)) (C C)`. The normal forms differ in their register-FREE parts (checked
+-- against the null case — a bit-ignoring machine's outputs would differ only AT the
+-- register), and each normal form still CONTAINS its register — `S C` inside `S C S`;
+-- `S (C C)` as a standing member — application-ready for the next consultation. Read,
+-- diverge, survive: the re-consultable bit exists at four leaves of machinery.
+
+/-- The register: the bit under an inert `S` guard. -/
+def scReg (bit : SCTerm) : SCTerm := .app .S bit
+
+/-- Bit `C`: two fires to its normal form. -/
+theorem sc_read_bitC :
+    RS.SC.Steps (.app (.app (.app (.app .S .C) (.app .S .C)) .S) (.app .C .C))
+      (.app (.app .S (.app .C .C)) (.app (.app .S .C) .S)) :=
+  RS.Steps.tail (SCStep.appL (SCStep.S_red .C (.app .S .C) .S))
+  (RS.Steps.tail (SCStep.C_red .S (.app (.app .S .C) .S) (.app .C .C))
+  (@RS.Steps.refl RS.SC _))
+
+/-- Bit `C C`: eight fires to a DIFFERENT normal form. -/
+theorem sc_read_bitB :
+    RS.SC.Steps
+      (.app (.app (.app (.app .S (.app .C .C)) (.app .S (.app .C .C))) .S) (.app .C .C))
+      (.app (.app .C (.app .S (.app .C .C))) (.app .C .C)) :=
+  RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .S (.app .C .C)) .S))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C .S (.app (.app .S (.app .C .C)) .S)))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .S (.app .C .C)) .S) .S (.app .C .C))
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C .C) .S (.app .C .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C (.app .C .C) (.app .S (.app .C .C))))
+  (RS.Steps.tail (SCStep.C_red (.app .S (.app .C .C)) (.app .C .C) .S)
+  (RS.Steps.tail (SCStep.S_red (.app .C .C) .S (.app .C .C))
+  (RS.Steps.tail (SCStep.C_red .C (.app .C .C) (.app .S (.app .C .C)))
+  (@RS.Steps.refl RS.SC _))))))))

@@ -1329,3 +1329,10 @@ theorem sc_bound_floor_25 (f : Nat → Nat → Nat)
     have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 9 10) scMt3T scMt3U :=
       hf scMt3T scMt3U scMt3_steps
     exact scMt3_no_capped_path (RS.StepsLe.weaken (by omega) hs)
+
+-- Stage 164 certificates: the register demo's outcomes are normal, distinct, and each
+-- still contains its register (see RungTermination's Stage 164 block).
+#guard scSucc (.app (.app .S (.app .C .C)) (.app (.app .S .C) .S)) = []
+#guard scSucc (.app (.app .C (.app .S (.app .C .C))) (.app .C .C)) = []
+#guard ((.app (.app .S (.app .C .C)) (.app (.app .S .C) .S) : SCTerm)
+    ≠ (.app (.app .C (.app .S (.app .C .C))) (.app .C .C)))
