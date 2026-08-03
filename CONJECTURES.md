@@ -5684,3 +5684,19 @@ leaves, no computable bound survives, and {S,C} reachability is undecidable by
 `sc_decidable_iff_bound`. (Technical first: the 300-step kernel march needed
 `maxRecDepth 8000`, scoped in a section — the toolkit's first collision with an
 elaborator default, resolved without weakening anything.)
+
+### Stage 182: the fate machine — the bit decides eternity
+
+The bounded reader exists, and it settled a bigger question on arrival. `scFate bit`
+(12 leaves) holds an `S S bit` register over a duplicator. With bit `C`: seven fires onto
+a period-7 cycle, sizes 15–20, that CONSULTS its register once per lap forever — the
+consultation consumes a register copy and the duplicating fire re-mints it, closing the
+regeneration loop that separated the parking orbit (never reads) from the persistent
+reader (never stops growing). `scFate_runs` pins runs of EVERY length. With bit `C C`:
+the SAME machine reduces in 36 fires to a kernel-checked normal form. `sc_fate` holds
+both halves in one statement: one term, one register — spin or stop. The register is no
+longer a passive payload OR a mere branch selector: its content decides whether the
+machine's future is finite. Probe data (recorded, not pinned): the bit-`C C` reachable
+state space is FINITE — 231 states under every schedule — with the NF its unique sink,
+so the halt is schedule-independent, not just leftmost. C8's composition ladder now has
+READ → LATCH → WRITE → PERSIST (two ways) → FATE.

@@ -114,9 +114,16 @@ kernel-checked — whose cargo slot is pure congruence, so any state
 rides it verbatim forever at constant size (`sc_park_forever`), and a
 9-leaf reader head parks an `S S bit` register on it in sixteen fires
 with exactly one consultation, storing THE BIT IN THE PHASE
-(`scPark_entry_C/CC`: phase 0 vs phase 4, equal wall-clock). Behind
-the alternator stand tag/Minsky hosting, undecidability, and the
-frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
+(`scPark_entry_C/CC`: phase 0 vs phase 4, equal wall-clock). Stage 182
+closed the gap between the two persistence solutions with THE FATE
+MACHINE (`scFate bit`, 12 leaves): bit `C` drops onto a period-7
+bounded cycle that CONSULTS its register once per lap forever (the
+duplicating fire re-mints the consumed register copy — regeneration,
+pinned; runs of every length via `scFate_runs`), while bit `C C` sends
+the SAME machine to a kernel-checked normal form in 36 fires
+(`sc_fate`): the register's content decides whether the machine's
+future is finite. Behind the alternator stand tag/Minsky hosting,
+undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a

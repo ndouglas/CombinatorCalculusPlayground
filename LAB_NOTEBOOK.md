@@ -5848,3 +5848,18 @@ what automation could and couldn't do. This file is a first-class deliverable
   needs register regeneration inside a cycle. (2) **the growth law**: n=12 census sample
   (exhaustive is 100× n=10) to test excess-tripling — the undecidability scaling
   hypothesis now has enough rungs to fit. (3) The alternator's fueled reader.
+
+## 2026-08-03 — Stage 182: the fate machine
+
+- The bounded-reader probe (104 consulting cycles in 27,663 seeds; detector sanity-checked
+  against the Stage 180 entry before the sweep) delivered more than asked: the smallest
+  clean hit branches on its bit between ETERNITY and HALT. Registers in this program have
+  been read, latched, written, parked — this one is a fuse.
+- Sixty-four autonomous stages (119–182). Ranking: (1) **schedule-independent fate**: the
+  bit-CC halt is universal (231-state finite space, probe); pin it — a finite-state-space
+  certificate (saturation with NO cap-exclusions + acyclicity) would upgrade sc_fate's
+  halt half from "a normal form is reachable" to "every maximal reduction halts", the
+  program's first pinned termination-of-all-paths for a non-normalizing-calculus term.
+  (2) **the two-bit fate**: compose fate machines — do two registers give four fates
+  (spin/spin, spin/stop, stop/spin, stop/stop) under congruence? Cheap if yes. (3) The
+  n=12 growth-law sample.
