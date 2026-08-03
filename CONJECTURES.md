@@ -5035,3 +5035,18 @@ fixpoint certificates); the fold/control question stands as the identified missi
 both the hosting and undecidability sides, with fueled machines (Stage 137) as its newest
 evidence. Rule added: REGISTRY HEADERS ARE PART OF EVERY REVIEW — a review that only reads
 STATUS.md can miss a stale conjecture header, as this one did for ninety-five stages.
+
+### Stage 139: the frontier, well-posed — decidable ⟺ bounded
+
+`sc_decidable_iff_bound` (pinned): `{S,C}` reachability is decidable IF AND ONLY IF some
+computable function of the endpoint sizes bounds the intermediates of witnessing paths. The
+forward direction is Stage 134's backbone; the converse (`sc_bound_of_decidable`, pinned)
+assembles a bounding function from any decision procedure — decide each same-size pair over
+the verified enumerator, then search upward for an admitting cap (terminating by `exists_le`;
+the searcher is a hand-rolled choice-free find, since core has no `Nat.find` — `Acc.rec`
+eliminates into data without choice, and proof irrelevance makes the assembled cap independent
+of the reachability proof). The program's one open goal-level question is now one equivalence.
+Everything known presses on it from both sides: mountains force the bound above `max` and
+probe-floor `f(8,8) ≥ 31`; the glider shows infinite reachable sets; the fueled machines show
+controlled work; the hosting stack is raw material for a reduction. Either resolution closes
+rung 3.

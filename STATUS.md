@@ -616,7 +616,13 @@ CAPPED reachability is decidable unconditionally (`scStepsLe_decidable`).
 The rung-3 frontier is now one sharp alternative: a computable bound
 (decidable, negative Simulation half closes) or mountains beyond every
 bound (undecidable — and the hosting thread is the reduction's raw
-material). The program's two research threads have converged. THE GLIDER
+material). The program's two research threads have converged. Stage 139
+made the alternative an EQUIVALENCE (`sc_decidable_iff_bound`, pinned):
+`{S,C}` reachability is decidable IF AND ONLY IF a computable function of
+the endpoint sizes bounds witnessing paths' intermediates — the converse
+assembles the bound from any decision procedure via a hand-rolled
+choice-free find (core has no `Nat.find`; `Acc.rec` eliminates into data).
+The one open goal-level question is now a single well-posed sentence. THE GLIDER
 (Stage 135, `sc_glider`, pinned; pump axiom-free): an eight-leaf term whose
 reachable set is infinite — `p p p` with `p = S (C (S S))` reproduces
 itself under a wrapper every three fires, growing five leaves per loop,

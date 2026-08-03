@@ -5198,3 +5198,19 @@ what automation could and couldn't do. This file is a first-class deliverable
   whether fuel-exhaustion is detectable in the normal form; success reframes the fold
   problem as fuel accounting. (2) Bounded intermediates via mountain growth-rate estimation
   at scale. (3) The genericization debt (StepsLe/engine), when a second consumer appears.
+
+## 2026-08-02 — Stage 139: the equivalence
+
+- The converse cost one genuinely new artifact: a choice-free `Nat.find` (core has none).
+  The ascent-relation accessibility argument is the same bounded-descent shape the program
+  has used since `no_cycle_of_descent` — by now it writes itself; `Acc.rec` into data is
+  what makes it kernel-legal without choice, and proof irrelevance quietly carries the
+  "which proof found this cap" independence. First-build green, fifth stage running.
+- The frontier is now a sentence: decidable ⟺ computably bounded. Twenty-one autonomous
+  stages (119–139). The board: one open equivalence (rung-3 decidability), one missing
+  mechanism (fold/control), a clean registry, and instruments on every side of both.
+- Ranking: (1) **push a side of the equivalence**: EITHER estimate mountain growth at scale
+  (if the floor curve looks super-computable, invest in the undecidability route via the
+  hosting gadgets) OR attempt a tag-run-length reduction sketch on paper first
+  (verify-before-formalize). (2) The fold/control mechanism, now the shared bottleneck.
+  (3) Genericization debt, on demand.
