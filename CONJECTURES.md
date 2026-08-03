@@ -5479,3 +5479,18 @@ mechanism stands between the program and a hosted unbounded machine. The remaini
 that composition itself hides a conservation-law obstruction; nothing found so far suggests
 one, and the latch (which already composes stash + consult + diverge + survive across
 sixteen fires) is evidence against.
+
+### Stage 168: the decrement's two faces — and the composition's true name
+
+The bare-interface decrement-write is census-dead (2,200 machines ≤ 12 leaves, zero): the
+consultation chain exposes the decremented tower at HEAD position, the minting write needs it
+at a MEMBER slot, and heads become members only by pre-duplication — the promotion asymmetry,
+now blocking from the inside of the composition. The reframe that survives: `{S,C}` ALREADY
+implements decrement-and-branch-on-zero, pinned since Stage 152 — as WORD-LENGTH counters:
+pop is decrement (`scRun_step`), the end-marker's promotion is the zero-test (`sc_words_decay`
+— the attractor entry IS the branch), and the growth step is increment. One register with
+dec/test/inc: done. The composition's true name is therefore TWO INDEPENDENT REGISTERS UNDER
+ONE DRIVER — and the lockstep law (Stage 162) is exactly the statement that this does not
+happen spontaneously. The Minsky reduction runs through designing what no ≤9-leaf machine
+exhibits: two clocks. All four control primitives are available as parts; the two-clock
+problem is the composition campaign's opening question, and it deserves fresh eyes.

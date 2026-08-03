@@ -5668,3 +5668,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   composition**: a decrement-and-branch demo (looped-read a tower register, write the
   successor, diverge on empty) — the Minsky step in miniature; probe with the march+detector
   instruments. (2) Harvest deferred censuses. (3) Review at 170.
+
+## 2026-08-03 — Stage 168: two faces, one register
+
+- The probe's zero plus five minutes of shape analysis relocated the composition problem
+  cleanly: not decrement (word-pop does it), not zero-test (marker promotion does it), not
+  increment (growth step) — but running TWO of these registers independently. The lockstep
+  law was never a curiosity; it was the composition's boss fight, named six stages early.
+- Fifty autonomous stages (119–168). Ranking: (1) **the two-clock campaign** (fresh
+  sitting): interleave two word-registers under one driver — the four primitives as parts,
+  the lockstep law as the wall, phase-offset pulses as the first idea. (2) Harvest the n=10
+  floor census (still grinding). (3) The Stage-170 review.
