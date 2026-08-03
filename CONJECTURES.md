@@ -6128,3 +6128,19 @@ conjecture proper: the working hypothesis, given the wall pattern of this calcul
 (no-pair, no-erasure, bits-are-sources, forward-only), is that C10 is FALSE — {S,C}
 conserves its way out of live self-modification — and its refutation will need the
 program's subtlest invariant yet.
+
+### Stage 211: the spine dichotomy — every step is a mutation or a call
+
+The invariant program opens with the theorem the five walls were pointing at.
+`sc_spine_dichotomy` ([propext] only): view any term as head-atom plus spine argument
+list; then every step either MUTATES — head and list survive, exactly one argument steps
+in place — or CALLS — the head atom is consumed and the FIRST argument becomes the
+program (its head is the new head, its arguments prepend, the fire's products join the
+list; both S- and C-call frames pinned exactly). Corollary `sc_call_source`: the
+machine's next program is always its first argument. The reading: {S,C} reduction is a
+call-stack discipline where the leftmost branch is the return stack. Every wall now has
+one explanation — pairing, erasure, bit-production, backward writes, and self-increment
+all require something to arrive at head position that was never placed in the a₁-chain.
+C10 in this language: can a machine place an INCREMENTED COPY of its own address into
+its own return stack? The dichotomy makes the question precise enough to attack by
+induction over call sequences — the next theorem of the program.

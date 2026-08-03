@@ -6239,3 +6239,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   up to minting) would be the program's deepest structural theorem. (2) floor14/n=16
   harvests as they land. (3) Rest the ladder; the hosting stack and the two frontier
   questions are the program.
+
+## 2026-08-04 — Stage 211: the spine dichotomy
+
+- The unifying structural theorem, sixty lines, first-try green after one implicit-
+  binder fix. Mutation-or-call is the calculus's operational semantics made exact; the
+  return-stack reading turns C10 from a search problem into an induction target.
+- Ninety-three autonomous stages (119–211). Ranking: (1) **the return-stack theorem**:
+  iterate the dichotomy over Steps — characterize head-restoring reductions (the head
+  at time n is a spine-descendant of the a₁-chain at time 0); a pinned characterization
+  is the platform for C10's resolution either way. (2) floor14/n=16 harvests as they
+  land. (3) The multi-period odometer, now expressible in call-sequence language.
