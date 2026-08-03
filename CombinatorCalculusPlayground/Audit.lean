@@ -452,3 +452,30 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_pulse_parametric' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_pulse_parametric
+
+/-- info: 'scOrb_forced' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scOrb_forced
+
+/-- info: 'scOrb_cycle' does not depend on any axioms -/
+#guard_msgs in #print axioms scOrb_cycle
+
+/-- info: 'sc_park' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_park
+
+/-- info: 'sc_park_forever' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_park_forever
+
+/-- info: 'scPark_entry_C' does not depend on any axioms -/
+#guard_msgs in #print axioms scPark_entry_C
+
+/-- info: 'scPark_entry_CC' does not depend on any axioms -/
+#guard_msgs in #print axioms scPark_entry_CC
+
+/-- info: 'sc_phase_distinct' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_phase_distinct
+
+/-- info: 'scParkTraceC_chained' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scParkTraceC_chained
+
+/-- info: 'scParkTraceCC_chained' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scParkTraceCC_chained

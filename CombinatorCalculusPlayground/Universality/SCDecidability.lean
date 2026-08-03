@@ -1746,3 +1746,160 @@ theorem sc_pulse_parametric (X : SCTerm) :
   (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) scDup) scDup scDup)))
   (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup scDup))))
   (@RS.StepsN.refl RS.SC (.app scPulseBody X)))))))
+
+-- ## Stage 180: the parking orbit — persistence without growth
+-- C8's persistence problem asked for state that outlives the machine's step; the reader
+-- (Stage 176) answered with unbounded growth. The orbit answers with NONE: `C A A A A`
+-- (A = `scDup`, 21 leaves) sits on a period-5 limit cycle in which every term has EXACTLY
+-- ONE successor — once on the orbit there is no way off, ever. The cycle turns entirely in
+-- the head, so ANY cargo appended on the right rides it verbatim, forever, by congruence:
+-- bounded eternal persistence of arbitrary state. And the orbit can be ENTERED by a read:
+-- a 9-leaf head consults an `S S bit` register exactly once (kernel-counted) and parks it —
+-- sixteen fires for either bit, landing at phase 0 for bit `C` and phase 4 for bit `C C`.
+-- Equal wall-clock, different phase: THE BIT IS STORED IN THE PHASE of an eternal bounded
+-- orbit. (Honest note: the two parked orbits are rotation-equal after abstracting the
+-- register — the earlier probe's "bit-dependent cycles" compared signatures without
+-- rotation. Probe lesson #8: cyclic signatures compare up to rotation.)
+
+/-- Phase 0 of the orbit: `C A A A A` with `A = scDup`. -/
+def scOrb : SCTerm := (.app (.app (.app (.app .C scDup) scDup) scDup) scDup)
+
+/-- Phase 1: `A A A A` — the head `C` has routed, the spine is pure duplicator. -/
+def scOrb1 : SCTerm := (.app (.app (.app scDup scDup) scDup) scDup)
+
+/-- Phase 2: the duplicator has fired and split. -/
+def scOrb2 : SCTerm := (.app (.app (.app (.app (.app .C .C) scDup) (.app (.app .C .C) scDup)) scDup) scDup)
+
+/-- Phase 3. -/
+def scOrb3 : SCTerm := (.app (.app (.app (.app .C (.app (.app .C .C) scDup)) scDup) scDup) scDup)
+
+/-- Phase 4: one fire from home. -/
+def scOrb4 : SCTerm := (.app (.app (.app (.app (.app .C .C) scDup) scDup) scDup) scDup)
+
+/-- **The orbit is inescapable**: each of its five terms has exactly one successor, and the
+fifth returns to the first — a forced limit cycle, kernel-checked. -/
+theorem scOrb_forced : SCForced scOrb [scOrb1, scOrb2, scOrb3, scOrb4, scOrb] := by decide
+
+/-- Five fires, verbatim return. -/
+theorem scOrb_cycle : RS.SC.StepsN 5 scOrb scOrb :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red scDup scDup scDup))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app .C .C) scDup))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) scDup) scDup scDup))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup scDup)))
+  (@RS.StepsN.refl RS.SC scOrb))))))
+
+/-- **The parking theorem**: ANY cargo rides the orbit — five fires return `scOrb · x`
+verbatim, for every `x`. Persistence without growth: the state the composition campaign
+fought to keep alive survives here at constant size. -/
+theorem sc_park (x : SCTerm) : RS.SC.StepsN 5 (.app scOrb x) (.app scOrb x) :=
+  scStepsN_appL x scOrb_cycle
+
+/-- Eternal, by clockwork: every multiple of the period returns the parked state. -/
+theorem sc_park_forever (x : SCTerm) :
+    ∀ n, RS.SC.StepsN (5 * n) (.app scOrb x) (.app scOrb x)
+  | 0 => @RS.StepsN.refl RS.SC (.app scOrb x)
+  | n + 1 => by
+      rw [Nat.mul_succ]
+      exact RS.StepsN.trans (sc_park_forever x n) (sc_park x)
+
+/-- The parking meter: a 9-leaf reader head over an `S S bit` register and a duplicator.
+It consults the register once and parks it on the orbit. -/
+def scParkSeed (bit : SCTerm) : SCTerm :=
+  .app (.app (.app (.app .S (.app .C .C)) (.app .C scDup)) (.app (.app .S .S) bit)) scDup
+
+/-- Bit `C` parks at PHASE 0 in sixteen fires. -/
+theorem scPark_entry_C :
+    RS.SC.StepsN 16 (scParkSeed .C) (.app scOrb (.app (.app .S .S) .C)) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C scDup) (.app (.app .S .S) .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .S .S) .C) (.app (.app .C scDup) (.app (.app .S .S) .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C scDup) (.app (.app .S .S) .C)) (.app (.app .S .S) .C) scDup)
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red scDup (.app (.app .S .S) .C) scDup))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app .C .C) scDup))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) scDup) scDup (.app (.app .S .S) .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app .S .S) .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .S .S) .C) scDup scDup))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red .S .C scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red scDup (.app .C scDup) scDup))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app .C .C) scDup))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) scDup) scDup (.app (.app .C scDup) scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app .C scDup) scDup))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C scDup) scDup) scDup scDup))
+  (@RS.StepsN.refl RS.SC (.app scOrb (.app (.app .S .S) .C)))))))))))))))))))
+
+/-- Bit `C C` parks at PHASE 4 in the SAME sixteen fires: equal wall-clock, different
+phase — the bit is stored in WHERE ON THE CYCLE the machine is. -/
+theorem scPark_entry_CC :
+    RS.SC.StepsN 16 (scParkSeed (.app .C .C))
+      (.app scOrb4 (.app (.app .S .S) (.app .C .C))) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C scDup) (.app (.app .S .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .S .S) (.app .C .C)) (.app (.app .C scDup) (.app (.app .S .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C scDup) (.app (.app .S .S) (.app .C .C))) (.app (.app .S .S) (.app .C .C)) scDup)
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red scDup (.app (.app .S .S) (.app .C .C)) scDup))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app .C .C) scDup))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) scDup) scDup (.app (.app .S .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app .S .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .S .S) (.app .C .C)) scDup scDup))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C .C) scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red scDup (.app (.app .C .C) scDup) scDup))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app .C .C) scDup))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) scDup) scDup (.app (.app (.app .C .C) scDup) scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app (.app .C .C) scDup) scDup))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app (.app .C .C) scDup) scDup) scDup scDup))
+  (@RS.StepsN.refl RS.SC (.app scOrb4 (.app (.app .S .S) (.app .C .C))))))))))))))))))))
+
+/-- The two landing pads are distinct terms: the phase is observable. -/
+theorem sc_phase_distinct : scOrb ≠ scOrb4 := by decide
+
+/-- The bit-`C` entry trace, step by step (for the consultation count). -/
+def scParkTraceC : List SCTerm := [(.app (.app (.app (.app .C .C) (.app (.app .S .S) .C)) (.app (.app .C scDup) (.app (.app .S .S) .C))) scDup),
+  (.app (.app (.app .C (.app (.app .C scDup) (.app (.app .S .S) .C))) (.app (.app .S .S) .C)) scDup),
+  (.app (.app (.app (.app .C scDup) (.app (.app .S .S) .C)) scDup) (.app (.app .S .S) .C)),
+  (.app (.app (.app scDup scDup) (.app (.app .S .S) .C)) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app (.app .C .C) scDup) (.app (.app .C .C) scDup)) (.app (.app .S .S) .C)) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app .C (.app (.app .C .C) scDup)) scDup) (.app (.app .S .S) .C)) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app (.app .C .C) scDup) (.app (.app .S .S) .C)) scDup) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app .C (.app (.app .S .S) .C)) scDup) scDup) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app (.app .S .S) .C) scDup) scDup) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app .S scDup) (.app .C scDup)) scDup) (.app (.app .S .S) .C)),
+  (.app (.app (.app scDup scDup) (.app (.app .C scDup) scDup)) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app (.app .C .C) scDup) (.app (.app .C .C) scDup)) (.app (.app .C scDup) scDup)) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app .C (.app (.app .C .C) scDup)) scDup) (.app (.app .C scDup) scDup)) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app (.app .C .C) scDup) (.app (.app .C scDup) scDup)) scDup) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app .C (.app (.app .C scDup) scDup)) scDup) scDup) (.app (.app .S .S) .C)),
+  (.app (.app (.app (.app (.app .C scDup) scDup) scDup) scDup) (.app (.app .S .S) .C))]
+
+/-- The bit-`C C` entry trace. -/
+def scParkTraceCC : List SCTerm := [(.app (.app (.app (.app .C .C) (.app (.app .S .S) (.app .C .C))) (.app (.app .C scDup) (.app (.app .S .S) (.app .C .C)))) scDup),
+  (.app (.app (.app .C (.app (.app .C scDup) (.app (.app .S .S) (.app .C .C)))) (.app (.app .S .S) (.app .C .C))) scDup),
+  (.app (.app (.app (.app .C scDup) (.app (.app .S .S) (.app .C .C))) scDup) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app scDup scDup) (.app (.app .S .S) (.app .C .C))) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app (.app .C .C) scDup) (.app (.app .C .C) scDup)) (.app (.app .S .S) (.app .C .C))) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app .C (.app (.app .C .C) scDup)) scDup) (.app (.app .S .S) (.app .C .C))) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app (.app .C .C) scDup) (.app (.app .S .S) (.app .C .C))) scDup) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app .C (.app (.app .S .S) (.app .C .C))) scDup) scDup) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app (.app .S .S) (.app .C .C)) scDup) scDup) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app .S scDup) (.app (.app .C .C) scDup)) scDup) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app scDup scDup) (.app (.app (.app .C .C) scDup) scDup)) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app (.app .C .C) scDup) (.app (.app .C .C) scDup)) (.app (.app (.app .C .C) scDup) scDup)) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app .C (.app (.app .C .C) scDup)) scDup) (.app (.app (.app .C .C) scDup) scDup)) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app (.app .C .C) scDup) (.app (.app (.app .C .C) scDup) scDup)) scDup) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app .C (.app (.app (.app .C .C) scDup) scDup)) scDup) scDup) (.app (.app .S .S) (.app .C .C))),
+  (.app (.app (.app (.app (.app (.app .C .C) scDup) scDup) scDup) scDup) (.app (.app .S .S) (.app .C .C)))]
+
+/-- The traces are genuine reduction paths. -/
+theorem scParkTraceC_chained : SCChained (scParkSeed .C) scParkTraceC := by decide
+
+theorem scParkTraceCC_chained :
+    SCChained (scParkSeed (.app .C .C)) scParkTraceCC := by decide
+
+-- Each entry path consults its register EXACTLY ONCE, and ends parked on the orbit.
+#guard scCountConsults .C (scParkSeed .C :: scParkTraceC) = 1
+#guard scCountConsults (.app .C .C) (scParkSeed (.app .C .C) :: scParkTraceCC) = 1
+#guard scParkTraceC.getLastD (scParkSeed .C) == .app scOrb (.app (.app .S .S) .C)
+#guard scParkTraceCC.getLastD (scParkSeed (.app .C .C))
+    == .app scOrb4 (.app (.app .S .S) (.app .C .C))
