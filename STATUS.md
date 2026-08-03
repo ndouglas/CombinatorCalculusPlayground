@@ -801,11 +801,13 @@ choice-free find (core has no `Nat.find`; `Acc.rec` eliminates into data).
 The one open goal-level question is now a single well-posed sentence, and
 it has PINNED QUANTITATIVE FLOORS (Stages 140/142/181, `sc_bound_floor_6`/
 `_44`/`_25`/`_186`): every valid `f` obeys `f(6,6) ≥ 7`, `f(8,32) ≥ 44`,
-`f(9,10) ≥ 25`, and `f(10,142) ≥ 186` — via the TALL, STEEP, and n=10
-MOUNTAINS (forced prefixes of 49, 13, and 300 steps peaking at 44, 25,
-and 186; the last from an exhaustive census of all 4,978,688 ten-leaf
-terms). Excess over the endpoint size TRIPLED from n=8 (12) to n=10 (44)
-— the scaling evidence now leans hard against bounded intermediates,
+`f(9,10) ≥ 25`, `f(10,142) ≥ 186`, and `f(12,234) ≥ 291` — via the
+TALL, STEEP, n=10, and n=12 MOUNTAINS (forced prefixes of 49, 13, 300,
+and 400 steps peaking at 44, 25, 186, and 291; the n=10 rung from an
+exhaustive census of all 4,978,688 ten-leaf terms, the n=12 rung from
+its graft neighborhood). Excess over the endpoint reads 12 → 44 → 57 at
+n = 8 → 10 → 12, and the peak-to-source ratio 5.5× → 18.6× → 24× — the
+scaling evidence leans ever harder against bounded intermediates,
 i.e. toward undecidability. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census

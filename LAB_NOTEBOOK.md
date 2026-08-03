@@ -5924,3 +5924,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   holder — the spiral/pop line (sc_cellArm_pop) already moves material between spine
   positions; ask whether a two-cell configuration exists where cell A's emitted junk is
   cell B's fuel (the FIFO pile from scBWord_two suggests yes). (3) The alternator.
+
+## 2026-08-03 — Stage 187: the n=12 mountain
+
+- Graft-neighborhood > random: the winner was hit #1 of 146 grafts, minutes into phase A,
+  while 4M random samples (still running) haven't beaten it. Climbers live near climbers
+  — worth remembering when n=14 comes up.
+- Sixty-nine autonomous stages (119–187). Ranking: (1) **metabolic communication**: the
+  Stage 186 isolation theorem says fires are the only channel — probe two-cell
+  configurations where cell A's emission is cell B's fuel (scBWord FIFO pile + cellArm
+  pop as candidate parts); a pinned producer→consumer handoff would be the program's
+  first inter-machine interaction. (2) Harvest floor12 phase B if it beats 57. (3) The
+  alternator (fueled reader).

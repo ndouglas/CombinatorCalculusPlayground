@@ -5761,3 +5761,17 @@ because nothing crosses), and it is why the chassis can never host communication
 routing question is now sharply posed for the only remaining channel: members that share
 structure through FIRES — the duplicator's copies, the cell-synthesis line, arm-as-
 program. Communication in `{S,C}`, if it exists, is metabolic, not architectural.
+
+### Stage 187: the n=12 mountain — excess 57, the ladder steepens
+
+The graft heuristic — two leaves added around the n=10 winner — outperformed millions of
+random samples in 146 tries: `C S S (S S) C (S (C S (C C)) C)` runs a fully forced
+400-step prefix to a 291-leaf peak and hands off to a 234-leaf target. `sc_bound_floor_291`
+joins the ladder: f(6,6) ≥ 7, f(8,32) ≥ 44, f(9,10) ≥ 25, f(10,142) ≥ 186,
+f(12,234) ≥ 291. The peak-to-endpoint excess — the quantity a bounding function must
+absorb — reads 12, 44, 57 at n = 8, 10, 12, and the peak-to-SOURCE ratio has gone from
+5.5× to 18.6× to 24× the starting size. Verification cost stayed linear (march-400,
+maxRecDepth 16000, seconds of kernel time): the toolkit's price scales with the PATH
+while the phenomenon's size scales with the state space — the whole reason the
+forced-march technology exists. Random phase still sweeping; a taller n=12 mountain, if
+one surfaces, is one emit away.
