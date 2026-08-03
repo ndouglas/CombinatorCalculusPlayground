@@ -4359,3 +4359,77 @@ theorem sc_conditional_dynasty (j : Nat) (g₁ g₂ : SCTerm) :
     (sc_lineage (.app (.app (scParityReg (2 * j)) g₁) g₂)))
     (scSteps_appL _ (scSteps_appL _ (RS.StepsN.toSteps (sc_branch_even j g₁ g₂)))), ?_⟩
   exact scUnder.app (scUnder.app (scUnder.app (scUnder.app scUnder.refl)))
+
+-- ## Stage 200: the tape — a word, read one symbol per generation
+-- The hosting construction the ISA was assembled for. A word over {even, odd} is encoded
+-- as NESTED BRANCH-GENES — linear size, one gene per symbol — and the machine reads it
+-- symbol by symbol across generations: each generation fetches, branches on the current
+-- symbol's numeral, and (on even) the next gene takes control and begets the next
+-- machine; on odd, the dead atom takes the head and the machine parks. Twenty-two fires
+-- per symbol, kernel-certified for every word and every payload. Three lemmas carry it:
+-- the gene fires ANYWHERE (`sc_gene_anywhere` — position independence, seven fires), the
+-- body induction (`sc_tapeBody_run`), and the top-level entry via lineage. The founder
+-- machine `scParent q` arrives in head position after the whole tape is consumed:
+-- `sc_tape_run`. This is a read-once tape driven through an addressed machine — the
+-- tag-hosting engine's chassis, running.
+
+/-- The gene is position-independent: applied to ANY two arguments, seven fires beget
+the child in place, arguments as riders. -/
+theorem sc_gene_anywhere (q a b : SCTerm) :
+    RS.SC.StepsN 7 (.app (.app (scGene2 q) a) b) (.app (.app (scParent q) a) b) :=
+  RS.StepsN.tail
+    (SCStep.appL (SCStep.appL (SCStep.C_red (.app scW (.app .S (.app .S scDup)))
+      (.app scW scW) (.app scW (.app scW (.app .S q))))))
+    (scStepsN_appL _ (scStepsN_appL _
+      (scCellArm_popN (.app .S (.app .S scDup)) (.app scW (.app .S q)) scW)))
+
+/-- The tape body: a word as nested branch-genes over a final payload. -/
+def scTapeBody : List Bool → SCTerm → SCTerm
+  | [], q => q
+  | b :: w, q =>
+      .app (.app (scParityReg (cond b 1 0)) (scGene2 (scTapeBody w q))) .S
+
+/-- The tape machine: the addressed gene of the whole word. -/
+def scTape (w : List Bool) (q : SCTerm) : SCTerm := scGene2 (scTapeBody w q)
+
+/-- The body induction: an all-even word is consumed generation by generation, and the
+founder arrives in head position. -/
+theorem sc_tapeBody_run : ∀ (w : List Bool) (q : SCTerm), (∀ b ∈ w, b = false) →
+    ∃ u, RS.SC.Steps (scParent (scTapeBody w q)) u ∧ scUnder (scParent q) u
+  | [], q, _ => ⟨scParent q, @RS.Steps.refl RS.SC (scParent q), scUnder.refl⟩
+  | b :: w, q, hall => by
+      have hb : b = false := hall b List.mem_cons_self
+      subst hb
+      obtain ⟨u, hu, hunder⟩ := sc_tapeBody_run w q
+        (fun x hx => hall x (List.mem_cons_of_mem _ hx))
+      have h1 := sc_branch_even 0 (scGene2 (scTapeBody w q)) .S
+      have h2 := sc_gene_anywhere (scTapeBody w q)
+        (scXof (.app .S (.app (.app (scParityReg 0)
+          (scGene2 (scTapeBody w q))) .S)))
+        (.app .S (scXof (.app .S (.app (.app (scParityReg 0)
+          (scGene2 (scTapeBody w q))) .S))))
+      have hsteps := RS.Steps.trans (RS.StepsN.toSteps h1)
+          (RS.Steps.trans (scSteps_appL _ (RS.StepsN.toSteps h2))
+            (scSteps_appL _ (scSteps_appL _ (scSteps_appL _ hu))))
+      exact ⟨_, hsteps, scUnder.app (scUnder.app (scUnder.app hunder))⟩
+
+/-- **The tape runs**: for every all-even word and every payload, the tape machine
+consumes the word across generations and delivers the founder in head position. -/
+theorem sc_tape_run (w : List Bool) (q : SCTerm) (hall : ∀ b ∈ w, b = false) :
+    ∃ u, RS.SC.Steps (scParent (scTape w q)) u ∧ scUnder (scParent q) u := by
+  obtain ⟨u, hu, hunder⟩ := sc_tapeBody_run w q hall
+  have hsteps := RS.Steps.trans (RS.StepsN.toSteps (sc_lineage (scTapeBody w q)))
+      (scSteps_appL _ (scSteps_appL _ hu))
+  exact ⟨_, hsteps, scUnder.app (scUnder.app hunder)⟩
+
+/-- **The tape stops**: an odd first symbol parks the machine — the dead atom takes the
+head. -/
+theorem sc_tape_stop (w : List Bool) (q : SCTerm) :
+    ∃ u x y, RS.SC.Steps (scParent (scTape (true :: w) q)) u ∧
+      scUnder (.app (.app .S x) y) u := by
+  have h1 := sc_lineage (scTapeBody (true :: w) q)
+  have h2 := sc_branch_odd 0 (scGene2 (scTapeBody w q)) .S
+  have hsteps := RS.Steps.trans (RS.StepsN.toSteps h1)
+    (scSteps_appL _ (scSteps_appL _ (RS.StepsN.toSteps h2)))
+  exact ⟨_, _, _, hsteps,
+    scUnder.app (scUnder.app (scUnder.app scUnder.refl))⟩

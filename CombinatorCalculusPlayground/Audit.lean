@@ -689,3 +689,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_conditional_dynasty' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_conditional_dynasty
+
+/-- info: 'sc_gene_anywhere' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_gene_anywhere
+
+/-- info: 'sc_tape_run' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_tape_run
+
+/-- info: 'sc_tape_stop' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_tape_stop
