@@ -937,3 +937,38 @@ theorem scGlider_no_normal_form : ¬ RS.SC.Normalizes scGliderSeed := by
   rintro ⟨b, hsteps, hnf⟩
   obtain ⟨v, hv, _⟩ := gliderTraj_succ (gliderTraj_reach hsteps)
   exact hnf ⟨v, scSucc_sound (by rw [hv]; exact List.mem_cons_self)⟩
+
+-- ## Stage 137: fixpoint detection — unreachability certificates by computation
+-- The control probe found FUELED mountains (verified by exhaustive BFS with the unique-NF
+-- sanity check that also caught a buggy first probe): machines `M` where `M (CC-tower k)`
+-- strongly normalizes to a small fixed form while its reachable space peaks linearly in `k`
+-- (star: `S (C (S C S)) S` — sizes 10..16, peaks 34..118, NFs 5..7). To make such facts
+-- machine-checkable one at a time, the engine gains DETECTION: if one saturation round adds
+-- nothing (a decidable check), the engine's cone is complete, and non-membership becomes a
+-- full unreachability certificate. Demonstrated by re-certifying the minimal mountain through
+-- the engine alone.
+
+/-- Detected fixpoint: one stable round certifies the cone is complete. -/
+theorem scReachCapped_detect {c : Nat} {t : SCTerm} {n : Nat}
+    (h : ∀ v ∈ scReachCapped c t (n + 1), v ∈ scReachCapped c t n)
+    {u : SCTerm} (hu : RS.StepsLe RS.SC SCTerm.leafCount c t u) :
+    u ∈ scReachCapped c t n := by
+  obtain ⟨m, hm⟩ := scReachCapped_complete_start hu
+  by_cases hmn : m ≤ n
+  · exact scReachCapped_mono_le hmn u hm
+  · obtain ⟨j, rfl⟩ : ∃ j, m = n + j := ⟨m - n, by omega⟩
+    exact scReachCapped_stable_forever h j u hm
+
+/-- The certificate: a stable round plus non-membership excludes every capped path. Both
+hypotheses are decidable — `#guard`/`decide` can discharge them for concrete instances. -/
+theorem scReachCapped_excludes {c : Nat} {t u : SCTerm} {n : Nat}
+    (h : ∀ v ∈ scReachCapped c t (n + 1), v ∈ scReachCapped c t n)
+    (hu : u ∉ scReachCapped c t n) :
+    ¬ RS.StepsLe RS.SC SCTerm.leafCount c t u :=
+  fun hle => hu (scReachCapped_detect h hle)
+
+/-- The minimal mountain, re-certified through the engine alone: no path from `scMtT` to
+`scMtU` stays within six leaves — by running the capped engine to its (immediately detected)
+fixpoint and checking membership. -/
+theorem scMt_no_capped_path : ¬ RS.StepsLe RS.SC SCTerm.leafCount 6 scMtT scMtU :=
+  scReachCapped_excludes (n := 0) (by decide) (by decide)

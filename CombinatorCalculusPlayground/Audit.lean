@@ -310,3 +310,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scGlider_no_normal_form' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scGlider_no_normal_form
+
+/-- info: 'scReachCapped_excludes' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scReachCapped_excludes
+
+/-- info: 'scMt_no_capped_path' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt_no_capped_path
