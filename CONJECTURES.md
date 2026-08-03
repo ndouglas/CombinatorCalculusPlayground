@@ -5298,3 +5298,20 @@ on container- or fuel-arms; the spiral needs a configuration that alternates dis
 arms that traverse as containers and arrive at the marker as copies. That alternation is C8's
 final form, and the content-forwarding protocol is the first mechanism that MOVES information
 inward instead of burning it.
+
+### Stage 156: the constructor gap — where the spiral actually stops
+
+The scQuine family's dynamics are BOUNDED, measured cleanly from both directions: from
+word-depth 2 the closure reaches depth 3 (the growth step firing), from depth 3 it never
+exceeds 3 — the family caps at tower-3 and flows into the universal 14-cycle. The alternation
+analysis explains why and names C8's true final form: container-arms STRIP one level per pop
+(`sc_cellArm_pop`), the marker's growth adds one WORD cell but restores arms at the SAME
+depth, so arm depth falls behind word length by one per generation — the books cannot
+balance. A genuine spiral needs a marker that mints for the word AND deepens both arms in one
+firing sequence while surviving — a self-reproducing CONSTRUCTOR in the von Neumann sense,
+not merely a quine. THE CONSTRUCTOR GAP: everything below it is now pinned theorem (read,
+mint, chain, pop in three protocols, clean piles, FIFO, growth-with-survival, complete family
+laws for three architectures); everything above it is one design object whose existence is
+the remaining content of C8 — and, through the frontier equivalence, plausibly of rung-3
+undecidability itself. Probe caveats as always: pool- and depth-bounded searches; the run's
+own history (C7, the arm-junk barrier, mid-insertion) says named walls fall to widenings.

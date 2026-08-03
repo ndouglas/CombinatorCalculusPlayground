@@ -5508,3 +5508,20 @@ what automation could and couldn't do. This file is a first-class deliverable
   cell — containers whose CONTENT is the regenerator — testing whether one wrapper level
   buys traversal-then-growth. (2) Pin the 14-cycle (mechanical, if wanted for the zoo).
   (3) Floor asymptotics at n=10.
+
+## 2026-08-03 — Stage 156: the books don't balance
+
+- The measurement that mattered was two integers: max tower depth 3 from below, 3 from
+  above. The scQuine family is a closed world with a fourteen-beat heart, and the reason is
+  an accounting identity: pops strip arm depth, growth restores it flat. One design object
+  — the constructor — stands between the program and a hosted unbounded tag run.
+- A probe-quality incident worth its line: the first depth probe had a contradictory guard
+  and returned plausible-looking garbage; caught by a sanity assertion on a known tower.
+  Fifth probe lesson of the run: every measurement function gets a sanity line before its
+  first use.
+- Thirty-eight autonomous stages (119–156). The C8 campaign stands at: three protocols, one
+  gap, all instruments pinned.
+- Ranking: (1) **pin the 14-cycle** (mechanical; completes the Q-family trilogy: pop law +
+  descent + pulse). (2) Floor asymptotics at n=10 (census running in background). (3) The
+  constructor search proper — multi-fire markers, widened pools — as the next campaign's
+  opening.

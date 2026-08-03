@@ -601,9 +601,18 @@ furnace reads nothing); and on the positive side THE GENERATION CYCLE
 `{S,C}` CYCLE, the end marker acting as return address) and THE ATTRACTOR
 (`sc_words_decay` — every `scDup`-ended word pops to empty then pulses in
 that cycle forever; the naive multi-symbol loop is dead). All axiom-free,
-pinned. C8, final form: design a marker whose rebuild consumes the
-harvested pile as CONSTRUCTION MATERIAL rather than fuel — every other
-part of the generation loop is now a theorem. The boustrophedon framing was itself corrected (Stage 116): front-push and
+pinned. C8, final form after Stages 153–156: THE
+CONSTRUCTOR GAP. The growth step exists (`sc_growth_step` — four fires,
+word +1 cell, marker and arms surviving verbatim, via the co-designed
+`scQuine`), a third protocol moves information inward instead of burning
+it (`sc_cellArm_pop` — cell-arms hand their CONTENTS forward; the arm is
+the program), and the Q-family's complete law is pinned
+(`sc_spiral_pop`/`sc_spiral_descends` into a universal 14-cycle). But the
+books cannot balance: pops strip arm depth, growth restores arms flat, so
+the family caps at tower-3 (measured from both directions). What remains
+is a self-reproducing CONSTRUCTOR — a marker that mints for the word and
+deepens both arms while surviving. Everything below that one design
+object is pinned theorem. The boustrophedon framing was itself corrected (Stage 116): front-push and
 front-pop INTERLEAVE, so the induced dynamics are PREFIX REWRITING — a
 deterministic stack process with a finite wrapper alphabet, pushdown-flavored,
 and generational separation would need a mid-spine barrier that cannot exist.
