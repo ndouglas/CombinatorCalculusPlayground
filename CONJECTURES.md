@@ -5885,3 +5885,17 @@ compiled term is verbatim the generation-loop seed, so `sc_omega_to_loop` chains
 pinned laws into: dead frame → ω in 30 → loop in 3 → eternity in fives. The hosting
 program's remaining distance: wire READ's numeral-dependence into COMPILE's choice of
 `r` — an addressed fetch-execute — and arbitrary tag-style control flow follows.
+
+### Stage 195: the addressed fetch — a numeral decides who runs
+
+The composition stage the ISA was built for, and it cost ZERO new fires: `sc_dispatch_even`
+and `sc_dispatch_odd` are `sc_frame_handoff` followed by C9's strip runs followed by one
+S-fire. For the register `C^m · p` — a numeral APPLIED to an arbitrary payload — the
+wrapped frame fetches, decodes the address by parity, and executes: even `m` puts the
+payload in control (`p X (X X)`, 14 + 2j fires); odd `m` runs the dead complex with the
+payload parked as cargo (`X X (p X)`, 15 + 2j fires). One machine shape, an instruction
+pointer, a conditional transfer of control — `sc_addressed_fetch`. The frame's ISA now
+reads: READ (C9), CALL (handoff), COMPILE (omega), FETCH (this). What remains for
+tag-style hosting is sequencing — an executed payload that reconstitutes a new addressed
+frame — and the omega instruction manufactures exactly the self-application such a
+payload needs.

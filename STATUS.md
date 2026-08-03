@@ -184,7 +184,12 @@ triad: THE OMEGA INSTRUCTION (`sc_frame_omega`, axiom-free) — the
 wrapper word `W·C·W` takes the frame to naked self-application `r r r`
 in thirty fires, every register; at the duplicator the output is
 verbatim the generation-loop seed (`sc_omega_to_loop`: frame → ω → loop
-→ eternity, all axiom-free). READ, CALL, COMPILE. Behind the alternator stand tag/Minsky hosting,
+→ eternity, all axiom-free). READ, CALL, COMPILE — and Stage 195
+added FETCH (`sc_addressed_fetch`, zero new fires — pure composition):
+for register `C^m · p` the frame dispatches by address parity — even
+puts the payload in control, odd parks it and runs dead material. The
+numeral is an instruction pointer; the remaining hosting distance is
+SEQUENCING (a payload that rebuilds an addressed frame). Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

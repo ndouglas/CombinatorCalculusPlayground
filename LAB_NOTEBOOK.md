@@ -6034,3 +6034,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   ω-slot (probe words mixing C-strips with the W·C·W tail over two-register cells);
   success = fetch-execute, the last missing hosting primitive. (2) floor12 harvest.
   (3) The wrapper-word exhaustive map (words ≤ 4 over {C,W} — complete the ISA).
+
+## 2026-08-03 — Stage 195: the addressed fetch
+
+- The probe's "parity-addressed dispatch" decoded, on inspection, into three already-
+  proved laws composed — the placeholder-leak discipline (lesson #9) is now catching
+  PHANTOM discoveries too: what looked like new dynamics at fire 14+ was C9's strips
+  acting on a numeral payload. The best kind of probe result: nothing new to emit.
+- Seventy-seven autonomous stages (119–195). Ranking: (1) **the sequencer**: find a
+  payload p whose even-dispatch product p X (X X) reduces back into a wrapped frame with
+  a NEW address — a fetch-execute CYCLE would be tag hosting's engine (probe: p built
+  from the omega word / frame prefabs; the assembly line (189) builds frames from cells,
+  so a p that emits fate-seed cells is the candidate). (2) floor12 harvest. (3) The
+  wrapper-word exhaustive map.
