@@ -5535,3 +5535,19 @@ what automation could and couldn't do. This file is a first-class deliverable
   h/w-classified 3s, 14) and each is a hosted generation loop read.
 - Ranking: (1) **harvest the n=10 floor census** (running). (2) The constructor search
   (next campaign: multi-fire markers). (3) The aperiodic diverger's anatomy.
+
+## 2026-08-03 — Stage 158: it was a counter
+
+- The slow burner stopped being a curiosity the moment the tower heights were laid beside
+  √step: four checkpoints, four matches to within one unit. Five members forever, one tower
+  growing — an eight-leaf term with registers. The aperiodicity that resisted the glider
+  template is just what a counter looks like from the outside.
+- Strategic note: the counter uses spine-level C-towers as data with a fixed member
+  skeleton — the exact architecture the fold campaign set aside as 'undesigned'. The
+  calculus has been running it natively all along. If inc/test/dec can be designed in this
+  idiom, Minsky machines beat tag systems to the undecidability reduction.
+- Forty autonomous stages (119–158). Ranking: (1) **harvest the n=10 census** (still
+  running). (2) The counter idiom probe: can the counter's increment loop be STEERED (two
+  towers, conditional on emptiness — the Minsky primitives) — search seeds near the slow
+  burner. (3) The constructor search (tag idiom), now second in line behind the counter
+  idiom.

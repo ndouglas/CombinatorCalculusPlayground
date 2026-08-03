@@ -5325,3 +5325,19 @@ complete: slide down by sixes, grow once by four, pulse by fourteens. Tooling mi
 fourteen-fire chain was EMITTED by a script that identifies each fire's spine position and
 constructor arguments from traced states — the probe now writes the proof, and long concrete
 reductions cost nothing to pin.
+
+### Stage 158: the counter — the slow burner read
+
+The aperiodic diverger `S (S S S) C (S C C)` (eight leaves) is a hosted UNARY COUNTER.
+Anatomy at 12,000 forced steps (still deterministic throughout): exactly FIVE members at every
+checkpoint (fixed registers), head always `C`, and the maximum C-tower height tracks `√step`
+to within rounding (32/63/89/110 at steps 1k/4k/8k/12k against 31.6/63.2/89.4/109.5) — the
+signature of increment-forever with per-loop cost linear in the count (Σ2h ≈ h² = steps). The
+delta alphabet is −1 plus every jump 2..111: long C-grind descents (the scan) punctuated by
+S-fire copies of the ever-taller tower (the increment). No delta period up to 400 — aperiodic
+BECAUSE the counter never repeats. Two readings recorded: (1) the machine's data lives in
+SPINE-LEVEL C-TOWERS with a fixed member skeleton — the architecture Stage 145 flagged as the
+open route, already in use by an eight-leaf term; (2) counters are the raw material of Minsky-
+machine undecidability constructions — this specimen increments only, but the existence of a
+register discipline in `{S,C}` reframes the constructor gap: perhaps the tag/word architecture
+is the wrong host idiom and the counter idiom is native. Bounded caveats: 12k steps, one seed.
