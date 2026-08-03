@@ -6122,3 +6122,20 @@ what automation could and couldn't do. This file is a first-class deliverable
   a pinned counting dynasty would demonstrate read-write symbols through generations,
   the last integration risk before a full tag step. (2) floor12 harvest. (3) The
   wrapper-word map.
+
+## 2026-08-03 — Stage 202: the odometer wall
+
+- 154k bodies, zero odometers, and the negative rhymes with every previous wall
+  (scv_no_pair, forward-only, bits-are-sources): {S,C} conserves its way out of
+  self-modification. C10 registered — the program's sharpest open question, and the
+  exact boundary between "hosting with pre-built recursion" (proved, Stages 197–201)
+  and "hosting with live recursion" (open).
+- Session tally: Stages 179–202 — twenty-four stages this session, eighty-four
+  consecutive (119–202). The frame ISA went from nonexistent to complete: READ, CALL,
+  COMPILE, FETCH, BRANCH, EXPRESS/ASSEMBLE, WRITE (successor), plus the tape, the
+  dynasty, and the parity law C9 — proved. floor12 census still running (best 69).
+- Ranking: (1) **C10 probes**: widen the odometer architectures — bodies with cargo
+  slots (B B r j-junk), frame-hosted counters (the parking orbit carries state; can a
+  cycle's CARGO grow?), and the negative direction (a conservation invariant that
+  refutes C10 — the C-count/S-count ledgers constrain what recurrent spines can hold).
+  (2) floor12 harvest when the census completes. (3) The wrapper-word map.

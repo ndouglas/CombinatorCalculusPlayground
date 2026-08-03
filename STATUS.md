@@ -216,8 +216,14 @@ fetch-decode-execute, reproduction, halting — all pinned. And Stage 201 found 
 calculus's only C-chain extender, minting the incremented numeral
 beside any continuation (the routed variant delivers it in operator
 position, ready to branch). The tape reads, the successor writes, the
-gene copies, the branch decides: tag hosting's parts list is complete,
-and what remains is one integrated construction. Behind the alternator stand tag/Minsky hosting,
+gene copies, the branch decides: tag hosting's parts list is complete.
+Stage 202 mapped the integration wall and registered it: C10, THE
+ODOMETER QUESTION — self-application (omega) plus the successor does
+NOT yield a self-incrementing counter (154k bodies, zero), consistent
+with the calculus's conservation laws; hosting so far pre-builds its
+recursion (dynasty depth, tape symbols), and whether {S,C} admits any
+live self-modifying counter is now the program's sharpest open
+question. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

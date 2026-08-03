@@ -5990,3 +5990,22 @@ OPERATOR position, ready to strip and branch; `sc_successor_numeral` states it o
 generations, the successor WRITES them, the gene COPIES machines, the branch DECIDES.
 Every mechanism of a tag machine now exists as a pinned parametric theorem; what remains
 is the single integrated construction — and it is engineering, not discovery.
+
+### Stage 202: the odometer wall — self-increment resists the ω-shape
+
+The counting machine's direct architecture is probe-dead: over all bodies `B` up to eight
+leaves (154,088 trials, both k=1→2 and the k=2→3 iteration required), NO `B B · reg(k)`
+trajectory re-carries `B B · reg(k+1)` in head position. The successor writes numerals
+(201) and omega grants self-application (194), but combining them into a HEAD-POSITION
+self-rebuild fails in this envelope — consistent with the calculus's standing
+conservation laws (no erasure, forward-only writing, arrival-order rigidity): the
+incremented numeral is minted as an ARGUMENT, and hauling it back into the machine's own
+address position is exactly the mid-spine re-entry that every wall of this program has
+guarded. The two working self-reference architectures remain the pre-built kind: the
+dynasty (depth encoded in nested genes) and the tape (symbols encoded in nested
+branches). Whether {S,C} admits any UNBOUNDED self-modifying counter — or whether
+conservation forbids it and hosting must always pre-build its recursion — is now the
+program's sharpest open question. Registered as **C10 (the odometer question)**: does
+there exist a term family M with `M ⟶⁺ M·junk` where M's own reachable dynamics DEPEND
+on an internal numeral that grows across recurrences? (The persistent reader recurs
+without internal state; the tape counts but is consumed; C10 asks for both at once.)
