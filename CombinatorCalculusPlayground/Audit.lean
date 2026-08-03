@@ -542,3 +542,18 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_four_fates' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_four_fates
+
+/-- info: 'scStep_no_bit' does not depend on any axioms -/
+#guard_msgs in #print axioms scStep_no_bit
+
+/-- info: 'sc_bits_are_sources' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_bits_are_sources
+
+/-- info: 'scRelay_decompose' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scRelay_decompose
+
+/-- info: 'sc_relay_wall' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_relay_wall
+
+/-- info: 'sc_relay_fates' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_relay_fates

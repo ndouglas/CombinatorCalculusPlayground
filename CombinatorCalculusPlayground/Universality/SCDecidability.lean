@@ -2545,3 +2545,151 @@ theorem sc_four_fates :
     have hs₂ : ∀ v, ¬ RS.SC.step u₂ v := fun v hv => hstuck _ (SCStep.appR hv)
     rw [sc_fate_unique_exit u₁ (RS.StepsN.toSteps h1) hs₁,
         sc_fate_unique_exit u₂ (RS.StepsN.toSteps h2) hs₂]
+
+-- ## Stage 185: bits are sources — and the relay that houses a fate
+-- Conditional eternity asked for a machine whose OUTPUT becomes a fate register. The
+-- obstruction is structural and pinned here: every `{S,C}` fire produces a double
+-- application, so no reduction ever ends at an atom or at `C C` — THE BITS ARE SOURCES of
+-- the reduction order. A fate register's content can never be a computed result; in
+-- `{S,C}`, fate is decided by initial conditions. What CAN be computed is housing: the
+-- assembler `S S C M` fires once into the pair `S M (C M)` — machine and shadow — and the
+-- four-fates calculus applies compositionally. With `M = scFate C` the housed pair is
+-- immortal; with `M = scFate (C C)` every schedule dies at `S scFateNf (C scFateNf)`
+-- behind a wall of 73 — pinned WITHOUT touching the 53,592-state product space (the probe
+-- counted it; the lemmas never see it).
+
+/-- No step produces the atom `C`. -/
+theorem scStep_no_atom_C : ∀ t : SCTerm, ¬ RS.SC.step t .C := by
+  intro t h
+  cases h
+
+/-- No step produces the atom `S`. -/
+theorem scStep_no_atom_S : ∀ t : SCTerm, ¬ RS.SC.step t .S := by
+  intro t h
+  cases h
+
+/-- No step produces the bit `C C`. -/
+theorem scStep_no_bit : ∀ t : SCTerm, ¬ RS.SC.step t (.app .C .C) := by
+  intro t h
+  cases h with
+  | appL h' => exact scStep_no_atom_C _ h'
+  | appR h' => exact scStep_no_atom_C _ h'
+
+/-- **Bits are sources**: the only term that ever reduces to `C C` is `C C` itself.
+The fate register's content is forever an input, never an output. -/
+theorem sc_bits_are_sources {t : SCTerm} (h : RS.SC.Steps t (.app .C .C)) :
+    t = .app .C .C := by
+  suffices h' : ∀ a b : SCTerm, RS.SC.Steps a b →
+      b = SCTerm.app .C .C → a = SCTerm.app .C .C from h' _ _ h rfl
+  intro a b hab
+  refine hab.rec (motive := fun (a b : SCTerm) _ =>
+      b = SCTerm.app .C .C → a = SCTerm.app .C .C) ?_ ?_
+  · intro a hb
+    exact hb
+  · intro a b c s rest ih hb
+    have hbcc := ih hb
+    subst hbcc
+    exact absurd s (scStep_no_bit a)
+
+/-- The relay: one `S S` assembler over a payload. -/
+def scRelay (M : SCTerm) : SCTerm := .app (.app (.app .S .S) .C) M
+
+/-- The housed pair: machine and shadow. -/
+def scHoused (M : SCTerm) : SCTerm := .app (.app .S M) (.app .C M)
+
+/-- The assembly fire. -/
+theorem scRelay_fire (M : SCTerm) : RS.SC.step (scRelay M) (scHoused M) :=
+  SCStep.S_red .S .C M
+
+/-- **Relay inversion**: a step of `S S C M` is the assembly fire or a payload step. -/
+theorem scRelay_inv {M v : SCTerm} (h : RS.SC.step (scRelay M) v) :
+    v = scHoused M ∨ (∃ M', RS.SC.step M M' ∧ v = scRelay M') := by
+  cases h with
+  | S_red f g x => exact .inl rfl
+  | appL h' =>
+      cases h' with
+      | appL h'' => cases h'' with
+        | appL h₃ => exact absurd h₃ (fun h => by cases h)
+        | appR h₃ => exact absurd h₃ (fun h => by cases h)
+      | appR h'' => exact absurd h'' (fun h => by cases h)
+  | appR h' => exact .inr ⟨_, h', rfl⟩
+
+/-- **Shadow inversion**: a step of `C m` is a step of `m`. -/
+theorem scWrap_inv {m v : SCTerm} (h : RS.SC.step (SCTerm.app .C m) v) :
+    ∃ m', RS.SC.step m m' ∧ v = .app .C m' := by
+  cases h with
+  | appL h' => cases h'
+  | appR h' => exact ⟨_, h', rfl⟩
+
+/-- Shadow reductions are payload reductions. -/
+theorem scWrap_decompose {n : Nat} {a u : SCTerm} (h : RS.SC.StepsN n a u) :
+    ∀ m : SCTerm, a = SCTerm.app .C m →
+      ∃ m', u = SCTerm.app .C m' ∧ RS.SC.StepsN n m m' := by
+  refine h.rec (motive := fun n a u _ => ∀ m : SCTerm, a = SCTerm.app .C m →
+      ∃ m', u = SCTerm.app .C m' ∧ RS.SC.StepsN n m m') ?_ ?_
+  · intro a m ha
+    exact ⟨m, ha, @RS.StepsN.refl RS.SC m⟩
+  · intro k a b c s rest ih m ha
+    subst ha
+    obtain ⟨m₁, hs, rfl⟩ := scWrap_inv s
+    obtain ⟨m', hu, hm⟩ := ih m₁ rfl
+    exact ⟨m', hu, RS.StepsN.tail hs hm⟩
+
+/-- Relay reductions: all payload, or payload then assembly then housed-pair. -/
+theorem scRelay_decompose {n : Nat} {a u : SCTerm} (h : RS.SC.StepsN n a u) :
+    ∀ M : SCTerm, a = scRelay M →
+      (∃ M', u = scRelay M' ∧ RS.SC.StepsN n M M') ∨
+      (∃ k m M', n = k + 1 + m ∧ RS.SC.StepsN k M M' ∧
+        RS.SC.StepsN m (scHoused M') u) := by
+  refine h.rec (motive := fun n a u _ => ∀ M : SCTerm, a = scRelay M →
+      (∃ M', u = scRelay M' ∧ RS.SC.StepsN n M M') ∨
+      (∃ k m M', n = k + 1 + m ∧ RS.SC.StepsN k M M' ∧
+        RS.SC.StepsN m (scHoused M') u)) ?_ ?_
+  · intro a M ha
+    exact .inl ⟨M, ha, @RS.StepsN.refl RS.SC M⟩
+  · intro k a b c s rest ih M ha
+    subst ha
+    rcases scRelay_inv s with rfl | ⟨M₁, hs, rfl⟩
+    · exact .inr ⟨0, k, M, by omega, @RS.StepsN.refl RS.SC M, rest⟩
+    · rcases ih M₁ rfl with ⟨M', hu, hm⟩ | ⟨k₁, m₁, M', hn, hm, hp⟩
+      · exact .inl ⟨M', hu, RS.StepsN.tail hs hm⟩
+      · exact .inr ⟨k₁ + 1, m₁, M', by omega, RS.StepsN.tail hs hm, hp⟩
+
+/-- **The housed wall**: the halt-side relay never exceeds 73 fires, any schedule —
+pinned compositionally, never touching the 53,592-state product space. -/
+theorem sc_relay_wall : ∀ (n : Nat) (u : SCTerm),
+    RS.SC.StepsN n (scRelay (scFate (.app .C .C))) u → n ≤ 73 := by
+  intro n u h
+  rcases scRelay_decompose h _ rfl with ⟨M', _, hm⟩ | ⟨k, m, M', hn, hm, hp⟩
+  · exact Nat.le_trans (sc_fate_all_bounded n M' hm) (by omega)
+  · have hpair := scPair_decompose hp M' (.app .C M') rfl
+    obtain ⟨u₁, u₂, m₁, m₂, _, hm12, h1, h2⟩ := hpair
+    have hb1 : k + m₁ ≤ 36 := sc_fate_all_bounded _ u₁ (RS.StepsN.trans hm h1)
+    obtain ⟨m₂', _, hm2⟩ := scWrap_decompose h2 M' rfl
+    have hb2 : k + m₂ ≤ 36 := sc_fate_all_bounded _ m₂' (RS.StepsN.trans hm hm2)
+    omega
+
+/-- **Conditional fate, housed**: the relay with a spinning payload assembles an immortal
+pair in eight fires; with a halting payload every schedule dies at machine-and-shadow
+normal form behind the 73-fire wall. -/
+theorem sc_relay_fates :
+    (RS.SC.StepsN 8 (scRelay (scFate .C))
+        (SCTerm.app (SCTerm.app .S scFateOrb) (.app .C (scFate .C))) ∧
+      ∀ n, ∃ u, RS.SC.StepsN n
+        (SCTerm.app (SCTerm.app .S scFateOrb) (.app .C (scFate .C))) u) ∧
+    (RS.SC.Steps (scRelay (scFate (.app .C .C)))
+        (SCTerm.app (SCTerm.app .S scFateNf) (.app .C scFateNf)) ∧
+      (∀ v, ¬ RS.SC.step (SCTerm.app (SCTerm.app .S scFateNf) (.app .C scFateNf)) v) ∧
+      ∀ (n : Nat) (u : SCTerm),
+        RS.SC.StepsN n (scRelay (scFate (.app .C .C))) u → n ≤ 73) := by
+  refine ⟨⟨RS.StepsN.tail (scRelay_fire _) (scStepsN_appL _ (scStepsN_appR .S scFate_entry)),
+      sc_pair_spin _⟩, ?_, ?_, sc_relay_wall⟩
+  · exact RS.Steps.tail (scRelay_fire _)
+      (RS.Steps.trans
+        (RS.StepsN.toSteps (scStepsN_appL _ (scStepsN_appR .S scFate_halts)))
+        (RS.StepsN.toSteps (scStepsN_appR _ (scStepsN_appR .C scFate_halts))))
+  · intro v h
+    rcases scPair_inv h with ⟨c', hs, _⟩ | ⟨c', hs, _⟩
+    · exact scFateNf_normal c' hs
+    · obtain ⟨m', hm, _⟩ := scWrap_inv hs
+      exact scFateNf_normal m' hm
