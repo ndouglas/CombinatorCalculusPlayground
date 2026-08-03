@@ -5642,3 +5642,16 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **the reset** (re-open the stash: promote (C scDup) reg — a C-fire — and
   re-stash; gives consult-twice and, iterated, the consultation LOOP). (2) The write (swap
   which register the stash holds). (3) Harvest deferred censuses.
+
+## 2026-08-03 — Stage 166: the loop was already running
+
+- Twelve consultations from a three-leaf machine over the register. The reset didn't need
+  designing — the burn-and-refire rhythm is what these S/C mixtures do naturally; what
+  needed designing was the DETECTOR (the consultation event as a structural pairwise match,
+  now a Lean Bool over marches). Observation instruments are becoming theorems' front door:
+  march + detector + #guard is a new certificate shape.
+- Forty-eight autonomous stages (119–166). C8 = the write, alone.
+- Ranking: (1) **the write**: a machine action that replaces S S C by S S (C C) (or dually)
+  in a surviving register — likely via consultation products recombining (the fire's
+  (bit X) output IS the bit applied; a context that captures it as S S (bit X)... shape
+  analysis first). (2) Harvest deferred censuses. (3) Consolidation review at Stage 170.

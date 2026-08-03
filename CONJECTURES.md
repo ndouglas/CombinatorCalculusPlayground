@@ -5451,3 +5451,16 @@ re-opened and re-stashed, the loop of Stage 163's recover step) and the WRITE. T
 contamination ledger reached four: every predicate that touched C-material lied until shapes
 were made disjoint; the discipline (null cases + shape disjointness + fire-by-fire reads)
 is now as load-bearing as the theorems.
+
+### Stage 166: the consultation loop — twelve reads, register alive
+
+The reset dissolved on contact: `S C C (S S C) scDup` consults its register TWELVE times in
+52 forced fires, register present throughout — kernel-certified (`#guard`s replay the march
+with `scForcedMarch`, count consultation events with the structural detector `scIsConsult`
+— a step rewriting `reg X ⟶ (S X)(bit X)` — and check survival at the end). The bit-`C C`
+twin consults fourteen times in 132 leftmost steps (branching; probe-recorded).
+`scForced_chained` (`[propext]`, pinned) links marches to `Steps`. C8's ledger: READ ✓
+(register demo), LATCH ✓ (set-once mode), LOOPED READ ✓ (here). One primitive remains: the
+WRITE — change which bit the surviving register carries, mid-run, by machine action. Pin-rule
+violation logged and corrected same-commit: the audit output was on screen and the pin text
+still guessed — the rule is READ the audit line, not run it.
