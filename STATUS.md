@@ -41,8 +41,15 @@ machines at n ≤ 9 share one clock — copies are born equal); and finally
 THE REGISTER DEMO (`sc_read_bitC`/`sc_read_bitB`, axiom-free, pinned):
 `reg reg S (C C)` with `reg = S bit` — the bit alone selects between two
 distinct normal forms, each still CONTAINING its application-ready
-register. The nondestructive read EXISTS: read, diverge, survive. C8's
-remaining distance: loop the consultation, and write the bit. Since the Stage 114 review, one autonomous run
+register. The nondestructive read EXISTS: read, diverge, survive. And Stage 165
+pinned THE LATCH (`scLatch_run_C`/`_B` + the mode pulses, axiom-free):
+an eight-leaf machine that STASHES a register copy (fire one), CONSULTS
+the working copy (fire ten), and diverges into bit-dependent perpetual
+five-beat pulses that carry the stashed register forever — the
+Stage-163 paper design found executing in the wild, verified
+fire-by-fire. `{S,C}`'s first pinned control primitive: a set-once
+latch with a reusable source bit. C8's remaining distance: the RESET
+(re-open and re-stash — the consultation loop) and the WRITE. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a

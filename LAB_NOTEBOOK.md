@@ -5628,3 +5628,17 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Forty-six autonomous stages (119–164). Sixteen feat stages today. Ranking: (1) **the
   looped consultation** (a pulse that samples the register each period — combine the pulse
   and the read template). (2) The bit-write. (3) Harvest deferred censuses.
+
+## 2026-08-03 — Stage 165: the latch
+
+- The best moment of the campaign: reading the emitted trace and recognizing fire one as the
+  stash and fire ten as the consultation — the paper design of two stages ago, executing in
+  a machine the search found on its own. Design and census converged on the same object
+  from opposite sides.
+- {S,C} now has a pinned control primitive: read a bit once, hold the mode forever, keep
+  the bit. The remaining C8 distance (reset and write) is choreography on top of the same
+  five moves the run has pinned all day.
+- Forty-seven autonomous stages (119–165); eighteen feat stages today, all axiom-free.
+- Ranking: (1) **the reset** (re-open the stash: promote (C scDup) reg — a C-fire — and
+  re-stash; gives consult-twice and, iterated, the consultation LOOP). (2) The write (swap
+  which register the stash holds). (3) Harvest deferred censuses.

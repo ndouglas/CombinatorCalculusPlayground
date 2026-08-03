@@ -5434,3 +5434,20 @@ now the COMPOSITION: consult in a loop (the demo consults once, at the run's sta
 (change the bit mid-run). The campaign's arc — stash-by-duplication design, two contaminated
 predicates caught by null cases, the S-guarded register that made shapes collision-free —
 took one day from 'the quine problem' to a pinned read-with-effect.
+
+### Stage 165: the latch — the first pinned control primitive
+
+`scLatch bit = S (C C) (C scDup) (S S bit) scDup` — sixteen fires, all pinned, axiom-free
+(`scLatch_run_C`/`scLatch_run_B` + `scModeC_pulse`/`scModeB_pulse`): fire ONE stashes a
+register copy inside `(C scDup) reg` (the Stage-163 stash, executing verbatim); fire TEN is
+the CONSULTATION (the working copy fires, exposing the bit); the runs diverge into different
+perpetual five-beat pulses, each carrying the stashed register as a standing subterm
+(`scHasSub` guards; register shape machinery-disjoint by construction). STASH, CONSULT,
+DIVERGE, SURVIVE — a set-once latch with a reusable source bit. The design was drawn on paper
+at Stage 163 from pinned move-types; the search then found an eight-leaf machine already
+running it; the trace was verified fire-by-fire against the design before pinning. C8's
+remaining distance after the latch: the RESET (consult more than once — the stash must be
+re-opened and re-stashed, the loop of Stage 163's recover step) and the WRITE. The campaign's
+contamination ledger reached four: every predicate that touched C-material lied until shapes
+were made disjoint; the discipline (null cases + shape disjointness + fire-by-fire reads)
+is now as load-bearing as the theorems.
