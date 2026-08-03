@@ -6250,3 +6250,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   at time n is a spine-descendant of the a₁-chain at time 0); a pinned characterization
   is the platform for C10's resolution either way. (2) floor14/n=16 harvests as they
   land. (3) The multi-period odometer, now expressible in call-sequence language.
+
+## 2026-08-04 — Stage 212: head provenance
+
+- Nine lines on top of the dichotomy. Control flow in {S,C} is now a theorem: mutation
+  histories preserve the head; everything else is a₁-supply. The C10 attack is
+  well-posed as address-flow through supply chains.
+- Ninety-four autonomous stages (119–212). Ranking: (1) **address flow**: refine
+  provenance to track a marked subterm (the numeral) through calls — a positional
+  no-mixing lemma would decide C10's small cases and possibly the general one.
+  (2) floor14/n=16 harvests as they land. (3) The multi-period odometer in
+  call-sequence language.

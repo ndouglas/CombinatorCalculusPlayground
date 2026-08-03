@@ -6144,3 +6144,16 @@ all require something to arrive at head position that was never placed in the a�
 C10 in this language: can a machine place an INCREMENTED COPY of its own address into
 its own return stack? The dichotomy makes the question precise enough to attack by
 induction over call sequences — the next theorem of the program.
+
+### Stage 212: head provenance — the return stack, iterated
+
+The dichotomy closes under reduction in nine lines: `sc_head_provenance` ([propext]) —
+over any multi-step reduction, the final head atom either SURVIVED from the start (the
+whole history was mutations; all computation stayed argument-internal) or was SUPPLIED
+by the first argument of some reachable state. There is no third source of control.
+Every recurrent machine in the program now has its mechanism named: the reader re-supplies
+its front from its consultation product (a₁-chain), the orbits re-supply cyclically, the
+dynasty re-supplies through genes — and C10 asks precisely whether a re-supplied head
+can carry an incremented address through its own supply chain. The invariant program has
+its platform: provenance is pinned; what remains is to track the ADDRESS through the
+supply, which is a data-flow refinement of the same induction.

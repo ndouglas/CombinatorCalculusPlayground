@@ -258,7 +258,11 @@ every step is a MUTATION (one argument steps in place) or a CALL (the
 first argument becomes the program) — reduction is a call-stack
 discipline whose return stack is the leftmost branch, all five walls
 share one explanation, and C10 becomes: can a machine place an
-incremented copy of its own address into its own return stack? Behind the alternator stand tag/Minsky hosting,
+incremented copy of its own address into its own return stack? Stage
+212 iterated the dichotomy (`sc_head_provenance`, [propext]): over any
+reduction the head either survives or is supplied by a first argument
+of a reachable state — no third source of control exists. Provenance
+is pinned; C10 is now an address-flow question on supply chains. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
