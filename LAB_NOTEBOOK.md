@@ -5679,3 +5679,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   sitting): interleave two word-registers under one driver — the four primitives as parts,
   the lockstep law as the wall, phase-offset pulses as the first idea. (2) Harvest the n=10
   floor census (still grinding). (3) The Stage-170 review.
+
+## 2026-08-03 — Stage 168 addendum: the two-clock wall, pre-breached on paper
+
+- Recorded before the next sitting so the insight survives the context boundary: the
+  lockstep law governs DETERMINISTIC SINGLE-SPINE marches; the reduction target
+  (reachability) quantifies over ALL paths, and members reduce independently by appL/appR
+  congruence. Two word-register CONFIGURATIONS held as members of one term are therefore
+  independent clocks for free — the interleaving is nondeterministic and reachability only
+  needs one good schedule. The coupling (control reading register outcomes) is the read
+  gadget applied to member end-states. The two-clock campaign's opening move is thus an
+  architecture, not a search: pair-holder term, two member-configs, stash-consult coupling.
+  Risk to check first: member-internal configs must actually fire (they do — appR closure),
+  and the driver's consultation must not wake the wrong member early.
