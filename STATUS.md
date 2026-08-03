@@ -592,7 +592,18 @@ FIFO ORDER — the tag queue's append order, free. Two of the three
 architectural walls (arm junk, LIFO piles) were scDup-era artifacts. C8
 now reads concretely: from `E W₂ W₁`, erect the next word with a working
 accumulator and re-armed driver (re-erection is live — `scDup W₂ W₁`
-runs a cell in two fires — but mints a junk accumulator). The boustrophedon framing was itself corrected (Stage 116): front-push and
+runs a cell in two fires — but mints a junk accumulator). Stages 149–152
+measured the remaining gap exactly: THE FUEL LAW (`scBWord_run` — leading
+wrappers burn as arms; only the final two arrive) and FUEL BLINDNESS
+(`scBCell_fuel_blind` — all fuels deliver bitwise-identical states: the
+furnace reads nothing); and on the positive side THE GENERATION CYCLE
+(`sc_generation_cycle` — the one-symbol self-tag hosts as a five-fire
+`{S,C}` CYCLE, the end marker acting as return address) and THE ATTRACTOR
+(`sc_words_decay` — every `scDup`-ended word pops to empty then pulses in
+that cycle forever; the naive multi-symbol loop is dead). All axiom-free,
+pinned. C8, final form: design a marker whose rebuild consumes the
+harvested pile as CONSTRUCTION MATERIAL rather than fuel — every other
+part of the generation loop is now a theorem. The boustrophedon framing was itself corrected (Stage 116): front-push and
 front-pop INTERLEAVE, so the induced dynamics are PREFIX REWRITING — a
 deterministic stack process with a finite wrapper alphabet, pushdown-flavored,
 and generational separation would need a mid-spine barrier that cannot exist.

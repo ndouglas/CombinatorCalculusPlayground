@@ -5240,3 +5240,17 @@ longer than the consumed prefix) or shrink (shorter) rather than return bit-iden
 generation "cycle" becomes a generation SPIRAL, and the glider (Stage 135) is the existing
 specimen of exactly that shape. The design question: a spiral whose per-loop growth carries
 the tag rule's productions.
+
+### Stage 152: the attractor — pop until empty, then pulse
+
+`sc_words_decay` (axiom-free, pinned): every `scDup`-ended word configuration decays into the
+generation loop — `scRun_step` pops symbols one at a time (the rest-word only rides), and the
+empty configuration is three fires from the cycle (`sc_empty_to_loop`). A complete dynamical
+description of the family: the Stage-151 cycle is its UNIQUE attractor. The naive multi-symbol
+generation loop is dead — probe: the two-symbol configuration's entire 10-state closure
+contains the one-symbol loop; it neither cycles at its own length nor halts. The reading for
+C8: the pulse is what the marker's rebuild looks like when the harvest is empty; a non-trivial
+generation loop needs the marker to rebuild FROM THE HARVESTED PILE instead — and the harvest,
+by the fuel law, currently burns. The two constraints have met: C8 = design a marker whose
+rebuild consumes the pile as construction material rather than fuel. Everything else about the
+generation loop is now theorem.

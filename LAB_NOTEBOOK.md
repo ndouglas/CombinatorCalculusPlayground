@@ -5436,3 +5436,21 @@ what automation could and couldn't do. This file is a first-class deliverable
   pattern composes) — probe for the cycle, formalize if found. (2) The growth spiral
   ({b ↦ [b,b]}: word doubles per generation — the undecidability route's engine). (3) Floor
   asymptotics at n=10.
+
+## 2026-08-03 — Stage 152: pop, then pulse
+
+- The two-symbol "failure" turned into the family's complete dynamics in one sitting: pop
+  until empty, pulse forever, all pinned. The attractor theorem is a three-line induction
+  because Stage 107's scRun_step was already the pop — the run keeps discovering that its
+  old gadgets were halves of newer theorems.
+- The C8 statement after today's four stages is the sharpest it has ever been: a marker
+  whose rebuild consumes the pile as construction material rather than fuel. One sentence,
+  every term in it a pinned concept.
+- Thirty-four autonomous stages (119–152); today alone: C7 refuted, queue cell, biodegradable
+  layer, fuel law, fuel blindness, generation cycle, attractor — seven feat stages, all
+  axiom-free.
+- Ranking: (1) **the harvest-rebuilding marker**: the pile after a biodegradable run is
+  E W₂ W₁ (clean, FIFO); design/search E whose action on W₂ W₁ is the three-nest chain
+  (Stage 146) rather than the pulse — the search target is the queue-cell shape with W₂
+  inside, checked against the origin. (2) Floor asymptotics at n=10. (3) The aperiodic
+  diverger's anatomy.
