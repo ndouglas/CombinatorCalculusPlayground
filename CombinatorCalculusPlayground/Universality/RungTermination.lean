@@ -4231,3 +4231,37 @@ theorem sc_spiral_pop (k : Nat) :
 theorem sc_spiral_descends : ∀ k, RS.SC.Steps (scSlide k) (scSlide 0)
   | 0 => @RS.Steps.refl RS.SC _
   | k + 1 => RS.Steps.trans (sc_spiral_pop k) (sc_spiral_descends k)
+
+-- ## Stage 157: the fourteen-beat pulse — the Q-family trilogy complete
+-- The growth step's output IS the pulse's entry state: `(CC (CC scQuine)) scQuine scQuine`
+-- sits on a fourteen-fire cycle (twelve C-fires, two S-fires — the two arm-duplications that
+-- keep the beat alive). With the pop law and the descent, the scQuine family's dynamics are
+-- now fully pinned: slide down by sixes, grow once by four, pulse by fourteens.
+
+/-- The pulse's basepoint: the growth step's output. -/
+def scPulse : SCTerm :=
+  .app (.app (.app (.app .C .C) (.app (.app .C .C) scQuine)) scQuine) scQuine
+
+/-- **The fourteen-beat pulse**: a genuine 14-cycle, the Q-family's universal attractor. -/
+theorem sc_pulse14 : RS.SC.StepsN 14 scPulse scPulse :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) scQuine) scQuine))
+  (RS.StepsN.tail (SCStep.C_red scQuine (.app (.app .C .C) scQuine) scQuine)
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C (.app .C .C)) (.app .C .C) scQuine))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) scQuine (.app (.app .C .C) scQuine)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) scQuine) scQuine))
+  (RS.StepsN.tail (SCStep.C_red scQuine (.app (.app .C .C) scQuine) (.app (.app .C .C) scQuine))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C (.app .C .C)) (.app .C .C) (.app (.app .C .C) scQuine)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app (.app .C .C) scQuine) (.app (.app .C .C) (.app (.app .C .C) scQuine))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C .C) scQuine)) (.app (.app .C .C) scQuine)))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) scQuine) (.app (.app .C .C) (.app (.app .C .C) scQuine)) (.app (.app .C .C) scQuine))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C scQuine (.app (.app .C .C) scQuine)))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) scQuine) scQuine (.app (.app .C .C) (.app (.app .C .C) scQuine)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C scQuine (.app (.app .C .C) (.app (.app .C .C) scQuine))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) scQuine)) scQuine scQuine)
+  (@RS.StepsN.refl RS.SC scPulse)))))))))))))))
+
+/-- Growth lands on the pulse: the four-fire growth step's target is the pulse basepoint. -/
+theorem sc_growth_to_pulse :
+    RS.SC.Steps
+      (.app (.app (.app (.app .C .C) scQuine) scQuine) scQuine) scPulse :=
+  sc_growth_step
