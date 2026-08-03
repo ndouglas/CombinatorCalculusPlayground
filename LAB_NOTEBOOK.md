@@ -5809,3 +5809,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   whose junk stream is CC-biodegradable, so the burn-phase re-reads it — probe for fronts
   whose emitted J is pure-C. (The reader's J = C P (C r) contains r = S S C: S-material;
   a pure-C-junk reader would burn clean.) (2) n=10 witnesses. (3) Bounded intermediates.
+
+## 2026-08-03 — Stage 179: it was writing all along
+
+- The probe's zero forced the better reading: junk-as-storage. The reader appends a
+  register copy per period — a write-only log; the burn phase is the read head; the fuel
+  is the seek. Every noun in that sentence is a pinned mechanism from a different stage of
+  the run (reader 176, biodegradable burn 148, fueled fronts 137). The persistence campaign
+  keeps ending its stages one splice from the machine.
+- Sixty-one autonomous stages (119–179). Ranking: (1) **the fueled reader**: fronts that
+  run k periods then exhaust into their storage — search reader-variants with fuel-tower
+  components; detectors ready. (2) n=10 witnesses. (3) Bounded intermediates.

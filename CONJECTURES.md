@@ -5636,3 +5636,18 @@ The writing reader is a GROW/BURN ALTERNATOR — Stage 116's boustrophedon, whic
 set aside as an obstacle description, returns as the design: grow-phase emits computed junk
 (the reader), burn-phase re-reads it (the biodegradable machinery), the carry rides
 parametric persistence. Every phase-mechanism is pinned; the alternator is the composition.
+
+### Stage 179: the junk is storage — the writer was writing all along
+
+Pure-C-junk persistent fronts are probe-dead (324 seeds, zero) for a structural reason:
+duplication-driven persistence copies its own S-engine into every junk block — the junk
+inherits the engine, necessarily. But re-reading the reader's junk under that light inverts
+the ledger: `J = C P (C r)` is C-HEADED with C-headed spills, and its payload is a REGISTER
+COMPLEX — when a burn phase eventually promotes a junk block, its members spill and the
+stored register re-exposes. THE JUNK STREAM IS A STACK OF STORED REGISTERS: the persistent
+reader has been WRITING all along — one register copy appended to storage per period; what it
+lacks is the RETURN (the front never shrinks, so storage is never revisited). The alternator's
+missing piece is therefore a TRIGGER: a fueled reader — a front that runs k periods and then
+exhausts, burning down into its own storage (Stage 137's fueled machines meet Stage 176's
+reader). The writer's specification has moved for the last time: not mint-and-route, not
+grow/burn in the abstract, but READER + FUEL — both pinned phenomena, one splice.

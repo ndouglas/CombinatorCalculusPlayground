@@ -100,9 +100,16 @@ ALTERNATOR: Stage 116's boustrophedon, once an obstacle description,
 returns as the blueprint — grow-phase emits computed junk (the reader's
 mechanics), burn-phase re-reads it (the biodegradable machinery), the
 carry rides parametric persistence. Every phase-mechanism is pinned; the
-alternator is the last composition, and behind it stand tag/Minsky
-hosting, undecidability, and the frontier equivalence's negative
-resolution. Since the Stage 114 review, one autonomous run
+alternator is the last composition — and Stage 179 located its final
+spec: THE JUNK IS STORAGE. The reader's junk blocks are C-headed
+register complexes (pure-C junk is probe-dead: duplication-driven
+persistence necessarily copies its engine into its junk) — the reader
+appends one stored register per period, a write-only log; the burn
+phase is the read head; a FUEL TOWER is the missing trigger that ends
+the grow phase and burns the front into its own storage. Reader (176) +
+fuel (137) + burn (148): three pinned phenomena, one splice, and behind
+it tag/Minsky hosting, undecidability, and the frontier equivalence's
+negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a
