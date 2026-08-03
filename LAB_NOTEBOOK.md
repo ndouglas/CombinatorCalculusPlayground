@@ -5454,3 +5454,20 @@ what automation could and couldn't do. This file is a first-class deliverable
   (Stage 146) rather than the pulse — the search target is the queue-cell shape with W₂
   inside, checked against the origin. (2) Floor asymptotics at n=10. (3) The aperiodic
   diverger's anatomy.
+
+## 2026-08-03 — Stage 153: the quine's address
+
+- Six stages of triangulation (148–153) and C8 has an exact address: the marker must survive
+  its own firing. Everything else — read, mint, chain, clean, rebuild — is a pinned,
+  axiom-free theorem now. The searches keep converging on scDup as the almost-answer: it
+  rebuilds, it pulses, it duplicates its operand into working positions; what it cannot do
+  is put ITSELF back unchanged with a LARGER word around it.
+- The tags-are-C-material observation may matter more than it looks: for tag words the
+  accumulator "junk" dispatches, so the wrapper-duplicating rebuild is functional, not
+  wasteful. The last wall may again be thinner than it reads.
+- Thirty-five autonomous stages (119–153). Ranking: (1) **the marker quine, head-on**: the
+  growth step needs E ⟶*-embedded-in-target; scDup's own regeneration trick (S t t x
+  patterns rebuilding S t t) is the template — search S q q-shaped markers with q from a
+  pool, target the exact growth config; widen depth. (2) If the quine resists: the SPIRAL
+  variant (target config₂ with a DIFFERENT-but-equivalent marker — weaken exactness to
+  behavioral equivalence via a second generation check). (3) Floor asymptotics at n=10.

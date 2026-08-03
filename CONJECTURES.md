@@ -5254,3 +5254,17 @@ generation loop needs the marker to rebuild FROM THE HARVESTED PILE instead — 
 by the fuel law, currently burns. The two constraints have met: C8 = design a marker whose
 rebuild consumes the pile as construction material rather than fuel. Everything else about the
 generation loop is now theorem.
+
+### Stage 153: the harvest rebuilder — C8's exact address
+
+POSITIVE (`sc_harvest_rebuild`, axiom-free, pinned): from the clean pile `E W₂ W₁`, the marker
+`scDup` rebuilds a live biodegradable cell in TWO fires, generic in both wrappers — the
+duplicated wrapper landing in the accumulator seat, which for tag words is self-dispatching
+rather than junk (tags are C-material; the run's data/machine distinction dissolves for them).
+288 designed markers rebuild; `scDup` is the smallest. NEGATIVE: the exact growth step
+`config [b] ⟶* config [b,b]` has NO marker to 14 leaves (3,766 candidates) — there the marker
+must appear verbatim in the target, i.e., survive its own firing, i.e., quine. C8's address
+after six stages of triangulation: reading is solved, minting is solved, rebuilding is solved,
+the pile is clean and FIFO — the entire remaining problem is the marker's SELF-PERSISTENCE
+through the rebuild. One combinator-design question, stated in one line, with every
+surrounding mechanism a pinned theorem.
