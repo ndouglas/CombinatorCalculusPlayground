@@ -5182,3 +5182,20 @@ forward, mapped: CO-DESIGN of (cell constant, arm shape, end-marker) — the cel
 constant need not be `scDup` and the arms need not be either; if the arm itself carries the
 synthesis prefab, the barrier becomes the mechanism. That co-design space is C8's real arena.
 Caveats: pool/depth-bounded, single-wrapper words, drop layout fixed by `scQCell_fire`.
+
+### Stage 148: the biodegradable architecture — zero residue, FIFO
+
+C8's co-design probe paid immediately. Eighteen of sixty-four (constant, arm) pairs traverse;
+one dissolves Stage 147's barrier entirely: `scBCell acc W = C (C C acc) W` with arms `C C` —
+every auxiliary leaf is pure C, so the C-fragment's exact conservation (Stage 117) burns ALL
+machinery. The five-fire protocol (`scBCell_fire`, axiom-free, pinned): first arm consumed as
+fuel, second passed inward, wrapper dropped behind, nothing else left. `scBWord_two`
+(axiom-free, pinned): a two-cell word ends at literally `E W₂ W₁` — end marker promoted with
+the harvested wrappers as its ONLY members, in FIFO ORDER, zero residue; the composition even
+routes the harvested `W₂` through as the second cell's arm, so data is fuel-safe. Forty stages
+of fighting non-erasure, and the resolution is to build the machine from the one combinator
+that consumes itself. Re-erection from `E W₂ W₁` is live (`scDup W₂ W₁` reaches the running
+cell `C (C C W₂) W₂ · W₁` in two fires — observed, not yet pinned) but mints a junk
+accumulator; C8 now reads: from `E W₂ W₁`, erect `scBWord E' [W₂-productions]` with a WORKING
+accumulator and a re-armed driver. The remaining gap is real but it is now measured in fires,
+not in architecture.

@@ -5369,3 +5369,23 @@ what automation could and couldn't do. This file is a first-class deliverable
   shape together (the seven-fire protocol re-verified per candidate), search for pairs whose
   end-state puts prefab adjacent to wrapper. (2) Floor asymptotics at n=10. (3) The
   aperiodic diverger's anatomy.
+
+## 2026-08-03 — Stage 148: biodegradable
+
+- The probe's best row read like a misprint: end members ['W2', 'W1'] and nothing else. It
+  took a minute to trust it — conservation, not magic: fifteen leaves in, twelve C-fires,
+  three leaves out. The design principle deserves its name: BIODEGRADABLE MACHINERY — make
+  every auxiliary part out of C, and the calculus's own conservation law is the garbage
+  collector. Five-fire protocol, first-build green, all axiom-free.
+- FIFO fell out for free. The queue order that tag systems demand — the thing the LIFO-pile
+  analysis of Stages 113-122 treated as a deep obstacle — is just what the biodegradable
+  protocol produces naturally. Two of the run's three standing architectural walls (arm
+  junk, queue order) were artifacts of the scDup-era design.
+- Thirty autonomous stages (119–148). The fold campaign across three days: production one
+  fire (144), accumulation three fires (146), traversal five fires with zero residue and
+  FIFO (here). C8 has shrunk from 'the quine problem' to 'wire the re-erection's accumulator
+  and re-arm the driver from E W₂ W₁'.
+- Ranking: (1) **C8 endgame**: from `E W₂ W₁`, co-design E to erect a WORKING next word
+  (accumulator = fresh end marker, not junk) and re-arm — probe first, the target this time
+  checked against the origin. (2) The full biodegradable word layer (n-cell zero-residue
+  traversal, by induction — cheap and pinnable). (3) Floor asymptotics at n=10.

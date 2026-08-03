@@ -581,11 +581,18 @@ equivalence — hangs on ONE remaining design problem: C8, DRIVER
 SELF-REGENERATION (the quine). The stakes are now explicit: a quine
 driver ⟹ tag `Simulation` into `{S,C}` ⟹ rung-3 reachability
 undecidable ⟹ the frontier equivalence resolves negative. Stage 147
-mapped C8's first wall: THE ARM-JUNK BARRIER — after traversal the two
-spent (non-erasable) interrogation arms sit exactly where the synthesis
-prefab must stand (2,286 designed end-markers, zero re-erections) — and
-its candidate mechanism: CO-DESIGN the cell constant and arm shape so the
-arm itself carries the prefab, turning the barrier into the fold. The boustrophedon framing was itself corrected (Stage 116): front-push and
+mapped C8's first wall (THE ARM-JUNK BARRIER — spent arms are
+non-erasable and block the synthesis position; 2,286 end-markers, zero)
+and Stage 148's co-design DISSOLVED it: THE BIODEGRADABLE ARCHITECTURE
+(`scBCell acc W = C (C C acc) W`, arms `C C`) makes every auxiliary leaf
+pure C, so exact C-conservation burns all machinery — five-fire protocol
+(`scBCell_fire`), and a two-cell word ends at literally `E W₂ W₁`
+(`scBWord_two`, axiom-free, pinned): ZERO RESIDUE and the wrappers in
+FIFO ORDER — the tag queue's append order, free. Two of the three
+architectural walls (arm junk, LIFO piles) were scDup-era artifacts. C8
+now reads concretely: from `E W₂ W₁`, erect the next word with a working
+accumulator and re-armed driver (re-erection is live — `scDup W₂ W₁`
+runs a cell in two fires — but mints a junk accumulator). The boustrophedon framing was itself corrected (Stage 116): front-push and
 front-pop INTERLEAVE, so the induced dynamics are PREFIX REWRITING — a
 deterministic stack process with a finite wrapper alphabet, pushdown-flavored,
 and generational separation would need a mid-spine barrier that cannot exist.
