@@ -5863,3 +5863,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   (2) **the two-bit fate**: compose fate machines — do two registers give four fates
   (spin/spin, spin/stop, stop/spin, stop/stop) under congruence? Cheap if yes. (3) The
   n=12 growth-law sample.
+
+## 2026-08-03 — Stage 183: universal fate
+
+- The ranked-closure certificate worked on the first real try (one recursor-motive fix,
+  one heartbeats bump — the emitted 231-state space decides in seconds). scRanked_bound
+  joins the toolkit next to scForced_mountain: the mountain excludes capped paths, the
+  ranking excludes ALL long paths.
+- Sixty-five autonomous stages (119–183). Ranking: (1) **the two-bit fate**: two fate
+  machines under the pair-holder (sc_two_clocks chassis) — four fates from two registers
+  by congruence; if it composes cleanly, the fate bit becomes a COMPONENT, and a
+  conditional-eternity gadget (machine A's output bit feeds machine B's register) is the
+  first step toward hosting halting-style questions inside {S,C} reachability. (2) The
+  n=12 growth-law sample. (3) The alternator/fueled-reader thread.

@@ -5700,3 +5700,19 @@ machine's future is finite. Probe data (recorded, not pinned): the bit-`C C` rea
 state space is FINITE — 231 states under every schedule — with the NF its unique sink,
 so the halt is schedule-independent, not just leftmost. C8's composition ladder now has
 READ → LATCH → WRITE → PERSIST (two ways) → FATE.
+
+### Stage 183: universal fate — every schedule halts, and 36 is the wall
+
+Stage 182's halt half said "a normal form is reachable"; Stage 183 says "nothing else can
+happen." New toolkit piece: the RANKED CLOSURE certificate. Emit the complete reachable
+state space (231 terms, ≤ 29 leaves), grouped by height so every successor of every member
+sits in a strictly lower group; `decide` checks the whole certificate in-kernel; the new
+generic lemma `scRanked_bound` (five lines of recursor) converts it into a uniform bound —
+no reduction from the seed outlives its rank. The seed's rank is 36 and the leftmost path
+REACHES 36, so the wall is sharp: `sc_fate_all_bounded` (no schedule exceeds 36 fires),
+`sc_fate_unique_exit` (every stuck reachable term IS `scFateNf`), `sc_fate_universal`
+(the conjunction). The fate machine's contrast is now total: bit `C` — runs of every
+length; bit `C C` — every maximal reduction, every schedule, dies at one normal form
+inside 36 fires. This is the program's first pinned termination-of-all-paths result, and
+the certificate is generic: any finite acyclic reachable space can now be pinned the same
+way, which turns the capped engine's saturation data into termination theorems on demand.

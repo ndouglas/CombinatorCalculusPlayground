@@ -122,7 +122,12 @@ duplicating fire re-mints the consumed register copy — regeneration,
 pinned; runs of every length via `scFate_runs`), while bit `C C` sends
 the SAME machine to a kernel-checked normal form in 36 fires
 (`sc_fate`): the register's content decides whether the machine's
-future is finite. Behind the alternator stand tag/Minsky hosting,
+future is finite. Stage 183 made the halt half UNIVERSAL via the new
+RANKED-CLOSURE certificate (`scRanked_bound` + the emitted 231-state
+height-graded space): no schedule exceeds 36 fires — sharp, the
+leftmost path reaches it — and every dead end is `scFateNf`
+(`sc_fate_universal`), the program's first pinned
+termination-of-all-paths result. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
