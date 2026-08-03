@@ -5603,3 +5603,15 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Forty-four autonomous stages (119–162). Ranking: (1) **the re-consultable-bit campaign**
   (paper-first; the bit-on-a-cycle design with the phase-sampling question made concrete).
   (2) Harvest the deferred censuses when they land. (3) Consolidation.
+
+## 2026-08-03 — Stage 163: the gadget on paper, the artifact in the probe
+
+- The read gadget is the campaign's design payoff: stash by duplication, dispatch on the
+  copy, recover from the stash — non-erasure turned from obstacle into mechanism (the junk
+  copy IS the register). Nothing in it is speculative except the choreography.
+- The probe artifact is the sixth predicate lesson and the bluntest phrasing yet: BEFORE
+  believing a divergence measure, run it on a machine that provably ignores the input. The
+  null case is part of the instrument.
+- Forty-five autonomous stages (119–163). Ranking: (1) **the read-gadget demo with effect
+  markers** (hand-choreographed, Python-verified, then the emitter writes the Lean — the
+  full one-consultation theorem pair). (2) Harvest deferred censuses. (3) Consolidation.

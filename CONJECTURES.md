@@ -5405,3 +5405,19 @@ seeds): {S,C}'s spontaneous machines have one clock. Independent registers, if t
 are DESIGNED objects above nine leaves — and their design problem is C8. Meanwhile the n=10
 floor census is rescoped: its per-term cost (300-step marches over 2.4M terms) exceeded the
 overnight budget; it continues detached, harvest deferred.
+
+### Stage 163: the read gadget, designed — and a predicate that lied
+
+PAPER RESULT (design, assembled entirely from pinned move types): the READ GADGET —
+(1) STASH: an S-fire with the bit at third position leaves the bare bit as a member and nests
+a copy into `(g b)`; (2) BUILD: three g-position nests raise a dispatcher `b P₁ P₂ x` with the
+bit at its head; (3) DISPATCH: the tag fires, one C burns, different arms act per bit
+(`scTagA/B_dispatch`); (4) RECOVER: promoting the stash spills its members and the bit pops
+out bare, last. Read-many, intact-after-each, divergent-per-reading — every step an existing
+pinned mechanism; what remains is the positional choreography (the f-slot sequencing that
+every campaign meets). PROBE INCIDENT, recorded as the sixth predicate lesson: the gadget
+search's divergence measure abstracted the bit ACROSS THE WHOLE TERM, so `b = C` mangled
+every machinery `C` — 142/161 machines "diverged", including bit-ignorers; a null-case test
+would have caught it before the run. Effect markers (distinct designed shapes produced per
+branch) are the correct instrument; the demo needs design, not search. Census harvest logged:
+986 conditional one-bit pairs at n=9 (66 at n=8).
