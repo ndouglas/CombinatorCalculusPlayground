@@ -5692,3 +5692,12 @@ what automation could and couldn't do. This file is a first-class deliverable
   architecture, not a search: pair-holder term, two member-configs, stash-consult coupling.
   Risk to check first: member-internal configs must actually fire (they do — appR closure),
   and the driver's consultation must not wake the wrong member early.
+
+## 2026-08-03 — Stage 169: the census that almost told
+
+- Ninety percent of five million terms, and the winners died with the process because the
+  report waited for the end. The checkpoint's one number (excess ≥ 44) still moves the
+  floor curve; the relaunch prints as it finds. Census-kit rule added alongside the six
+  predicate lessons: incremental output is part of probe correctness.
+- Fifty-one autonomous stages (119–169). Ranking: (1) the Stage-170 review. (2) Harvest the
+  relaunched sweep's witnesses when they surface. (3) The two-clock campaign, fresh.

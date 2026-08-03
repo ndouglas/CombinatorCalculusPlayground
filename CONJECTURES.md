@@ -5494,3 +5494,16 @@ ONE DRIVER — and the lockstep law (Stage 162) is exactly the statement that th
 happen spontaneously. The Minsky reduction runs through designing what no ≤9-leaf machine
 exhibits: two clocks. All four control primitives are available as parts; the two-clock
 problem is the composition campaign's opening question, and it deserves fresh eyes.
+
+### Stage 169: the n=10 floor, partial harvest
+
+The n=10 forced-excess census ran to ~90% coverage (4.5M of 4.98M terms) before dying without
+its final report — the winners list printed only at completion, a tooling design error now
+fixed (the relaunched sweep prints hits incrementally, crash-proof). What survived the
+checkpoints: MAX FORCED EXCESS ≥ 44 AT n=10. The floor curve across sizes now reads 1 (n=6,
+exhaustive), 3 (n=7, exhaustive), 23 (n=8, exhaustive), 15 (n=9, forced-prefix method), ≥44
+(n=10, 90% coverage) — superlinear and accelerating, consistent with the doubling speed limit
+and the counter/glider readings: forced computation deepens fast with seed size. The pinned
+frontier floors (f(6,6) ≥ 7, f(9,10) ≥ 25, f(8,32) ≥ 44) will gain an n=10 point when the
+relaunched sweep surfaces its witnesses. Methodology note for the census kit: LONG SWEEPS
+PRINT INCREMENTALLY — a final-report-only design loses everything to a late death.
