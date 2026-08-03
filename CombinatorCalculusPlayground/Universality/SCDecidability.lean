@@ -1564,3 +1564,45 @@ theorem sc_ztest_nonzero :
     (scWReg .S)
 #guard scHasSub (.app (.app .S (.app (.app .C (.app (.app .S .C) (.app (.app .C .C) .S))) .S)) .S)
     (scWReg (.app (.app .C .C) .S))
+
+-- ## Stage 173: test-and-decrement — the Minsky half-step, provenance-verified
+-- From the NONZERO word-register `S C (C C (S S))` (word [b] over the distinctive marker
+-- `S S`), the eight-leaf machine `S (C S) (C C) (S C)` reaches, in sixteen fires, a state
+-- containing `S C (S S)` — the DECREMENTED, RE-GUARDED register. Marker provenance is the
+-- certificate's core: the machinery contains no `S S` anywhere (search pool excluded it;
+-- the #guards below re-verify), so the marker inside the decremented register can only have
+-- traveled through the pop from the original word. Three machines survive the provenance
+-- null (48 passed the naive test — the difference is the six probe lessons at work). The
+-- last six fires are member-internal (appR contexts): the decrement completes inside a
+-- member, where the write can reach it.
+
+/-- Test-dec, pinned: sixteen fires from the nonzero register to a state carrying the
+decremented, re-guarded register. -/
+theorem sc_testdec :
+    RS.SC.Steps
+      (.app (.app (.app (.app .S (.app .C .S)) (.app .C .C)) (.app .S .C)) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))))
+      (.app (.app .C (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C))) (.app (.app (.app (.app .S .C) (.app .S .S)) (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C))) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C))))) :=
+  RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .C .S) (.app .C .C) (.app .S .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .S (.app .S .C) (.app (.app .C .C) (.app .S .C))))
+  (RS.Steps.tail (SCStep.S_red (.app (.app .C .C) (.app .S .C)) (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S)))))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C) (.app (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red .C (.app (.app .C .C) (.app .S .S)) (.app (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))))))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S)))) (.app (.app (.app .C .C) (.app .S .S)) (.app (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))))) (.app .S .C))
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red .C (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)))
+  (RS.Steps.tail (SCStep.C_red (.app .S .C) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)) (.app (.app (.app .C .C) (.app .S .S)) (.app (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))))))
+  (RS.Steps.tail (SCStep.S_red .C (.app (.app (.app .C .C) (.app .S .S)) (.app (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))))) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)))
+  (RS.Steps.tail (SCStep.appR (SCStep.appL (SCStep.C_red .C (.app .S .S) (.app (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S)))))))
+  (RS.Steps.tail (SCStep.appR (SCStep.C_red (.app (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S)))) (.app .S .S) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appL (SCStep.S_red .C (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)))))
+  (RS.Steps.tail (SCStep.appR (SCStep.C_red (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C))) (.app .S .S)))
+  (RS.Steps.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.S_red .C (.app (.app .C .C) (.app .S .S)) (.app .S .C)))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appL (SCStep.C_red (.app .S .C) (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C)) (.app .S .S))))
+  (@RS.Steps.refl RS.SC _))))))))))))))))
+
+-- Provenance certificates: the decremented register is present in the goal, and the
+-- machinery is S S-free (the marker can only have come through the pop).
+#guard scHasSub
+    (.app (.app .C (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C))) (.app (.app (.app (.app .S .C) (.app .S .S)) (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C))) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)))))
+    (.app (.app .S .C) (.app .S .S))
+#guard ¬ scHasSub (.app (.app (.app .S (.app .C .S)) (.app .C .C)) (.app .S .C)) (.app .S .S)

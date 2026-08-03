@@ -437,3 +437,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_ztest_nonzero' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_ztest_nonzero
+
+/-- info: 'sc_testdec' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_testdec
