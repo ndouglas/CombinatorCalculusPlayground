@@ -6055,3 +6055,16 @@ head-restoring, argument-incrementing design no small envelope contains; the neg
 needs an invariant subtler than any counting. This is what an honest hard question looks
 like. Recorded at equilibrium; the n=14 census runs in the background (graft
 neighborhoods of BOTH n=12 mountain species, then a 3M random sweep).
+
+### Stage 206: the counting chain — counting is free; regrowth is the question
+
+The sharpest constructive statement below C10, pinned axiom-free. `scChain n y` — the
+routed successor iterated, three leaves per increment — delivers the n-fold successor of
+ANY numeral to any continuation in exactly 2n fires (`sc_chain_run`), the intermediate
+numerals trailing as legible junk; on numerals the delivery is exact addition
+(`sc_bounded_odometer`: `y` receives `C^(k+n) S`). So {S,C} counts fluently — bounded
+odometers of every depth exist at linear cost. C10 now has its final form: the chain
+consumes one prefab per increment, and the question is exactly whether any machine can
+REGROW its own prefab stock — a self-refueling counter. The pieces stand assembled on
+both sides of the gap: successor mints, chains deliver, genes copy machinery, the reader
+farms S-material — and no probed or designed combination closes the loop.
