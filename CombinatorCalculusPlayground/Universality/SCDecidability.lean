@@ -4224,3 +4224,68 @@ theorem sc_machines_beget :
     RS.SC.StepsN 29 (scFrame (.app scW (.app .S (scGene scW))))
       (.app (.app (scFrame scW) (scRider1 scW)) (scRider2 scW)) :=
   sc_reproduction scW
+
+-- ## Stage 198: the dynasty — lineage, parametric and iterated
+-- The verbatim machine-quine is impossible for single-slot genes (child register = child
+-- cargo, but an addressed parent needs register ≠ cargo) and probe-dead over 2,143
+-- payloads. The three-cell gene dissolves the obstruction: `scGene2 q` holds the frame
+-- head, the cargo `W`, and the child's WHOLE ADDRESSED REGISTER `W (S q)` in separate
+-- cells. One C-fire orders the cells, six pop fires assemble — and the child is the
+-- addressed parent WITH PAYLOAD `q`: `sc_lineage`, twenty-one fires, fully parametric.
+-- Iterating the gene iterates the machine: `sc_dynasty` — for every n, the generation-n
+-- ancestor `scParent (scGene2ⁿ q)` reduces to a term carrying the FOUNDER `scParent q`
+-- in head position, n rider-stacks deep. Not a quine: a genealogy — each generation a
+-- real addressed machine, each begetting the next, kernel-certified to any depth.
+
+/-- The addressed parent: the frame fetching payload `p` at address zero. -/
+def scParent (p : SCTerm) : SCTerm := scFrame (.app scW (.app .S p))
+
+/-- The three-cell gene: frame head, cargo, and the child's addressed register. -/
+def scGene2 (q : SCTerm) : SCTerm :=
+  .app (.app (.app .C (.app scW (.app .S (.app .S scDup)))) (.app scW scW))
+    (.app scW (.app scW (.app .S q)))
+
+/-- **The lineage law**: twenty-one fires take the parent of `scGene2 q` to the parent
+of `q`, riders as stack. -/
+theorem sc_lineage (q : SCTerm) :
+    RS.SC.StepsN 21 (scParent (scGene2 q))
+      (.app (.app (scParent q) (scXof (.app .S (scGene2 q))))
+        (.app (scXof (.app .S (scGene2 q))) (scXof (.app .S (scGene2 q))))) := by
+  have h1 := sc_dispatch_even 0 (scGene2 q)
+  have h2 : RS.SC.StepsN 7
+      (.app (.app (scGene2 q) (scXof (.app .S (scGene2 q))))
+        (.app (scXof (.app .S (scGene2 q))) (scXof (.app .S (scGene2 q)))))
+      (.app (.app (scParent q) (scXof (.app .S (scGene2 q))))
+        (.app (scXof (.app .S (scGene2 q))) (scXof (.app .S (scGene2 q))))) :=
+    RS.StepsN.tail
+      (SCStep.appL (SCStep.appL (SCStep.C_red (.app scW (.app .S (.app .S scDup)))
+        (.app scW scW) (.app scW (.app scW (.app .S q))))))
+      (scStepsN_appL _ (scStepsN_appL _
+        (scCellArm_popN (.app .S (.app .S scDup)) (.app scW (.app .S q)) scW)))
+  have h := RS.StepsN.trans h1 h2
+  rw [show 21 = 14 + 2 * 0 + 7 from by omega]
+  exact h
+
+/-- Generation-n genes. -/
+def scGene2Iter : Nat → SCTerm → SCTerm
+  | 0, q => q
+  | n + 1, q => scGene2 (scGene2Iter n q)
+
+/-- "Carries in head position": the founder as spine prefix. -/
+inductive scUnder (pre : SCTerm) : SCTerm → Prop
+  | refl : scUnder pre pre
+  | app {t x : SCTerm} : scUnder pre t → scUnder pre (.app t x)
+
+/-- **The dynasty**: every generation-n ancestor reduces to a term carrying the founder
+in head position — machines beget machines to any depth. -/
+theorem sc_dynasty : ∀ (n : Nat) (q : SCTerm),
+    ∃ u, RS.SC.Steps (scParent (scGene2Iter n q)) u ∧ scUnder (scParent q) u
+  | 0, q => ⟨scParent q, @RS.Steps.refl RS.SC (scParent q), scUnder.refl⟩
+  | n + 1, q => by
+      obtain ⟨u, hu, hunder⟩ := sc_dynasty n q
+      refine ⟨.app (.app u (scXof (.app .S (scGene2 (scGene2Iter n q)))))
+        (.app (scXof (.app .S (scGene2 (scGene2Iter n q))))
+          (scXof (.app .S (scGene2 (scGene2Iter n q))))), ?_, ?_⟩
+      · exact RS.Steps.trans (RS.StepsN.toSteps (sc_lineage (scGene2Iter n q)))
+          (scSteps_appL _ (scSteps_appL _ hu))
+      · exact scUnder.app (scUnder.app hunder)

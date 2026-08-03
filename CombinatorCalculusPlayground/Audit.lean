@@ -674,3 +674,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_machines_beget' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_machines_beget
+
+/-- info: 'sc_lineage' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_lineage
+
+/-- info: 'sc_dynasty' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_dynasty
