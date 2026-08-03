@@ -14,9 +14,19 @@ inherited since Stage 0. As of Stage 76 this claim is **build-enforced**:
 `Audit.lean` pins the headline theorems' exact footprints with `#guard_msgs`,
 so any drift fails the build.
 
-At time of writing (Stage 170 review): 37 modules, ~1,063 theorems, 398
-build-enforced `#guard`s plus 137 `#guard_msgs`-pinned axiom footprints,
-~21,900 lines of Lean, zero warnings, 408 commits. Since the Stage 130 review the run
+At time of writing (Stage 208 review): 36 modules, ~1,231 theorems, 437
+build-enforced `#guard`s plus 241 `#guard_msgs`-pinned axiom footprints,
+~25,400 lines of Lean, zero warnings, 478 commits. The run stands at 90
+consecutive autonomous stages (119–208). Since the Stage 170 review the
+program delivered: the persistence campaign's full resolution (the
+persistent reader, the parking orbit, the fate machine and its universal
+certificates); the floor ladder to n=14 (excess 12 → 44 → 69 → 86); the
+frame ISA — READ, CALL, COMPILE, FETCH, BRANCH, EXPRESS, WRITE — with
+the parity law C9 PROVED for all inputs; the reproduction stack (gene,
+dynasty, tape: machines beget machines, words read one symbol per
+generation); the counting chain (bounded odometers, axiom-free); and
+two calibrated frontier questions — bounded intermediates and C10, the
+regrowth question. Since the Stage 130 review the run
 continued autonomously through Stage 159 (41 consecutive stages), delivering:
 the FRONTIER EQUIVALENCE at all four ladder rungs (decidable ⟺ computably
 bounded intermediates, generic engine + kits) with pinned floors and the

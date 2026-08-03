@@ -6081,3 +6081,16 @@ generations in, the pattern is stable: every two leaves of source buy a step-fun
 increase in what any bounding function must absorb, and the witnesses concentrate in one
 family (the `C S S (S S) C ...` spine with numeral-tail mutations) — a lineage of
 climbers, which is itself evidence the growth is structural, not accidental.
+
+### Stage 208: the review — ninety stages, the run recounted
+
+Bookkeeping stage. STATUS's header now reads the truth: 36 modules, ~1,231 theorems, 437
+guards, 241 pinned axiom footprints, ~25,400 lines, zero warnings, 478 commits, ninety
+consecutive autonomous stages (119–208). The arc since the Stage 170 review, in one
+breath: persistence solved three ways (growth, orbit, fate), the fate machine certified
+universally and compositionally, the floor ladder extended two rungs with a stable
+climber family, the frame discovered and its ISA completed and PROVED (C9 for all
+inputs), machines taught to reproduce, fork, read tapes, and count — and the program's
+open frontier consolidated to exactly two questions: bounded intermediates (the
+undecidability route) and C10 regrowth (the self-refueling counter). Both are now
+precisely calibrated, which is what a review is for.

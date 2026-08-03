@@ -6200,3 +6200,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   STATUS's top matter (counts, stage span, claims audit) — 37 stages of drift since the
   Stage 170 review header; overdue. (2) The S-farm design study (C10). (3) floor14
   random-phase harvest if it beats 86.
+
+## 2026-08-04 — Stage 208: the review
+
+- Counts refreshed; claims audited (zero warnings verified in the same build). The
+  program's shape at ninety: two frontier questions, one climber family, one complete
+  ISA, and a toolkit where new results cost composition rather than emission.
+- Ninety autonomous stages (119–208). Ranking: (1) **the S-farm design study** — C10's
+  only live positive route: one focused session attempting a hand-built self-refueling
+  counter from reader parts (front regeneration) + chain prefabs; success or a sharp
+  documented failure both move the frontier. (2) floor14 random harvest if >86.
+  (3) The n=16 graft (one more rung, then the ladder rests).
