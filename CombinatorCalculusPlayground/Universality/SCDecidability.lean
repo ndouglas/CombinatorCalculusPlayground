@@ -4723,3 +4723,98 @@ theorem sc_bound_floor_366 (f : Nat → Nat → Nat)
     have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 14 280) scMt7T scMt7U :=
       hf scMt7T scMt7U scMt7_steps
     exact scMt7_no_capped_path (RS.StepsLe.weaken (by omega) hs)
+
+-- ## Stage 211: the spine dichotomy — every step is a mutation or a call
+-- The invariant program's opening theorem. View any term as head-atom plus spine
+-- arguments. Then every step does exactly one of two things: (i) MUTATE — the head and
+-- the argument list survive, one argument steps in place; or (ii) CALL — the head atom
+-- is consumed, the FIRST argument becomes the new program (its head is the new head, its
+-- arguments prepend), and the fire's products join the argument list. This is the
+-- structural law behind all five walls: nothing returns to head position except by
+-- having been argument one — the leftmost branch is the return stack. Head restoration —
+-- the heart of C10 — is therefore exactly the question of what a machine can place in
+-- its own a₁-chain.
+
+/-- The spine head: the leftmost atom. -/
+def scSpineHead : SCTerm → SCTerm
+  | .app f _ => scSpineHead f
+  | t => t
+
+/-- The spine arguments, left to right. -/
+def scSpineArgs : SCTerm → List SCTerm
+  | .app f x => scSpineArgs f ++ [x]
+  | _ => []
+
+/-- One list element steps in place. -/
+inductive scStepAt : List SCTerm → List SCTerm → Prop
+  | head {a a' : SCTerm} {l : List SCTerm} :
+      RS.SC.step a a' → scStepAt (a :: l) (a' :: l)
+  | tail {a : SCTerm} {l l' : List SCTerm} :
+      scStepAt l l' → scStepAt (a :: l) (a :: l')
+
+theorem scStepAt_append {l l' m : List SCTerm} (h : scStepAt l l') :
+    scStepAt (l ++ m) (l' ++ m) := by
+  induction h with
+  | head s => exact scStepAt.head s
+  | tail _ ih => exact scStepAt.tail ih
+
+theorem scStepAt_last {y y' : SCTerm} (l : List SCTerm) (h : RS.SC.step y y') :
+    scStepAt (l ++ [y]) (l ++ [y']) := by
+  induction l with
+  | nil => exact scStepAt.head h
+  | cons a l ih => exact scStepAt.tail ih
+
+/-- **The spine dichotomy**: every step is a mutation (head and argument list survive,
+one argument steps) or a call (the first argument becomes the program). -/
+theorem sc_spine_dichotomy {t u : SCTerm} (h : RS.SC.step t u) :
+    (scSpineHead u = scSpineHead t ∧ scStepAt (scSpineArgs t) (scSpineArgs u)) ∨
+    (∃ f g x rest,
+      scSpineHead u = scSpineHead f ∧
+      ((scSpineHead t = .S ∧ scSpineArgs t = f :: g :: x :: rest ∧
+        scSpineArgs u = scSpineArgs f ++ x :: .app g x :: rest) ∨
+       (scSpineHead t = .C ∧ scSpineArgs t = f :: g :: x :: rest ∧
+        scSpineArgs u = scSpineArgs f ++ x :: g :: rest))) := by
+  induction h with
+  | S_red f g x =>
+      refine .inr ⟨f, g, x, [], rfl, .inl ⟨rfl, ?_, ?_⟩⟩
+      · show scSpineArgs (.app (.app (.app .S f) g) x) = [f, g, x]
+        simp [scSpineArgs]
+      · show scSpineArgs (.app (.app f x) (.app g x))
+          = scSpineArgs f ++ [x, .app g x]
+        simp [scSpineArgs]
+  | C_red f g x =>
+      refine .inr ⟨f, g, x, [], rfl, .inr ⟨rfl, ?_, ?_⟩⟩
+      · show scSpineArgs (.app (.app (.app .C f) g) x) = [f, g, x]
+        simp [scSpineArgs]
+      · show scSpineArgs (.app (.app f x) g) = scSpineArgs f ++ [x, g]
+        simp [scSpineArgs]
+  | @appL t₀ t₀' y h' ih =>
+      rcases ih with ⟨hh, hargs⟩ | ⟨f, g, x, rest, hf, hcase⟩
+      · exact .inl ⟨hh, scStepAt_append hargs⟩
+      · refine .inr ⟨f, g, x, rest ++ [y], hf, ?_⟩
+        rcases hcase with ⟨hS, hargs, hargs'⟩ | ⟨hC, hargs, hargs'⟩
+        · refine .inl ⟨hS, ?_, ?_⟩
+          · show scSpineArgs t₀ ++ [y] = f :: g :: x :: (rest ++ [y])
+            rw [hargs]; rfl
+          · show scSpineArgs t₀' ++ [y]
+              = scSpineArgs f ++ x :: .app g x :: (rest ++ [y])
+            rw [hargs']; simp
+        · refine .inr ⟨hC, ?_, ?_⟩
+          · show scSpineArgs t₀ ++ [y] = f :: g :: x :: (rest ++ [y])
+            rw [hargs]; rfl
+          · show scSpineArgs t₀' ++ [y]
+              = scSpineArgs f ++ x :: g :: (rest ++ [y])
+            rw [hargs']; simp
+  | appR h' =>
+      exact .inl ⟨rfl, scStepAt_last _ h'⟩
+
+/-- **The call lemma**: the machine's next program is always its first argument — the
+head changes only by calling `a₁`. -/
+theorem sc_call_source {t u : SCTerm} (h : RS.SC.step t u) :
+    scSpineHead u = scSpineHead t ∨
+    ∃ f rest, scSpineArgs t = f :: rest ∧ scSpineHead u = scSpineHead f := by
+  rcases sc_spine_dichotomy h with ⟨hh, _⟩ | ⟨f, g, x, rest, hf, hcase⟩
+  · exact .inl hh
+  · rcases hcase with ⟨_, hargs, _⟩ | ⟨_, hargs, _⟩
+    · exact .inr ⟨f, g :: x :: rest, hargs, hf⟩
+    · exact .inr ⟨f, g :: x :: rest, hargs, hf⟩

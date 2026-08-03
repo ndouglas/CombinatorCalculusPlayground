@@ -734,3 +734,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_bound_floor_366' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_bound_floor_366
+
+/-- info: 'sc_spine_dichotomy' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_spine_dichotomy
+
+/-- info: 'sc_call_source' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_call_source
