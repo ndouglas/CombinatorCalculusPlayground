@@ -620,3 +620,21 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_parity_hosted' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_parity_hosted
+
+/-- info: 'sc_frame_prelude' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_frame_prelude
+
+/-- info: 'scParityNfT_normal' does not depend on any axioms -/
+#guard_msgs in #print axioms scParityNfT_normal
+
+/-- info: 'sc_parity_even' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_parity_even
+
+/-- info: 'sc_parity_entry' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_parity_entry
+
+/-- info: 'sc_parity_cycle' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_parity_cycle
+
+/-- info: 'sc_frame_parity_law' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_frame_parity_law

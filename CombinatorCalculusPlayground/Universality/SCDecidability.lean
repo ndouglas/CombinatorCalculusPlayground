@@ -3730,3 +3730,196 @@ theorem sc_parity_hosted :
         sc_cycle_unbounded (by omega) scParity_cycle5⟩
     · exact ⟨scParityOrb7, RS.StepsN.toSteps scParity_entry7,
         sc_cycle_unbounded (by omega) scParity_cycle7⟩
+
+-- ## Stage 192: C9 proved — the frame parity law, every k
+-- The template proof. Anatomy, fully parametric in the register `r` and numeral index:
+-- (1) THE PRELUDE — nine fires take `scFrame r` to the triple `M M M`, `M = r · W`,
+-- `W = C C`, for EVERY register (the frame's universal opening). (2) THE STRIP — `C` is
+-- flip: `C^(m+1) S · y · z ⟶ C^m S · z · y` in one fire, so `k` strips sort the two
+-- arguments by the parity of `k`. (3) THE CLOSE — even parity puts `W` in operator
+-- position and the machine dies in an inert `C (S W M) M`; odd parity puts `M` there and
+-- the machine locks into the cycle `Φ = M N₁ N₂ ⟶ᵏ⁺⁷ Φ` on the `N`-tower `N₀ = M`,
+-- `Nᵢ₊₁ = W Nᵢ` (k strips, one duplicating S-fire, six C-fires — the six-fire tail is one
+-- parametric chain). Conjecture C9 closes as `sc_frame_parity_law`: for every `k`, the
+-- frame on numeral `C^k S` reaches a normal form iff `k` is even, and for odd `k` admits
+-- runs of unbounded length. Parity of a unary numeral, decided by eternity, for ALL
+-- inputs: the program's first complete hosting theorem.
+
+/-- The frame's cargo. -/
+def scW : SCTerm := .app .C .C
+
+/-- The register complex `r · W`. -/
+def scMof (r : SCTerm) : SCTerm := .app r scW
+
+/-- The N-tower over a register. -/
+def scNof (r : SCTerm) : Nat → SCTerm
+  | 0 => scMof r
+  | i + 1 => .app scW (scNof r i)
+
+/-- **The prelude, register-generic**: nine fires from the frame to the triple. -/
+theorem sc_frame_prelude (r : SCTerm) :
+    RS.SC.StepsN 9 (scFrame r) (.app (.app (scMof r) (scMof r)) (scMof r)) :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) r (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (scMof r))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (scMof r)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (scMof r) (.app (.app .C .C) (scMof r))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (scMof r)) (scMof r)
+    (.app (.app .C .C) (scMof r)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (scMof r) (.app (.app .C .C) (scMof r))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (scMof r)) (scMof r) (scMof r))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (scMof r) (scMof r)))
+  (RS.StepsN.tail (SCStep.C_red (scMof r) (scMof r) (scMof r))
+  (@RS.StepsN.refl RS.SC (.app (.app (scMof r) (scMof r)) (scMof r))))))))))))
+
+/-- **The strip**: `C` is flip. -/
+theorem scStrip (m : Nat) (y z : SCTerm) :
+    RS.SC.step (.app (.app (scParityReg (m + 1)) y) z)
+      (.app (.app (scParityReg m) z) y) :=
+  SCStep.C_red (scParityReg m) y z
+
+/-- Even strip runs restore the argument order. -/
+theorem scStripRun_even : ∀ (j : Nat) (y z : SCTerm),
+    RS.SC.StepsN (2 * j) (.app (.app (scParityReg (2 * j)) y) z) (.app (.app .S y) z)
+  | 0, _, _ => @RS.StepsN.refl RS.SC _
+  | j + 1, y, z => by
+      rw [show 2 * (j + 1) = 2 * j + 1 + 1 from by omega]
+      exact RS.StepsN.tail (scStrip (2 * j + 1) y z)
+        (RS.StepsN.tail (scStrip (2 * j) z y) (scStripRun_even j y z))
+
+/-- Odd strip runs swap the arguments. -/
+theorem scStripRun_odd (j : Nat) (y z : SCTerm) :
+    RS.SC.StepsN (2 * j + 1) (.app (.app (scParityReg (2 * j + 1)) y) z)
+      (.app (.app .S z) y) :=
+  RS.StepsN.tail (scStrip (2 * j) y z) (scStripRun_even j z y)
+
+/-- Registers are normal. -/
+theorem scParityReg_normal : ∀ k, ∀ v, ¬ RS.SC.step (scParityReg k) v
+  | 0, _, h => by cases h
+  | k + 1, v, h => by
+      obtain ⟨x', hx, _⟩ := scWrap_inv h
+      exact scParityReg_normal k x' hx
+
+theorem scW_normal : ∀ v, ¬ RS.SC.step scW v := fun _ h => by
+  obtain ⟨x', hx, _⟩ := scWrap_inv h
+  cases hx
+
+/-- The register complex is normal. -/
+theorem scM_normal : ∀ k, ∀ v, ¬ RS.SC.step (scMof (scParityReg k)) v
+  | 0, v, h => by
+      cases h with
+      | appL h' => cases h'
+      | appR h' => exact scW_normal _ h'
+  | k + 1, v, h => by
+      cases h with
+      | appL h' => exact scParityReg_normal (k + 1) _ h'
+      | appR h' => exact scW_normal _ h'
+
+/-- Two-argument `C` pairs step only in their members. -/
+theorem scCPair_inv {x y v : SCTerm}
+    (h : RS.SC.step (SCTerm.app (SCTerm.app .C x) y) v) :
+    (∃ x', RS.SC.step x x' ∧ v = .app (.app .C x') y) ∨
+    (∃ y', RS.SC.step y y' ∧ v = .app (.app .C x) y') := by
+  cases h with
+  | appL h' =>
+      obtain ⟨x', hx, rfl⟩ := scWrap_inv h'
+      exact .inl ⟨x', hx, rfl⟩
+  | appR h' => exact .inr ⟨_, h', rfl⟩
+
+/-- The even normal form, parametric. -/
+def scParityNfT (k : Nat) : SCTerm :=
+  .app (.app .C (.app (.app .S scW) (scMof (scParityReg k)))) (scMof (scParityReg k))
+
+theorem scParityNfT_normal (k : Nat) : ∀ v, ¬ RS.SC.step (scParityNfT k) v := by
+  intro v h
+  rcases scCPair_inv h with ⟨x', hx, _⟩ | ⟨y', hy, _⟩
+  · rcases scPair_inv hx with ⟨a, ha, _⟩ | ⟨b, hb, _⟩
+    · exact scW_normal a ha
+    · exact scM_normal k b hb
+  · exact scM_normal k y' hy
+
+/-- **The even law**: `C^(2j) S` halts in `11 + 4j` fires, every j. -/
+theorem sc_parity_even (j : Nat) :
+    RS.SC.StepsN (11 + 4 * j) (scFrame (scParityReg (2 * j))) (scParityNfT (2 * j)) := by
+  have hM : scMof (scParityReg (2 * j)) = .app (scParityReg (2 * j)) scW := rfl
+  have h1 := sc_frame_prelude (scParityReg (2 * j))
+  have h2 : RS.SC.StepsN (2 * j)
+      (.app (.app (scMof (scParityReg (2 * j))) (scMof (scParityReg (2 * j))))
+        (scMof (scParityReg (2 * j))))
+      (.app (.app (.app .S scW) (scMof (scParityReg (2 * j))))
+        (scMof (scParityReg (2 * j)))) :=
+    scStepsN_appL _ (scStripRun_even j scW _)
+  have h3 : RS.SC.StepsN (2 * j + 1 + 1)
+      (.app (.app (.app .S scW) (scMof (scParityReg (2 * j))))
+        (scMof (scParityReg (2 * j)))) (scParityNfT (2 * j)) :=
+    RS.StepsN.tail (SCStep.S_red scW _ _)
+      (RS.StepsN.tail (SCStep.C_red .C _
+        (.app (scMof (scParityReg (2 * j))) (scMof (scParityReg (2 * j)))))
+        (scStepsN_appL _ (scStepsN_appR .C (scStripRun_even j scW _))))
+  have h := RS.StepsN.trans h1 (RS.StepsN.trans h2 h3)
+  rw [show 11 + 4 * j = 9 + (2 * j + (2 * j + 1 + 1)) from by omega]
+  exact h
+
+/-- The odd orbit, parametric: `Φ = M N₁ N₂`. -/
+def scParityOrbT (k : Nat) : SCTerm :=
+  .app (.app (.app (scParityReg k) scW) (scNof (scParityReg k) 1))
+    (scNof (scParityReg k) 2)
+
+/-- **The odd cycle**: `Φ ⟶ᵏ⁺⁷ Φ` — k strips, one S-fire, six C-fires. -/
+theorem sc_parity_cycle (j : Nat) :
+    RS.SC.StepsN (2 * j + 8) (scParityOrbT (2 * j + 1)) (scParityOrbT (2 * j + 1)) := by
+  have h1 : RS.SC.StepsN (2 * j + 1)
+      (scParityOrbT (2 * j + 1))
+      (.app (.app (.app .S (scNof (scParityReg (2 * j + 1)) 1)) scW) (scNof (scParityReg (2 * j + 1)) 2)) :=
+    scStepsN_appL _ (scStripRun_odd j scW (scNof (scParityReg (2 * j + 1)) 1))
+  have h2 : RS.SC.StepsN 7
+      (.app (.app (.app .S (scNof (scParityReg (2 * j + 1)) 1)) scW) (scNof (scParityReg (2 * j + 1)) 2))
+      (scParityOrbT (2 * j + 1)) :=
+    RS.StepsN.tail (SCStep.S_red (scNof (scParityReg (2 * j + 1)) 1) scW (scNof (scParityReg (2 * j + 1)) 2))
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (scMof (scParityReg (2 * j + 1))) (scNof (scParityReg (2 * j + 1)) 2)))
+    (RS.StepsN.tail (SCStep.C_red (scNof (scParityReg (2 * j + 1)) 2) (scMof (scParityReg (2 * j + 1))) (scNof (scParityReg (2 * j + 1)) 3))
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (scNof (scParityReg (2 * j + 1)) 1) (scNof (scParityReg (2 * j + 1)) 3)))
+    (RS.StepsN.tail (SCStep.C_red (scNof (scParityReg (2 * j + 1)) 3) (scNof (scParityReg (2 * j + 1)) 1) (scMof (scParityReg (2 * j + 1))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (scNof (scParityReg (2 * j + 1)) 2) (scMof (scParityReg (2 * j + 1)))))
+    (RS.StepsN.tail (SCStep.C_red (scMof (scParityReg (2 * j + 1))) (scNof (scParityReg (2 * j + 1)) 2) (scNof (scParityReg (2 * j + 1)) 1))
+    (@RS.StepsN.refl RS.SC (scParityOrbT (2 * j + 1)))))))))
+  have h := RS.StepsN.trans h1 h2
+  rw [show 2 * j + 8 = 2 * j + 1 + 7 from by omega]
+  exact h
+
+/-- **The odd entry**: `13 + 4j` fires from the frame to the orbit. -/
+theorem sc_parity_entry (j : Nat) :
+    RS.SC.StepsN (13 + 4 * j) (scFrame (scParityReg (2 * j + 1)))
+      (scParityOrbT (2 * j + 1)) := by
+  have h1 := sc_frame_prelude (scParityReg (2 * j + 1))
+  have h2 : RS.SC.StepsN (2 * j + 1)
+      (.app (.app (scMof (scParityReg (2 * j + 1))) (scMof (scParityReg (2 * j + 1)))) (scMof (scParityReg (2 * j + 1))))
+      (.app (.app (.app .S (scMof (scParityReg (2 * j + 1)))) scW) (scMof (scParityReg (2 * j + 1)))) :=
+    scStepsN_appL _ (scStripRun_odd j scW (scMof (scParityReg (2 * j + 1))))
+  have h3 : RS.SC.StepsN 1
+      (.app (.app (.app .S (scMof (scParityReg (2 * j + 1)))) scW) (scMof (scParityReg (2 * j + 1))))
+      (.app (.app (scMof (scParityReg (2 * j + 1))) (scMof (scParityReg (2 * j + 1)))) (scNof (scParityReg (2 * j + 1)) 1)) :=
+    RS.StepsN.tail (SCStep.S_red (scMof (scParityReg (2 * j + 1))) scW (scMof (scParityReg (2 * j + 1)))) (@RS.StepsN.refl RS.SC _)
+  have h4 : RS.SC.StepsN (2 * j + 1)
+      (.app (.app (scMof (scParityReg (2 * j + 1))) (scMof (scParityReg (2 * j + 1)))) (scNof (scParityReg (2 * j + 1)) 1))
+      (.app (.app (.app .S (scMof (scParityReg (2 * j + 1)))) scW) (scNof (scParityReg (2 * j + 1)) 1)) :=
+    scStepsN_appL _ (scStripRun_odd j scW (scMof (scParityReg (2 * j + 1))))
+  have h5 : RS.SC.StepsN 1
+      (.app (.app (.app .S (scMof (scParityReg (2 * j + 1)))) scW) (scNof (scParityReg (2 * j + 1)) 1)) (scParityOrbT (2 * j + 1)) :=
+    RS.StepsN.tail (SCStep.S_red (scMof (scParityReg (2 * j + 1))) scW (scNof (scParityReg (2 * j + 1)) 1)) (@RS.StepsN.refl RS.SC _)
+  have h := RS.StepsN.trans h1 (RS.StepsN.trans h2 (RS.StepsN.trans h3
+    (RS.StepsN.trans h4 h5)))
+  rw [show 13 + 4 * j = 9 + (2 * j + 1 + (1 + (2 * j + 1 + 1))) from by omega]
+  exact h
+
+/-- **C9, proved — the frame parity law**: for every `k`, the frame on the unary numeral
+`C^k S` reaches a normal form when `k` is even and admits runs of unbounded length when
+`k` is odd. Parity, decided by eternity, for all inputs. -/
+theorem sc_frame_parity_law :
+    (∀ j, RS.SC.Steps (scFrame (scParityReg (2 * j))) (scParityNfT (2 * j)) ∧
+      ∀ v, ¬ RS.SC.step (scParityNfT (2 * j)) v) ∧
+    (∀ j, RS.SC.Steps (scFrame (scParityReg (2 * j + 1))) (scParityOrbT (2 * j + 1)) ∧
+      ∀ n, ∃ m, n ≤ m ∧
+        RS.SC.StepsN m (scParityOrbT (2 * j + 1)) (scParityOrbT (2 * j + 1))) :=
+  ⟨fun j => ⟨RS.StepsN.toSteps (sc_parity_even j), scParityNfT_normal (2 * j)⟩,
+   fun j => ⟨RS.StepsN.toSteps (sc_parity_entry j),
+     sc_cycle_unbounded (by omega) (sc_parity_cycle j)⟩⟩
