@@ -5936,3 +5936,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   pop as candidate parts); a pinned producer→consumer handoff would be the program's
   first inter-machine interaction. (2) Harvest floor12 phase B if it beats 57. (3) The
   alternator (fueled reader).
+
+## 2026-08-03 — Stage 188: metabolic assembly
+
+- Composed entirely from the shelf: sc_cellArm_pop (Stage 156) + one S_red + the chassis
+  reading (Stage 184-186). Zero probes, zero emission, axiom-free, first-try green. The
+  program's parts are starting to snap together — the sign of a maturing vocabulary.
+- Seventy autonomous stages (119–188). Ranking: (1) **the assembly line**: chain
+  assemblies — can the housed product of one assembly serve as the CARGO cell of the
+  next? scAssembly (scAssembly-product) — if the pop tolerates compound cargo (it is
+  parametric, so yes structurally), pin a two-stage assembly whose final product houses
+  a housed pair: nested architecture from dead cells. Also probe: an assembly whose
+  minted register FEEDS a fate head that arrives by the same pop — one seed, dead cells
+  only, that assembles a RUNNING fate machine. (2) floor12 phase B harvest if >57.
+  (3) The alternator.

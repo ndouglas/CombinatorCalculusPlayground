@@ -5775,3 +5775,15 @@ maxRecDepth 16000, seconds of kernel time): the toolkit's price scales with the 
 while the phenomenon's size scales with the state space — the whole reason the
 forced-march technology exists. Random phase still sweeping; a taller n=12 mountain, if
 one surfaces, is one emit away.
+
+### Stage 188: metabolic assembly — the handoff exists
+
+The isolation theorem said interaction lives in fires or nowhere; seven fires deliver it.
+`scAssembly B` — three dead `C C` cells: minter head, minter arm, cargo arm — burns down
+by the cell-armed pop (six fires, Stage 156's law reused verbatim), and the freed `S S`
+minter executes on the freed cargo (one fire): the product is `S B (S S B)`, the inert
+chassis housing the cargo NEXT TO its own freshly minted register. Delivery → execution →
+housing; producer cell feeds consumer cell; axiom-free and parametric in the cargo. At
+`B = C` the assembled term is a bit sitting beside the register that would spin the fate
+machine on it. The composition vocabulary is now: pop delivers, S S mints, the chassis
+holds, walls add, fires are the only channel — and each clause is a pinned theorem.
