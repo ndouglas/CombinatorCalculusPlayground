@@ -5945,3 +5945,17 @@ arbitrary depth. Combined with C9 (numerals as data) and the dispatch (numerals 
 control), the calculus now demonstrably supports GENERATIONS of machines whose registers
 carry programs. The tag-hosting question has become concrete: encode a tag step as one
 generation.
+
+### Stage 199: the branch — the payload's numeral selects the successor
+
+Conditional control flow, and again at zero emission cost: `sc_branch_even/odd` compose
+the fetch with the payload's OWN strip run — for payload `C^k · y · z`, the numeral's
+parity decides whether `y` or `z` takes control, each handed the executed complexes as
+arguments. `sc_conditional_dynasty` splices the branch into reproduction: a parent whose
+gene carries `C^k g₁ g₂` begets a child that gives control to gene one or gene two by
+the numeral — THE MACHINE TREE FORKS ON A NUMERAL. The frame ISA at end of day: READ,
+CALL, COMPILE, FETCH, EXPRESS/ASSEMBLE (reproduction), BRANCH — every instruction a
+pinned theorem, every composition parametric. The remaining distance to tag hosting is a
+single construction: a gene whose branch numerals are STRIPPED FROM A STORED WORD as
+generations advance (the word is the tape; each generation reads one symbol and forks).
+All the parts exist — words as C-chains, strips as reads, genes as successors.

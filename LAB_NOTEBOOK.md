@@ -6086,3 +6086,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   head symbol to select the appended word). The gene's register cell is assembled from
   cells — probe payload-transforming genes (cells that fire on q before parking it).
   (2) floor12 harvest. (3) The wrapper-word map.
+
+## 2026-08-03 — Stage 199: the branch
+
+- Fetch + strip + S-fire = conditional dispatch; lineage + branch = forking dynasty.
+  The composition layer is now doing all the work — three stages in a row with zero or
+  one new emitted fire. The ISA-as-theorems approach has fully paid off.
+- Eighty-one autonomous stages (119–199). Ranking: (1) **the tape**: one construction
+  from tag hosting — a gene whose branch numeral comes from a stored word, consumed
+  symbol-by-symbol across generations (word = C-chain over the two genes; generation n
+  reads symbol n by strips and forks; the residue word passes to the child). Design
+  directly from sc_branch + sc_lineage; probe only if the direct construction misfires.
+  (2) floor12 harvest (census at 1.1M/4M, best 69). (3) The wrapper-word map.

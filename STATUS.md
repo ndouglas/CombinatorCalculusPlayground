@@ -199,9 +199,14 @@ slot genes force register = cargo) but the three-cell gene `scGene2`
 gives THE LINEAGE LAW (`sc_lineage`, 21 fires, parametric — parent of
 `scGene2 q` begets parent of `q`) and THE DYNASTY (`sc_dynasty`: every
 generation-n ancestor reduces to a term carrying the founder in head
-position). Machines beget machines to any depth; the tag-hosting
-question is now: encode one tag step as one generation with a COMPUTED
-payload. Behind the alternator stand tag/Minsky hosting,
+position). Machines beget machines to any depth — and Stage 199 added the fork:
+THE BRANCH (`sc_branch_even/odd`, zero new fires): payload `C^k y z`
+gives control to `y` or `z` by the numeral's parity, and
+`sc_conditional_dynasty` splices it into reproduction — the machine
+tree forks on a numeral. ISA: READ, CALL, COMPILE, FETCH,
+EXPRESS/ASSEMBLE, BRANCH. The remaining distance to tag hosting: a
+gene whose branch numerals strip from a STORED WORD across generations
+(the tape). Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
