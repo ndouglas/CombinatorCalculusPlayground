@@ -6224,3 +6224,18 @@ what automation could and couldn't do. This file is a first-class deliverable
   C10 solved). (2) floor14 random harvest if >86. (3) The multi-period odometer design
   (increments amortized over several reader laps — the one architecture the family
   search still can't express).
+
+## 2026-08-04 — Stage 210: the family search closes
+
+- 3.34M context families, zero. C10's empirical phase is over; the question now belongs
+  to theory. Working hypothesis registered: FALSE, by an invariant not yet imagined —
+  matching the calculus's five-wall pattern.
+- floor14 random phase continues (best still 86 from the graft).
+- Ninety-two autonomous stages (119–210). Ranking: (1) **the C10 invariant program**:
+  study what the five walls share — each forbids a RE-ENTRY (pairing, erasure,
+  bit-production, backward-writing, self-increment); attempt a unified spine-flow
+  invariant (what can ever return to head position, as a function of what left it) —
+  even a partial lemma (e.g., head-restoration implies argument-multiset preservation
+  up to minting) would be the program's deepest structural theorem. (2) floor14/n=16
+  harvests as they land. (3) Rest the ladder; the hosting stack and the two frontier
+  questions are the program.

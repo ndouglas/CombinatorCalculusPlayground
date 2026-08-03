@@ -6111,3 +6111,20 @@ period exceeds every seven-leaf context. C10's positive now requires either an
 eight-plus-leaf family (sweeping) or a genuinely multi-period design (increments
 amortized across laps). The question keeps its equilibrium; the search space is now the
 RIGHT one.
+
+### Stage 210: the family search closes — C10 has no small-context positive
+
+The eight-leaf context tier finished: 3,000,455 contexts, zero odometers — 3,337,323
+families total through eight leaves with up to six register holes, each tested for the
+two-rung law `F[reg k] ⟶⁺ F[reg (k+2)]·junk`. Combined with the fixed-term sweeps
+(~245k) and the invariant analysis (no counting refutation exists — S-stock farms), C10
+now has a clean empirical boundary: NO context family of at most eight leaves
+self-increments, while every INGREDIENT (mint, delivery, farming, head-restoration)
+exists separately in pinned machines. The remaining positive routes are structural, not
+enumerable: multi-period designs (increments amortized across reader laps) and
+larger-than-eight-leaf families with designed copy-routing — both beyond honest search,
+squarely in theorem-or-counterexample territory. C10 graduates from probe subject to
+conjecture proper: the working hypothesis, given the wall pattern of this calculus
+(no-pair, no-erasure, bits-are-sources, forward-only), is that C10 is FALSE — {S,C}
+conserves its way out of live self-modification — and its refutation will need the
+program's subtlest invariant yet.
