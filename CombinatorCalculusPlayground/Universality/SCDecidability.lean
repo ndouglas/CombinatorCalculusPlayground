@@ -2745,3 +2745,53 @@ theorem sc_shadow_drifts {M u : SCTerm} :
     exact ⟨u₁, m₂, rfl, h1, hm⟩
   · rintro ⟨m₁, m₂, rfl, h1, h2⟩
     exact sc_two_clocks h1 (scSteps_appR .C h2)
+
+-- ## Stage 187: the n=12 mountain — excess 57, the ladder steepens
+-- The n=12 graft-neighborhood sample (two leaves grafted around the n=10 winner) found a
+-- taller mountain immediately: a 12-leaf term whose forced prefix runs the full 400 steps,
+-- peaks at 291 leaves at step 338, and hands off to a 234-leaf off-prefix target one
+-- checked step later. The floor ladder: f(6,6) ≥ 7, f(8,32) ≥ 44, f(9,10) ≥ 25,
+-- f(10,142) ≥ 186, f(12,234) ≥ 291 — excess 12 → 44 → 57 at n = 8 → 10 → 12 (and the
+-- random-sample phase is still sweeping). Every rung is one more reason to believe no
+-- computable intermediate bound exists.
+
+/-- Twelve leaves: the n=10 winner with a `C S S` graft. -/
+def scMt5T : SCTerm := (.app (.app (.app (.app (.app .C .S) .S) (.app .S .S)) .C) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))
+
+/-- 234 leaves, one checked step past the 400-step forced prefix. -/
+def scMt5U : SCTerm := (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C) (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))))))))))))))))))))))))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))))
+
+/-- The witnessing path: the full forced march, then one checked step. -/
+def scMt5Path : List SCTerm := scForcedMarch scMt5T 400 ++ [scMt5U]
+
+section
+set_option maxRecDepth 16000
+set_option maxHeartbeats 4000000
+
+#guard scMt5T.leafCount = 12
+#guard scMt5U.leafCount = 234
+#guard (scForcedMarch scMt5T 400).length = 400
+
+/-- The crossing exists. -/
+theorem scMt5_steps : RS.SC.Steps scMt5T scMt5U :=
+  scChained_steps scMt5Path scMt5T scMt5U (by decide) (by decide)
+
+/-- **The n=12 mountain**: no path from `scMt5T` (12 leaves) to `scMt5U` (234 leaves)
+stays within 290 leaves — the forced prefix peaks at 291. -/
+theorem scMt5_no_capped_path : ¬ RS.StepsLe RS.SC SCTerm.leafCount 290 scMt5T scMt5U :=
+  scForced_mountain (scForcedMarch scMt5T 400) (scForcedMarch_forced 400 scMt5T)
+    (by decide) (by decide)
+
+end
+
+/-- **The n=12 floor**: every valid bounding function clears 291 at (12, 234). -/
+theorem sc_bound_floor_291 (f : Nat → Nat → Nat)
+    (hf : ∀ t u : SCTerm, RS.SC.Steps t u →
+        RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u) :
+    291 ≤ f 12 234 := by
+  by_cases h : 291 ≤ f 12 234
+  · exact h
+  · exfalso
+    have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 12 234) scMt5T scMt5U :=
+      hf scMt5T scMt5U scMt5_steps
+    exact scMt5_no_capped_path (RS.StepsLe.weaken (by omega) hs)

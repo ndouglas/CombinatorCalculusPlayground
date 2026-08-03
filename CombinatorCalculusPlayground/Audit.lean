@@ -563,3 +563,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_shadow_drifts' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_shadow_drifts
+
+/-- info: 'scMt5_steps' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt5_steps
+
+/-- info: 'scMt5_no_capped_path' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt5_no_capped_path
+
+/-- info: 'sc_bound_floor_291' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_bound_floor_291
