@@ -1511,3 +1511,56 @@ theorem sc_independent_registers (c : Bool) (w : List Bool) :
         (.app (.app (scWord scDup w) scDup) scDup)) :=
   ⟨sc_two_clocks (scRun_step scDup c w) (@RS.Steps.refl RS.SC _),
    sc_two_clocks (@RS.Steps.refl RS.SC _) (scRun_step scDup c w)⟩
+
+-- ## Stage 172: the coupled zero-test — the driver reads a word's value class
+-- The coupling's kernel. Registers are INERT WORDS (`scWord S w` is normal — stable data),
+-- and the zero-test bit is the word's own head shape: the bare marker `S` (empty word,
+-- ZERO) versus the one-cell word `C C S` (NONZERO). One template — `reg reg (C C) S` with
+-- `reg = S C word` — reads the class: the ZERO run normalizes in eight fires, the NONZERO
+-- in eleven (its last fire member-internal), to DISTINCT normal forms each still carrying
+-- its intact register. The driver has consulted the register's VALUE CLASS without
+-- consuming the register: dec/test/inc all exist on word-registers, the clocks are
+-- independent (Stage 171), and this is the branch.
+
+/-- The word-register under its `S C` guard. -/
+def scWReg (w : SCTerm) : SCTerm := .app (.app .S .C) w
+
+/-- ZERO: the empty-word register normalizes in eight fires. -/
+theorem sc_ztest_zero :
+    RS.SC.Steps (.app (.app (.app (scWReg .S) (scWReg .S)) (.app .C .C)) .S)
+      (.app (.app .C (.app .S (.app .S (.app (.app .S .C) .S)))) (.app .S (.app (.app .S .C) .S))) :=
+  RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red .C .S (.app (.app .S .C) .S))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .S .C) .S) (.app .S (.app (.app .S .C) .S)) (.app .C .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red .C .S (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app .S (.app .C .C)) (.app .S (.app (.app .S .C) .S))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C (.app .S (.app (.app .S .C) .S)) (.app .S (.app .C .C))))
+  (RS.Steps.tail (SCStep.C_red (.app .S (.app .C .C)) (.app .S (.app (.app .S .C) .S)) .S)
+  (RS.Steps.tail (SCStep.S_red (.app .C .C) .S (.app .S (.app (.app .S .C) .S)))
+  (RS.Steps.tail (SCStep.C_red .C (.app .S (.app (.app .S .C) .S)) (.app .S (.app .S (.app (.app .S .C) .S))))
+  (@RS.Steps.refl RS.SC _))))))))
+
+/-- NONZERO: the one-cell-word register normalizes in eleven fires to a DIFFERENT form. -/
+theorem sc_ztest_nonzero :
+    RS.SC.Steps
+      (.app (.app (.app (scWReg (.app (.app .C .C) .S)) (scWReg (.app (.app .C .C) .S))) (.app .C .C)) .S)
+      (.app (.app .S (.app (.app .C (.app (.app .S .C) (.app (.app .C .C) .S))) .S)) .S) :=
+  RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red .C (.app (.app .C .C) .S) (.app (.app .S .C) (.app (.app .C .C) .S)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app (.app .S .C) (.app (.app .C .C) .S)) (.app (.app (.app .C .C) .S) (.app (.app .S .C) (.app (.app .C .C) .S))) (.app .C .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.S_red .C (.app (.app .C .C) .S) (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app (.app .C .C) .S) (.app (.app .S .C) (.app (.app .C .C) .S)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) .S) (.app (.app .S .C) (.app (.app .C .C) .S))) (.app (.app (.app .C .C) .S) (.app .C .C))))
+  (RS.Steps.tail (SCStep.C_red (.app (.app (.app .C .C) .S) (.app .C .C)) (.app (.app (.app .C .C) .S) (.app (.app .S .C) (.app (.app .C .C) .S))) .S)
+  (RS.Steps.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C .S (.app .C .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red (.app .C .C) .S .S))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C .S .S))
+  (RS.Steps.tail (SCStep.C_red .S .S (.app (.app (.app .C .C) .S) (.app (.app .S .C) (.app (.app .C .C) .S))))
+  (RS.Steps.tail (SCStep.appL (SCStep.appR (SCStep.C_red .C .S (.app (.app .S .C) (.app (.app .C .C) .S)))))
+  (@RS.Steps.refl RS.SC _)))))))))))
+
+-- Certificates: both outcomes normal, distinct, each carrying its intact register.
+#guard scSucc (.app (.app .C (.app .S (.app .S (.app (.app .S .C) .S)))) (.app .S (.app (.app .S .C) .S))) = []
+#guard scSucc (.app (.app .S (.app (.app .C (.app (.app .S .C) (.app (.app .C .C) .S))) .S)) .S) = []
+#guard scHasSub (.app (.app .C (.app .S (.app .S (.app (.app .S .C) .S)))) (.app .S (.app (.app .S .C) .S)))
+    (scWReg .S)
+#guard scHasSub (.app (.app .S (.app (.app .C (.app (.app .S .C) (.app (.app .C .C) .S))) .S)) .S)
+    (scWReg (.app (.app .C .C) .S))

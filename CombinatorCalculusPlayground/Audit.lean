@@ -431,3 +431,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_independent_registers' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_independent_registers
+
+/-- info: 'sc_ztest_zero' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_ztest_zero
+
+/-- info: 'sc_ztest_nonzero' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_ztest_nonzero
