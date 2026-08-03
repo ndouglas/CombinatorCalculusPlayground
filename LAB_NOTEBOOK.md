@@ -5389,3 +5389,18 @@ what automation could and couldn't do. This file is a first-class deliverable
   (accumulator = fresh end marker, not junk) and re-arm — probe first, the target this time
   checked against the origin. (2) The full biodegradable word layer (n-cell zero-residue
   traversal, by induction — cheap and pinnable). (3) Floor asymptotics at n=10.
+
+## 2026-08-03 — Stage 149: what the fire eats
+
+- The n-cell theorem is a two-line induction on top of Stage 148's pieces, and its
+  hypothesis IS the finding: the traversal is a furnace that eats its own leading word. The
+  probe's completion pattern (B at every consumed position) predicted the theorem's exact
+  statement before it was written — the verify-before-formalize loop at its tightest.
+- Thirty-one autonomous stages (119–149). The fold campaign's remaining alternatives are
+  now two: information-bearing fuel, or read-before-burn composition. Both are concrete
+  probe targets.
+- Ranking: (1) **information-bearing fuel probe**: do the two clean fuels (C (C (C C)),
+  C (C C) C) leave DIFFERENT traces anywhere (path, intermediate states, end-state
+  side-effects) that a downstream gadget could dispatch on? If yes, the furnace reads as it
+  burns. (2) Read-before-burn: compose scWord dispatch with biodegradable fold. (3) Floor
+  asymptotics at n=10.

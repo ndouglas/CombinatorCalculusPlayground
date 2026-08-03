@@ -5199,3 +5199,17 @@ cell `C (C C W₂) W₂ · W₁` in two fires — observed, not yet pinned) but 
 accumulator; C8 now reads: from `E W₂ W₁`, erect `scBWord E' [W₂-productions]` with a WORKING
 accumulator and a re-armed driver. The remaining gap is real but it is now measured in fires,
 not in architecture.
+
+### Stage 149: the fuel law
+
+`scBWord_run` (axiom-free, pinned): `k` leading `C C` cells burn away entirely; the end marker
+receives exactly the final two wrappers, in order. The n-cell generalization's price,
+probe-measured before proving: wrappers 1..n−2 are consumed as ARMS two rounds after their
+cell fires, so they must be arm-compatible (`C C` is; bare `C` is not — completion is exactly
+the words with `C C` at all consumed positions), and their information is DESTROYED. A
+two-letter fuel alphabet exists (`C (C (C C))` and `C (C C) C` are clean distinct fuels), so
+encodings can survive the constraint; what no encoding survives is the information burn —
+only the last two symbols arrive as data. C8's endgame is therefore sharpened once more:
+either fuel must BEAR information (distinct fuels steering the traversal into distinct
+continuations — undesigned), or reading must happen before burning (the dispatch-capable
+`scWord` layer feeding the biodegradable fold — a composition question).
