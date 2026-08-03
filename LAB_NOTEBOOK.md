@@ -5158,3 +5158,22 @@ what automation could and couldn't do. This file is a first-class deliverable
   success would give programmable mountains (kills weak bounds constructively) and a first
   handle on control. (2) Retire or re-scope C6 after 124 declines — decide at next review.
   (3) The StepsLe/engine genericization debt.
+
+## 2026-08-02 — Stage 137: the engine grows teeth
+
+- The day's best debugging story: the first control probe claimed two distinct normal forms
+  from one start. SC confluence is a pinned theorem, so the PROBE was wrong — found and
+  rerun before anything entered the ledger. The formalization is now catching bugs in the
+  search tooling that generates its conjectures; the loop has closed.
+- Fixpoint detection turns Stage 134's saturation from an existence proof into an
+  instrument: decidable stable-round check + decidable membership = certificate. The
+  re-certified minimal mountain is the smoke test; larger mountains await only kernel
+  patience.
+- Fueled mountains verified (164 of them): {S,C} machines burn a fuel tower into linear
+  peak work and collapse to constant-size normal forms. Control exists computationally.
+  Nineteen autonomous stages (119–137).
+- Ranking: (1) **the fueled family formalized**: trace the star machine's run for
+  self-similar loop structure (glider-style) and certify one fueled mountain family —
+  Steps to the NF plus engine-certified peak forcing at growing caps. (2) Whether fuel can
+  encode computation (the control-to-reduction question). (3) C6, declined a
+  hundred-and-twenty-fourth time.

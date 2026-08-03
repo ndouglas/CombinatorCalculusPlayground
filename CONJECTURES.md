@@ -4994,3 +4994,19 @@ inert; `scSucc_wrapN`: singletons survive wrapping; the phase transitions are `r
 machine-checked normal-form-free term in `{S,C}`. Cycles never certify normal-form-freeness
 (a cyclic term may normalize down another path); determinism leaves no side exit. `{S,C}` at
 eight leaves: deterministic, non-terminating, linearly growing, and now fully certified.
+
+### Stage 137: fixpoint detection — unreachability by computation
+
+`scReachCapped_detect`/`scReachCapped_excludes` (pinned): one stable saturation round — a
+DECIDABLE check — certifies the capped engine's cone complete, so non-membership excludes
+every capped path. `scMt_no_capped_path` re-certifies the minimal mountain purely by `decide`.
+Machine-checked mountains are now one `decide` away wherever the capped space is
+kernel-tractable. The control probe (with its instructive incident: the first version reported
+TWO normal forms from one start — impossible under the proven `SC_confluence`, which exposed
+the probe's bug before any conclusion shipped) confirms, exhaustively and with unique-NF
+sanity asserted: 164 FUELED MOUNTAINS at machine size ≤ 6 over `C C`-towers — the star
+`S (C (S C S)) S` takes fuel-`k` inputs of size `10 + 2k` through reachable peaks `34 + 28k`
+and strongly normalizes to 5–7 leaves. Bounded, modeled caveats: peaks are BFS-maxima (not
+yet minimax), fuel ≤ 4, one unit shape. The control question (make the pump HALT) has a
+computational answer — fueled machines exist in abundance; what remains is whether fuel can be
+made to encode arbitrary computation.

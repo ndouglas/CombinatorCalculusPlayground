@@ -628,7 +628,14 @@ CERTIFIED the march: the trajectory is exactly five shapes with singleton
 successor lists (`GliderTraj`, `scSucc_wrap`), so reduction from the seed
 is deterministic (`scGlider_deterministic`, pinned) and the seed has NO
 NORMAL FORM (`scGlider_no_normal_form`, pinned) — the first
-machine-checked normal-form-free `{S,C}` term. Stage 115
+machine-checked normal-form-free `{S,C}` term. Stage 137 gave the engine
+FIXPOINT DETECTION (`scReachCapped_excludes`, pinned): a decidable
+stable-round check certifies unreachability under a cap — the minimal
+mountain re-certified purely by `decide` — and the verified control probe
+found 164 FUELED MOUNTAINS (machines that burn a `C C`-tower into linear
+peak work, then strongly normalize to 5–7 leaves): halting-on-fuel exists
+in `{S,C}`; what remains open is whether fuel can encode arbitrary
+computation. Stage 115
 also corrected Stage 111's prose invariant (atoms CAN sit at member heads via
 S-fires, witnessed in-file; the freeze theorem and one-behind bound survive).
 Negative standing results shaping any route: arm-level differentiation
