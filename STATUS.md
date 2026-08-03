@@ -770,10 +770,14 @@ the endpoint sizes bounds witnessing paths' intermediates — the converse
 assembles the bound from any decision procedure via a hand-rolled
 choice-free find (core has no `Nat.find`; `Acc.rec` eliminates into data).
 The one open goal-level question is now a single well-posed sentence, and
-it has PINNED QUANTITATIVE FLOORS (Stages 140/142, `sc_bound_floor_6`/
-`_44`/`_25`): every valid `f` obeys `f(6,6) ≥ 7`, `f(8,32) ≥ 44`, and
-`f(9,10) ≥ 25` — via the TALL and STEEP MOUNTAINS (forced prefixes of 49
-and 13 steps peaking at 44 and 25), certified by the forced-march toolkit
+it has PINNED QUANTITATIVE FLOORS (Stages 140/142/181, `sc_bound_floor_6`/
+`_44`/`_25`/`_186`): every valid `f` obeys `f(6,6) ≥ 7`, `f(8,32) ≥ 44`,
+`f(9,10) ≥ 25`, and `f(10,142) ≥ 186` — via the TALL, STEEP, and n=10
+MOUNTAINS (forced prefixes of 49, 13, and 300 steps peaking at 44, 25,
+and 186; the last from an exhaustive census of all 4,978,688 ten-leaf
+terms). Excess over the endpoint size TRIPLED from n=8 (12) to n=10 (44)
+— the scaling evidence now leans hard against bounded intermediates,
+i.e. toward undecidability. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now

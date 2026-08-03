@@ -5835,3 +5835,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   decide if needed). (2) **the bounded reader**: the orbit never reads its cargo; the
   reader never stops growing — probe for a limit cycle that CONSULTS its cargo every
   period (requires register regeneration inside the cycle). (3) Bounded intermediates.
+
+## 2026-08-03 — Stage 181: the n=10 mountain
+
+- Census → witness → pin in one sitting; the forced-march mountain scaled 6× past its
+  previous largest use (49 steps → 300) with only a maxRecDepth bump. The floor sequence
+  7, 44 (n=8), 186 (n=10) is the strongest concrete evidence yet against bounded
+  intermediates.
+- Sixty-three autonomous stages (119–181). Ranking: (1) **the bounded reader**: probe for
+  a limit cycle that CONSULTS its cargo every period — the orbit (180) never reads, the
+  reader (176) never stops growing; the gap between them is the last C8 composition and
+  needs register regeneration inside a cycle. (2) **the growth law**: n=12 census sample
+  (exhaustive is 100× n=10) to test excess-tripling — the undecidability scaling
+  hypothesis now has enough rungs to fit. (3) The alternator's fueled reader.

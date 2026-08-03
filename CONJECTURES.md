@@ -5667,3 +5667,20 @@ wall-clock, different phase: THE BIT IS STORED IN THE PHASE of an eternal bounde
 Probe lesson #8 (ledger): the probe reported "bit-dependent cycles"; the cycles are
 rotation-equal after register abstraction — cyclic signatures must be compared up to
 rotation. What survived the correction is stronger than what the probe claimed.
+
+### Stage 181: the n=10 mountain — the census pays out
+
+The background census (all 4,978,688 ten-leaf terms, forced-prefix marches to depth 300,
+crash-proofed and incrementally printed per lesson #5) surfaced its best witness and the
+toolkit pinned it the same day: `scMt4T = S (S S) C (S (C S (C C)) C)` (10 leaves) has a
+FULLY FORCED 300-step prefix that climbs to 186 leaves at step 257 and hands off to a
+142-leaf off-prefix target one checked step later. `scForced_mountain` closes the argument:
+no path t→u stays within 185 (`scMt4_no_capped_path`), so every valid intermediate-bound
+function clears 186 at (10,142) — `sc_bound_floor_186`, the program's tallest pinned
+mountain. The floor ladder now reads f(6,6) ≥ 7, f(8,32) ≥ 44, f(9,10) ≥ 25,
+f(10,142) ≥ 186: excess 12 → 44 in two leaves. Bounded intermediates — the frontier
+equivalence's live half — keeps looking worse: if the excess keeps tripling per two
+leaves, no computable bound survives, and {S,C} reachability is undecidable by
+`sc_decidable_iff_bound`. (Technical first: the 300-step kernel march needed
+`maxRecDepth 8000`, scoped in a section — the toolkit's first collision with an
+elaborator default, resolved without weakening anything.)
