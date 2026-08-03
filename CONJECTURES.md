@@ -5126,3 +5126,24 @@ C-interrogation; the fold driver needs the S-analogue — plausible via duplicat
 the two copies that rebuild `S q q` by two nests, unproven). Modeling lesson re-learned
 mid-stage, Stage 111's exactly: the first probe modeled the accumulator as opaque and missed
 the six-leaf synthesizers; the honest interface (constant end marker) found them immediately.
+
+### Stage 145: the mid-insertion obstruction — the fold's remaining half, named
+
+The runtime-accumulator nest (cycle 2 of the fold: build `C (C acc MID) W` with `acc` a
+previously synthesized cell) is CENSUS-DEAD across designed orchestrations: 8,200 start
+states (heads × up to three prefabs from a nine-gadget pool × four trailing configurations,
+depth 14, size slack 20) reach the target ZERO times — while the FIRST nest `(C acc)` forms
+in one fire from the same envelope. The block is structural and now has a name: THE
+MID-INSERTION OBSTRUCTION. After `(C acc)` forms, the second nest needs a FUNCTIONAL constant
+(`scDup` or equivalent, to serve as the cell's arm-regenerator) at the fire's third position —
+i.e., inserted BETWEEN `(C acc)` and the wrapper `W` — and the member calculus's complete
+insertion inventory cannot put it there: prefab material spills at the FRONT (positions 1..k),
+S-fire `(g x)` products land immediately behind their own bare `x` and nest simultaneously,
+C-fires only swap 2↔3 or rebuild the spine head, and nothing ever enters mid-list otherwise.
+CONJECTURE (new, C7): no `{S,C}` orchestration synthesizes a nested two-generation cell — the
+fold's chain architecture ends at generation one, for every driver. Routes left open and
+recorded: junk-tolerant cell redesign (shown non-uniform at one junk item per generation —
+positional junk accumulates), and spine-level building (C-fires DO nest at the spine head;
+whether the word can live as the spine rather than as a member is undesigned either way).
+Escape hatch honestly noted: the pool/depth/interface envelope is finite, and Stage 144's own
+lesson is that interface choices hide six-leaf answers.

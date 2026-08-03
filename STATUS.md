@@ -568,9 +568,15 @@ except its wrapper, so ONE S-fire mints `scTCell w rest` at runtime from the
 prefab `scCellPrefab rest`, even for an opaque `w`; the genetic-closure law
 (Stage 115) stands, but its documented seam (S-fires nest spine members into
 elements) does the work its prose had written off. What remains is located,
-not diffuse: (a) RUNTIME-ACCUMULATOR NESTING (census-dead to nine leaves on
-the bare interface) and (b) DRIVER SELF-REGENERATION across cycles (the
-quine problem — scDup solves it for C-interrogation; the S-analogue is open). The boustrophedon framing was itself corrected (Stage 116): front-push and
+not diffuse: (a) RUNTIME-ACCUMULATOR NESTING — now conjectured impossible
+(Stage 145, C7: THE MID-INSERTION OBSTRUCTION — the second nest needs a
+functional constant inserted between `(C acc)` and the wrapper, and the
+member calculus's complete insertion inventory has no such move; 8,200
+designed orchestrations, zero hits, first nest forms in one fire) — and
+(b) DRIVER SELF-REGENERATION (the quine problem, behind C7 for chained
+cells). Open routes recorded: junk-tolerant cells (shown non-uniform) and
+the SPINE-LEVEL architecture (C-fires nest at the spine head; Stage 116's
+prefix-rewriting reading taken as a design rather than an obstacle). The boustrophedon framing was itself corrected (Stage 116): front-push and
 front-pop INTERLEAVE, so the induced dynamics are PREFIX REWRITING — a
 deterministic stack process with a finite wrapper alphabet, pushdown-flavored,
 and generational separation would need a mid-spine barrier that cannot exist.

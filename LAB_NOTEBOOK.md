@@ -5306,3 +5306,25 @@ what automation could and couldn't do. This file is a first-class deliverable
   room), targeting cycle-2: from members [acc-cell, W, dup, ...], build C (C acc dup) W with
   acc the PREVIOUS synthesized cell; verify in Python, then formalize. (2) The driver quine
   (S q q self-rebuild via duplication). (3) Floor asymptotics at n=10.
+
+## 2026-08-03 — Stage 145: the obstruction gets a name
+
+- Two probes, 8,200 designed orchestrations, zero cycle-2 cells — against Stage 144's
+  one-fire cycle-1. The asymmetry is the finding: synthesis is free when the interior is
+  constant and blocked when it must contain a runtime member, because the missing move is
+  MID-LIST INSERTION of a functional constant, and the member calculus provably has no such
+  move in its inventory. C7 registered (the two-generation cell conjecture) with the two
+  open routes and the envelope caveat attached.
+- The fold now reads: production ✓ (one fire), accumulation ✗ (C7). If C7 holds, nested-word
+  hosting ends at generation one and the prefix-rewriting reading (Stage 116) is the true
+  ceiling of this architecture — pushdown-flavored, likely decidable-fragment. If C7 falls,
+  the quine problem is next. Either way the hosting and decidability threads stay fused.
+- Twenty-seven autonomous stages (119–145). Session note: the run's three census negatives
+  (Stage 141 families, Stage 144 opaque-interface, this) each cost under an hour and each
+  either redirected or sharpened a conjecture — the probe-first discipline is carrying the
+  research exactly as designed.
+- Ranking: (1) **C7's spine-level route**: can the next word live as the SPINE (C-fires nest
+  there) with the machine walking it — a redesign probe of the traversal layer; this is also
+  Stage 116's prefix-rewriting reading taken seriously as an ARCHITECTURE rather than an
+  obstacle. (2) The driver quine (blocked behind C7 for chained cells, independent for
+  spine-cells). (3) Floor asymptotics at n=10.
