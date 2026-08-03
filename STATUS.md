@@ -33,7 +33,16 @@ dynamics. The campaign's residue is ONE design problem, now named: THE
 NONDESTRUCTIVE-READ PROBLEM (C8's kernel) — tag hosting lacks a marker that
 survives its own firing; register hosting lacks a test that spares its
 operand; both are "read without consuming" against non-erasure's grain.
-Every mechanism beneath that problem is a pinned, axiom-free theorem. Since the Stage 114 review, one autonomous run
+Every mechanism beneath that problem is a pinned, axiom-free theorem.
+Stages 161–164 then took the kernel apart: one-bit machines are generic
+(66 pairs at n=8, 986 at n=9 — a single embedded `C ↔ C C` flips counter
+↔ glider, but only at build time); the LOCKSTEP LAW (149/149 two-tower
+machines at n ≤ 9 share one clock — copies are born equal); and finally
+THE REGISTER DEMO (`sc_read_bitC`/`sc_read_bitB`, axiom-free, pinned):
+`reg reg S (C C)` with `reg = S bit` — the bit alone selects between two
+distinct normal forms, each still CONTAINING its application-ready
+register. The nondestructive read EXISTS: read, diverge, survive. C8's
+remaining distance: loop the consultation, and write the bit. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a

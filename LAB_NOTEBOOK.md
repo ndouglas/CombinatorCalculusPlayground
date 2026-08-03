@@ -5615,3 +5615,16 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Forty-five autonomous stages (119–163). Ranking: (1) **the read-gadget demo with effect
   markers** (hand-choreographed, Python-verified, then the emitter writes the Lean — the
   full one-consultation theorem pair). (2) Harvest deferred censuses. (3) Consolidation.
+
+## 2026-08-03 — Stage 164: read, diverge, survive
+
+- The demo is four leaves of machinery and it does the thing forty stages said was against
+  the grain: consults a bit and keeps it. The S-guard was the last insight — the register's
+  wrapper must be shape-disjoint from every marker, or the certificates certify nothing
+  (two contaminated predicates today; both caught by null cases; the discipline holds).
+- C8's remaining distance, measured honestly: loop the consultation (the demo reads once)
+  and write the bit. Both look like choreography rather than architecture now — but so did
+  everything else until it wasn't.
+- Forty-six autonomous stages (119–164). Sixteen feat stages today. Ranking: (1) **the
+  looped consultation** (a pulse that samples the register each period — combine the pulse
+  and the read template). (2) The bit-write. (3) Harvest deferred censuses.

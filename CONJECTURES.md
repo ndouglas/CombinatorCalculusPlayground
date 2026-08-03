@@ -5421,3 +5421,16 @@ every machinery `C` — 142/161 machines "diverged", including bit-ignorers; a n
 would have caught it before the run. Effect markers (distinct designed shapes produced per
 branch) are the correct instrument; the demo needs design, not search. Census harvest logged:
 986 conditional one-bit pairs at n=9 (66 at n=8).
+
+### Stage 164: the register demo — the re-consultable bit exists
+
+`sc_read_bitC`/`sc_read_bitB` (axiom-free, pinned): one template, `reg reg S (C C)` with
+`reg = S bit`. Bit `C` → two fires → `S (C C) (S C S)`; bit `C C` → eight fires →
+`C (S (C C)) (C C)`. The outcomes are normal and distinct (#guards via the verified
+successor), differ in their register-free parts (null-case checked), and EACH STILL CONTAINS
+ITS REGISTER, application-ready for the next consultation. The nondestructive read is REAL:
+read, diverge, survive, at four leaves of machinery. What remains for Minsky/tag control is
+now the COMPOSITION: consult in a loop (the demo consults once, at the run's start) and WRITE
+(change the bit mid-run). The campaign's arc — stash-by-duplication design, two contaminated
+predicates caught by null cases, the S-guarded register that made shapes collision-free —
+took one day from 'the quine problem' to a pinned read-with-effect.
