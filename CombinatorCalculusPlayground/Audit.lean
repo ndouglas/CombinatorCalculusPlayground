@@ -449,3 +449,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scReader_unbounded' does not depend on any axioms -/
 #guard_msgs in #print axioms scReader_unbounded
+
+/-- info: 'sc_pulse_parametric' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_pulse_parametric

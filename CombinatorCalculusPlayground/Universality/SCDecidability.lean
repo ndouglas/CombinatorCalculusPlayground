@@ -1722,3 +1722,27 @@ theorem scReader_unbounded : ∀ n, RS.SC.Steps scRdrFront (scReader n)
 #guard scCountConsults .C (scRdrFront :: scForcedMarch scRdrFront 7) = 2
 #guard scHasSub scRdrFront scRdrReg
 #guard scHasSub scRdrJ scRdrReg
+
+-- ## Stage 178: the parametric pulse — persistence with arbitrary cargo
+-- The latch's mode pulse never touches its last member: all five fires live in the body,
+-- so the pulse persists with ANY cargo riding — pinned generically. Persistence is now
+-- known parametric (this), interactive (the reader), and mode-selectable (the latch). The
+-- write-obstruction's final form, from the reader's fire anatomy: `{S,C}` machines write
+-- FORWARD-ONLY — products land behind the front and the front never reads backward; junk
+-- re-enters the fire zone only when the front BURNS DOWN (the biodegradable lesson). A
+-- writing reader is therefore a GROW/BURN ALTERNATOR: emit computed junk, burn to re-read
+-- it — the boustrophedon, returning with a complete instrument set.
+
+/-- The pulse body. -/
+def scPulseBody : SCTerm :=
+  .app (.app (.app (.app .C scDup) scDup) scDup) scDup
+
+/-- **The parametric pulse**: five fires, any cargo, exact return. -/
+theorem sc_pulse_parametric (X : SCTerm) :
+    RS.SC.StepsN 5 (.app scPulseBody X) (.app scPulseBody X) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red scDup scDup scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) scDup))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup (.app (.app .C .C) scDup)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) scDup) scDup scDup)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C scDup scDup))))
+  (@RS.StepsN.refl RS.SC (.app scPulseBody X)))))))
