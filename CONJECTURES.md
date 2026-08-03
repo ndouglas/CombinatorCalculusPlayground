@@ -5565,3 +5565,13 @@ write primitive operates. The Minsky HALF-STEP is a theorem. The assembly's rema
 CYCLE it (half-step output re-entering as input) and the zero-branch exit (Stage 172's
 test). Both are choreography over today's pinned pieces; the composition has no unknowns
 left, only fire-sequencing.
+
+### Stage 174: the decrement cycles
+
+`sc_testdec_twice` (axiom-free, pinned, with both legs): one machine, two pops — the two-cell
+register descends through the `#guard`ed intermediate to the doubly-decremented register,
+twenty-six fires, marker provenance intact throughout. The Minsky decrement CYCLES. Tooling:
+the theorem was assembled programmatically from the trace (emit → splice → build); concrete
+reductions of any length are now one script from pinned. The assembly ledger — half-step,
+cycle, zero-branch, independent registers, increment — has ONE seam left: the zero-exit wired
+into the cycle. The composition campaign is measured in seams now, not mechanisms.

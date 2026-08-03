@@ -5746,3 +5746,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   search for machines where reg0-carrying states re-fire into a second test (the detector
   exists: scIsConsult generalized to wreg-shapes). (2) n=10 witnesses. (3) Bounded
   intermediates.
+
+## 2026-08-03 — Stage 174: it cycles
+
+- Two decrements through one machine, and the pipeline that pinned it ran without hands:
+  trace to emission to spliced Lean to green build. The run's tooling has reached the point
+  where the bottleneck is exclusively DESIGN — every found behavior is pinned within
+  minutes.
+- Fifty-six autonomous stages (119–174). Ranking: (1) **the last seam**: the zero-exit —
+  a machine whose reg1-run cycles to reg0 and whose reg0-run diverges into a distinct
+  outcome (the halt); combine the cycle machine with the zero-test template. (2) n=10
+  witnesses. (3) Bounded intermediates.

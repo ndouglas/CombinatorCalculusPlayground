@@ -73,10 +73,14 @@ TEST-AND-DECREMENT itself (`sc_testdec`, axiom-free): sixteen fires from
 the nonzero register to a state carrying the DECREMENTED, RE-GUARDED
 register, with marker provenance certified (`S S` dye, machinery-free by
 `#guard` — three genuine machines out of 48 naive hits under the
-provenance null). The Minsky HALF-STEP is a theorem; the assembly's
-remainder is cycling it plus the zero-branch exit — fire-sequencing over
-a finished parts list, carrying the weight of full tag/Minsky hosting
-and, via the frontier equivalence, rung-3 undecidability. Since the Stage 114 review, one autonomous run
+provenance null). The Minsky HALF-STEP is a theorem — and Stage 174
+proved IT CYCLES (`sc_testdec_twice`, axiom-free: the same machine takes
+the two-cell register through the `#guard`ed intermediate to the doubly-
+decremented register, twenty-six fires, marker provenance intact; the
+Lean assembled programmatically from the trace). The assembly has ONE
+seam left: the zero-exit wired into the cycle — the last fire-sequence
+between the program and full tag/Minsky hosting, and via the frontier
+equivalence, rung-3 undecidability. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a
