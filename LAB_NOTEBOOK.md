@@ -5578,3 +5578,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   (2) The nondestructive-read campaign: paper-first analysis of what 'test' means in a
   calculus where every fire consumes its redex — the h-cycle (which RESTORES its redex) is
   the obvious specimen to re-read. (3) Genericization/consolidation as breadth demands.
+
+## 2026-08-03 — Stage 161: one bit, two machines
+
+- The counter and a glider differ by one C. Sixty-six such pairs at eight leaves. The
+  calculus is extraordinarily expressive per leaf — and the expressiveness is all spent at
+  build time. Every behavior we can certify diverges from the seed, none from a runtime
+  consultation. C8's final phrasing is now: a re-consultable bit.
+- Forty-three autonomous stages (119–161). Three censuses still running in background (n=10
+  floor, n=9 registers, n=9 conditionals); their harvests are future stages' floors and
+  exhibits.
+- Ranking: (1) **the re-consultable-bit design campaign** (paper-first: the cycle-restores-
+  its-redex insight says the bit should LIVE ON A CYCLE whose phase the machine can sample;
+  a tag-in-a-pulse). (2) Harvest censuses as they land. (3) Consolidation as breadth
+  demands.

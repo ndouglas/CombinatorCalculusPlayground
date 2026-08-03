@@ -5376,3 +5376,18 @@ that spares its operand. Everything beneath it is pinned; a solution in either i
 hosted unbounded machine and, via the frontier equivalence, bears directly on rung-3
 undecidability. The two open frontiers (bounded intermediates; nondestructive read) are
 plausibly one: both ask whether `{S,C}` can consult data without destroying it.
+
+### Stage 161: the one-bit machines — conditional behavior exists, at build time
+
+Census (n=8 exhaustive, 66 pairs; n=9 sweep continuing): term pairs differing in a SINGLE
+embedded `C ↔ C C` bit with qualitatively different forced-march signatures. The star: the
+COUNTER `S (S S S) C (S C C)` (aperiodic, √step registers) versus `S (S S S) C (S (C C) C)`
+(period 5, +15 per period — a linear glider): ONE BIT toggles counter ↔ glider. Others flip
+period 13 ↔ 17, 7 ↔ 15, aperiodic ↔ 26-periodic-plateau. `{S,C}` reads embedded bits into
+globally different behaviors — dispatch exists at whole-machine scale. The refinement this
+buys C8: the bit here is consulted ONCE, at build time (different seeds run differently);
+Minsky/tag control needs a bit consulted REPEATEDLY at runtime, surviving each consultation.
+The nondestructive-read problem, final phrasing: a RE-CONSULTABLE bit — read many times,
+intact after each, with divergent effects per reading. The one-bit census says the effect
+side is easy; persistence of the read datum is the whole problem, exactly as non-erasure's
+grain predicts.
