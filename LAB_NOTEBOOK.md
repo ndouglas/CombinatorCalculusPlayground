@@ -5890,3 +5890,22 @@ what automation could and couldn't do. This file is a first-class deliverable
   fate; even a hand-built two-stage relay (halt-output shape → readable bit) would make
   the fate bit COMPUTED rather than given, the hosting primitive. (2) The n=12
   growth-law sample. (3) The alternator thread (fueled reader).
+
+## 2026-08-03 — Stage 185: bits are sources
+
+- The obstruction beat the gadget to the theorem: one `cases` shows no fire makes an
+  atom, two more show no fire makes `C C`. Twenty minutes of failed relay sketches were
+  worth exactly this lemma — every "compute the register" architecture dies at its last
+  step, so the search stops here, permanently.
+- The compositional wall (73 = 1 + 36 + 36, machine + shadow through the assembler)
+  needed three inversion lemmas and zero state spaces. The Stage 183 certificate and the
+  Stage 184-185 calculus are now clearly two ends of one method: certify small, compose
+  large.
+- Sixty-seven autonomous stages (119–185). Ranking: (1) **the n=12 growth-law sample**:
+  the floors 7/44/186 at n=6/8/10 beg the next rung — sample n=12 forced prefixes for
+  excess (exhaustive is 100× n=10; sample S-rich families first, march-400, cap-500,
+  incremental prints); even "excess ≥ 100 at n=12" would sharpen the anti-bound scaling
+  case. (2) **behavior routing**: bits-are-sources says hosting must route behavior —
+  probe whether a housed spinning member can FEED the pair's other member (shared-subterm
+  coupling) or whether the chassis isolates members permanently (suspected: isolation is
+  a theorem via scPair_decompose — check if it already IS one). (3) The alternator.

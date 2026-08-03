@@ -5731,3 +5731,19 @@ significance is the method: Stage 183's certificate was checked over 231 emitted
 the pair's certificate needed NO product space — 53,361 virtual states handled by four
 little lemmas. Termination composes. Next question the ladder points at: make one
 machine's OUTPUT the other's REGISTER — conditional eternity, the hosting primitive.
+
+### Stage 185: bits are sources — and the relay that houses a fate
+
+Conditional eternity — one machine's output feeding another's fate register — is
+IMPOSSIBLE in `{S,C}`, and the impossibility is now an axiom-free theorem. Both fire
+rules produce double applications, so no reduction ever ends at an atom or at `C C`:
+`sc_bits_are_sources` (the only term reducing to `C C` is `C C` itself). Register
+contents are sources of the reduction order — inputs forever, outputs never. Fate, in
+this calculus, is decided strictly by initial conditions; there is no gadget that
+computes a bit. (This closes the "hosting via computed registers" route; hosting must
+route BEHAVIOR, not register values — consistent with every working machine since the
+latch reading shape, not value.) The constructive half: `S S C M` fires once into the
+housed pair `S M (C M)` — machine and shadow — and the four-fates calculus composes over
+it: immortal in 8 fires with a spinning payload (`sc_relay_fates`), and with a halting
+payload every schedule dies at machine-and-shadow normal form behind a 73-fire wall
+(`sc_relay_wall`) — pinned while the probe's 53,592-state product space stays untouched.
