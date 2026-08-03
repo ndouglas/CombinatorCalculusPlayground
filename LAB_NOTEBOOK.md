@@ -5592,3 +5592,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   its-redex insight says the bit should LIVE ON A CYCLE whose phase the machine can sample;
   a tag-in-a-pulse). (2) Harvest censuses as they land. (3) Consolidation as breadth
   demands.
+
+## 2026-08-03 — Stage 162: one clock, exhaustively
+
+- The lockstep law closed with the sweep: 149 of 149. A census negative with a mechanism
+  (copies are born equal) is worth more than most positives — it says the register idiom's
+  missing primitive is the SAME missing primitive as the tag idiom's, from the third
+  independent direction. C8 is overdetermined now: marker persistence, emptiness tests,
+  register independence — three costumes, one problem.
+- Forty-four autonomous stages (119–162). Ranking: (1) **the re-consultable-bit campaign**
+  (paper-first; the bit-on-a-cycle design with the phase-sampling question made concrete).
+  (2) Harvest the deferred censuses when they land. (3) Consolidation.

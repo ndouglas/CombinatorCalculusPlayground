@@ -5391,3 +5391,17 @@ The nondestructive-read problem, final phrasing: a RE-CONSULTABLE bit — read m
 intact after each, with divergent effects per reading. The one-bit census says the effect
 side is easy; persistence of the read datum is the whole problem, exactly as non-erasure's
 grain predicts.
+
+### Stage 162: the lockstep law
+
+The two-register hunt is complete and exhaustive at n ≤ 9: 149 specimens with two growing
+C-towers, and EVERY one grows them in lockstep — final gaps ≤ 3 units over 2,400 steps,
+height ratios never below 0.939. No independent registers exist at nine leaves. The census
+law and its mechanism: `{S,C}`'s only copying move (the S-fire) creates both towers from the
+same operand in the same fire — copies are born equal, and nothing thereafter can consult one
+without consuming it (the nondestructive-read problem again, in its register costume).
+Registered as the LOCKSTEP LAW (census-grade, envelope: n ≤ 9, 2,400-step marches, forced
+seeds): {S,C}'s spontaneous machines have one clock. Independent registers, if they exist,
+are DESIGNED objects above nine leaves — and their design problem is C8. Meanwhile the n=10
+floor census is rescoped: its per-term cost (300-step marches over 2.4M terms) exceeded the
+overnight budget; it continues detached, harvest deferred.
