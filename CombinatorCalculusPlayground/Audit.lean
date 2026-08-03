@@ -353,3 +353,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'si_decidable_iff_bound' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms si_decidable_iff_bound
+
+/-- info: 'sc_cell_synth' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_cell_synth
+
+/-- info: 'scv_cell_synth' does not depend on any axioms -/
+#guard_msgs in #print axioms scv_cell_synth

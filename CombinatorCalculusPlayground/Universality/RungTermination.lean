@@ -3879,3 +3879,38 @@ theorem scSteps_growth_le : ∀ {n : Nat} {t u : SCTerm},
       _ ≤ 2 ^ m * (2 * SCTerm.leafCount a) := Nat.mul_le_mul_left _ hg
       _ = 2 ^ (m + 1) * SCTerm.leafCount a := by
           rw [Nat.pow_succ, Nat.mul_assoc]
+
+-- ## Stage 144: cell synthesis — the fold's production step is one fire
+-- The fold problem, re-examined with the member calculus's eyes: a traversal cell
+-- `scTCell W rest = C (C rest scDup) W` is ALL CONSTANT except its wrapper, so the genetic
+-- closure's seam (S-fires nest spine members into elements) is enough to MINT one at runtime:
+-- a single S-fire nests any arriving wrapper — opaque, never seen at encoding time — into the
+-- constant prefab `C (C rest scDup)`, delivering the finished cell as a member, with an
+-- arbitrary continuation `f` receiving its own copy of the wrapper. Stage 112 built cells at
+-- encoding time; this builds them DURING the run. What remains of the fold is not production
+-- but ORCHESTRATION: routing operands to fire positions and regenerating the driver (the
+-- quine problem, scoped in the ledger).
+
+/-- The synthesis prefab for cells folding onto `rest`. -/
+def scCellPrefab (rest : SCTerm) : SCTerm := .app .C (.app (.app .C rest) scDup)
+
+/-- **Cell synthesis, ground**: one S-fire mints `scTCell w rest` for any arriving `w`. -/
+theorem sc_cell_synth (f w rest : SCTerm) :
+    RS.SC.Steps (.app (.app (.app .S f) (scCellPrefab rest)) w)
+      (.app (.app f w) (scTCell w rest)) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.S_red f (scCellPrefab rest) w)
+
+/-- Cell synthesis under trailing material: the fire goes through with the pile riding. -/
+theorem sc_cell_synth_acc (f w rest acc : SCTerm) :
+    RS.SC.Steps (.app (.app (.app (.app .S f) (scCellPrefab rest)) w) acc)
+      (.app (.app (.app f w) (scTCell w rest)) acc) :=
+  @RS.Steps.single RS.SC _ _ (SCStep.appL (SCStep.S_red f (scCellPrefab rest) w))
+
+/-- **Cell synthesis on OPAQUE data**: the same fire with the wrapper a variable — the minted
+cell contains a wrapper the machine has never inspected. -/
+theorem scv_cell_synth (f rest : SCV) :
+    SCVStep
+      (.app (.app (.app .S f) (.app .C (.app (.app .C rest) (.var 1)))) (.var 0))
+      (.app (.app f (.var 0))
+        (.app (.app .C (.app (.app .C rest) (.var 1))) (.var 0))) :=
+  SCVStep.S_red f (.app .C (.app (.app .C rest) (.var 1))) (.var 0)
