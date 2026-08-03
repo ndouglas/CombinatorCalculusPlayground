@@ -611,3 +611,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_frame_trichotomy' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_frame_trichotomy
+
+/-- info: 'sc_cycle_forever' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_cycle_forever
+
+/-- info: 'sc_cycle_unbounded' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_cycle_unbounded
+
+/-- info: 'sc_parity_hosted' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_parity_hosted

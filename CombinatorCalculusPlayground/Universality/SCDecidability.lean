@@ -3393,3 +3393,340 @@ theorem sc_frame_trichotomy :
   ⟨⟨sc_frame_halt, scFrameHaltNf_normal, sc_frame_halt_universal⟩,
    ⟨sc_frame_cycle_entry, scFrame_runs⟩,
    sc_frame_grow_unbounded⟩
+
+-- ## Stage 191: unary parity, hosted — the first eight rungs
+-- The steering probe found no binary parity in the ≤2-leaf symbol envelope, but the
+-- unary family delivered: in the fate frame, register `C^k S` HALTS when `k` is even
+-- (11 + 2k fires to a normal form) and ORBITS FOREVER when `k` is odd (period 7 + k) —
+-- verified through k = 10, pinned here for k = 0..7. An input predicate — the parity of a
+-- unary numeral — is decided by ETERNITY: the first hosted predicate of the program. Each
+-- odd rung has its own orbit (the traces never merge, so the general law is registered as
+-- conjecture C9 rather than proved by descent). New toolkit: `sc_cycle_forever` /
+-- `sc_cycle_unbounded` — any kernel-pinned cycle yields runs of unbounded length, once.
+
+/-- The unary numeral registers: `C^k S`. -/
+def scParityReg : Nat → SCTerm
+  | 0 => .S
+  | k + 1 => .app .C (scParityReg k)
+
+/-- Cycles compose to every multiple. -/
+theorem sc_cycle_forever {p : Nat} {x : SCTerm} (h : RS.SC.StepsN p x x) :
+    ∀ q, RS.SC.StepsN (p * q) x x
+  | 0 => @RS.StepsN.refl RS.SC x
+  | q + 1 => by
+      rw [Nat.mul_succ]
+      exact RS.StepsN.trans (sc_cycle_forever h q) h
+
+/-- **Any pinned cycle is an eternity certificate**: runs of unbounded length. -/
+theorem sc_cycle_unbounded {p : Nat} {x : SCTerm} (hp : 1 ≤ p)
+    (h : RS.SC.StepsN p x x) : ∀ n, ∃ m, n ≤ m ∧ RS.SC.StepsN m x x := fun n =>
+  ⟨p * n, Nat.le_mul_of_pos_left n hp, sc_cycle_forever h n⟩
+
+
+/-- Parity rung k = 0 (even): the normal form. -/
+def scParityNf0 : SCTerm := (.app (.app .C (.app (.app .S (.app .C .C)) (.app .S (.app .C .C)))) (.app .S (.app .C .C)))
+
+theorem scParity_halt0 :
+    RS.SC.StepsN 11 (scFrame (scParityReg 0)) scParityNf0 :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) .S (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app .S (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app .S (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .S (.app .C .C)) (.app (.app .C .C) (.app .S (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .S (.app .C .C))) (.app .S (.app .C .C)) (.app (.app .C .C) (.app .S (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .S (.app .C .C)) (.app (.app .C .C) (.app .S (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .S (.app .C .C))) (.app .S (.app .C .C)) (.app .S (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .S (.app .C .C)) (.app .S (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app .S (.app .C .C)) (.app .S (.app .C .C)) (.app .S (.app .C .C)))
+  (RS.StepsN.tail (SCStep.S_red (.app .C .C) (.app .S (.app .C .C)) (.app .S (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red .C (.app .S (.app .C .C)) (.app (.app .S (.app .C .C)) (.app .S (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityNf0))))))))))))
+
+theorem scParityNf0_normal : ∀ v, ¬ RS.SC.step scParityNf0 v := by
+  intro v h
+  have hm := scSucc_complete h
+  rw [show scSucc scParityNf0 = [] from rfl] at hm
+  exact absurd hm List.not_mem_nil
+
+/-- Parity rung k = 1 (odd): the orbit, period 8. -/
+def scParityOrb1 : SCTerm := (.app (.app (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+
+theorem scParity_entry1 :
+    RS.SC.StepsN 13 (scFrame (scParityReg 1)) scParityOrb1 :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app .C .S) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app .C .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .S) (.app .C .C)) (.app (.app .C .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .S) (.app .C .C)) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .S) (.app .C .C)) (.app (.app .C .S) (.app .C .C)) (.app (.app .C .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C .S) (.app .C .C)) (.app .C .C) (.app (.app .C .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C .S) (.app .C .C)) (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityOrb1))))))))))))))
+
+theorem scParity_cycle1 : RS.SC.StepsN 8 scParityOrb1 scParityOrb1 :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))) (.app (.app .C .S) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .S) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .S) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .S) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityOrb1)))))))))
+
+/-- Parity rung k = 2 (even): the normal form. -/
+def scParityNf2 : SCTerm := (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C (.app .C .S)) (.app .C .C)))) (.app (.app .C (.app .C .S)) (.app .C .C)))
+
+theorem scParity_halt2 :
+    RS.SC.StepsN 15 (scFrame (scParityReg 2)) scParityNf2 :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app .C (.app .C .S)) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C))) (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C))) (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app .C (.app .C .S)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app .C (.app .C .S)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app .C (.app .C .S)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app (.app .C (.app .C .S)) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.S_red (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app .C (.app .C .S)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red .C (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app (.app .C (.app .C .S)) (.app .C .C)) (.app (.app .C (.app .C .S)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red (.app .C .S) (.app .C .C) (.app (.app .C (.app .C .S)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red .S (.app (.app .C (.app .C .S)) (.app .C .C)) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityNf2))))))))))))))))
+
+theorem scParityNf2_normal : ∀ v, ¬ RS.SC.step scParityNf2 v := by
+  intro v h
+  have hm := scSucc_complete h
+  rw [show scSucc scParityNf2 = [] from rfl] at hm
+  exact absurd hm List.not_mem_nil
+
+/-- Parity rung k = 3 (odd): the orbit, period 10. -/
+def scParityOrb3 : SCTerm := (.app (.app (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))))
+
+theorem scParity_entry3 :
+    RS.SC.StepsN 17 (scFrame (scParityReg 3)) scParityOrb3 :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app .C (.app .C (.app .C .S))) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityOrb3))))))))))))))))))
+
+theorem scParity_cycle3 : RS.SC.StepsN 10 scParityOrb3 scParityOrb3 :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))) (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C .S))) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityOrb3)))))))))))
+
+/-- Parity rung k = 4 (even): the normal form. -/
+def scParityNf4 : SCTerm := (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))
+
+theorem scParity_halt4 :
+    RS.SC.StepsN 19 (scFrame (scParityReg 4)) scParityNf4 :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.S_red (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red (.app .C (.app .C .S)) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red (.app .C .S) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red .S (.app (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C)) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityNf4))))))))))))))))))))
+
+theorem scParityNf4_normal : ∀ v, ¬ RS.SC.step scParityNf4 v := by
+  intro v h
+  have hm := scSucc_complete h
+  rw [show scSucc scParityNf4 = [] from rfl] at hm
+  exact absurd hm List.not_mem_nil
+
+/-- Parity rung k = 5 (odd): the orbit, period 12. -/
+def scParityOrb5 : SCTerm := (.app (.app (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))))
+
+theorem scParity_entry5 :
+    RS.SC.StepsN 21 (scFrame (scParityReg 5)) scParityOrb5 :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityOrb5))))))))))))))))))))))
+
+theorem scParity_cycle5 : RS.SC.StepsN 12 scParityOrb5 scParityOrb5 :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))) (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityOrb5)))))))))))))
+
+/-- Parity rung k = 6 (even): the normal form. -/
+def scParityNf6 : SCTerm := (.app (.app .C (.app (.app .S (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))
+
+theorem scParity_halt6 :
+    RS.SC.StepsN 23 (scFrame (scParityReg 6)) scParityNf6 :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C .S)))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.S_red (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red (.app .C (.app .C (.app .C (.app .C .S)))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red (.app .C (.app .C .S)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red (.app .C .S) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appR (SCStep.C_red .S (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C)) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityNf6))))))))))))))))))))))))
+
+theorem scParityNf6_normal : ∀ v, ¬ RS.SC.step scParityNf6 v := by
+  intro v h
+  have hm := scSucc_complete h
+  rw [show scSucc scParityNf6 = [] from rfl] at hm
+  exact absurd hm List.not_mem_nil
+
+/-- Parity rung k = 7 (odd): the orbit, period 14. -/
+def scParityOrb7 : SCTerm := (.app (.app (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))))
+
+theorem scParity_entry7 :
+    RS.SC.StepsN 25 (scFrame (scParityReg 7)) scParityOrb7 :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityOrb7))))))))))))))))))))))))))
+
+theorem scParity_cycle7 : RS.SC.StepsN 14 scParityOrb7 scParityOrb7 :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S)))))) (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C (.app .C .S))))) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C (.app .C .S)))) (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C (.app .C .S))) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C (.app .C .S)) (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))) (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)) (.app (.app .C .C) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C)))) (.app (.app .C .C) (.app (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C (.app .C .S))))))) (.app .C .C))))
+  (@RS.StepsN.refl RS.SC scParityOrb7)))))))))))))))
+
+/-- **Unary parity, hosted (rungs 0–7)**: in the fate frame, the numeral `C^k S` HALTS
+for even `k` and ORBITS FOREVER for odd `k` — the parity of the input decided by the
+machine's eternity. -/
+theorem sc_parity_hosted :
+    (∀ k ∈ [0, 2, 4, 6], ∃ nf : SCTerm, RS.SC.Steps (scFrame (scParityReg k)) nf ∧
+      ∀ v, ¬ RS.SC.step nf v) ∧
+    (∀ k ∈ [1, 3, 5, 7], ∃ orb : SCTerm, RS.SC.Steps (scFrame (scParityReg k)) orb ∧
+      ∀ n, ∃ m, n ≤ m ∧ RS.SC.StepsN m orb orb) := by
+  constructor
+  · intro k hk
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hk
+    rcases hk with rfl | rfl | rfl | rfl
+    · exact ⟨scParityNf0, RS.StepsN.toSteps scParity_halt0, scParityNf0_normal⟩
+    · exact ⟨scParityNf2, RS.StepsN.toSteps scParity_halt2, scParityNf2_normal⟩
+    · exact ⟨scParityNf4, RS.StepsN.toSteps scParity_halt4, scParityNf4_normal⟩
+    · exact ⟨scParityNf6, RS.StepsN.toSteps scParity_halt6, scParityNf6_normal⟩
+  · intro k hk
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hk
+    rcases hk with rfl | rfl | rfl | rfl
+    · exact ⟨scParityOrb1, RS.StepsN.toSteps scParity_entry1,
+        sc_cycle_unbounded (by omega) scParity_cycle1⟩
+    · exact ⟨scParityOrb3, RS.StepsN.toSteps scParity_entry3,
+        sc_cycle_unbounded (by omega) scParity_cycle3⟩
+    · exact ⟨scParityOrb5, RS.StepsN.toSteps scParity_entry5,
+        sc_cycle_unbounded (by omega) scParity_cycle5⟩
+    · exact ⟨scParityOrb7, RS.StepsN.toSteps scParity_entry7,
+        sc_cycle_unbounded (by omega) scParity_cycle7⟩
