@@ -5225,3 +5225,18 @@ dispatch-capable word (Stage 107) fires the tag before anything burns, the actin
 the production at read time (Stage 144, one fire), the minted pile chains post-hoc into a
 queue word (Stage 146, three fires per cell), and the biodegradable layer is the CLEANUP
 phase, not the read phase. Every piece is a pinned theorem; C8 is their composition.
+
+### Stage 151: the generation loop — one tag generation is a cycle
+
+`sc_generation_cycle` (axiom-free, pinned): the self-reproducing one-symbol tag `{b ↦ [b]}`
+hosts as a genuine `{S,C}` cycle — the encoded configuration (Stage-107 word, `scDup` arms,
+`scDup` END MARKER) returns to itself bit-identically in FIVE fires. One generation: read the
+cell, regenerate the arms, re-erect the word, return. The END MARKER IS THE RETURN ADDRESS:
+`tailInSC`'s marker `S` halts; marker `scDup` loops — the continuation is data. C8 is solved
+for the trivial tag, and the solution re-reads the cycle-space thread: the h-/w-cycle zoo of
+Stages 96–101 was never mere non-termination — (at least some of) `{S,C}`'s cycles ARE hosted
+generation loops. What remains of C8 for NON-trivial tags: the loop must grow (productions
+longer than the consumed prefix) or shrink (shorter) rather than return bit-identically — the
+generation "cycle" becomes a generation SPIRAL, and the glider (Stage 135) is the existing
+specimen of exactly that shape. The design question: a spiral whose per-loop growth carries
+the tag rule's productions.

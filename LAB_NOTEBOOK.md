@@ -5417,3 +5417,22 @@ what automation could and couldn't do. This file is a first-class deliverable
   single-symbol word — design the acting arm to mint and relaunch; probe, then formalize;
   this is the tag Simulation's induction step in miniature. (2) The chaining phase demo
   (pile of two minted cells → queue word, hand-driven). (3) Floor asymptotics at n=10.
+
+## 2026-08-03 — Stage 151: the loop was a cycle all along
+
+- Searched for the read-before-burn composition and found the calculus had already built it:
+  the one-symbol self-tag's generation loop is a five-fire cycle, and the pieces (word cell,
+  scDup arms, end marker) are exactly the Stage-107 stack — with the end marker doubling as
+  the continuation program. Two design campaigns (biodegradable, read-before-burn) and the
+  trivial case was sitting in the cycle zoo the whole time.
+- The reframe matters more than the instance: cycles-as-generations retroactively explains
+  why the cycle classification kept finding SELF-REGENERATING structure (the w-cycle's
+  "payload regeneration" reading, Stage 99). And it names the non-trivial C8 target: a
+  generation SPIRAL — bit-identical return generalized to return-with-growth, which is the
+  glider's shape carrying data.
+- Thirty-three autonomous stages (119–151). All of today's five theorems axiom-free.
+- Ranking: (1) **the two-symbol generation loop**: tag {b ↦ [b]} on words of length 2
+  (bb → bb: still a cycle, but the loop must thread TWO cells — tests whether the five-fire
+  pattern composes) — probe for the cycle, formalize if found. (2) The growth spiral
+  ({b ↦ [b,b]}: word doubles per generation — the undecidability route's engine). (3) Floor
+  asymptotics at n=10.
