@@ -740,3 +740,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_call_source' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_call_source
+
+/-- info: 'sc_head_provenance' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_head_provenance

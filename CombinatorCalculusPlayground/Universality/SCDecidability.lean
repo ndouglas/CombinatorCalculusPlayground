@@ -4818,3 +4818,32 @@ theorem sc_call_source {t u : SCTerm} (h : RS.SC.step t u) :
   · rcases hcase with ⟨_, hargs, _⟩ | ⟨_, hargs, _⟩
     · exact .inr ⟨f, g :: x :: rest, hargs, hf⟩
     · exact .inr ⟨f, g :: x :: rest, hargs, hf⟩
+
+-- ## Stage 212: head provenance — the return stack, iterated
+-- The dichotomy, closed under reduction. For ANY multi-step reduction, the final head
+-- atom either survived from the very start (a pure mutation history — all computation
+-- argument-internal) or was SUPPLIED BY THE FIRST ARGUMENT of some reachable state: the
+-- last call's callee. There is no third source. For recurrent machines this is the
+-- return-stack law: a machine that restores its head after calling has necessarily
+-- re-supplied that head from its own a₁-chain — the reader does it every period (its
+-- consultation product is its next front), and C10 asks whether the re-supplied copy
+-- can ever carry an incremented address.
+
+/-- **Head provenance**: over any reduction, the head either survives or is the head of
+a first argument of some reachable state. -/
+theorem sc_head_provenance {t u : SCTerm} (h : RS.SC.Steps t u) :
+    scSpineHead u = scSpineHead t ∨
+    ∃ v f rest, RS.SC.Steps t v ∧ scSpineArgs v = f :: rest ∧
+      scSpineHead u = scSpineHead f := by
+  refine h.rec (motive := fun (a b : SCTerm) _ =>
+      scSpineHead b = scSpineHead a ∨
+      ∃ v f rest, RS.SC.Steps a v ∧ scSpineArgs v = f :: rest ∧
+        scSpineHead b = scSpineHead f) ?_ ?_
+  · intro a
+    exact .inl rfl
+  · intro a b c s rest' ih
+    rcases ih with hh | ⟨v, f, fr, hv, hargs, hf⟩
+    · rcases sc_call_source s with hs | ⟨f, fr, hargs, hf⟩
+      · exact .inl (hh.trans hs)
+      · exact .inr ⟨a, f, fr, @RS.Steps.refl RS.SC a, hargs, hh.trans hf⟩
+    · exact .inr ⟨v, f, fr, RS.Steps.tail s hv, hargs, hf⟩
