@@ -5797,3 +5797,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   whose period includes the write prefab S S at a consultation byproduct's landing site —
   directed construction over the reader's period skeleton, then the detector with the
   value-shape filter. (2) n=10 witnesses. (3) Bounded intermediates.
+
+## 2026-08-03 — Stage 178: forward-only
+
+- The reader's anatomy gave the campaign its deepest single sentence: the state is the
+  engine. The register isn't data the machine reads — its fires ARE the machine's
+  regeneration. Writing means changing the engine mid-flight, and the only way {S,C} lets
+  a machine revisit anything is to burn down to it. The boustrophedon stops being a wall
+  description and becomes the blueprint.
+- Sixty autonomous stages (119–178). Ranking: (1) **the alternator**: a grow-phase front
+  whose junk stream is CC-biodegradable, so the burn-phase re-reads it — probe for fronts
+  whose emitted J is pure-C. (The reader's J = C P (C r) contains r = S S C: S-material;
+  a pure-C-junk reader would burn clean.) (2) n=10 witnesses. (3) Bounded intermediates.

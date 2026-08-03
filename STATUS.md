@@ -90,12 +90,19 @@ emitting one accounted junk block, with its register consulting twice
 per period (#guarded: forced march, consultation count, presence); the
 period lifts to every generation by congruence. A machine that outlives
 its own step, unboundedly, while interacting with its state — found
-inside the Stage-166 consultation loop by periodicity analysis. The
-persistence problem's remainder is now one recurrence-shape question:
-persistence while WRITING — a front whose period routes a freshly minted
-register into its own next generation (`Front X ↦ Front X' · J`).
-Between that recurrence and the program stand: tag/Minsky hosting,
-undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
+inside the Stage-166 consultation loop by periodicity analysis. Stages 177–178 gave
+the writer its final form: persistence is PARAMETRIC
+(`sc_pulse_parametric` — five fires, any cargo, pinned), the reader's
+state is its own engine (the consultation fires mint the next front),
+and machines write FORWARD-ONLY — junk re-enters the fire zone only by
+burning down to it. The writing reader is therefore a GROW/BURN
+ALTERNATOR: Stage 116's boustrophedon, once an obstacle description,
+returns as the blueprint — grow-phase emits computed junk (the reader's
+mechanics), burn-phase re-reads it (the biodegradable machinery), the
+carry rides parametric persistence. Every phase-mechanism is pinned; the
+alternator is the last composition, and behind it stand tag/Minsky
+hosting, undecidability, and the frontier equivalence's negative
+resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a
