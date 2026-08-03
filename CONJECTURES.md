@@ -5525,3 +5525,17 @@ lessons, four contamination catches, one pin-rule violation caught in-commit, on
 lost to final-report-only output — every one converted to a standing rule. The program's
 open questions remain two, and they are the same two as at Stage 160 — bounded intermediates
 and the composition — but both now have complete toolkits and named architectures.
+
+### Stage 171: two clocks, by design
+
+`sc_two_clocks` / `sc_independent_registers` (axiom-free, pinned): member-held configurations
+reduce independently under a pair-holder — one word-register pops while the other holds, and
+the mirror image. The lockstep law binds deterministic single-spine marches; reachability
+quantifies over all schedules, so the architecture escapes it outright. The composition now
+has its chassis: two registers with dec/test/inc (word length, Stage 152/154 machinery), four
+control primitives (Stages 164–167), and independent clocks (here). ONE piece remains between
+the program and a hosted two-register machine: THE COUPLING — the driver consulting member
+end-states and branching, which is the read gadget aimed at a member instead of a bit. That
+single design object now carries the entire weight of: full tag/Minsky hosting, rung-3
+undecidability via the frontier equivalence, and with it the resolution of the program's
+last goal-level question.

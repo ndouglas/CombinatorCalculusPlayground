@@ -5711,3 +5711,13 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) **the two-clock composition** (fresh sitting, architecture banked). (2) The
   n=10 witnesses when the crash-proof sweep surfaces them. (3) Bounded intermediates via
   the counter/glider growth readings.
+
+## 2026-08-03 — Stage 171: the chassis
+
+- The banked architecture note became two axiom-free theorems in eleven lines — congruence
+  was always going to pay for the pair-holder, but seeing 'the lockstep law, broken by
+  design' as a pinned statement reframes Stage 162's negative as a boundary marker rather
+  than a wall. Everything the composition needs now exists except the coupling.
+- Fifty-three autonomous stages (119–171). Ranking: (1) **the coupling** (the read gadget
+  aimed at a member's end-state; fresh sitting recommended — it is the last design object).
+  (2) n=10 witnesses from the crash-proof sweep. (3) Bounded intermediates.

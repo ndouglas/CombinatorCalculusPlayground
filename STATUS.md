@@ -56,9 +56,16 @@ detector) and the WRITE (`sc_reg_write`, axiom-free: registers are
 minted, not mutated — one S-fire with prefab `S S`). ALL FOUR CONTROL
 PRIMITIVES of the nondestructive-read problem now exist as pinned or
 build-enforced mechanisms: read, latch, looped read, write. C8's
-remaining content is COMPOSITION alone — a decrement-and-branch (Minsky
-step) or tag step choreographed from the four; no missing mechanism
-stands between the program and a hosted unbounded machine. Since the Stage 114 review, one autonomous run
+remaining content is COMPOSITION alone — and Stages 168–171 built its
+chassis: word-length registers already implement dec/test/inc (pop =
+`scRun_step`, zero-test = marker promotion, inc = the growth step), and
+TWO CLOCKS EXIST BY DESIGN (`sc_two_clocks`/`sc_independent_registers`,
+axiom-free, pinned: member-held configurations reduce independently —
+the lockstep law binds single-spine marches, not architectures, since
+reachability quantifies over all schedules). ONE design object remains:
+THE COUPLING — the driver consulting member end-states via the read
+gadget — and it carries the entire weight of full tag/Minsky hosting
+and, via the frontier equivalence, rung-3 undecidability. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a
