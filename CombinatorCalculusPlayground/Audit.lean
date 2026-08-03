@@ -10,6 +10,7 @@ import CombinatorCalculusPlayground.Universality.RungTermination
 import CombinatorCalculusPlayground.Universality.SCConfluence
 import CombinatorCalculusPlayground.Universality.SCDecidability
 import CombinatorCalculusPlayground.Universality.SCMembers
+import CombinatorCalculusPlayground.Universality.DecEngine
 import CombinatorCalculusPlayground.Conservation
 import CombinatorCalculusPlayground.Recurrence
 import CombinatorCalculusPlayground.Universality.OneRule
@@ -337,3 +338,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scGlider_march_unbounded' depends on axioms: [propext] -/
 #guard_msgs in #print axioms scGlider_march_unbounded
+
+/-- info: 'RS.SuccKit.decidable_iff_bound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms RS.SuccKit.decidable_iff_bound
+
+/-- info: 'sk_decidable_iff_bound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sk_decidable_iff_bound
+
+/-- info: 'sc_bound_floor_25' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_bound_floor_25

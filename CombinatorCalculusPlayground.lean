@@ -33,3 +33,4 @@ import CombinatorCalculusPlayground.Recurrence
 import CombinatorCalculusPlayground.Universality.SCConfluence
 import CombinatorCalculusPlayground.Universality.SCDecidability
 import CombinatorCalculusPlayground.Universality.SCMembers
+import CombinatorCalculusPlayground.Universality.DecEngine

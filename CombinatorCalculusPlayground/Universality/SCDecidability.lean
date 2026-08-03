@@ -1284,3 +1284,48 @@ length — deterministic computation without end, measured by the toolkit. -/
 theorem scGlider_march_unbounded (n : Nat) :
     (scForcedMarch scGliderSeed n).length = n :=
   scGliderTraj_march_length n (Or.inl rfl)
+
+-- ## Stage 142 (witness): the steep mountain — excess fifteen in thirteen forced steps
+-- From the exhaustive n=9 census (13,721 forced-prefix mountains): the most compact steep
+-- specimen. Nine leaves, thirteen forced steps to a 25-leaf peak, branching to a ten-leaf
+-- target ten checked steps later.
+
+/-- Nine leaves: `S S C (S (S C (C C))) C`. -/
+def scMt3T : SCTerm := .app (.app (.app (.app .S .S) .C) (.app .S (.app (.app .S .C) (.app .C .C)))) .C
+
+/-- Ten leaves, reached past the 25-leaf peak. -/
+def scMt3U : SCTerm := .app (.app (.app .C (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C)) .C) .C
+
+def scMt3Path : List SCTerm :=
+  scForcedMarch scMt3T 13 ++
+  [.app (.app (.app (.app (.app .C .C) (.app (.app .C .C) .C)) (.app (.app (.app .C .C) (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C)) .C)) .C) (.app (.app .C .C) .C),
+   .app (.app (.app (.app .C (.app (.app (.app .C .C) (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C)) .C)) (.app (.app .C .C) .C)) .C) (.app (.app .C .C) .C),
+   .app (.app (.app (.app (.app (.app .C .C) (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C)) .C) .C) (.app (.app .C .C) .C)) (.app (.app .C .C) .C),
+   .app (.app (.app (.app (.app .C .C) (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C)) .C) (.app (.app .C .C) .C)) (.app (.app .C .C) .C),
+   .app (.app (.app (.app .C .C) (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C)) (.app (.app .C .C) .C)) (.app (.app .C .C) .C),
+   .app (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C)) (.app (.app .C .C) .C),
+   .app (.app (.app (.app .C .C) .C) (.app (.app .C .C) .C)) (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C),
+   .app (.app (.app .C (.app (.app .C .C) .C)) .C) (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C),
+   .app (.app (.app (.app .C .C) .C) (.app (.app .C (.app .S (.app (.app .S .C) (.app .C .C)))) .C)) .C,
+   scMt3U]
+
+#guard scMt3T.leafCount = 9
+#guard scMt3U.leafCount = 10
+
+theorem scMt3_steps : RS.SC.Steps scMt3T scMt3U :=
+  scChained_steps scMt3Path scMt3T scMt3U (by decide) (by decide)
+
+theorem scMt3_no_capped_path : ¬ RS.StepsLe RS.SC SCTerm.leafCount 24 scMt3T scMt3U :=
+  scForced_mountain (scForcedMarch scMt3T 13) (scForcedMarch_forced 13 scMt3T)
+    (by decide) (by decide)
+
+theorem sc_bound_floor_25 (f : Nat → Nat → Nat)
+    (hf : ∀ t u : SCTerm, RS.SC.Steps t u →
+        RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u) :
+    25 ≤ f 9 10 := by
+  by_cases h : 25 ≤ f 9 10
+  · exact h
+  · exfalso
+    have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 9 10) scMt3T scMt3U :=
+      hf scMt3T scMt3U scMt3_steps
+    exact scMt3_no_capped_path (RS.StepsLe.weaken (by omega) hs)
