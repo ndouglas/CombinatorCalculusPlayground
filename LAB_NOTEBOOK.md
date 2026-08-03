@@ -5404,3 +5404,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   side-effects) that a downstream gadget could dispatch on? If yes, the furnace reads as it
   burns. (2) Read-before-burn: compose scWord dispatch with biodegradable fold. (3) Floor
   asymptotics at n=10.
+
+## 2026-08-03 — Stage 150: the furnace reads nothing
+
+- A crisp negative with a crisp proof: two protocol lemmas whose conclusions are literally
+  identical terms. The five-fire and seven-fire burns converging bitwise is the cleanest
+  statement of information death the thread has produced — and it redirects C8 to the one
+  design that never burns unread data.
+- Thirty-two autonomous stages (119–150). The composition now on the bench: dispatch mints,
+  pile chains, furnace cleans. Three proven layers, one wiring diagram.
+- Ranking: (1) **the one-symbol generation loop**: wire dispatch-time minting for a
+  single-symbol word — design the acting arm to mint and relaunch; probe, then formalize;
+  this is the tag Simulation's induction step in miniature. (2) The chaining phase demo
+  (pile of two minted cells → queue word, hand-driven). (3) Floor asymptotics at n=10.

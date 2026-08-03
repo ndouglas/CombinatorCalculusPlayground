@@ -5213,3 +5213,15 @@ only the last two symbols arrive as data. C8's endgame is therefore sharpened on
 either fuel must BEAR information (distinct fuels steering the traversal into distinct
 continuations — undesigned), or reading must happen before burning (the dispatch-capable
 `scWord` layer feeding the biodegradable fold — a composition question).
+
+### Stage 150: fuel blindness
+
+Information-bearing fuel is closed. Probe: the three clean fuels each reach exactly ONE end
+state with ONE member signature — identical across fuels. Pinned (`scBCell_fireB'`,
+`scBCell_fuel_blind`, axiom-free): the four-leaf fuel burns in seven fires to bitwise the same
+delivered state as `C C`'s five — same arms in, same state out. The biodegradable furnace
+erases whatever it eats, structurally. C8's route is now unique: READ-BEFORE-BURN — the
+dispatch-capable word (Stage 107) fires the tag before anything burns, the acting arm mints
+the production at read time (Stage 144, one fire), the minted pile chains post-hoc into a
+queue word (Stage 146, three fires per cell), and the biodegradable layer is the CLEANUP
+phase, not the read phase. Every piece is a pinned theorem; C8 is their composition.
