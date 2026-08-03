@@ -440,3 +440,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_testdec' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_testdec
+
+/-- info: 'sc_testdec_twice' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_testdec_twice

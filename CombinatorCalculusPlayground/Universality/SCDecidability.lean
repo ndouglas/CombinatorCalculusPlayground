@@ -1606,3 +1606,60 @@ theorem sc_testdec :
     (.app (.app .C (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C))) (.app (.app (.app (.app .S .C) (.app .S .S)) (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C))) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)))))
     (.app (.app .S .C) (.app .S .S))
 #guard ¬ scHasSub (.app (.app (.app .S (.app .C .S)) (.app .C .C)) (.app .S .C)) (.app .S .S)
+
+-- ## Stage 174: the decrement cycles — two pops, one machine
+-- The half-step iterates. The same provenance-verified machine takes the TWO-cell register
+-- through the intermediate to the doubly-decremented register: twenty-six fires, the first
+-- sixteen delivering `reg 1` (mid, `#guard`ed), ten more delivering `reg 0` (goal,
+-- `#guard`ed) — same `S S` dye, machinery still dye-free. The Minsky decrement CYCLES; the
+-- assembly's remaining item is the zero-branch exit wired to Stage 172's test.
+
+/-- Leg one: two-cell register to a state carrying the once-decremented register. -/
+theorem sc_testdec_leg1 :
+    RS.SC.Steps
+      (.app (.app (.app (.app .S (.app .S .C)) (.app .C .C)) (.app .S .C)) (.app (.app .S .C) (.app (.app .C .C) (.app (.app .C .C) (.app .S .S)))))
+      (.app (.app .C (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C))) (.app (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)) (.app (.app (.app .C .C) (.app .S .C)) (.app (.app .C (.app .S .C)) (.app .S .C))))) :=
+    (RS.Steps.tail (SCStep.appL (SCStep.S_red (.app .S .C) (.app .C .C) (.app .S .C)))
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red .C (.app .S .C) (.app (.app .C .C) (.app .S .C))))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .C .C) (.app .S .C)) (.app (.app .S .C) (.app (.app .C .C) (.app .S .C))) (.app (.app .S .C) (.app (.app .C .C) (.app (.app .C .C) (.app .S .S)))))
+  (RS.Steps.tail (SCStep.appL (SCStep.C_red .C (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app (.app .C .C) (.app .S .S))))))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .S .C) (.app (.app .C .C) (.app (.app .C .C) (.app .S .S)))) (.app .S .C) (.app (.app .S .C) (.app (.app .C .C) (.app .S .C))))
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red .C (.app (.app .C .C) (.app (.app .C .C) (.app .S .S))) (.app (.app .S .C) (.app (.app .C .C) (.app .S .C)))))
+  (RS.Steps.tail (SCStep.C_red (.app (.app .S .C) (.app (.app .C .C) (.app .S .C))) (.app (.app (.app .C .C) (.app (.app .C .C) (.app .S .S))) (.app (.app .S .C) (.app (.app .C .C) (.app .S .C)))) (.app .S .C))
+  (RS.Steps.tail (SCStep.appL (SCStep.S_red .C (.app (.app .C .C) (.app .S .C)) (.app .S .C)))
+  (RS.Steps.tail (SCStep.C_red (.app .S .C) (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C)) (.app (.app (.app .C .C) (.app (.app .C .C) (.app .S .S))) (.app (.app .S .C) (.app (.app .C .C) (.app .S .C)))))
+  (RS.Steps.tail (SCStep.S_red .C (.app (.app (.app .C .C) (.app (.app .C .C) (.app .S .S))) (.app (.app .S .C) (.app (.app .C .C) (.app .S .C)))) (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C)))
+  (RS.Steps.tail (SCStep.appR (SCStep.appL (SCStep.C_red .C (.app (.app .C .C) (.app .S .S)) (.app (.app .S .C) (.app (.app .C .C) (.app .S .C))))))
+  (RS.Steps.tail (SCStep.appR (SCStep.C_red (.app (.app .S .C) (.app (.app .C .C) (.app .S .C))) (.app (.app .C .C) (.app .S .S)) (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appL (SCStep.appR (SCStep.C_red .C (.app .S .C) (.app .S .C)))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appL (SCStep.S_red .C (.app (.app .C .C) (.app .S .C)) (.app (.app .C (.app .S .C)) (.app .S .C)))))
+  (RS.Steps.tail (SCStep.appR (SCStep.C_red (.app (.app .C (.app .S .C)) (.app .S .C)) (.app (.app (.app .C .C) (.app .S .C)) (.app (.app .C (.app .S .C)) (.app .S .C))) (.app (.app .C .C) (.app .S .S))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appL (SCStep.C_red (.app .S .C) (.app .S .C) (.app (.app .C .C) (.app .S .S)))))
+  (@RS.Steps.refl RS.SC _)))))))))))))))))
+
+/-- Leg two: onward to a state carrying the doubly-decremented register. -/
+theorem sc_testdec_leg2 :
+    RS.SC.Steps
+      (.app (.app .C (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C))) (.app (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)) (.app (.app (.app .C .C) (.app .S .C)) (.app (.app .C (.app .S .C)) (.app .S .C)))))
+      (.app (.app .C (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C))) (.app (.app .C (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C))) (.app (.app (.app .C (.app .S .C)) (.app (.app .C (.app .S .S)) (.app (.app .S .C) (.app .S .S)))) (.app .S .C)))) :=
+    (RS.Steps.tail (SCStep.appR (SCStep.appL (SCStep.S_red .C (.app (.app .C .C) (.app .S .S)) (.app .S .C))))
+  (RS.Steps.tail (SCStep.appR (SCStep.C_red (.app .S .C) (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C)) (.app (.app (.app .C .C) (.app .S .C)) (.app (.app .C (.app .S .C)) (.app .S .C)))))
+  (RS.Steps.tail (SCStep.appR (SCStep.S_red .C (.app (.app (.app .C .C) (.app .S .C)) (.app (.app .C (.app .S .C)) (.app .S .C))) (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appR (SCStep.appL (SCStep.C_red .C (.app .S .C) (.app (.app .C (.app .S .C)) (.app .S .C))))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appR (SCStep.C_red (.app (.app .C (.app .S .C)) (.app .S .C)) (.app .S .C) (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C)))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appR (SCStep.appL (SCStep.C_red (.app .S .C) (.app .S .C) (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C))))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appR (SCStep.appL (SCStep.S_red .C (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C)) (.app .S .C)))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appR (SCStep.appL (SCStep.appR (SCStep.appL (SCStep.C_red .C (.app .S .S) (.app .S .C)))))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appR (SCStep.appL (SCStep.appR (SCStep.C_red (.app .S .C) (.app .S .S) (.app .S .C))))))
+  (RS.Steps.tail (SCStep.appR (SCStep.appR (SCStep.appL (SCStep.appR (SCStep.S_red .C (.app .S .C) (.app .S .S))))))
+  (@RS.Steps.refl RS.SC _)))))))))))
+
+/-- **The decrement cycles**: two pops through one machine. -/
+theorem sc_testdec_twice :
+    RS.SC.Steps
+      (.app (.app (.app (.app .S (.app .S .C)) (.app .C .C)) (.app .S .C)) (.app (.app .S .C) (.app (.app .C .C) (.app (.app .C .C) (.app .S .S)))))
+      (.app (.app .C (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C))) (.app (.app .C (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C))) (.app (.app (.app .C (.app .S .C)) (.app (.app .C (.app .S .S)) (.app (.app .S .C) (.app .S .S)))) (.app .S .C)))) :=
+  RS.Steps.trans sc_testdec_leg1 sc_testdec_leg2
+
+#guard scHasSub (.app (.app .C (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C))) (.app (.app (.app (.app .S .C) (.app (.app .C .C) (.app .S .S))) (.app .S .C)) (.app (.app (.app .C .C) (.app .S .C)) (.app (.app .C (.app .S .C)) (.app .S .C))))) (.app (.app .S .C) (.app (.app .C .C) (.app .S .S)))
+#guard scHasSub (.app (.app .C (.app (.app (.app .C .C) (.app .S .C)) (.app .S .C))) (.app (.app .C (.app (.app (.app .C .C) (.app .S .S)) (.app .S .C))) (.app (.app (.app .C (.app .S .C)) (.app (.app .C (.app .S .S)) (.app (.app .S .C) (.app .S .S)))) (.app .S .C)))) (.app (.app .S .C) (.app .S .S))
