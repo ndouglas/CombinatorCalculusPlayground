@@ -5551,3 +5551,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   towers, conditional on emptiness — the Minsky primitives) — search seeds near the slow
   burner. (3) The constructor search (tag idiom), now second in line behind the counter
   idiom.
+
+## 2026-08-03 — Stage 159: one clock
+
+- Eleven two-tower machines at eight leaves and every one beats to a single clock. The
+  duplication that makes {S,C} grow is also what synchronizes it: copies are born equal.
+  Independence — the register that waits — is exactly what no specimen shows.
+- The convergence across idioms is the day's meta-finding: tag hosting lacks a marker that
+  survives its own firing; register hosting lacks a test that spares its operand. Both are
+  'read without consuming' — the calculus's non-erasure pushed to its sharpest point yet.
+  Naming it: THE NONDESTRUCTIVE-READ PROBLEM, C8's true kernel.
+- Forty-one autonomous stages (119–159). Ranking: (1) the review refresh (numbers 29 stages
+  stale; the nondestructive-read reframe belongs in STATUS). (2) Harvest n=10 floor census +
+  n=9 register sweep (both running). (3) The nondestructive-read design campaign, fresh.

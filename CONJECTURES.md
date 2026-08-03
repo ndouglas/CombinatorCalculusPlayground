@@ -5341,3 +5341,18 @@ open route, already in use by an eight-leaf term; (2) counters are the raw mater
 machine undecidability constructions — this specimen increments only, but the existence of a
 register discipline in `{S,C}` reframes the constructor gap: perhaps the tag/word architecture
 is the wrong host idiom and the counter idiom is native. Bounded caveats: 12k steps, one seed.
+
+### Stage 159: twin towers, one clock — the register question
+
+The two-register hunt (n=8 exhaustive: 11 specimens; n=9 sweep continuing in background,
+42 hits at time of writing): every specimen with two growing C-towers grows them in LOCKSTEP —
+final heights within a few units, ratio ≈ 1 throughout. The counter idiom generalizes (twin
+towers are generic in the family — the increment's duplication makes a working copy), but
+INDEPENDENT registers — one growing while the other holds or shrinks, the Minsky primitive —
+are absent from every specimen found. The register question is now sharp: is lockstep forced
+(one clock drives everything reachable by these seeds), or do independent registers appear
+at larger seeds or under designed contexts? A steering mechanism would need the machine's
+head to consult one tower while preserving the other — dispatch-on-emptiness, which is the
+counter idiom's version of the constructor gap. Both idioms (tag/word and counter/register)
+now stand one control-primitive short of a Minsky/tag reduction, and it is recognizably the
+SAME primitive: conditional behavior on runtime data that survives the test.
