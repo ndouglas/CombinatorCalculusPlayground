@@ -2795,3 +2795,33 @@ theorem sc_bound_floor_291 (f : Nat → Nat → Nat)
     have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 12 234) scMt5T scMt5U :=
       hf scMt5T scMt5U scMt5_steps
     exact scMt5_no_capped_path (RS.StepsLe.weaken (by omega) hs)
+
+-- ## Stage 188: metabolic assembly — delivery, execution, housing in seven fires
+-- The chassis isolates (Stage 186), so machines can only interact through fires — and
+-- here is that interaction, pinned end to end from spare parts. Three dead cells (all
+-- `C C` shells) burn by the cell-armed pop; the freed head arm is the `S S` MINTER, which
+-- executes on the freed cargo and produces `S B (S S B)` — the inert pair chassis housing
+-- the cargo NEXT TO its own freshly minted register. Delivery (pop, six fires) →
+-- execution (one minting fire) → housing (the chassis, zero fires, by shape). Cell one's
+-- contents consumed cell three's contents: the first pinned producer→consumer handoff.
+-- Fully parametric in the cargo; at `B = C` the product is `S C (S S C)` — a bit sitting
+-- beside the fate register that would spin on it.
+
+/-- Three cells: minter head, minter arm, cargo arm. -/
+def scAssembly (B : SCTerm) : SCTerm :=
+  .app (.app (.app (.app .C .C) (.app .S .S)) (.app (.app .C .C) (.app .S .S)))
+    (.app (.app .C .C) B)
+
+/-- **Metabolic assembly**: the cells burn, the minter runs on the cargo, and the product
+is the housed cargo-plus-register — seven fires, any cargo. -/
+theorem sc_metabolic_assembly (B : SCTerm) :
+    RS.SC.Steps (scAssembly B)
+      (SCTerm.app (SCTerm.app .S B) (.app (.app .S .S) B)) :=
+  RS.Steps.trans (sc_cellArm_pop (.app .S .S) (.app .S .S) B)
+    (RS.Steps.single (SCStep.S_red .S (.app .S .S) B))
+
+/-- The bit instance: three dead cells assemble a bit housed beside its own register. -/
+theorem sc_metabolic_assembly_bit :
+    RS.SC.Steps (scAssembly .C)
+      (SCTerm.app (SCTerm.app .S .C) (.app (.app .S .S) .C)) :=
+  sc_metabolic_assembly .C

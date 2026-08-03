@@ -572,3 +572,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_bound_floor_291' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_bound_floor_291
+
+/-- info: 'sc_metabolic_assembly' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_metabolic_assembly
+
+/-- info: 'sc_metabolic_assembly_bit' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_metabolic_assembly_bit
