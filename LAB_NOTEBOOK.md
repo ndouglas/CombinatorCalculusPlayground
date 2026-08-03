@@ -5769,3 +5769,19 @@ what automation could and couldn't do. This file is a first-class deliverable
   sitting, full instrument set — the run's remaining question. (2) n=10 witnesses (sweep
   running). (3) Bounded intermediates (the frontier's other half — possibly the same wall
   by the Stage-160 observation).
+
+## 2026-08-03 — Stage 176: it outlives its step
+
+- The persistence problem stood alone for one stage. The consulting spiral was inside the
+  consultation loop all along — period seven, two reads per period, verbatim front
+  recurrence, junk accounted. The formalization is the run's cleanest big pin: one 7-fire
+  period theorem, two 3-line inductions, four guards.
+- The remaining delta is precise: the reader's recurrence carries an UNCHANGED register.
+  Persistence-while-writing = a recurrence Front(reg) ↦ Front(reg')·J. The write primitive
+  mints reg' in one fire; the question is whether a front exists whose period ROUTES the
+  minted register into its own next generation. That is the entire remaining content of C8,
+  and it is now a single recurrence-shape question.
+- Fifty-eight autonomous stages (119–176). Ranking: (1) **the writing reader**: search/design
+  fronts with period-recurrence Front X ↦ Front X' · J where X' ≠ X (state-advancing
+  spirals) — the detectors and emitters are ready. (2) n=10 witnesses. (3) Bounded
+  intermediates.

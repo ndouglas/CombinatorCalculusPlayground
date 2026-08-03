@@ -83,9 +83,19 @@ reach unique, distinct normal forms — value-dependent halts, closures
 complete), and the composition's sole remainder is THE PERSISTENCE
 PROBLEM (C8-final): a machine that outlives its own step. The quine, the
 constructor gap, and loop persistence were one wall met from three
-sides; it now stands alone between bounded hosting (everything above,
-theorem) and unbounded hosting — tag/Minsky, undecidability, the
-frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
+sides — and Stage 176 breached it for read-only state: THE PERSISTENT
+READER (`scReader_period`/`_step`/`_unbounded`, axiom-free, pinned). The
+front `S P (C P) (C r)` reproduces itself VERBATIM every seven fires,
+emitting one accounted junk block, with its register consulting twice
+per period (#guarded: forced march, consultation count, presence); the
+period lifts to every generation by congruence. A machine that outlives
+its own step, unboundedly, while interacting with its state — found
+inside the Stage-166 consultation loop by periodicity analysis. The
+persistence problem's remainder is now one recurrence-shape question:
+persistence while WRITING — a front whose period routes a freshly minted
+register into its own next generation (`Front X ↦ Front X' · J`).
+Between that recurrence and the program stand: tag/Minsky hosting,
+undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a

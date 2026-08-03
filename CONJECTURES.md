@@ -5592,3 +5592,17 @@ STEP. Fifty-six stages of triangulation say this is not one wall among many but 
 `{S,C}`'s single remaining question, standing between bounded hosting (everything above,
 theorem) and unbounded hosting (tag/Minsky, undecidability, the frontier's negative side).
 Registered as C8-final: THE PERSISTENCE PROBLEM.
+
+### Stage 176: the persistent reader — persistence solved for read-only state
+
+`scReader_period`/`scReader_step`/`scReader_unbounded` (axiom-free, pinned): the front
+`S P (C P) (C r)` reproduces itself VERBATIM every seven fires, emitting one accounted junk
+block, with the register `r = S S C` consulting twice per period (`#guard`ed: forced march,
+consultation count, register presence). The junk rides as trailing members, so the period
+lifts to every generation by congruence — the machine outlives its own step, unboundedly,
+while interacting with its state. The persistence problem's ledger: a machine can persist
+while READING; the remaining question is persistence while WRITING — the reader's recurrence
+is verbatim (`Front ↦ Front·J`), and a written state means the recurrence must carry a
+CHANGED register while everything else survives. The reader was not designed: it is the
+Stage-166 consultation loop's own tail, revealed by periodicity analysis — the calculus keeps
+having already built what the program sets out to construct.
