@@ -5350,3 +5350,22 @@ what automation could and couldn't do. This file is a first-class deliverable
   target this time. (2) The end-to-end generation-2 demo (chain scQWord traversal into
   synthesis of a next word, hand-driven — no quine needed, shows two full generations as a
   Steps theorem). (3) Floor asymptotics at n=10.
+
+## 2026-08-03 — Stage 147: the spurious twelve hundred
+
+- The day's lesson is the first probe: 1,212 hits, every one an artifact of a target the
+  START state satisfies. Caught within minutes by extracting a witness path (length one,
+  from an internal junk fire). Rule for the catalogue, fourth of the run and bluntest:
+  BEFORE celebrating a reachability hit, check the origin against the target predicate.
+- The corrected zero is itself a finding: the naive fold-at-the-end dies on arm junk, not on
+  nesting (Stage 146 solved nesting). The two spent arms are non-erasable and sit exactly
+  where the synthesis prefab must stand. The co-design insight — make the ARM carry the
+  prefab — turns the barrier into the candidate mechanism, and gives C8 a concrete search
+  space instead of a slogan.
+- Twenty-nine autonomous stages (119–147). The fold ledger after two days: read ✓ branch ✓
+  drop ✓ mint ✓ chain ✓ protocol ✓; re-erection blocked by arm junk; C8 = co-design of
+  (cell constant, arms, end-marker) with self-regeneration.
+- Ranking: (1) **C8 co-design probe**: parameterize the cell's embedded constant and the arm
+  shape together (the seven-fire protocol re-verified per candidate), search for pairs whose
+  end-state puts prefab adjacent to wrapper. (2) Floor asymptotics at n=10. (3) The
+  aperiodic diverger's anatomy.

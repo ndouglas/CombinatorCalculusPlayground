@@ -5165,3 +5165,20 @@ ledger now: production ✓, accumulation ✓, protocol ✓; the full tag `Simula
 design problem: DRIVER SELF-REGENERATION (the quine). If the quine exists, `{S,C}` hosts full
 tag systems and rung-3 reachability is undecidable, closing the frontier equivalence's other
 side. C7 is retired-refuted; the quine is registered as C8.
+
+### Stage 147: the arm-junk barrier — generation two, mapped and blocked
+
+Two searches, one instructive failure. The first found 1,212 "generation-2" states — all
+SPURIOUS: the target pattern (a promoted queue cell containing the wrapper) matches the
+STARTING configuration, because generation 1's word is itself a queue cell; a reachability
+target that the origin satisfies certifies nothing. The corrected search — from the genuine
+post-traversal state `E scDup scDup W scDup`, wrapper harvested to the pile — is a ZERO across
+2,286 designed end-markers (≤ 3 prefabs from a ten-gadget pool, depth 18). The block has a
+shape: THE ARM-JUNK BARRIER. After traversal, the two spent interrogation arms sit between the
+end-marker and the harvested wrapper; the synthesis fire needs its prefab at position two with
+the wrapper at three; leaf-C drains bring the wrapper to reach but put a spent ARM in the
+prefab slot, and non-erasure means arms are never destroyed, only relocated. The route
+forward, mapped: CO-DESIGN of (cell constant, arm shape, end-marker) — the cell's embedded
+constant need not be `scDup` and the arms need not be either; if the arm itself carries the
+synthesis prefab, the barrier becomes the mechanism. That co-design space is C8's real arena.
+Caveats: pool/depth-bounded, single-wrapper words, drop layout fixed by `scQCell_fire`.

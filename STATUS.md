@@ -580,7 +580,12 @@ tag hosting — and with it the undecidability side of the rung-3
 equivalence — hangs on ONE remaining design problem: C8, DRIVER
 SELF-REGENERATION (the quine). The stakes are now explicit: a quine
 driver ⟹ tag `Simulation` into `{S,C}` ⟹ rung-3 reachability
-undecidable ⟹ the frontier equivalence resolves negative. The boustrophedon framing was itself corrected (Stage 116): front-push and
+undecidable ⟹ the frontier equivalence resolves negative. Stage 147
+mapped C8's first wall: THE ARM-JUNK BARRIER — after traversal the two
+spent (non-erasable) interrogation arms sit exactly where the synthesis
+prefab must stand (2,286 designed end-markers, zero re-erections) — and
+its candidate mechanism: CO-DESIGN the cell constant and arm shape so the
+arm itself carries the prefab, turning the barrier into the fold. The boustrophedon framing was itself corrected (Stage 116): front-push and
 front-pop INTERLEAVE, so the induced dynamics are PREFIX REWRITING — a
 deterministic stack process with a finite wrapper alphabet, pushdown-flavored,
 and generational separation would need a mid-spine barrier that cannot exist.
