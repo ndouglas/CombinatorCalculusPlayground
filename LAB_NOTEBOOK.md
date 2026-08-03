@@ -5328,3 +5328,25 @@ what automation could and couldn't do. This file is a first-class deliverable
   Stage 116's prefix-rewriting reading taken seriously as an ARCHITECTURE rather than an
   obstacle. (2) The driver quine (blocked behind C7 for chained cells, independent for
   spine-cells). (3) Floor asymptotics at n=10.
+
+## 2026-08-03 — Stage 146: C7 falls in a day
+
+- The fastest conjecture reversal of the program, and the most instructive: the impossibility
+  argument was sound about the CALCULUS (mid-list insertion truly doesn't exist) and wrong
+  about the DESIGN SPACE (cells don't need the child order the argument assumed). Writing
+  the obstruction down precisely is what exposed the free parameter. Registered-to-refuted
+  in one stage pair is the caveat culture working at speed.
+- The queue cell's seven-fire protocol landed first-try as a raw constructor chain — the
+  Python trace maps one-to-one onto appL-wrapped S_red/C_red constructors, and the
+  type-checker verifies the whole dance. The synthesis trio is three one-fire lemmas.
+- The fold is no longer a wall or a door: it is a room with one locked cabinet. Everything
+  a tag machine must DO mid-run — read, branch, drop, mint cells for unseen data, chain them
+  into words, traverse them — is now pinned, axiom-free machinery. The cabinet is the driver
+  that does these in sequence forever (C8, the quine).
+- Twenty-eight autonomous stages (119–146). Ranking: (1) **C8, the driver quine**: design
+  target D with D consuming one pile item, performing the three synthesis fires plus its own
+  re-emergence; scDup's self-application and the duplication-provides-copies observation are
+  the raw material; probe with designed spines as in Stage 145 but with the CORRECT cell
+  target this time. (2) The end-to-end generation-2 demo (chain scQWord traversal into
+  synthesis of a next word, hand-driven — no quine needed, shows two full generations as a
+  Steps theorem). (3) Floor asymptotics at n=10.

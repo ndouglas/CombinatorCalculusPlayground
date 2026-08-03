@@ -567,16 +567,20 @@ and Stage 144 SPLIT IT IN HALF. Its production step FELL: `sc_cell_synth` /
 except its wrapper, so ONE S-fire mints `scTCell w rest` at runtime from the
 prefab `scCellPrefab rest`, even for an opaque `w`; the genetic-closure law
 (Stage 115) stands, but its documented seam (S-fires nest spine members into
-elements) does the work its prose had written off. What remains is located,
-not diffuse: (a) RUNTIME-ACCUMULATOR NESTING — now conjectured impossible
-(Stage 145, C7: THE MID-INSERTION OBSTRUCTION — the second nest needs a
-functional constant inserted between `(C acc)` and the wrapper, and the
-member calculus's complete insertion inventory has no such move; 8,200
-designed orchestrations, zero hits, first nest forms in one fire) — and
-(b) DRIVER SELF-REGENERATION (the quine problem, behind C7 for chained
-cells). Open routes recorded: junk-tolerant cells (shown non-uniform) and
-the SPINE-LEVEL architecture (C-fires nest at the spine head; Stage 116's
-prefix-rewriting reading taken as a design rather than an obstacle). The boustrophedon framing was itself corrected (Stage 116): front-push and
+elements) does the work its prose had written off. Stage 145 conjectured
+the accumulation half impossible (C7, the mid-insertion obstruction);
+Stage 146 REFUTED C7 in a day: the obstruction is real about moves but
+assumed `scTCell`'s child order. THE QUEUE CELL (`scQCell acc W =
+C (C scDup acc) W`, children in stream order, constants only at heads) is
+runtime-synthesizable in three one-fire nests (`sc_qcell_synth₁–₃`) and
+delivers the IDENTICAL one-tag-step protocol in seven fires
+(`scQCell_fire`; word layer `scQWord`/`scQWord_step` — all axiom-free,
+pinned). The fold ledger: production ✓, accumulation ✓, protocol ✓. Full
+tag hosting — and with it the undecidability side of the rung-3
+equivalence — hangs on ONE remaining design problem: C8, DRIVER
+SELF-REGENERATION (the quine). The stakes are now explicit: a quine
+driver ⟹ tag `Simulation` into `{S,C}` ⟹ rung-3 reachability
+undecidable ⟹ the frontier equivalence resolves negative. The boustrophedon framing was itself corrected (Stage 116): front-push and
 front-pop INTERLEAVE, so the induced dynamics are PREFIX REWRITING — a
 deterministic stack process with a finite wrapper alphabet, pushdown-flavored,
 and generational separation would need a mid-spine barrier that cannot exist.

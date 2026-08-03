@@ -5147,3 +5147,21 @@ positional junk accumulates), and spine-level building (C-fires DO nest at the s
 whether the word can live as the spine rather than as a member is undesigned either way).
 Escape hatch honestly noted: the pool/depth/interface envelope is finite, and Stage 144's own
 lesson is that interface choices hide six-leaf answers.
+
+### Stage 146: the queue cell — C7 REFUTED
+
+C7 lived one day. The mid-insertion obstruction is real as a statement about MOVES — nothing
+inserts mid-list — but the CONCLUSION (no two-generation cell) confused the map with the
+territory: it assumed cells must have `scTCell`'s child order. The QUEUE CELL
+`scQCell acc W = C (C scDup acc) W` puts every node's children in stream order with constants
+only at heads, making all three runtime nests legal x-position S-fires (`sc_qcell_synth₁–₃`,
+one fire each, axiom-free) — and seven fires (`scQCell_fire`, axiom-free, pinned) deliver the
+one-tag-step protocol IDENTICALLY: rest promoted with two fresh arms, wrapper dropped behind
+with a spare. `scQWord`/`scQWord_step`: the whole word layer, runtime-buildable. C7's census
+missed it because the probe's target pattern hardcoded the old child order — the run's third
+and sharpest probe-modeling lesson: a negative search certifies only its own pattern. The fold
+ledger now: production ✓, accumulation ✓, protocol ✓; the full tag `Simulation` into `{S,C}`
+— and with it the undecidability route for rung-3 reachability — hangs on ONE remaining
+design problem: DRIVER SELF-REGENERATION (the quine). If the quine exists, `{S,C}` hosts full
+tag systems and rung-3 reachability is undecidable, closing the frontier equivalence's other
+side. C7 is retired-refuted; the quine is registered as C8.
