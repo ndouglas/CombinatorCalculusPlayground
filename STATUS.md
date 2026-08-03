@@ -127,7 +127,12 @@ RANKED-CLOSURE certificate (`scRanked_bound` + the emitted 231-state
 height-graded space): no schedule exceeds 36 fires — sharp, the
 leftmost path reaches it — and every dead end is `scFateNf`
 (`sc_fate_universal`), the program's first pinned
-termination-of-all-paths result. Behind the alternator stand tag/Minsky hosting,
+termination-of-all-paths result. Stage 184 made termination COMPOSE:
+the pair chassis is inert, so member walls ADD (`scPair_bounded`) and
+the two-register pair has four pinned futures (`sc_four_fates`: one C
+bit = immortal; two CC bits = double normal form behind a sharp 72-fire
+wall) — 53,361 virtual states handled by four lemmas, no product
+space. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

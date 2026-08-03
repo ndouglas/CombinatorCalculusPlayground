@@ -5716,3 +5716,18 @@ length; bit `C C` — every maximal reduction, every schedule, dies at one norma
 inside 36 fires. This is the program's first pinned termination-of-all-paths result, and
 the certificate is generic: any finite acyclic reachable space can now be pinned the same
 way, which turns the capped engine's saturation data into termination theorems on demand.
+
+### Stage 184: the four fates — the fate bit becomes a component
+
+The composition campaign's payoff pattern, now at the level of TERMINATION. The pair
+chassis `S c₁ c₂` is inert — `S` with two arguments is no redex — so pair dynamics
+decompose completely and MODULARLY: every step is a member step (`scPair_inv`), every
+reduction splits member-wise (`scPair_decompose`), walls ADD (`scPair_bounded`:
+k₁-bounded beside k₂-bounded is (k₁+k₂)-bounded), and normal members make a normal pair.
+Instantiated at the fate machine: (C,·) — one spinning member keeps the pair immortal
+whatever sits beside it; (CC,CC) — the pair dies at `S scFateNf scFateNf` behind a SHARP
+wall of 72 = 36 + 36 with unique exit. `sc_four_fates` pins the quadrants. The
+significance is the method: Stage 183's certificate was checked over 231 emitted states;
+the pair's certificate needed NO product space — 53,361 virtual states handled by four
+little lemmas. Termination composes. Next question the ladder points at: make one
+machine's OUTPUT the other's REGISTER — conditional eternity, the hosting primitive.

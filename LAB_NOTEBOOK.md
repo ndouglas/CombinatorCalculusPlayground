@@ -5876,3 +5876,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   conditional-eternity gadget (machine A's output bit feeds machine B's register) is the
   first step toward hosting halting-style questions inside {S,C} reachability. (2) The
   n=12 growth-law sample. (3) The alternator/fueled-reader thread.
+
+## 2026-08-03 — Stage 184: the four fates
+
+- Pure composition day: no probe, no emission — four inversion/decomposition lemmas and
+  the quadrant theorem, first-try green except dot-notation vs `RS.SC.Carrier` (spell
+  `SCTerm.app` where the expected type is the carrier; recorded for the pattern book).
+- The wall arithmetic (36 + 36 = 72, sharp) is the first quantitative composition of
+  termination certificates in the program.
+- Sixty-six autonomous stages (119–184). Ranking: (1) **conditional eternity**: feed one
+  machine's output into another's register slot — probe for a coupler K with
+  K (scFate CC) ⟶* scFate-with-some-bit where the bit depends on the first machine's
+  fate; even a hand-built two-stage relay (halt-output shape → readable bit) would make
+  the fate bit COMPUTED rather than given, the hosting primitive. (2) The n=12
+  growth-law sample. (3) The alternator thread (fueled reader).
