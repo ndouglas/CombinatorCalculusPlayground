@@ -5651,3 +5651,19 @@ missing piece is therefore a TRIGGER: a fueled reader — a front that runs k pe
 exhausts, burning down into its own storage (Stage 137's fueled machines meet Stage 176's
 reader). The writer's specification has moved for the last time: not mint-and-route, not
 grow/burn in the abstract, but READER + FUEL — both pinned phenomena, one splice.
+
+### Stage 180: the parking orbit — persistence without growth
+
+C8's persistence problem is now solved TWICE, at both extremes. The reader (Stage 176)
+keeps state alive by growing forever; the parking orbit keeps it alive at CONSTANT SIZE:
+`scOrb = C A A A A` (A = scDup, 21 leaves) is a forced period-5 limit cycle — every term
+has exactly one successor (`scOrb_forced`, kernel-checked), so the orbit is inescapable —
+and the cycle turns entirely in the head, so ANY cargo appended on the right rides it
+verbatim forever (`sc_park`, `sc_park_forever`: axiom-free, parametric). Better: the orbit
+is REACHED BY A READ. The 9-leaf head `scParkSeed bit` consults its `S S bit` register
+exactly once (kernel-counted: `SCChained` traces + `scCountConsults` guards) and parks it
+in sixteen fires — bit `C` at phase 0, bit `C C` at phase 4 (`scPark_entry_C/CC`). Equal
+wall-clock, different phase: THE BIT IS STORED IN THE PHASE of an eternal bounded orbit.
+Probe lesson #8 (ledger): the probe reported "bit-dependent cycles"; the cycles are
+rotation-equal after register abstraction — cyclic signatures must be compared up to
+rotation. What survived the correction is stronger than what the probe claimed.

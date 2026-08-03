@@ -5820,3 +5820,18 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Sixty-one autonomous stages (119–179). Ranking: (1) **the fueled reader**: fronts that
   run k periods then exhaust into their storage — search reader-variants with fuel-tower
   components; detectors ready. (2) n=10 witnesses. (3) Bounded intermediates.
+
+## 2026-08-03 — Stage 180: the parking orbit
+
+- The pre-compaction consult-loop probe surfaced it; dissection corrected it (rotation
+  artifact, lesson #8) and found the real object: a FORCED 5-cycle whose cargo slot is
+  pure congruence. Persistence without growth — the register survives infinitely many
+  machine steps in a 24-leaf configuration, and the read that parks it encodes the bit in
+  the orbit phase. Nine theorems, seven axiom-free, two [propext] (decide chains).
+- The n=10 census also finished: best excess 44 over all 4,978,688 terms, witnesses on
+  disk (peak 186 over |u|=142 from 10 leaves, 300-step forced prefix).
+- Sixty-two autonomous stages (119–180). Ranking: (1) **the n=10 floor**: pin excess ≥ 44
+  at n=10 via the forced-march mountain (witnesses in hand; 300-step chain — segment the
+  decide if needed). (2) **the bounded reader**: the orbit never reads its cargo; the
+  reader never stops growing — probe for a limit cycle that CONSULTS its cargo every
+  period (requires register regeneration inside the cycle). (3) Bounded intermediates.

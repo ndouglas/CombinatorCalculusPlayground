@@ -107,9 +107,16 @@ persistence necessarily copies its engine into its junk) — the reader
 appends one stored register per period, a write-only log; the burn
 phase is the read head; a FUEL TOWER is the missing trigger that ends
 the grow phase and burns the front into its own storage. Reader (176) +
-fuel (137) + burn (148): three pinned phenomena, one splice, and behind
-it tag/Minsky hosting, undecidability, and the frontier equivalence's
-negative resolution. Since the Stage 114 review, one autonomous run
+fuel (137) + burn (148): three pinned phenomena, one splice. And Stage
+180 solved persistence at the OTHER extreme: THE PARKING ORBIT
+(`scOrb`, 21 leaves) is a forced period-5 limit cycle — inescapable,
+kernel-checked — whose cargo slot is pure congruence, so any state
+rides it verbatim forever at constant size (`sc_park_forever`), and a
+9-leaf reader head parks an `S S bit` register on it in sixteen fires
+with exactly one consultation, storing THE BIT IN THE PHASE
+(`scPark_entry_C/CC`: phase 0 vs phase 4, equal wall-clock). Behind
+the alternator stand tag/Minsky hosting, undecidability, and the
+frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
 template; normal forms characterized; bounded reachability DECIDABLE with a
