@@ -900,9 +900,11 @@ it has PINNED QUANTITATIVE FLOORS (Stages 140/142/181, `sc_bound_floor_6`/
 an exhaustive census of all 4,978,688 ten-leaf terms, the n=12 rungs
 from its graft neighborhood and a 1.5M random sweep — two different
 mountain species: tall-peak/big-endpoint and modest-peak/tiny-endpoint).
-Best-witness excess reads 12 → 44 → 69 at n = 8 → 10 → 12 — the scaling
-evidence leans ever harder against bounded intermediates, i.e. toward
-undecidability. All certified by the forced-march toolkit
+Best-witness excess reads 12 → 44 → 69 → 86 at n = 8 → 10 → 12 → 14
+(the n=14 rung: `f(14,280) ≥ 366`, forced march-500, graft-found in 352
+tries) — the scaling evidence leans ever harder against bounded
+intermediates, i.e. toward undecidability, and the witnesses form one
+structural family of climbers. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now

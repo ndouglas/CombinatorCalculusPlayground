@@ -6068,3 +6068,16 @@ consumes one prefab per increment, and the question is exactly whether any machi
 REGROW its own prefab stock — a self-refueling counter. The pieces stand assembled on
 both sides of the gap: successor mints, chains deliver, genes copy machinery, the reader
 farms S-material — and no probed or designed combination closes the loop.
+
+### Stage 207: the n=14 mountain — excess 86
+
+The graft heuristic keeps outrunning brute force: 352 neighborhood tries against the
+n=12 champions produced a 14-leaf term whose fully forced 500-step prefix peaks at 366
+leaves, with a 280-leaf off-prefix target eight checked steps out (the harvest's wider
+BFS beat the census's own logged endpoint — excess 86, not 79). `sc_bound_floor_366`
+extends the family; the best-witness excess ladder now reads 12 → 44 → 69 → 86 at
+n = 8 → 10 → 12 → 14, and the peak-to-source ratio has reached 26×. Four census
+generations in, the pattern is stable: every two leaves of source buy a step-function
+increase in what any bounding function must absorb, and the witnesses concentrate in one
+family (the `C S S (S S) C ...` spine with numeral-tail mutations) — a lineage of
+climbers, which is itself evidence the growth is structural, not accidental.

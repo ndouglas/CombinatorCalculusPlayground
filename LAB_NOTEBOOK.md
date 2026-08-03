@@ -6189,3 +6189,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   — update the module/theorem/pin counts, re-verify the whole-run claims, and refresh
   STATUS's top matter; overdue bookkeeping that keeps the notebook honest. (3) The
   S-farm design study (C10 positive, designed not searched).
+
+## 2026-08-04 — Stage 207: the n=14 mountain
+
+- Lesson recorded: harvest with a WIDER BFS cap than the census (the census's 200-leaf
+  endpoint cap hid a 280-leaf-but-closer u; the true excess was 86, not 79). The
+  climbers' family resemblance across n = 12, 14 (same spine, mutated numeral tail)
+  suggests the n=16 witness is one graft away when wanted.
+- Eighty-nine autonomous stages (119–207). Ranking: (1) **the review stage**: refresh
+  STATUS's top matter (counts, stage span, claims audit) — 37 stages of drift since the
+  Stage 170 review header; overdue. (2) The S-farm design study (C10). (3) floor14
+  random-phase harvest if it beats 86.
