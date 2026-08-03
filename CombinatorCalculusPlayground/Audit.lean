@@ -479,3 +479,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scParkTraceCC_chained' depends on axioms: [propext] -/
 #guard_msgs in #print axioms scParkTraceCC_chained
+
+/-- info: 'scMt4_steps' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt4_steps
+
+/-- info: 'scMt4_no_capped_path' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt4_no_capped_path
+
+/-- info: 'sc_bound_floor_186' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_bound_floor_186

@@ -1903,3 +1903,51 @@ theorem scParkTraceCC_chained :
 #guard scParkTraceC.getLastD (scParkSeed .C) == .app scOrb (.app (.app .S .S) .C)
 #guard scParkTraceCC.getLastD (scParkSeed (.app .C .C))
     == .app scOrb4 (.app (.app .S .S) (.app .C .C))
+
+-- ## Stage 181: the n=10 mountain — the census pays out
+-- The exhaustive n=10 census (4,978,688 terms, forced-prefix marches to depth 300) found
+-- its best excess at a 10-leaf term whose forced prefix climbs to 186 leaves at step 257
+-- and descends to 143 by step 300, one checked step from a 142-leaf off-prefix target.
+-- Every path from t to u must traverse the entire forced prefix — including the peak — so
+-- every valid intermediate-bound function clears 186 at (10, 142): excess 44, TRIPLE the
+-- n=8 mountain's 12 and equal to the n=8 floor's absolute height, from two more leaves.
+
+/-- Ten leaves: the census's best climber. -/
+def scMt4T : SCTerm := (.app (.app (.app .S (.app .S .S)) .C) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))
+
+/-- 142 leaves, one checked step past the 300-step forced prefix — off the prefix. -/
+def scMt4U : SCTerm := (.app (.app .S (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))))))) (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))))))))))))))))))))))) (.app .C (.app (.app .C .C) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))))) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))) (.app .C (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))))
+
+/-- The witnessing path: the full forced march, then one checked step. -/
+def scMt4Path : List SCTerm := scForcedMarch scMt4T 300 ++ [scMt4U]
+
+section
+set_option maxRecDepth 8000
+
+#guard scMt4T.leafCount = 10
+#guard scMt4U.leafCount = 142
+#guard (scForcedMarch scMt4T 300).length = 300
+
+/-- The crossing exists. -/
+theorem scMt4_steps : RS.SC.Steps scMt4T scMt4U :=
+  scChained_steps scMt4Path scMt4T scMt4U (by decide) (by decide)
+
+/-- **The n=10 mountain**: no path from `scMt4T` (10 leaves) to `scMt4U` (142 leaves)
+stays within 185 leaves — the forced prefix peaks at 186. -/
+theorem scMt4_no_capped_path : ¬ RS.StepsLe RS.SC SCTerm.leafCount 185 scMt4T scMt4U :=
+  scForced_mountain (scForcedMarch scMt4T 300) (scForcedMarch_forced 300 scMt4T)
+    (by decide) (by decide)
+
+/-- **The n=10 floor**: every valid bounding function clears 186 at (10, 142). -/
+theorem sc_bound_floor_186 (f : Nat → Nat → Nat)
+    (hf : ∀ t u : SCTerm, RS.SC.Steps t u →
+        RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u) :
+    186 ≤ f 10 142 := by
+  by_cases h : 186 ≤ f 10 142
+  · exact h
+  · exfalso
+    have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 10 142) scMt4T scMt4U :=
+      hf scMt4T scMt4U scMt4_steps
+    exact scMt4_no_capped_path (RS.StepsLe.weaken (by omega) hs)
+
+end
