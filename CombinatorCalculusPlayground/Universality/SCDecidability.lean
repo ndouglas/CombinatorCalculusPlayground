@@ -4527,3 +4527,76 @@ theorem sc_bound_floor_87 (f : Nat → Nat → Nat)
     have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 12 18) scMt6T scMt6U :=
       hf scMt6T scMt6U scMt6_steps
     exact scMt6_no_capped_path (RS.StepsLe.weaken (by omega) hs)
+
+-- ## Stage 204: the ISA algebra, complete — the cheap omega and the successor call
+-- The exhaustive wrapper-word map (all 30 words of length ≤ 4 over {C, W},
+-- placeholder-register emission, leak-checked): EVERY word eventually hands control to
+-- the register; the word chooses the arguments and the price. The table's two new
+-- instructions, pinned: `C·W` compiles SELF-APPLICATION in seventeen fires — the omega
+-- shape at nearly half Stage 194's price, with cargo `W` and legible junk — and `W·C·W·C`
+-- compiles THE SUCCESSOR CALL: `r (C r) (C r)` — the register executed on its own
+-- incremented self, thirty-one fires, every register. The successor call is the
+-- C10-relevant primitive: a register that reads numerals now can be handed its own
+-- successor as input. The full map lives in the ledger; the remaining 26 words deliver
+-- rearrangements of `r`, its wrappings, and X-complex junk — no third novelty.
+
+/-- **The cheap omega**: `C·W` compiles self-application in seventeen fires. -/
+theorem sc_cheap_omega (r : SCTerm) :
+    RS.SC.StepsN 17 (scFrame (.app .C (.app scW r)))
+      (.app (.app (.app r r) (.app .C .C))
+        (.app (.app .C (.app (.app .C .C) r)) (.app .C .C))) :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app .C (.app (.app .C .C) r)) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C))) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)) (.app (.app .C .C) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C))) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C .C) r) (.app .C .C) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C r (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)) r (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) r) (.app .C .C) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C r (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C .C) r (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C .C) r)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red r (.app .C .C) r))
+  (@RS.StepsN.refl RS.SC (.app (.app (.app r r) (.app .C .C)) (.app (.app .C (.app (.app .C .C) r)) (.app .C .C)))))))))))))))))))))
+
+/-- **The successor call**: `W·C·W·C` hands the register its own successor, twice. -/
+theorem sc_successor_call (r : SCTerm) :
+    RS.SC.StepsN 31 (scFrame (.app scW (.app .C (.app scW (.app .C r)))))
+      (.app (.app r (.app .C r)) (.app .C r)) :=
+  (RS.StepsN.tail (SCStep.S_red (.app .S scDup) (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))
+  (RS.StepsN.tail (SCStep.S_red scDup (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .C .C) (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app (.app .C .C) (.app .C r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r))) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app .C (.app (.app .C .C) (.app .C r)))))
+  (RS.StepsN.tail (SCStep.C_red (.app .C (.app (.app .C .C) (.app .C r))) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .C r)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C r) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app .C r) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app (.app .C .C) (.app .C r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r))) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app .C (.app (.app .C .C) (.app .C r)))))
+  (RS.StepsN.tail (SCStep.C_red (.app .C (.app (.app .C .C) (.app .C r))) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app .C r))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .C r)) (.app .C r) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C r) (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r)))) (.app .C .C)) (.app .C r) (.app .C r))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app (.app .C .C) (.app .C r))) (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C (.app (.app .C .C) (.app .C r))) (.app .C r)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C r) (.app .C (.app (.app .C .C) (.app .C r)))))
+  (RS.StepsN.tail (SCStep.C_red (.app .C (.app (.app .C .C) (.app .C r))) (.app .C r) (.app .C r))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .C r)) (.app .C r) (.app .C r))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C r) (.app .C r)))
+  (RS.StepsN.tail (SCStep.C_red (.app .C r) (.app .C r) (.app .C r))
+  (RS.StepsN.tail (SCStep.C_red r (.app .C r) (.app .C r))
+  (@RS.StepsN.refl RS.SC (.app (.app r (.app .C r)) (.app .C r))))))))))))))))))))))))))))))))))
