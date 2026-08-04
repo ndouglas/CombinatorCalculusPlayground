@@ -6356,3 +6356,19 @@ what automation could and couldn't do. This file is a first-class deliverable
   persistent front (Front·J recurrence detector over the burn trajectory at depth;
   if yes, pin it — the alternator closes as grow-and-burn in one machine). (2) The
   102-stage review. (3) floor14/n=16 harvests (background sweeps idle at 79/86-pinned).
+
+## 2026-08-04 — Stage 221: the medium's pulse; the 103-stage review
+
+- The burn has a 12-fire clock and no face — periodic drift, a fourth recurrence kind
+  beyond the toolkit's three. Template induction (C9-style) is the known path to pin it.
+- Review at 103 consecutive stages (119–221): the run's shape this week — seven walls
+  (five proven as theorems: dichotomy, provenance, speed limit, cargo, suffix), the
+  frame ISA complete and hosting three-quarters built (read/write/branch/reproduce
+  pinned; loop closure open), the floor ladder at four rungs (excess 12→44→69→86), C9
+  proved, C10 calibrated hard-open, and the medium identified as the unifying object.
+  Zero warnings, 256 pins, every stage feat+docs committed, build green throughout.
+- Ranking: (1) **the pulse template**: C9-style trace-template induction on the burn's
+  period-12 wave — a pinned periodic-drift certificate would be the toolkit's fourth
+  recurrence technology and likely the alternator's missing certificate form.
+  (2) The medium bestiary: classify small J-stream seeds (J^k, mixed with arms/cells)
+  by behavior — map the substance before theorizing it. (3) floor14/n=16 harvests.

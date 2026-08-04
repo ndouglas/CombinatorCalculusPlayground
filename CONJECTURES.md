@@ -6279,3 +6279,18 @@ tag machine's loop closure, and C10's regrowth now all live in the same place: t
 dynamics of the junk medium. The program's next depth is a THEORY OF THE MEDIUM — what
 J-streams can compute — and its first question is whether the metabolizing burn is
 itself a persistent front (the probe suggests yes: growth with recurring shapes).
+
+### Stage 221: the medium's pulse — a period-12 wave without a front
+
+The burning junk stream has a clock but no face: size deltas settle into an exact
+period-12 pattern (+67 leaves per period, sustained through fire 262 and 1,500 leaves)
+yet NO verbatim front recurs — the recurrence drifts structurally, junk accumulating
+mid-spine the way `frame(S S)` did at Stage 190. So the medium's burn is a genuine
+persistent process that the Front·J technology cannot pin: the program's certification
+tools cover verbatim recurrence (reader), cyclic recurrence (orbits), and graded
+termination (ranked closures) — the burn is a fourth kind, PERIODIC DRIFT, and pinning
+it would need trace-template induction like C9's (feasible: the period is short and the
+drift is additive). Registered as the medium theory's first concrete target. The week's
+convergence holds: one substance, four behaviors — write (reader), park (orbit), burn
+(ignition), pulse (this) — and every open question of the program is a question about
+what this substance can be made to do.

@@ -308,7 +308,14 @@ each other, re-exposing and CONSULTING their stored registers in four
 fires; probe-traced, the stream metabolizes (second-order cells,
 reader-like growth). Grow and burn are two behaviors of one junk
 medium, and the alternator, the tag loop closure, and C10's regrowth
-all now live there: the program's central object is the medium. Behind the alternator stand tag/Minsky hosting,
+all now live there: the program's central object is the medium. Stage 221 took its pulse:
+the burn is a PERIOD-12 GROWTH WAVE (+67 leaves per period, no verbatim
+front — periodic drift, a fourth recurrence kind beyond the toolkit's
+verbatim/cyclic/graded three), and pinning it wants C9-style trace
+templates. At the 103-stage mark the run stands: seven walls (five as
+theorems), the ISA complete, hosting three-quarters built, the floor
+ladder at four rungs, C9 proved, C10 hard-open, one medium under it
+all. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
