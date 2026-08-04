@@ -4847,3 +4847,115 @@ theorem sc_head_provenance {t u : SCTerm} (h : RS.SC.Steps t u) :
       · exact .inl (hh.trans hs)
       · exact .inr ⟨a, f, fr, @RS.Steps.refl RS.SC a, hargs, hh.trans hf⟩
     · exact .inr ⟨v, f, fr, RS.Steps.tail s hv, hargs, hf⟩
+
+-- ## Stage 213: the numeral speed limit — wall six, quantitative
+-- Address flow, resolved by a stronger source theorem. `sc_numerals_are_sources`
+-- generalizes bits-are-sources to every numeral depth: NO step ever produces a numeral
+-- as its result — root fires make double applications, appL-targets would need a
+-- produced atom, and appR-targets descend infinitely through the wrap. Numerals exist
+-- only where they were written. The corollary is the program's sixth wall, and its first
+-- QUANTITATIVE one: the maximum numeral depth in a term grows by AT MOST ONE per fire
+-- (`sc_numeral_speed_limit`) — every fresh wrap comes from an atom `C` meeting the
+-- x-seat, and one fire has one x-seat. Any C10 odometer is fire-paced: a machine of
+-- period p can advance its address by at most p per lap, and every unit of advance
+-- costs a mint fire the machine must also afford to regrow.
+
+/-- Numeral recognition: `C^k S ↦ k`. -/
+def scIsReg : SCTerm → Option Nat
+  | .S => some 0
+  | .app .C w => (scIsReg w).map (· + 1)
+  | _ => none
+
+/-- **Numerals are sources**: no step produces a numeral. -/
+theorem sc_numerals_are_sources : ∀ {t u : SCTerm}, RS.SC.step t u → scIsReg u = none
+  | _, _, h => by
+      induction h with
+      | S_red f g x => rfl
+      | C_red f g x => rfl
+      | appL h' ih =>
+          cases h' <;> rfl
+      | @appR t₀ y y' h' ih =>
+          cases t₀ with
+          | S => rfl
+          | C => show (scIsReg y').map (· + 1) = none; rw [ih]; rfl
+          | app a b => rfl
+
+/-- Maximum numeral depth occurring in a term. -/
+def scMaxReg : SCTerm → Nat
+  | .S => 0
+  | .C => 0
+  | .app f x => max (max (scMaxReg f) (scMaxReg x)) ((scIsReg (.app f x)).getD 0)
+
+/-- A term's own numeral value is at most its max depth. -/
+theorem scMaxReg_ge_isReg : ∀ t : SCTerm, (scIsReg t).getD 0 ≤ scMaxReg t
+  | .S => Nat.le_refl 0
+  | .C => Nat.zero_le 0
+  | .app f x => Nat.le_max_right _ _
+
+/-- A fresh wrap's value is bounded by its body's depth plus one. -/
+theorem sc_wrap_bound (f x : SCTerm) :
+    (scIsReg (.app f x)).getD 0 ≤ scMaxReg x + 1 := by
+  cases f with
+  | S => exact Nat.zero_le _
+  | C =>
+      show ((scIsReg x).map (· + 1)).getD 0 ≤ scMaxReg x + 1
+      cases hx : scIsReg x with
+      | none => exact Nat.zero_le _
+      | some j =>
+          have := scMaxReg_ge_isReg x
+          rw [hx] at this
+          simpa using Nat.succ_le_succ this
+  | app a b => exact Nat.zero_le _
+
+/-- **The numeral speed limit**: one fire advances the maximum numeral depth by at most
+one — every fresh wrap costs an atom `C` meeting the x-seat, and a fire has one x-seat. -/
+theorem sc_numeral_speed_limit : ∀ {t u : SCTerm}, RS.SC.step t u →
+    scMaxReg u ≤ scMaxReg t + 1 := by
+  intro t u h
+  induction h with
+  | S_red f g x =>
+      have h1 := sc_wrap_bound f x
+      have h2 := sc_wrap_bound g x
+      have r1 : scIsReg (SCTerm.app (.app f x) (.app g x)) = none := rfl
+      have r2 : scIsReg (SCTerm.app (.app (.app .S f) g) x) = none := rfl
+      have r3 : scIsReg (SCTerm.app (.app .S f) g) = none := rfl
+      have r4 : scIsReg (SCTerm.app .S f) = none := rfl
+      simp only [scMaxReg, r1, r2, r3, r4, Option.getD_none]
+      omega
+  | C_red f g x =>
+      have h1 := sc_wrap_bound f x
+      have r1 : scIsReg (SCTerm.app (.app f x) g) = none := rfl
+      have r2 : scIsReg (SCTerm.app (.app (.app .C f) g) x) = none := rfl
+      have r3 : scIsReg (SCTerm.app (.app .C f) g) = none := rfl
+      simp only [scMaxReg, r1, r2, r3, Option.getD_none]
+      omega
+  | @appL t₀ t₀' y h' ih =>
+      have h1 : scIsReg (.app t₀' y) = none := by
+        cases h' <;> rfl
+      have h2 : (scIsReg (.app t₀ y)).getD 0 ≤ scMaxReg (.app t₀ y) :=
+        scMaxReg_ge_isReg _
+      simp only [scMaxReg, h1, Option.getD_none] at *
+      omega
+  | @appR t₀ y y' h' ih =>
+      have h1 : scIsReg (.app t₀ y') = none := by
+        cases t₀ with
+        | S => rfl
+        | C =>
+            show (scIsReg y').map (· + 1) = none
+            rw [sc_numerals_are_sources h']
+            rfl
+        | app a b => rfl
+      simp only [scMaxReg, h1, Option.getD_none] at *
+      omega
+
+/-- Over a counted reduction, numeral depth grows at most linearly in the fire count. -/
+theorem sc_numeral_speed_limit_run : ∀ {n : Nat} {t u : SCTerm},
+    RS.SC.StepsN n t u → scMaxReg u ≤ scMaxReg t + n := by
+  intro n t u h
+  refine h.rec (motive := fun (n : Nat) (a b : SCTerm) _ =>
+      scMaxReg b ≤ scMaxReg a + n) ?_ ?_
+  · intro a
+    exact Nat.le_refl _
+  · intro m a b c s rest ih
+    have := sc_numeral_speed_limit s
+    omega

@@ -743,3 +743,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_head_provenance' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_head_provenance
+
+/-- info: 'sc_numerals_are_sources' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_numerals_are_sources
+
+/-- info: 'sc_numeral_speed_limit' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_numeral_speed_limit
+
+/-- info: 'sc_numeral_speed_limit_run' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_numeral_speed_limit_run
