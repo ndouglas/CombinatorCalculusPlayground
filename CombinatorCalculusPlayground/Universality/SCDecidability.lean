@@ -5700,3 +5700,57 @@ theorem sc_depth_cost {n m : Nat} {t u : SCTerm}
     n ≤ m := by
   have := sc_numeral_speed_limit_run h
   omega
+
+-- ## Stage 231: the medium reads order — words in junk, fate in sequence
+-- Mixed junk streams are WORDS: over 231 register pairs, twenty-seven give
+-- order-sensitive burns — the same multiset of blocks, applied in different orders, has
+-- different fates. Pinned exemplar: blocks `J(S)` and `J(C C)` (the reader-frame junk of
+-- the atoms). The order `J(CC)·J(S)·J(S)` dies in nineteen fires at a 21-leaf normal
+-- form (`sc_order_halts`, axiom-free, normality included); the order `J(S)·J(CC)·J(S)`
+-- ignites a period-2 growth wave, past 2,500 leaves by fire 149 (probe; its template is
+-- a compound insert-and-mutate process, recorded unpinned). The burn is not just alive —
+-- it is a READER of block sequences, and junk streams carry information in their order:
+-- the medium is a tape after all, written by machines and read by fate.
+
+/-- The junk block of the atom `S`. -/
+def scJS : SCTerm :=
+  .app (.app .C (.app (.app .C (.app .C .S)) (.app .C .S))) (.app .C .S)
+
+/-- The junk block of the dead bit `C C`. -/
+def scJW : SCTerm :=
+  .app (.app .C (.app (.app .C (.app .C (.app .C .C))) (.app .C (.app .C .C))))
+    (.app .C (.app .C .C))
+
+/-- The halting order's normal form. -/
+def scOrderNf : SCTerm :=
+  .app (.app .C scJS) (.app (.app .S scJS) (.app .C (.app .C .C)))
+
+/-- **Order decides fate, halting side**: `J(CC)·J(S)·J(S)` dies in nineteen fires. -/
+theorem sc_order_halts :
+    RS.SC.StepsN 19 (.app (.app scJW scJS) scJS) scOrderNf :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .C (.app .C (.app .C .C))) (.app .C (.app .C .C))) (.app .C (.app .C .C)) scJS))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C (.app .C .C)) (.app .C (.app .C .C)) scJS)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C .C) scJS (.app .C (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app .C .C)) scJS)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red scJS (.app .C (.app .C .C)) (.app .C (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C (.app .C .S)) (.app .C .S)) (.app .C .S) (.app .C (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C .S) (.app .C .S) (.app .C (.app .C .C))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .S (.app .C (.app .C .C)) (.app .C .S)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C .S) (.app .C (.app .C .C)) (.app .C .S))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .S (.app .C .S) (.app (.app .C (.app .C .C)) (.app .C .S)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app (.app .C (.app .C .C)) (.app .C .S)) (.app .C .S) (.app .C (.app .C .C))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C .S) (.app .C (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app .C .C)) (.app .C .S))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .S) (.app .C (.app .C .C)) (.app (.app .C .S) (.app .C (.app .C .C)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S (.app (.app .C .S) (.app .C (.app .C .C))) (.app .C (.app .C .C))))
+  (RS.StepsN.tail (SCStep.S_red (.app .C (.app .C .C)) (.app (.app .C .S) (.app .C (.app .C .C))) scJS)
+  (RS.StepsN.tail (SCStep.C_red (.app .C .C) scJS (.app (.app (.app .C .S) (.app .C (.app .C .C))) scJS))
+  (RS.StepsN.tail (SCStep.C_red .C (.app (.app (.app .C .S) (.app .C (.app .C .C))) scJS) scJS)
+  (RS.StepsN.tail (SCStep.appR (SCStep.C_red .S (.app .C (.app .C .C)) scJS))
+  (@RS.StepsN.refl RS.SC scOrderNf))))))))))))))))))))
+
+theorem scOrderNf_normal : ∀ v, ¬ RS.SC.step scOrderNf v := by
+  intro v h
+  have hm := scSucc_complete h
+  rw [show scSucc scOrderNf = [] from rfl] at hm
+  exact absurd hm List.not_mem_nil

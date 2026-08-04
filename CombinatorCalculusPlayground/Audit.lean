@@ -827,3 +827,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_depth_cost' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_depth_cost
+
+/-- info: 'sc_order_halts' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_order_halts
+
+/-- info: 'scOrderNf_normal' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scOrderNf_normal
