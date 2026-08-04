@@ -851,3 +851,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_spiral_anchor' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_spiral_anchor
+
+/-- info: 'sc_spiral_turn0' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_spiral_turn0
+
+/-- info: 'sc_spiral_turn1' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_spiral_turn1
