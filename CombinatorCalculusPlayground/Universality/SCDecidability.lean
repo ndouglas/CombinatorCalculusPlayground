@@ -5190,3 +5190,110 @@ theorem sc_junk_ignition :
 theorem sc_junk_is_cell (A : SCTerm) :
     RS.SC.step (.app scRdrJ A) (.app (.app scRdrP A) (.app .C scRdrReg)) :=
   SCStep.C_red scRdrP (.app .C scRdrReg) A
+
+-- ## Stage 222: the pulse, pinned — the toolkit's fourth recurrence technology
+-- The burn's period-12 wave decodes into a VERBATIM-PERIODIC family after all — the
+-- front detector missed it because the growth is mid-spine (before the conserved tail,
+-- exactly as the cargo law dictates). The family: `scPulse m` is the spine
+-- `S · PRE · BLOCK^m · SUF` over the reader's junk vocabulary, with the 67-leaf block
+-- `[C r, C J J, C (C (C r) J) J]`. Pinned: the ignition lands on `scPulse 0` (fire 4 —
+-- the Stage 220 target IS the pulse's phase zero), twelve more fires reach `scPulse 1`
+-- (`sc_pulse_entry`), and the CORE LAW — twelve fires grow one block inside a six-
+-- argument window, everything beyond riding by the new `scStepsN_appList` lift — gives
+-- `scPulse (m+1) ⟶¹² scPulse (m+2)` for every m (`sc_pulse_law`). Corollary: the junk
+-- medium's burn is an ETERNAL WAVE (`sc_burn_wave`: three junk blocks reach every pulse
+-- phase). Periodic drift joins verbatim, cyclic, and graded recurrence as certified
+-- technology — and the alternator's burn phase is now a pinned persistent process.
+
+/-- `StepsN` under any rider list. -/
+theorem scStepsN_appList {n : Nat} {t t' : SCTerm} (l : List SCTerm)
+    (h : RS.SC.StepsN n t t') :
+    RS.SC.StepsN n (scAppList t l) (scAppList t' l) := by
+  induction l generalizing t t' with
+  | nil => exact h
+  | cons w ws ih => exact ih (scStepsN_appL w h)
+
+theorem scAppList_append : ∀ (l₁ l₂ : List SCTerm) (t : SCTerm),
+    scAppList t (l₁ ++ l₂) = scAppList (scAppList t l₁) l₂
+  | [], _, _ => rfl
+  | _ :: l₁, l₂, t => scAppList_append l₁ l₂ _
+
+/-- The pulse's fixed prelude arguments. -/
+def scBurnPre : List SCTerm :=
+  [.app .C scRdrReg, .app .C (.app .C scRdrReg), scRdrJ]
+
+/-- The 67-leaf pulse block. -/
+def scBurnBlock : List SCTerm :=
+  [.app .C scRdrReg, .app (.app .C scRdrJ) scRdrJ,
+   .app (.app .C (.app (.app .C (.app .C scRdrReg)) scRdrJ)) scRdrJ]
+
+/-- The pulse's conserved tail. -/
+def scBurnSuf : List SCTerm := [.app .C scRdrReg, scRdrJ]
+
+def scBurnArgs : Nat → List SCTerm
+  | 0 => scBurnSuf
+  | m + 1 => scBurnBlock ++ scBurnArgs m
+
+/-- The pulse family: `S · PRE · BLOCK^m · SUF`. -/
+def scPulseW (m : Nat) : SCTerm := scAppList .S (scBurnPre ++ scBurnArgs m)
+
+/-- The ignition target is the pulse's phase zero. -/
+theorem sc_ignition_is_pulse :
+    RS.SC.StepsN 4 (.app (.app scRdrJ scRdrJ) scRdrJ) (scPulseW 0) :=
+  sc_junk_ignition
+
+/-- Twelve fires from phase zero to phase one. -/
+theorem sc_pulse_entry : RS.SC.StepsN 12 (scPulseW 0) (scPulseW 1) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C scRdrReg) (.app .C (.app .C scRdrReg)) scRdrJ)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red scRdrReg scRdrJ (.app (.app .C (.app .C scRdrReg)) scRdrJ))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S .C (.app (.app .C (.app .C scRdrReg)) scRdrJ)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C (.app .C scRdrReg)) scRdrJ) (.app .C (.app (.app .C (.app .C scRdrReg)) scRdrJ)) scRdrJ)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C scRdrReg) scRdrJ scRdrJ))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scRdrReg scRdrJ scRdrJ))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S .C scRdrJ)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red scRdrJ (.app .C scRdrJ) scRdrJ))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scRdrP (.app .C scRdrReg) scRdrJ)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C scRdrReg) (.app .C scRdrReg) scRdrJ))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scRdrReg scRdrJ (.app .C scRdrReg)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S .C (.app .C scRdrReg))))))))
+  (@RS.StepsN.refl RS.SC (scPulseW 1))))))))))))))
+
+/-- **The core law**: twelve fires grow one block inside the six-argument window. -/
+theorem sc_pulse_core :
+    RS.SC.StepsN 12 (scAppList .S (scBurnPre ++ scBurnBlock))
+      (scAppList .S (scBurnPre ++ (scBurnBlock ++ scBurnBlock))) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C scRdrReg) (.app .C (.app .C scRdrReg)) scRdrJ))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scRdrReg scRdrJ (.app (.app .C (.app .C scRdrReg)) scRdrJ)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S .C (.app (.app .C (.app .C scRdrReg)) scRdrJ))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C (.app .C scRdrReg)) scRdrJ) (.app .C (.app (.app .C (.app .C scRdrReg)) scRdrJ)) scRdrJ))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C scRdrReg) scRdrJ scRdrJ)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scRdrReg scRdrJ scRdrJ)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S .C scRdrJ))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red scRdrJ (.app .C scRdrJ) scRdrJ)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scRdrP (.app .C scRdrReg) scRdrJ))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C scRdrReg) (.app .C scRdrReg) scRdrJ)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scRdrReg scRdrJ (.app .C scRdrReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S .C (.app .C scRdrReg)))))))))
+  (@RS.StepsN.refl RS.SC (scAppList .S (scBurnPre ++ (scBurnBlock ++ scBurnBlock))))))))))))))))
+
+/-- **The pulse law**: every phase reaches the next in twelve fires. -/
+theorem sc_pulse_law (m : Nat) :
+    RS.SC.StepsN 12 (scPulseW (m + 1)) (scPulseW (m + 2)) := by
+  have h := scStepsN_appList (scBurnArgs m) sc_pulse_core
+  rw [← scAppList_append, ← scAppList_append] at h
+  show RS.SC.StepsN 12 (scAppList .S (scBurnPre ++ (scBurnBlock ++ scBurnArgs m)))
+    (scAppList .S (scBurnPre ++ (scBurnBlock ++ (scBurnBlock ++ scBurnArgs m))))
+  rw [show scBurnPre ++ (scBurnBlock ++ scBurnArgs m)
+      = (scBurnPre ++ scBurnBlock) ++ scBurnArgs m from by simp,
+    show scBurnPre ++ (scBurnBlock ++ (scBurnBlock ++ scBurnArgs m))
+      = (scBurnPre ++ (scBurnBlock ++ scBurnBlock)) ++ scBurnArgs m from by simp]
+  exact h
+
+/-- **The eternal wave**: three junk blocks reach every pulse phase — the burn is a
+pinned persistent process. -/
+theorem sc_burn_wave : ∀ m, RS.SC.Steps (.app (.app scRdrJ scRdrJ) scRdrJ) (scPulseW m)
+  | 0 => RS.StepsN.toSteps sc_ignition_is_pulse
+  | 1 => RS.Steps.trans (RS.StepsN.toSteps sc_ignition_is_pulse)
+      (RS.StepsN.toSteps sc_pulse_entry)
+  | m + 2 => RS.Steps.trans (sc_burn_wave (m + 1))
+      (RS.StepsN.toSteps (sc_pulse_law m))

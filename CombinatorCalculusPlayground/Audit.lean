@@ -779,3 +779,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_junk_is_cell' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_junk_is_cell
+
+/-- info: 'sc_pulse_core' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_pulse_core
+
+/-- info: 'sc_pulse_law' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_pulse_law
+
+/-- info: 'sc_burn_wave' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_burn_wave
