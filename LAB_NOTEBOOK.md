@@ -6562,3 +6562,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   lemma and parametric assembly** (scSpiralLaw): the last lemma of C11. (2) After C11:
   the corridor-infinite corollary (scMt5T has no normal form) and the parametric floor
   staircase. (3) The frontier pair (bounded intermediates asymptotics; C10), standing.
+
+## 2026-08-04 — Stage 238: the third turn; anatomy corrected
+
+- The "6 per block" reading died in the fire trace — blocks never burn; the tower does,
+  layer by layer, every cycle. Two quantities locked in lockstep fooled the arithmetic;
+  the trace didn't lie. The spiral re-reads its own past every cycle — which is also
+  why its floors keep rising: the peak is the tower-mill's working set.
+- One hundred twenty autonomous stages (119–238). Ranking: (1) **the tower-mill lemma**:
+  isolate the six-fire layer motif inside the turns (diff turn1 vs turn2 emissions —
+  the extra six fires are one motif instance; state it as a parametric layer-pass and
+  assemble scSpiralLaw). (2) After C11: corridor-infinite + the parametric staircase.
+  (3) Frontiers standing.

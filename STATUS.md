@@ -1067,8 +1067,11 @@ defined exactly (its vocabulary is the pass-through grammar), the
 anchor pinned axiom-free (44 fires from the climber onto `scSpiral 0`),
 and `scSpiralLaw` registered as the formal target — its first two
 turns certified axiom-free at Stage 237 (30 and 36 fires, the 30+6j
-schedule live), leaving the law resting on a single six-fire run-block
-lemma. All certified by the forced-march toolkit
+schedule live), leaving the law resting on a single six-fire lemma — identified at
+Stage 238 (third turn certified, 42 fires) as a TOWER-MILL lemma: the
+block run never ignites; the cycle is head-metabolism that re-reads
+the growing tower layer by layer, six fires each. The spiral is the
+first pinned process whose period grows because its own state does. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now

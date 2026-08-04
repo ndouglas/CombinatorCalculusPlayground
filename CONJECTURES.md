@@ -6522,3 +6522,19 @@ and the parametric floor staircase — now rests on a single remaining lemma: th
 run-block step, whose statement the two concrete turns bracket from both ends. The
 program's chapter arithmetic: five recurrence technologies, two registered conjectures
 each one lemma or one idea from resolution, and a hundred nineteen consecutive stages.
+
+### Stage 238: the third turn — the spiral's true anatomy
+
+Three consecutive schedule points are now kernel facts (30, 36, 42 fires — `sc_spiral_
+turn2`, all axiom-free, 152 fires chained from the climber). And the fire-trace analysis
+corrected the mechanism: the block run NEVER ignites — it rides as passive suffix exactly
+as the cargo law dictates — while every fire churns the blob's four leading arguments.
+The cycle is HEAD METABOLISM: front matter burns, the tower passes through the mill and
+re-emerges one layer taller, a fresh run-block is minted at the burn's bottom, the front
+rebuilds. The schedule's 6j is six fires per TOWER LAYER; tower depth and block count are
+locked at +1 per cycle, so arithmetic alone could never separate the two readings — the
+probe discipline's oldest lesson, now at theorem scale. The spiral is the program's first
+pinned process whose period grows because its own state does: it re-reads everything it
+has ever written into its tower, every cycle, forever. C11's remaining lemma is therefore
+a TOWER-MILL lemma (six fires per layer, layers passing through the burn), and the three
+certified turns bracket its statement exactly.
