@@ -6342,3 +6342,18 @@ the campaign has NOT produced is the disciplined alternation — grow k, burn k,
 and the ouroboros suggests why: in this calculus grow and burn are not phases to
 alternate but one metabolism seen at different moments. The medium theory begins from
 that observation.
+
+### Stage 225: the ouroboros wave — three metabolisms, one substance, all pinned
+
+Stage 222's recipe generalized on first contact: the post-splice burn is the family
+`C · PRE · BLOCK^m · SUF` (160-leaf block, period sixteen), and the same four-theorem
+pattern pins it — entry (forty fires: the write, the feeding, and the first full period
+in one chain), core window (axiom-free), rider-lifted law, eternal reach. The junk
+medium's every observed behavior is now a certified process: the READER WAVE (period 7,
+verbatim recurrence), the BURN PULSE (period 12, periodic drift), and the OUROBOROS WAVE
+(period 16, periodic drift). And the ouroboros resolves C8-final's koan: the machine that
+writes its own food does not alternate between growing and burning — it eats and grows,
+one metabolism, certified forever. The persistence campaign that began at Stage 176 with
+"can state outlive the machine's step?" ends with a taxonomy: state outlives by verbatim
+growth, by bounded orbit, by fate, by phase, by storage, and now by self-consumption —
+and every one is a theorem.

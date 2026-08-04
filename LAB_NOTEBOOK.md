@@ -6406,3 +6406,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   post-splice burn grows through 400 leaves with recurring consultation shapes — align
   it (pulse-template archaeology) and pin the third wave if it templates; that would
   make every observed medium behavior certified. (2) The 225 review. (3) Harvests.
+
+## 2026-08-04 — Stage 225: the ouroboros wave; the recipe generalizes
+
+- Template archaeology → verify → emit is now a one-hour pipeline (three uses: pulse,
+  wave, and the alignment tooling). The medium has three pinned metabolisms and no
+  unpinned observed behaviors — the bestiary is, for the moment, complete.
+- One hundred seven autonomous stages (119–225). Ranking: (1) **the 225 review** —
+  refresh STATUS counts, consolidate the medium chapter, and re-rank the two frontier
+  questions (bounded intermediates; C10) against the week's seven walls and four
+  recurrence technologies. (2) The medium bestiary widened (J-variants from other
+  registers — is every reader-frame junk block a live cell?). (3) Harvests.

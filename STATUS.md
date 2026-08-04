@@ -333,7 +333,13 @@ its junk block at fire one, the register's consultations route the
 block into operator position, and the written storage takes the head
 at fire ten and unloads at eleven. Grow FEEDS burn in one 24-leaf
 term; the C8 campaign's mechanism ledger is complete, and the lesson
-is that grow and burn are one metabolism seen at different moments. Behind the alternator stand tag/Minsky hosting,
+is that grow and burn are one metabolism seen at different moments —
+made exact by Stage 225: THE OUROBOROS WAVE (`sc_ouro_eternal`) — the
+self-eating front is the pinned period-16 family `C·PRE·BLOCK^m·SUF`,
+so it eats and GROWS, forever. The medium's three observed behaviors
+(reader wave 7/verbatim, burn pulse 12/drift, ouroboros wave 16/drift)
+are all certified processes; the persistence campaign closes as a
+taxonomy in which every survival strategy is a theorem. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
