@@ -752,3 +752,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_numeral_speed_limit_run' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_numeral_speed_limit_run
+
+/-- info: 'sc_cargo_law' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_cargo_law

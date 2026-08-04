@@ -4890,7 +4890,7 @@ def scMaxReg : SCTerm → Nat
 theorem scMaxReg_ge_isReg : ∀ t : SCTerm, (scIsReg t).getD 0 ≤ scMaxReg t
   | .S => Nat.le_refl 0
   | .C => Nat.zero_le 0
-  | .app f x => Nat.le_max_right _ _
+  | .app _ _ => Nat.le_max_right _ _
 
 /-- A fresh wrap's value is bounded by its body's depth plus one. -/
 theorem sc_wrap_bound (f x : SCTerm) :
@@ -4959,3 +4959,80 @@ theorem sc_numeral_speed_limit_run : ∀ {n : Nat} {t u : SCTerm},
   · intro m a b c s rest ih
     have := sc_numeral_speed_limit s
     omega
+
+-- ## Stage 214: the cargo law — the rightmost argument survives every fire
+-- A positional corollary of the dichotomy, and the theorem behind every FIFO machine in
+-- the program. The rightmost spine argument of any term survives every step: usually
+-- verbatim in last position, sometimes stepped in place, and in exactly one case
+-- displaced — a BOTTOM CALL, a call whose frame consumes the entire argument list
+-- (arity exactly three), which slides the old cargo to second-to-last and installs the
+-- call's product as the new last. Cargo is never erased and never skipped: a machine
+-- must burn down to arity three to touch its own tail — which is precisely how the
+-- biodegradable word machines (Stage 148) always worked, now as a theorem.
+
+theorem scStepAt_snoc : ∀ {l m : List SCTerm} {y : SCTerm},
+    scStepAt (l ++ [y]) m →
+    (∃ l', m = l' ++ [y] ∧ scStepAt l l') ∨
+    (∃ y' : SCTerm, RS.SC.step y y' ∧ m = l ++ [y']) := by
+  intro l
+  induction l with
+  | nil =>
+      intro m y h
+      cases h with
+      | head s => exact .inr ⟨_, s, rfl⟩
+      | tail h' => cases h'
+  | cons a l₀ ih =>
+      intro m y h
+      cases h with
+      | head s => exact .inl ⟨_ :: l₀, rfl, scStepAt.head s⟩
+      | tail h' =>
+          rcases ih h' with ⟨l', rfl, hl⟩ | ⟨y', hy, rfl⟩
+          · exact .inl ⟨a :: l', rfl, scStepAt.tail hl⟩
+          · exact .inr ⟨y', hy, rfl⟩
+
+/-- **The cargo law**: the rightmost spine argument survives every fire — verbatim in
+last position, stepped in place, or (bottom call only, arity exactly three) displaced
+one slot with the call's product installed after it. -/
+theorem sc_cargo_law {t u : SCTerm} (h : RS.SC.step t u) {pre : List SCTerm}
+    {y : SCTerm} (hargs : scSpineArgs t = pre ++ [y]) :
+    (∃ pre', scSpineArgs u = pre' ++ [y]) ∨
+    (∃ (pre' : List SCTerm) (y' : SCTerm),
+      RS.SC.step y y' ∧ scSpineArgs u = pre' ++ [y']) ∨
+    (∃ f g w, pre = [f, g] ∧ scSpineArgs u = scSpineArgs f ++ [y, w]) := by
+  rcases sc_spine_dichotomy h with ⟨_, hstep⟩ | ⟨f, g, x, rest, _, hcase⟩
+  · rw [hargs] at hstep
+    rcases scStepAt_snoc hstep with ⟨l', hm, _⟩ | ⟨y', hy, hm⟩
+    · exact .inl ⟨l', hm⟩
+    · exact .inr (.inl ⟨_, y', hy, hm⟩)
+  · have hargst : scSpineArgs t = f :: g :: x :: rest :=
+      hcase.elim (fun hc => hc.2.1) (fun hc => hc.2.1)
+    obtain ⟨w, hu⟩ : ∃ w, scSpineArgs u = scSpineArgs f ++ x :: w :: rest :=
+      hcase.elim (fun hc => ⟨.app g x, hc.2.2⟩) (fun hc => ⟨g, hc.2.2⟩)
+    rcases List.eq_nil_or_concat rest with hrest | ⟨zs, z, hrest⟩
+    · subst hrest
+      have h3 : pre ++ [y] = [f, g] ++ [x] := by
+        rw [← hargs, hargst]
+        rfl
+      have hlen : pre.length = 2 := by
+        have h4 := congrArg List.length h3
+        simp at h4
+        omega
+      obtain ⟨hpre, hyx⟩ := List.append_inj h3 (by simp [hlen])
+      have hy : y = x := by simpa using hyx
+      subst hy
+      exact .inr (.inr ⟨f, g, w, hpre, by rw [hu]⟩)
+    · subst hrest
+      have h3 : pre ++ [y] = (f :: g :: x :: zs) ++ [z] := by
+        rw [← hargs, hargst]
+        simp
+      have hyz : y = z := by
+        have hlen : pre.length = (f :: g :: x :: zs).length := by
+          have := congrArg List.length h3
+          simp at this
+          simpa using this
+        obtain ⟨_, hy⟩ := List.append_inj h3 hlen
+        simpa using hy
+      subst hyz
+      refine .inl ⟨scSpineArgs f ++ x :: w :: zs, ?_⟩
+      rw [hu]
+      simp
