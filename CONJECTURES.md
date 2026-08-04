@@ -6595,3 +6595,15 @@ whose path crashes far below its running peak (superlinear drop); one crashing c
 plus the on-path mountain technology would break the linear-excess barrier that the
 spiral could not. The towers-are-normal lemmas (this stage's feat) lay the forcedness
 groundwork for pinning whatever the screen finds.
+
+### Stage 242: the mill is forced — the only path, parametrically
+
+The existence laws became uniqueness laws: `sc_mill_descent_forced` and
+`sc_mill_turnover_forced` ([propext]) — with normal payloads, every state of both mill
+laws has exactly one successor. The proof technique is itself a small milestone: the
+first PARAMETRIC forcedness in the program (all previous SCForced facts were decide-
+checked on concrete chains), possible because every live redex in the mill has a
+concrete head with the opaque towers confined to argument seats, so `scSucc` computes by
+structural simp against the payloads' normality. With `SCForced_append` the revolutions
+concatenate; the parametric staircase — every mill peak an on-path mountain, at every
+scale, in one theorem — is now pure assembly over pinned parts.

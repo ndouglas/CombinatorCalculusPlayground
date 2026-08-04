@@ -6609,3 +6609,13 @@ what automation could and couldn't do. This file is a first-class deliverable
   peak-to-later-dip drops (the superlinear hunt — one crasher breaks the linear
   barrier); pin the winner with scForced_mountain_last. (2) The parametric mill
   forcedness (staircase at every scale). (3) The no-NF corollary for scMt5T.
+
+## 2026-08-04 — Stage 242: the mill is forced
+
+- First parametric SCForced. The simp-grind worked first try: twelve states, one tactic
+  line each. The staircase assembly (anchor-forced by decide + descent/turnover forced
+  chains appended + scForced_all_le_last parametrically) is the next feat-sized task.
+- Crash screen: 7,311 corridors confirmed, deep marches in progress.
+- Ranking: (1) harvest the crash screen (Stage 243). (2) The staircase assembly.
+  (3) The no-NF corollary for scMt5T (forced + infinite ⟹ no normal form — now
+  reachable with the parametric forcedness).

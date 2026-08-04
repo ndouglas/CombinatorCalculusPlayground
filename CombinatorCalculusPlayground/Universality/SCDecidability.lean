@@ -6374,3 +6374,43 @@ theorem sc_mill_turnover_forced (M : SCTerm) (hM : scSucc M = []) :
        (.app (.app (.app M (.app .C M)) (.app (.app .C .C) (.app .C M))) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))] := by
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, trivial⟩ <;>
     simp [scMillK, scSucc, scSuccRoot, hM]
+
+-- ## Stage 242 (part two): the forced descent run — the staircase's spine
+-- The descent chain as an explicit list-family, forced at every counter height: the run
+-- from `G (a+d) m` to `G a m` is the ONLY reduction, parametrically.
+
+/-- The six descent states for counter payload `x` and tower payload `y`. -/
+def scMillDescentStates (x y : SCTerm) : List SCTerm :=
+  [(.app (.app (.app .C (.app .C (.app (.app .C .C) (.app .C x)))) (.app .C x)) y),
+   (.app (.app (.app .C (.app (.app .C .C) (.app .C x))) y) (.app .C x)),
+   (.app (.app (.app (.app .C .C) (.app .C x)) (.app .C x)) y),
+   (.app (.app (.app .C (.app .C x)) (.app .C x)) y),
+   (.app (.app (.app .C x) y) (.app .C x)),
+   (.app (.app x (.app .C x)) y)]
+
+/-- The descent chain from height `a + d` down to `a`. -/
+def scMillDescentChain : (d a m : Nat) → List SCTerm
+  | 0, _, _ => []
+  | d + 1, a, m =>
+      scMillDescentStates (scMillT (a + d)) (scMillT m) ++ scMillDescentChain d a m
+
+/-- **The forced descent run**: the mill's way down is the only way. -/
+theorem sc_mill_descent_run_forced : ∀ (d a m : Nat),
+    SCForced (scMillG (a + d) m) (scMillDescentChain d a m)
+  | 0, _, _ => trivial
+  | d + 1, a, m => by
+      have hx : scSucc (scMillT (a + d)) = [] :=
+        scSucc_nil_of_normal (scMillT_normal (a + d))
+      have hy : scSucc (scMillT m) = [] :=
+        scSucc_nil_of_normal (scMillT_normal m)
+      exact SCForced_append
+        (by
+          show SCForced (scMillG (a + (d + 1)) m)
+            (scMillDescentStates (scMillT (a + d)) (scMillT m))
+          have h := sc_mill_descent_forced (scMillT (a + d)) (scMillT m) hx hy
+          rw [show a + (d + 1) = (a + d) + 1 from by omega]
+          exact h)
+        (by
+          show SCForced ((scMillDescentStates (scMillT (a + d))
+            (scMillT m)).getLastD _) (scMillDescentChain d a m)
+          exact sc_mill_descent_run_forced d a m)
