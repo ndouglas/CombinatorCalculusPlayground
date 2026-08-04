@@ -1056,7 +1056,13 @@ tower contexts per cycle, exact through eighty consecutive cycles).
 Registered as C11 (the spiral law), C9-shaped and fully de-risked: its
 proof makes the corridor INFINITE and the floor staircase a parametric
 family — though corridor excess is linear-plus-constant, so the
-undecidability endgame still needs superlinear excess from elsewhere. All certified by the forced-march toolkit
+undecidability endgame still needs superlinear excess from elsewhere.
+Stage 235 closed the loop of the whole program: the spiral's cycles are
+EXACTLY six fires per block — the corridor IS a word machine (a walker
+on a self-extending tape), the architecture the hosting campaign tried
+to build by hand, running wild inside the census's best climber. C11's
+proof plan is concrete and C9-shaped: block-step lemma, Φ(k) family,
+traversal induction. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now

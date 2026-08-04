@@ -6481,3 +6481,19 @@ so C11 alone improves the bounded-intermediates constants, not the asymptotics �
 undecidability endgame still needs superlinear excess, which must come from elsewhere
 (deeper climber families, or corridors that crash). The spiral proof is the program's
 next major formalization; every piece is de-risked and exact.
+
+### Stage 235: the spiral is a word machine — the corridor and the chassis are one
+
+The cycle arithmetic is exact: every spiral cycle is SIX FIRES PER BLOCK, no remainder
+(spacing 252+6k = 6·(42+k) with 42+k the block count — verified across eighty cycles).
+The spiral is therefore a WORD MACHINE: the blob's block run is a tape, the cycle is one
+full traversal at six fires per symbol, and each traversal appends one block (+16), one
+tower layer (+3×3), and twenty-five leaves of peak. The program's two grand arcs have
+converged at the bottom: the corridor that carries the floor ladder IS the tag-chassis
+architecture (a walker on a self-extending word), discovered not by design but inside
+the census's best climber. The C11 proof plan is now concrete: (1) extract the six-fire
+block-step lemma (walker · block · rest ⟶⁶ walker' · rest · output — pass-through-family,
+needs a blob-spine tracker); (2) the Φ(k) Lean family over the exact template; (3) the
+traversal induction (block-step × (42+k), rider-lifted) and the cycle close. C9's proof
+was this shape at period 7+k; C11 is the same theorem grown up — and with it, the
+corridor's infinity, the parametric floor family, and the fifth recurrence technology.

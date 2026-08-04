@@ -6529,3 +6529,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   per-block six fires, pin the block-processing lemma parametrically (rider-lifted, like
   the wave cores). (2) The spiral's Φ(k) Lean family (defs + the fixed prelude). (3)
   Corridor deep-pins as budget allows.
+
+## 2026-08-04 — Stage 235: the spiral is a word machine
+
+- 6 fires per block, no remainder, eighty cycles. The tag machine the program tried to
+  build by hand has been running inside its own census witness the whole time — the
+  walk exists, self-supplied, at scale; it just doesn't halt to be asked questions.
+- One hundred seventeen autonomous stages (119–235). Ranking: (1) **the blob-spine
+  tracker + block-step extraction**: purpose-built tooling to isolate the six-fire
+  motif with exact walker/cursor terms — the C11 proof's first brick, and the priority
+  of the next session. (2) The Φ(k) family defs. (3) Corridor deep-pin at march-5169
+  (kernel budget test).
