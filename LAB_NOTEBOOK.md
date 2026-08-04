@@ -6346,3 +6346,13 @@ what automation could and couldn't do. This file is a first-class deliverable
   junk stream IS the rotated word — the Stage 179 junk-is-storage insight, now with the
   pass-through word as the storage format; probe reader-fronts whose J-blocks are
   pass-through cells. (2) The 101-stage review. (3) floor14/n=16 harvests.
+
+## 2026-08-04 — Stage 220: the burn
+
+- Four fires from three junk blocks to a consultation — the medium is live. One hundred
+  two stages (119–220), and the frontier questions have all converged on junk-medium
+  dynamics: what J-streams compute is now the program's central object.
+- Ranking: (1) **the medium's front**: probe whether the burning J-stream is a
+  persistent front (Front·J recurrence detector over the burn trajectory at depth;
+  if yes, pin it — the alternator closes as grow-and-burn in one machine). (2) The
+  102-stage review. (3) floor14/n=16 harvests (background sweeps idle at 79/86-pinned).

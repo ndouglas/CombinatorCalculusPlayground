@@ -6264,3 +6264,18 @@ identity tag machine now has every part but this one, and this one has resisted 
 architectures. Suspicion, recorded: the loop closure may REQUIRE the growing-front
 technology (the reader's), making the tag machine a reader-variant rather than a cycle —
 which would be consistent with every wall and every existing machine.
+
+### Stage 220: the burn — the storage reads itself back
+
+The convergence stage. The reader's junk block, identified at 218 as a pass-through cell,
+proves live: `sc_junk_is_cell` (one fire unloads it onto any arm) and `sc_junk_ignition`
+(three blocks applied to each other ignite in four fires, ending in the stored register's
+CONSULTATION — `S S C` firing on stored material), both axiom-free. The probe trace past
+the pin shows the burn does not decay: registers consult, fresh cells form around junk
+PAIRS — second-order storage — and the configuration grows reader-like. So the medium the
+reader writes is the medium the burn reads, and both behaviors — grow (Stage 176) and
+burn (here) — belong to one substance. The alternator (C8-final's last composition), the
+tag machine's loop closure, and C10's regrowth now all live in the same place: the
+dynamics of the junk medium. The program's next depth is a THEORY OF THE MEDIUM — what
+J-streams can compute — and its first question is whether the metabolizing burn is
+itself a persistent front (the probe suggests yes: growth with recurring shapes).

@@ -301,7 +301,14 @@ prefab, which fixed shapes cannot supply). Loop closure, the walk, and
 C10's regrowth are one problem in three costumes: output-paced
 machinery growth — solved in this calculus only by the reader's
 growing front. The recorded suspicion: the tag machine is a
-reader-variant, not a cycle. Behind the alternator stand tag/Minsky hosting,
+reader-variant, not a cycle. Stage 220 certified the suspicion's
+foundation: THE BURN (`sc_junk_ignition`/`sc_junk_is_cell`, axiom-free)
+— the reader's junk blocks are live pass-through cells that ignite on
+each other, re-exposing and CONSULTING their stored registers in four
+fires; probe-traced, the stream metabolizes (second-order cells,
+reader-like growth). Grow and burn are two behaviors of one junk
+medium, and the alternator, the tag loop closure, and C10's regrowth
+all now live there: the program's central object is the medium. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
