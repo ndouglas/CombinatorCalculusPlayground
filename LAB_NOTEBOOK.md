@@ -6475,3 +6475,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   (word cells as the front's junk vocabulary), making the walk's growing prefab the
   wave's own block stream. (2) floor16 harvest when it lands. (3) The deepening
   invariant's general argument (parked for a new idea).
+
+## 2026-08-04 — Stage 231: the junk tape
+
+- Order-sensitivity: 27/231 pairs. One order pinned dead, the other alive (probe). The
+  insert-and-mutate wave is the first medium process the template recipe cannot yet
+  pin — a fifth recurrence kind may be waiting there.
+- One hundred thirteen autonomous stages (119–231). Ranking: (1) **the compound wave**:
+  extend the template technology to insert-and-mutate processes (two-family template:
+  block list + growing tower at a fixed position — the alignment data is on disk).
+  (2) floor16 harvest (check the log). (3) The junk-tape programming question: with
+  order read by fate, seek a pair (a,b) whose burns differ for MORE than fate — e.g.
+  distinguishable normal forms per order (a decodable tape).

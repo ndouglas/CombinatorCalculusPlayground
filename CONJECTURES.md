@@ -6418,3 +6418,17 @@ from depth zero — so a witness must deepen forever at bounded amortized cost, 
 precisely what every pinned eternal machine declines to do). The conjecture registry now
 holds the question in its final dress: a one-line Prop whose refutation would be the
 program's deepest invariant and whose proof would be its most surprising machine.
+
+### Stage 231: the medium reads order — the junk tape
+
+The medium's blocks carry information in their SEQUENCE: over 231 register pairs,
+twenty-seven order-sensitive burns — same multiset, different order, different fate.
+Pinned at the atoms: `J(CC)·J(S)·J(S)` dies in nineteen fires at a 21-leaf normal form
+(`sc_order_halts`, axiom-free) while `J(S)·J(CC)·J(S)` ignites an eternal period-2
+growth wave (probe; its compound insert-and-mutate template resists the block recipe and
+is recorded unpinned — the medium's first process beyond the current template
+technology). The upshot joins the week's convergences: junk streams are WORDS, the burn
+READS them, and fate is the readout — the medium is a tape written by machines and read
+by its own combustion. The hosting program's word-representation question ("how does a
+tape live in {S,C}?") has had its answer in the junk all along: Stage 179 named it
+storage, 218 gave it cells, 220 lit it, and now it reads in order.

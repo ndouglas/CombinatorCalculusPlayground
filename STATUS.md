@@ -370,7 +370,11 @@ Stage 230 made the second frontier a Lean proposition (`scDeepening`:
 one term, every depth), with the swapped quantifier form proved
 (`sc_depth_breadth` — breadth is free via the counting chain) and the
 strong form priced (`sc_depth_cost` — n fires minimum): C10 is exactly
-a quantifier swap the calculus has never performed. Behind the
+a quantifier swap the calculus has never performed. Stage 231 found
+the medium's tape: junk streams READ IN ORDER (27/231 register pairs
+order-sensitive; pinned at the atoms — one order dies in nineteen
+fires, `sc_order_halts`, the other ignites an eternal wave). The
+medium is a tape written by machines and read by its own combustion. Behind the
 alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
