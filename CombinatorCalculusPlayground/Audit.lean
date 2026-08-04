@@ -863,3 +863,18 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_spiral_reach3' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_spiral_reach3
+
+/-- info: 'sc_mill_descent' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_mill_descent
+
+/-- info: 'sc_mill_turnover' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_mill_turnover
+
+/-- info: 'sc_mill_cycle' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_mill_cycle
+
+/-- info: 'sc_mill_eternal' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_mill_eternal
+
+/-- info: 'sc_corridor_unbounded' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_corridor_unbounded

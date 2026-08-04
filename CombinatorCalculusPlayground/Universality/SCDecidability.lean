@@ -6140,3 +6140,158 @@ theorem sc_spiral_reach3 : RS.SC.StepsN 152 scMt5T (scSpiral 3) := by
   have h := RS.StepsN.trans sc_spiral_reach2 sc_spiral_turn2
   rw [show (152 : Nat) = 110 + 42 from rfl]
   exact h
+
+-- ## Stage 240: THE MILL LAWS — C11 dissolves into two six-fire lemmas
+-- The spiral's engine, fully reverse-engineered, is almost nothing: the corridor runs on
+-- a two-counter machine `G a m = T_a · (C T_a) · T_m` over the layer grammar
+-- `L x = (C C)(C x)` and a nine-leaf core `K` — and B₁, Y, the tower, even the junk
+-- block are all tower-terms in disguise (B₁ = C·T₂, Y = C·T₃, B₂ = (C·K)·tail₈ with
+-- tail₈ the climber's own original tail). Two laws drive everything: THE DESCENT
+-- (`(L x)·(C (L x))·y ⟶⁶ x·(C x)·y`, any x y — the counter strips a layer) and THE
+-- TURNOVER (`K·(C K)·M ⟶⁶ M·(C M)·(L M)·B₂`, any M — at zero the core fires, the
+-- counter is REBUILT AS A COPY OF THE TOWER in one duplication, the tower gains a
+-- layer, one junk block falls out). The cycle law, the eternal spiral, and the
+-- unbounded corridor are arithmetic over these two lemmas. C11, proved.
+
+/-- The layer: `L x = (C C)(C x)`. -/
+def scMillL (x : SCTerm) : SCTerm := .app (.app .C .C) (.app .C x)
+
+/-- The nine-leaf core at the bottom of every tower. -/
+def scMillK : SCTerm := (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))
+
+/-- The tower: `m` layers over the core. -/
+def scMillT : Nat → SCTerm
+  | 0 => scMillK
+  | m + 1 => scMillL (scMillT m)
+
+/-- The junk block: the core, C-parked, holding the climber's original tail. -/
+def scMillB2 : SCTerm := (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))
+
+/-- The two-counter state. -/
+def scMillG (a m : Nat) : SCTerm :=
+  .app (.app (scMillT a) (.app .C (scMillT a))) (scMillT m)
+
+/-- **THE DESCENT**: six fires strip one counter layer — any payloads. -/
+theorem sc_mill_descent (x y : SCTerm) :
+    RS.SC.StepsN 6
+      (.app (.app (scMillL x) (.app .C (scMillL x))) y)
+      (.app (.app x (.app .C x)) y) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C x) (.app .C (.app (.app .C .C) (.app .C x)))))
+  (RS.StepsN.tail (SCStep.C_red (.app .C (.app (.app .C .C) (.app .C x))) (.app .C x) y)
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .C x)) y (.app .C x))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C x) (.app .C x)))
+  (RS.StepsN.tail (SCStep.C_red (.app .C x) (.app .C x) y)
+  (RS.StepsN.tail (SCStep.C_red x y (.app .C x))
+  (@RS.StepsN.refl RS.SC (.app (.app x (.app .C x)) y))))))))
+
+/-- **THE TURNOVER**: at counter zero the core fires — the counter is rebuilt as a copy
+of the tower (one duplication, six fires at every scale), the tower gains a layer, one
+junk block is emitted. -/
+theorem sc_mill_turnover (M : SCTerm) :
+    RS.SC.StepsN 6
+      (.app (.app scMillK (.app .C scMillK)) M)
+      (.app (.app (.app M (.app .C M)) (.app (.app .C .C) (.app .C M))) scMillB2) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .S .C) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C) (.app .C scMillK)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red .C (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))
+  (RS.StepsN.tail (SCStep.C_red (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)) M)
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app (.app .C .S) (.app .C .C)) .C M))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .S (.app .C .C) M)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red M (.app .C .C) (.app .C M)))
+  (@RS.StepsN.refl RS.SC (.app (.app (.app M (.app .C M)) (.app (.app .C .C) (.app .C M))) scMillB2))))))))
+
+/-- Descent, iterated. -/
+theorem sc_mill_descent_run : ∀ (d a m : Nat),
+    RS.SC.StepsN (6 * d) (scMillG (a + d) m) (scMillG a m)
+  | 0, _, _ => @RS.StepsN.refl RS.SC _
+  | d + 1, a, m => by
+      rw [show 6 * (d + 1) = 6 + 6 * d from by omega,
+        show a + (d + 1) = (a + d) + 1 from by omega]
+      exact RS.StepsN.trans (sc_mill_descent (scMillT (a + d)) (scMillT m))
+        (sc_mill_descent_run d a m)
+
+/-- **THE CYCLE**: one revolution from counter zero in `6(m+1)` fires, one block out. -/
+theorem sc_mill_cycle (m : Nat) :
+    RS.SC.StepsN (6 * (m + 1)) (scMillG 0 m) (.app (scMillG 0 (m + 1)) scMillB2) := by
+  have h1 := sc_mill_turnover (scMillT m)
+  have h2 : RS.SC.StepsN (6 * m) (.app (scMillG (0 + m) (m + 1)) scMillB2)
+      (.app (scMillG 0 (m + 1)) scMillB2) :=
+    scStepsN_appL scMillB2 (sc_mill_descent_run m 0 (m + 1))
+  rw [show (0 : Nat) + m = m from by omega] at h2
+  rw [show 6 * (m + 1) = 6 + 6 * m from by omega]
+  exact RS.StepsN.trans h1 h2
+
+/-- `Steps` under a rider list. -/
+theorem scSteps_appList {t t' : SCTerm} (l : List SCTerm) (h : RS.SC.Steps t t') :
+    RS.SC.Steps (scAppList t l) (scAppList t' l) := by
+  induction l generalizing t t' with
+  | nil => exact h
+  | cons w ws ih => exact ih (scSteps_appL w h)
+
+/-- **THE ETERNAL SPIRAL**: `k` revolutions raise the tower by `k`, leave `k` blocks. -/
+theorem sc_mill_eternal : ∀ (k m : Nat),
+    RS.SC.Steps (scMillG 0 m)
+      (scAppList (scMillG 0 (m + k)) (List.replicate k scMillB2))
+  | 0, m => @RS.Steps.refl RS.SC (scMillG 0 m)
+  | k + 1, m => by
+      have hstep : RS.SC.StepsN (6 * (m + k + 1))
+          (scAppList (scMillG 0 (m + k)) (List.replicate k scMillB2))
+          (scAppList (.app (scMillG 0 (m + k + 1)) scMillB2)
+            (List.replicate k scMillB2)) :=
+        scStepsN_appList (List.replicate k scMillB2) (sc_mill_cycle (m + k))
+      have h := RS.Steps.trans (sc_mill_eternal k m) (RS.StepsN.toSteps hstep)
+      rw [show m + (k + 1) = m + k + 1 from by omega, List.replicate_succ]
+      exact h
+
+theorem scMillT_size : ∀ m, (scMillT m).leafCount = 9 + 3 * m
+  | 0 => rfl
+  | m + 1 => by
+      show 1 + 1 + (1 + (scMillT m).leafCount) = 9 + 3 * (m + 1)
+      rw [scMillT_size m]
+      omega
+
+theorem scAppList_leaf_ge : ∀ (l : List SCTerm) (t : SCTerm),
+    t.leafCount ≤ (scAppList t l).leafCount
+  | [], _ => Nat.le_refl _
+  | w :: ws, t => by
+      have h1 : t.leafCount ≤ (SCTerm.app t w).leafCount := by
+        show t.leafCount ≤ t.leafCount + w.leafCount
+        omega
+      exact Nat.le_trans h1 (scAppList_leaf_ge ws (.app t w))
+
+/-- The spiral's ground state is a zero-phase-adjacent mill state, three blocks riding. -/
+theorem sc_spiral_is_mill :
+    scSpiral 0 = .app (.app .C scSpA)
+      (scAppList (scMillG 3 4) (List.replicate 3 scMillB2)) := by
+  decide
+
+/-- **THE CORRIDOR IS INFINITE**: the 12-leaf climber's reachable set is unbounded —
+certified end to end, anchor through mill. C11's headline corollary. -/
+theorem sc_corridor_unbounded (n : Nat) :
+    ∃ u : SCTerm, RS.SC.Steps scMt5T u ∧ n ≤ u.leafCount := by
+  refine ⟨.app (.app .C scSpA)
+    (scAppList (scAppList (scMillG 0 (4 + n)) (List.replicate n scMillB2))
+      (List.replicate 3 scMillB2)), ?_, ?_⟩
+  · have h0 : RS.SC.Steps scMt5T (scSpiral 0) := RS.StepsN.toSteps sc_spiral_anchor
+    rw [sc_spiral_is_mill] at h0
+    have hd : RS.SC.StepsN (6 * 3) (scMillG (0 + 3) 4) (scMillG 0 4) :=
+      sc_mill_descent_run 3 0 4
+    have hd' : RS.SC.Steps (scMillG 3 4) (scMillG 0 4) := by
+      have := RS.StepsN.toSteps hd
+      rw [show (0 : Nat) + 3 = 3 from rfl] at this
+      exact this
+    exact RS.Steps.trans h0 (scSteps_appR _
+      (RS.Steps.trans (scSteps_appList _ hd')
+        (scSteps_appList _ (sc_mill_eternal n 4))))
+  · have hk : (scMillT 0).leafCount = 9 := rfl
+    have hm := scMillT_size (4 + n)
+    have hG : n ≤ (scMillG 0 (4 + n)).leafCount := by
+      show n ≤ (scMillT 0).leafCount + (1 + (scMillT 0).leafCount)
+        + (scMillT (4 + n)).leafCount
+      omega
+    have h1 := scAppList_leaf_ge (List.replicate n scMillB2) (scMillG 0 (4 + n))
+    have h2 := scAppList_leaf_ge (List.replicate 3 scMillB2)
+      (scAppList (scMillG 0 (4 + n)) (List.replicate n scMillB2))
+    show n ≤ (1 + scSpA.leafCount)
+      + (scAppList (scAppList (scMillG 0 (4 + n)) (List.replicate n scMillB2))
+          (List.replicate 3 scMillB2)).leafCount
+    omega
