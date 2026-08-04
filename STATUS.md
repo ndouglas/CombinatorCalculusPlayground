@@ -1041,11 +1041,15 @@ mountain species: tall-peak/big-endpoint and modest-peak/tiny-endpoint).
 Best-witness excess reads 12 → 44 → 69 → 86 → 101 at n = 8 → 10 → 12 →
 14 → 16 (n=14: `f(14,280) ≥ 366`; n=16: `f(16,207) ≥ 308`, march-600) —
 five rungs, ONE structural family of climbers whose parameter is
-itself a numeral. The endgame question is registered: if the family's
-forced marches TEMPLATE in that numeral, excess(n) → ∞ becomes a
-theorem, bounded intermediates falls negatively, and by the frontier
-equivalence {S,C} reachability is undecidable. The scaling evidence
-leans ever harder that way. All certified by the forced-march toolkit
+itself a numeral. The endgame question is registered — and Stage 233 transformed it:
+scMt5T is a CORRIDOR (forced for 60,000+ fires, peaks past 3,500,
+probe), so every post-peak dip is a certified mountain
+(`scForced_mountain_last`), and one term carries an unbounded
+staircase: `sc_bound_floor_666` (excess 151 at (12,515), march-2109
+kernel decide) with 241+ deeper. If the corridor's oscillation
+TEMPLATES, excess → ∞ on one term is a theorem and bounded
+intermediates falls negatively, with the frontier equivalence
+waiting. The corridor wave is the program's next great object. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now

@@ -6445,3 +6445,18 @@ finger on the scale against bounded intermediates; the family's regularity sugge
 n→∞ law might itself be provable — a PARAMETRIC mountain family with excess growing in
 n would refute bounded intermediates outright, and the climbers' shared anatomy is the
 place to look. Registered as the ladder's endgame question.
+
+### Stage 233: the corridor — the ladder becomes a staircase in one term
+
+The endgame probe changed the geometry of the whole bounded-intermediates question. The
+n=12 climber `scMt5T` is not a mountain — it is a CORRIDOR: its reduction path is forced
+for at least sixty thousand fires (probe horizon), oscillating through peaks past 3,500
+leaves with dips trailing behind. Since forced means the reachable set IS the path, every
+post-peak dip is a certified mountain: the new `scForced_mountain_last` (on-path capped
+exclusion) plus a march-2109 kernel decide pin `sc_bound_floor_666` — excess 151 at
+(12, 515), from the term that held excess 57 three days ago, with excess 241 and 420
+sitting further down the same corridor priced only in kernel time. The endgame's shape
+sharpens: if the corridor's oscillation TEMPLATES (a rising wave family), then peak(k)
+and dip(k) become theorems, excess(k) → ∞ along one term's corridor, and the bounded-
+intermediates question resolves negatively for (12, m)-families — with the frontier
+equivalence waiting. The corridor's wave archaeology is the program's next great object.

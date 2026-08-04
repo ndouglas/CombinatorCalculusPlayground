@@ -6501,3 +6501,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   templates in the numeral parameter, prove excess(n) → ∞ and take the frontier
   equivalence's negative branch. THE ENDGAME. (2) The compound wave. (3) The junk-tape
   decoder.
+
+## 2026-08-04 — Stage 233: the corridor
+
+- The census's mountains were foothills: the climbers keep flying after their "peak",
+  forced, forever-so-far. One term now carries an unbounded staircase of floors, each
+  purchasable with kernel time. scForced_mountain_last makes on-path dips certifiable;
+  march-2109 decides passed at maxRecDepth 90k without strain.
+- One hundred fifteen autonomous stages (119–233). Ranking: (1) **the corridor wave**:
+  template the corridor's oscillation (the rising envelope suggests a drifting wave with
+  slowly growing block — possibly the compound insert-and-mutate kind; the alignment
+  data is one probe away); a corridor template proves excess → ∞ on one term — the
+  endgame lever. (2) Corridor deep-pins (excess 241 at march-5169) if kernel budget
+  allows. (3) The compound-wave template technology (needed by both this and Stage 231).
