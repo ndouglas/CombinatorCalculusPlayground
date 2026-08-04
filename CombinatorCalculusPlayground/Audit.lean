@@ -839,3 +839,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_bound_floor_308' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_bound_floor_308
+
+/-- info: 'scForced_mountain_last' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scForced_mountain_last
+
+/-- info: 'scMt9_no_capped_path' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt9_no_capped_path
+
+/-- info: 'sc_bound_floor_666' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_bound_floor_666

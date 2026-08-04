@@ -5804,3 +5804,99 @@ theorem sc_bound_floor_308 (f : Nat → Nat → Nat)
     have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 16 207) scMt8T scMt8U :=
       hf scMt8T scMt8U scMt8_steps
     exact scMt8_no_capped_path (RS.StepsLe.weaken (by omega) hs)
+
+-- ## Stage 233: the corridor — one term, unbounded forced flight, mountains on the path
+-- The n=12 climber `scMt5T` does not merely climb once: its reduction path is FORCED for
+-- at least sixty thousand fires (probe), oscillating through peaks past 3,500 leaves —
+-- a single 12-leaf term whose entire reachable set is one corridor. Mountains now live
+-- ON the path: the new lemma `scForced_mountain_last` certifies capped-path exclusion
+-- for an on-path target (every path to the corridor's fire-k state IS the corridor's
+-- first k fires), and the pinned instance takes the fire-1958 peak (666 leaves) against
+-- the fire-2109 dip (515 leaves): `sc_bound_floor_666` — excess 151 at (12, 515), from
+-- the same term that gave excess 57 at Stage 187. The corridor's deeper dips give excess
+-- 241, 420, and beyond (probe); the kernel march is the only budget.
+
+/-- On-path version of the chain-bound: a forced chain ending at `u` bounds every
+earlier element under any capped path to `u`. -/
+theorem scForced_all_le_last : ∀ (l₁ : List SCTerm) (t u : SCTerm) (c : Nat),
+    SCForced t (l₁ ++ [u]) → RS.StepsLe RS.SC SCTerm.leafCount c t u →
+    u ∉ t :: l₁ → ∀ x ∈ t :: l₁, x.leafCount ≤ c := by
+  intro l₁
+  induction l₁ with
+  | nil =>
+      intro t u c hf h hu x hx
+      have hne : t ≠ u := fun he => hu (he ▸ List.mem_cons_self)
+      have hx' : x = t := by
+        rcases List.mem_cons.mp hx with h' | h'
+        · exact h'
+        · exact absurd h' List.not_mem_nil
+      rw [hx']
+      exact RS.StepsLe.head_le h
+  | cons v l₁ ih =>
+      intro t u c hf h hu x hx
+      have hne : t ≠ u := fun he => hu (he ▸ List.mem_cons_self)
+      obtain ⟨b, s, rest⟩ := RS.StepsLe.cases_ne h hne
+      have hb := scSucc_complete s
+      rw [hf.1] at hb
+      have hbv : b = v := by
+        rcases List.mem_cons.mp hb with h' | h'
+        · exact h'
+        · exact absurd h' List.not_mem_nil
+      subst hbv
+      rcases List.mem_cons.mp hx with rfl | hx'
+      · exact RS.StepsLe.head_le h
+      · exact ih b u c hf.2 rest
+          (fun hmem => hu (List.mem_cons_of_mem t hmem)) x hx'
+
+/-- **The on-path mountain**: a forced chain to `u` with an earlier over-cap peak
+excludes every capped path to `u`. -/
+theorem scForced_mountain_last {c : Nat} {t u : SCTerm} (l₁ : List SCTerm)
+    (hf : SCForced t (l₁ ++ [u])) (hpeak : ∃ x ∈ t :: l₁, c < x.leafCount)
+    (hu : u ∉ t :: l₁) :
+    ¬ RS.StepsLe RS.SC SCTerm.leafCount c t u := by
+  intro h
+  obtain ⟨x, hx, hcx⟩ := hpeak
+  exact absurd (scForced_all_le_last l₁ t u c hf h hu x hx) (by omega)
+
+/-- The corridor's fire-2109 state: 515 leaves, past the 666-leaf peak. -/
+def scMt9U : SCTerm := (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app (.app .S .C) (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)) (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))))))))))))))))))))))))))))))))))))))))))))))))))))))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))))
+
+section
+set_option maxRecDepth 90000
+set_option maxHeartbeats 40000000
+
+#guard scMt9U.leafCount = 515
+#guard (scForcedMarch scMt5T 2109).length = 2109
+#guard (scForcedMarch scMt5T 2109).getLastD scMt5T == scMt9U
+
+/-- The crossing: the corridor itself. -/
+theorem scMt9_steps : RS.SC.Steps scMt5T scMt9U :=
+  scChained_steps (scForcedMarch scMt5T 2109) scMt5T scMt9U
+    (scForced_chained _ _ (scForcedMarch_forced 2109 scMt5T)) (by decide)
+
+/-- **The corridor mountain**: no path from `scMt5T` to the fire-2109 state stays
+within 665 leaves. -/
+theorem scMt9_no_capped_path : ¬ RS.StepsLe RS.SC SCTerm.leafCount 665 scMt5T scMt9U :=
+  scForced_mountain_last (scForcedMarch scMt5T 2108)
+    (by
+      have h : scForcedMarch scMt5T 2108 ++ [scMt9U] = scForcedMarch scMt5T 2109 := by
+        decide
+      rw [h]
+      exact scForcedMarch_forced 2109 scMt5T)
+    (by decide) (by decide)
+
+end
+
+/-- **The corridor floor**: every valid bounding function clears 666 at (12, 515) —
+the same 12-leaf term that held the excess-57 record now yields excess 151, with
+241-plus available deeper in its corridor. -/
+theorem sc_bound_floor_666 (f : Nat → Nat → Nat)
+    (hf : ∀ t u : SCTerm, RS.SC.Steps t u →
+        RS.StepsLe RS.SC SCTerm.leafCount (f t.leafCount u.leafCount) t u) :
+    666 ≤ f 12 515 := by
+  by_cases h : 666 ≤ f 12 515
+  · exact h
+  · exfalso
+    have hs : RS.StepsLe RS.SC SCTerm.leafCount (f 12 515) scMt5T scMt9U :=
+      hf scMt5T scMt9U scMt9_steps
+    exact scMt9_no_capped_path (RS.StepsLe.weaken (by omega) hs)
