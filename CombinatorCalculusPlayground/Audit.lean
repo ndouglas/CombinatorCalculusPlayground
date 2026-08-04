@@ -848,3 +848,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_bound_floor_666' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_bound_floor_666
+
+/-- info: 'sc_spiral_anchor' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_spiral_anchor
