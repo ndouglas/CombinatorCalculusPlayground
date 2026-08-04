@@ -5121,3 +5121,45 @@ theorem sc_suffix_law {t u : SCTerm} (h : RS.SC.step t u) {pre suf : List SCTerm
         refine ⟨scSpineArgs f ++ x :: w :: d :: pre₀, .inl ?_⟩
         rw [hu, hrest]
         simp
+
+-- ## Stage 218: the pass-through word — one fire per symbol, the arm conserved
+-- The arm-supply search ended in one C_red: the PASS-THROUGH CELL `C M W` fires on any
+-- arm `A` as `(C M W) A ⟶ (M A) W` — the arm hands through to the next cell untouched
+-- and the symbol appends behind it. A word stored as nested C-pairs (`scCWord`) therefore
+-- unrolls at ONE fire per symbol on a SINGLE conserved arm — against the Stage 148
+-- chassis's seven fires and one consumed arm per symbol — and the symbols emerge in
+-- rotation order: the front of the stored word lands rightmost. Read-half of the tag
+-- step, final form. The arm-supply dimension is closed: nothing is consumed. What
+-- remains of the identity tag machine is only the loop: an end-marker that re-packs
+-- emitted arguments into a fresh C-word — the walk, now with its cost floor known
+-- (one fire per symbol is optimal; the pass-through achieves it).
+
+/-- A word as nested pass-through cells. -/
+def scCWord : List SCTerm → SCTerm → SCTerm
+  | [], E => E
+  | W :: ws, E => .app (.app .C (scCWord ws E)) W
+
+/-- Left-application of a list of arguments. -/
+def scAppList : SCTerm → List SCTerm → SCTerm
+  | t, [] => t
+  | t, w :: ws => scAppList (.app t w) ws
+
+/-- **The pass-through cell**: one fire; the arm survives, the symbol appends. -/
+theorem sc_passthrough (M W A : SCTerm) :
+    RS.SC.step (.app (.app (.app .C M) W) A) (.app (.app M A) W) :=
+  SCStep.C_red M W A
+
+/-- Reversed unroll target: symbols emerge front-to-rightmost. -/
+def scUnrolled (E A : SCTerm) : List SCTerm → SCTerm
+  | [] => .app E A
+  | W :: ws => .app (scUnrolled E A ws) W
+
+/-- **The one-arm traversal**: a k-symbol word unrolls in exactly k fires on one
+conserved arm, front symbol landing rightmost — rotation order. -/
+theorem sc_cword_run : ∀ (ws : List SCTerm) (E A : SCTerm),
+    RS.SC.StepsN ws.length (.app (scCWord ws E) A) (scUnrolled E A ws)
+  | [], E, A => @RS.StepsN.refl RS.SC (.app E A)
+  | W :: ws, E, A => by
+      show RS.SC.StepsN (ws.length + 1) _ _
+      exact RS.StepsN.tail (sc_passthrough (scCWord ws E) W A)
+        (scStepsN_appL W (sc_cword_run ws E A))

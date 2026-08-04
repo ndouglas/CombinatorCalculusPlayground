@@ -767,3 +767,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_suffix_law' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_suffix_law
+
+/-- info: 'sc_passthrough' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_passthrough
+
+/-- info: 'sc_cword_run' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_cword_run
