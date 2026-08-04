@@ -755,3 +755,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_cargo_law' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_cargo_law
+
+/-- info: 'sc_stamp' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_stamp
+
+/-- info: 'sc_cell_mint' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_cell_mint

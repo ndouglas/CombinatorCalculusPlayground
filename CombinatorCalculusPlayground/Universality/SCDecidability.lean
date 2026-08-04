@@ -5036,3 +5036,28 @@ theorem sc_cargo_law {t u : SCTerm} (h : RS.SC.step t u) {pre : List SCTerm}
       refine .inl ⟨scSpineArgs f ++ x :: w :: zs, ?_⟩
       rw [hu]
       simp
+
+-- ## Stage 215: the stamp — one fire wraps the x-seat in any prefab
+-- The write-half primitive the tag step needs, and the common generalization of the
+-- successor (Stage 201) and the assembler: `S f g x ⟶ (f x) (g x)` read as an
+-- INSTRUCTION says the prefab `g` STAMPS the x-seat — `g = C` mints numeral successors,
+-- `g = C C` mints CELLS (`sc_cell_mint`), any `g` mints `g`-applications — with the
+-- continuation `f` receiving the raw operand beside the stamped copy. Rotation status,
+-- from the cargo law plus the pinned traversal: the READ half of the identity tag step
+-- exists (scBWord traversal delivers word contents as FIFO arguments); the WRITE half is
+-- cell-stamping arguments back into a chain, for which this is the per-symbol fire. The
+-- remaining engineering is the walk: a head that stamps each argument in turn and folds
+-- the stamped cells into a word — the rotator sweep (24,036 heads, zero) says that walk
+-- exceeds seven leaves, not that it is walled.
+
+/-- **The stamp**: one fire wraps the x-seat in any prefab, continuation alongside. -/
+theorem sc_stamp (f g x : SCTerm) :
+    RS.SC.step (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x)) :=
+  SCStep.S_red f g x
+
+/-- **The cell mint**: stamping with `C C` builds a cell of the operand — the write-half
+of the tag step, one fire per symbol. -/
+theorem sc_cell_mint (f x : SCTerm) :
+    RS.SC.step (.app (.app (.app .S f) (.app .C .C)) x)
+      (.app (.app f x) (.app (.app .C .C) x)) :=
+  SCStep.S_red f (.app .C .C) x
