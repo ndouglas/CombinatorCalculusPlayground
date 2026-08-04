@@ -6216,3 +6216,19 @@ rather than advancing. The walk is where the tag step now lives; like C10's regr
 wants a designed multi-prefab machine, and the two problems may be the same problem —
 both ask a head to interleave PROGRESS through material with PRESERVATION of machinery,
 which is exactly the interleaving the six walls constrain.
+
+### Stage 217: the suffix law — no overtaking on the spine
+
+The fueled-walk sweep's zero (78,000 stage-contexts) had a reason, and the reason is the
+program's seventh wall ([propext]): `sc_suffix_law` — any argument-list suffix beyond
+the call frame survives every step, verbatim or with one element stepped in place.
+Products NEVER overtake surviving arguments; output cannot accumulate behind an unread
+queue; my detector's target shape was unsatisfiable. The constructive flip side: walk
+architectures are FORCED onto the scBWord chassis — queue in the head-chain, products
+appended at the tail by per-cell bottom calls — which the Stage 148 machinery already
+implements for both halves separately. The entire remaining freedom of the tag step is
+one dimension: THE ARM SUPPLY (each cell fire consumes a `C C` arm from the argument
+side; sustained rotation needs the arms replenished — from cell contents, from the
+appended products, or from pre-built fuel). Seven walls, and each one narrows the design
+until the machine is almost dictated: that is either how the construction gets found, or
+how its impossibility proof assembles itself.

@@ -285,7 +285,11 @@ parametric walker within nine-leaf heads (a nine-leaf phantom was
 caught by the placeholder discipline), and the visible convergence that
 THE WALK AND C10'S REGROWTH ARE THE SAME SPECIES OF PROBLEM: progress
 through material interleaved with preservation of machinery — the
-interleaving the six walls constrain. Behind the alternator stand tag/Minsky hosting,
+interleaving the six walls constrain. Stage 217 made it seven: THE
+SUFFIX LAW (`sc_suffix_law`, [propext]) — argument suffixes beyond the
+call frame survive every step; products never overtake surviving
+material. The tag step is forced onto the scBWord chassis and its
+remaining freedom is one dimension: the arm supply. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

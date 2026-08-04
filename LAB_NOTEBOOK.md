@@ -6310,3 +6310,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   (the corrected search language) over TWO-hole shapes (machine-hole and queue-hole)
   at 9-12 leaves, sampled. (2) floor14/n=16 harvests. (3) A consolidation stage if the
   interleaving probe zeros: the six-wall review as a single ledger entry.
+
+## 2026-08-04 — Stage 217: the suffix law
+
+- The best kind of sweep failure: the zero was a theorem. Wall seven joins the six, and
+  the tag step is now confined to a one-dimensional design space (arm supply on the
+  scBWord chassis). The invariant program produced five theorems this week — dichotomy,
+  provenance, speed limit, cargo, suffix — all from one induction pattern.
+- Ninety-nine autonomous stages (119–217). Ranking: (1) **the arm supply**: enumerate
+  arm-replenishment schemes on the scBWord chassis (arms from cell contents — words of
+  arm-symbol pairs; arms from products; pre-built arm stacks) — a working scheme is the
+  rotation, i.e. the identity tag machine; probe each scheme directly on the pinned
+  scBCell shapes. (2) floor14/n=16 harvests. (3) The hundredth-stage review at 220.
