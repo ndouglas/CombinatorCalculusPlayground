@@ -6552,3 +6552,13 @@ what automation could and couldn't do. This file is a first-class deliverable
   walker·B₂·rest ⟶⁶ walker'·rest·output parametrically). (2) The twelve fixed fires +
   the cycle-law assembly (scSpiralLaw for j=0 first, then parametric). (3) Deep pins
   and the two frontier questions, standing.
+
+## 2026-08-04 — Stage 237: the spiral turns
+
+- Two turns emitted and certified in one sitting; the emission pipeline treats 36-fire
+  parametric-shaped chains as routine now. The six-fire lemma is next — its statement
+  can be read off by diffing the walker states inside turn0's fires 12–30.
+- One hundred nineteen autonomous stages (119–237). Ranking: (1) **the run-block
+  lemma and parametric assembly** (scSpiralLaw): the last lemma of C11. (2) After C11:
+  the corridor-infinite corollary (scMt5T has no normal form) and the parametric floor
+  staircase. (3) The frontier pair (bounded intermediates asymptotics; C10), standing.

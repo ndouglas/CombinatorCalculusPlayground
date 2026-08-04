@@ -6511,3 +6511,14 @@ tower riding passively, rider lifts throughout. One probe near-miss caught by ex
 assertion (TWO distinct 16-leaf blocks, not one — the honest-assembly discipline again).
 When scSpiralLaw lands, the corridor is infinite, the climber has no normal form, and
 the floor staircase becomes a single parametric theorem.
+
+### Stage 237: the spiral turns — two cycles certified, one lemma left
+
+The spiral's first two turns are kernel facts: `sc_spiral_turn0` (thirty fires) and
+`sc_spiral_turn1` (thirty-six — the 30 + 6j schedule, live), both axiom-free, with
+`sc_spiral_reach2` chaining the anchor through both. The family definitions survived
+contact with the corridor exactly. `scSpiralLaw` — and with it the corridor's infinity
+and the parametric floor staircase — now rests on a single remaining lemma: the six-fire
+run-block step, whose statement the two concrete turns bracket from both ends. The
+program's chapter arithmetic: five recurrence technologies, two registered conjectures
+each one lemma or one idea from resolution, and a hundred nineteen consecutive stages.

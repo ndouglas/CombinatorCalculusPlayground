@@ -1065,8 +1065,10 @@ proof plan is concrete and C9-shaped: block-step lemma, Φ(k) family,
 traversal induction — and Stage 236 laid the ground floor: `scSpiral j`
 defined exactly (its vocabulary is the pass-through grammar), the
 anchor pinned axiom-free (44 fires from the climber onto `scSpiral 0`),
-and `scSpiralLaw` registered as the formal target. All certified by the
-forced-march toolkit
+and `scSpiralLaw` registered as the formal target — its first two
+turns certified axiom-free at Stage 237 (30 and 36 fires, the 30+6j
+schedule live), leaving the law resting on a single six-fire run-block
+lemma. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now
