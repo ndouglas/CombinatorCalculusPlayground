@@ -6322,3 +6322,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   arm-symbol pairs; arms from products; pre-built arm stacks) — a working scheme is the
   rotation, i.e. the identity tag machine; probe each scheme directly on the pinned
   scBCell shapes. (2) floor14/n=16 harvests. (3) The hundredth-stage review at 220.
+
+## 2026-08-04 — Stage 218: the pass-through word
+
+- The probe found it at three leaves — the smallest cell that could exist — after a week
+  of seven-leaf machinery. The lesson (again): search the RIGHT question and the answer
+  is small. Read-half economics now optimal; everything funnels into loop closure.
+- One hundred consecutive autonomous stages at the next docs commit (119–218 = 100).
+  Ranking: (1) **loop closure**: the end-marker walk — E receives args [A, Wk...W1] and
+  must build scCWord [rotated] E'; probe E-contexts against the exact two-symbol target;
+  the pass-through's own shape (C-pairs) is what needs re-minting, and the stamp with
+  g = C-prefabs mints C-applications — the parts may already suffice. (2) The
+  hundredth-stage review. (3) floor14/n=16 harvests.

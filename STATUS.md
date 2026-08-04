@@ -289,7 +289,12 @@ interleaving the six walls constrain. Stage 217 made it seven: THE
 SUFFIX LAW (`sc_suffix_law`, [propext]) — argument suffixes beyond the
 call frame survive every step; products never overtake surviving
 material. The tag step is forced onto the scBWord chassis and its
-remaining freedom is one dimension: the arm supply. Behind the alternator stand tag/Minsky hosting,
+remaining freedom is one dimension: the arm supply — which Stage 218
+CLOSED with the PASS-THROUGH CELL (`sc_passthrough`, axiom-free):
+`C M W · A ⟶ M A W`, the arm conserved, one fire per symbol
+(`sc_cword_run` — optimal, versus the old chassis's seven fires and an
+arm consumed per symbol), symbols emerging in rotation order. The
+identity tag machine lacks exactly one mechanism: the loop closure. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

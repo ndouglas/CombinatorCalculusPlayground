@@ -6232,3 +6232,17 @@ side; sustained rotation needs the arms replenished — from cell contents, from
 appended products, or from pre-built fuel). Seven walls, and each one narrows the design
 until the machine is almost dictated: that is either how the construction gets found, or
 how its impossibility proof assembles itself.
+
+### Stage 218: the pass-through word — the arm-supply dimension closes
+
+The one-dimensional design space left by the suffix law collapsed in one constructor:
+the PASS-THROUGH CELL `C M W` fires on any arm as `(C M W) A ⟶ (M A) W` — the arm hands
+through untouched, the symbol appends behind it (`sc_passthrough`, axiom-free). A word
+stored as nested C-pairs unrolls at ONE fire per symbol on a SINGLE conserved arm
+(`sc_cword_run`), symbols emerging in rotation order — the front of the stored word
+lands rightmost, exactly where a tag machine wants it. This retires the Stage 148
+chassis's economics (seven fires and one consumed arm per symbol) and closes the arm
+question: nothing is consumed at all. The identity tag machine is now a single missing
+mechanism: the LOOP CLOSURE — an end-marker that re-packs emitted arguments into a fresh
+C-word. And the C-word is the cheapest word representation the calculus admits: one
+fire per symbol is a trivial lower bound, and the pass-through achieves it.
