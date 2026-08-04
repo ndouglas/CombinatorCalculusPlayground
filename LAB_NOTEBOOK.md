@@ -6619,3 +6619,15 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) harvest the crash screen (Stage 243). (2) The staircase assembly.
   (3) The no-NF corollary for scMt5T (forced + infinite ⟹ no normal form — now
   reachable with the parametric forcedness).
+
+## 2026-08-04 — Stage 243 (in progress): the crash screen, interim
+
+- Screen at 3,000 of 7,311 corridors (deep-marched 4,000 fires each): maximum drop so
+  far 211 (peak 628 → dip 417), dips trailing peaks at ratio ≤ 1.5 throughout —
+  consistent with the linear-excess picture, no crasher yet. The screen continues in
+  the background (crashscreen.log); harvest on completion: pin the winner with
+  scForced_mountain_last regardless (best-known n=10 floor), and if any late corridor
+  crashes superlinearly, the endgame opens.
+- Ranking: (1) harvest crashscreen.log (TOP-10 tables at DONE marker). (2) The
+  parametric staircase assembly (descent-run forced is in; turnover-run + anchor +
+  scForced_all_le_last parametric remain). (3) The no-NF corollary for scMt5T.
