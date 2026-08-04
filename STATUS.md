@@ -358,8 +358,14 @@ hypothesis strengthens — and Stage 228 CERTIFIED the stepping stone:
 eternal waves run at numeral depth ZERO at every phase, forever; the
 speed limit's budget is never spent. The no-deepening invariant holds
 on every pinned eternal machine; C10 is balanced between an
-invariant proof over all recurrences and a carrier no probe has
-found. Behind the alternator stand tag/Minsky hosting,
+invariant proof over all recurrences and a carrier no probe has found.
+Stage 229's axiom-free capstone completed the calibration: THE CARRIER
+THEOREM (`sc_orbit_carries_depth`) — the parity orbit at index k holds
+numeral depth exactly k, eternally; so carrying is free at every level,
+the waves carry zero, numerals cannot power eternity (flips have no
+engine), and deepening has never been observed anywhere. The medium
+chapter closes with the program's two frontiers — bounded
+intermediates and the deepening question — each one sentence long. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

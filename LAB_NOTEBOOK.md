@@ -6452,3 +6452,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   survivors). A numeral-carrying wave at CONSTANT depth is fine (copies!); the question
   isolates whether blocks can carry depth at all. (2) floor16 rung. (3) Rest point: the
   110-stage mark is a natural chapter close.
+
+## 2026-08-04 — Stage 229: the carrier theorem; the chapter closes
+
+- Eight stages this session (222–229): both waves pinned, the ouroboros found and
+  certified, C8-final closed as a taxonomy, the review, the bestiary, no-deepening
+  certified, and the carrier capstone. One hundred eleven consecutive autonomous stages.
+- Ranking: (1) **the deepening question, general form**: attempt the invariant —
+  "recurrent spine families over the calculus cannot deepen numerals" — via the spine
+  dichotomy + speed limit + template structure (the general argument the calibration
+  awaits); or find the carrier. (2) floor16 rung (graft, background). (3) The hosting
+  walk (awaiting the growing-prefab idea; the ouroboros grows machinery — revisit the
+  walk with ouroboros-style self-supply).
