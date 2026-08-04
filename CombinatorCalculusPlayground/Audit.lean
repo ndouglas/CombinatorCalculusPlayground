@@ -788,3 +788,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_burn_wave' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_burn_wave
+
+/-- info: 'sc_alternator_coexist' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_alternator_coexist

@@ -5297,3 +5297,32 @@ theorem sc_burn_wave : ∀ m, RS.SC.Steps (.app (.app scRdrJ scRdrJ) scRdrJ) (sc
       (RS.StepsN.toSteps sc_pulse_entry)
   | m + 2 => RS.Steps.trans (sc_burn_wave (m + 1))
       (RS.StepsN.toSteps (sc_pulse_law m))
+
+-- ## Stage 223: the alternator, coexistence form — grow and burn in one term
+-- Both alternator phases are pinned waves; the two-clocks chassis holds them together.
+-- `S · Front · (J J J)` reaches `S · (Front·Jⁿ) · (pulse m)` for EVERY n and m: one term
+-- in which the reader writes storage forever while a burn wave consumes storage forever,
+-- schedule-interleaved at will. This is the alternator's COEXISTENCE form — C8-final's
+-- machinery demonstrated jointly. The FEEDING form (the grow-phase's own junk igniting)
+-- reduces, by the probes of this stage, to exactly one missing mechanism: FRONT DEATH.
+-- In-place ignition is impossible (a junk block is an inert two-argument cell until it
+-- reaches head position), the immortal reader never yields the head, and the mortal-
+-- reader candidate (bit `C C`) turns out to be a third wave rather than a corpse. The
+-- alternator's remaining gap is a front that expires — the fate machine's halt, inside
+-- a reader — and that is a design target with both endpoint technologies pinned.
+
+/-- **The alternator, coexistence form**: the chassis holds an eternal writer beside an
+eternal burner — every joint phase `(n, m)` is reachable. -/
+theorem sc_alternator_coexist (n m : Nat) :
+    RS.SC.Steps
+      (.app (.app .S scRdrFront) (.app (.app scRdrJ scRdrJ) scRdrJ))
+      (.app (.app .S (scReader n)) (scPulseW m)) :=
+  sc_two_clocks
+    (show RS.SC.Steps scRdrFront (scReader n) from by
+      have h : ∀ k, RS.SC.Steps scRdrFront (scReader k) := by
+        intro k
+        induction k with
+        | zero => exact @RS.Steps.refl RS.SC scRdrFront
+        | succ j ih => exact RS.Steps.trans ih (scReader_step j)
+      exact h n)
+    (sc_burn_wave m)
