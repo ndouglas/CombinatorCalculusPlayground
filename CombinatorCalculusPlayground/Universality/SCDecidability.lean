@@ -5375,3 +5375,124 @@ theorem sc_ouroboros :
   (RS.StepsN.tail (SCStep.S_red (.app scOuroJ (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app scOuroJ (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) scOuroJ))
   (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red scOuroP (.app .C scOuroReg) (.app .C scOuroReg))))
   (@RS.StepsN.refl RS.SC _))))))))))))
+
+-- ## Stage 225: the ouroboros wave — the medium's third wave, pinned
+-- The post-splice burn templates exactly like the pulse: `scOuroWave m` is the spine
+-- `C · PRE · BLOCK^m · SUF` over the ouroboros vocabulary, BLOCK a 160-leaf quadruple,
+-- period SIXTEEN fires. Same recipe as Stage 222: forty concrete fires from the
+-- ouroboros seed to phase one (`sc_ouroWave_entry` — the write, the feeding, and the
+-- first full period in one chain), a sixteen-fire core law in an eight-argument window
+-- (`sc_ouroWave_core`), the rider lift, and every phase reachable (`sc_ouro_eternal`).
+-- All three observed behaviors of the junk medium are now certified processes: the
+-- reader wave (period 7, verbatim), the burn pulse (period 12, drift), and the
+-- ouroboros wave (period 16, drift) — one substance, three pinned metabolisms, and the
+-- machine that writes its own food is immortal after all: it eats and GROWS.
+
+def scOuroPre : List SCTerm := [scOuroReg,
+   (.app (.app .C scOuroReg) (.app .C scOuroReg)),
+   (.app .C scOuroReg),
+   (.app .C scOuroReg)]
+
+/-- The 160-leaf wave block. -/
+def scOuroBlock : List SCTerm := [(.app (.app (.app .C scOuroReg) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg))) (.app .C scOuroReg)),
+   (.app (.app .C scOuroReg) (.app .C scOuroReg)),
+   (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg))),
+   (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg))))]
+
+def scOuroSuf : List SCTerm := [(.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg))),
+   (.app (.app (.app .C scOuroReg) (.app (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)))),
+   (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) scOuroJ),
+   (.app (.app (.app .C scOuroReg) (.app scOuroJ (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) scOuroJ))]
+
+def scOuroArgs : Nat → List SCTerm
+  | 0 => scOuroSuf
+  | m + 1 => scOuroBlock ++ scOuroArgs m
+
+/-- The ouroboros wave family: `C · PRE · BLOCK^m · SUF`. -/
+def scOuroWave (m : Nat) : SCTerm := scAppList .C (scOuroPre ++ scOuroArgs m)
+
+/-- Forty fires from the ouroboros seed to the wave's phase one — write, feed, burn,
+and the first full period in one chain. -/
+theorem sc_ouroWave_entry : RS.SC.StepsN 40 scOuro (scOuroWave 1) :=
+  (RS.StepsN.tail (SCStep.S_red scOuroP (.app .C scOuroP) (.app .C scOuroReg))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C scOuroReg) (.app .C scOuroReg) (.app .C scOuroReg)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red scOuroReg (.app .C scOuroReg) (.app .C scOuroReg)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .S .S) (.app .C scOuroReg) (.app .C scOuroReg)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red .S (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) scOuroJ)
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red scOuroReg (.app .C scOuroReg) scOuroJ))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .S .S) scOuroJ (.app .C scOuroReg)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red .S (.app .C scOuroReg) (.app scOuroJ (.app .C scOuroReg))))
+  (RS.StepsN.tail (SCStep.S_red (.app scOuroJ (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app scOuroJ (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) scOuroJ))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red scOuroP (.app .C scOuroReg) (.app .C scOuroReg))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C scOuroReg) (.app .C scOuroReg) (.app .C scOuroReg)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app .C scOuroReg) (.app .C scOuroReg)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app .C scOuroReg) (.app .C scOuroReg)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app .C scOuroReg) (.app .C scOuroReg)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app .C scOuroReg) (.app .C scOuroReg)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app .C scOuroReg) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)) (.app .C scOuroReg)))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C scOuroReg) (.app (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)) (.app .C scOuroReg))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app .C scOuroReg)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app .C scOuroReg)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app .C scOuroReg)))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg))))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C scOuroReg) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)))))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg))) (.app .C scOuroReg)))))))))
+  (@RS.StepsN.refl RS.SC (scOuroWave 1))))))))))))))))))))))))))))))))))))))))))
+
+/-- **The core law**: sixteen fires grow one block in an eight-argument window. -/
+theorem sc_ouroWave_core :
+    RS.SC.StepsN 16 (scAppList .C (scOuroPre ++ scOuroBlock))
+      (scAppList .C (scOuroPre ++ (scOuroBlock ++ scOuroBlock))) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app .C scOuroReg)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app .C scOuroReg)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app .C scOuroReg)))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app (.app (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))) (.app .C scOuroReg))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scOuroReg (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app .S .S) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg))))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S (.app .C scOuroReg) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)))))))))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) (.app .C scOuroReg))) (.app .C scOuroReg)))))))))
+  (@RS.StepsN.refl RS.SC (scAppList .C (scOuroPre ++ (scOuroBlock ++ scOuroBlock))))))))))))))))))))
+
+/-- **The wave law**: every phase to the next in sixteen fires. -/
+theorem sc_ouroWave_law (m : Nat) :
+    RS.SC.StepsN 16 (scOuroWave (m + 1)) (scOuroWave (m + 2)) := by
+  have h := scStepsN_appList (scOuroArgs m) sc_ouroWave_core
+  rw [← scAppList_append, ← scAppList_append] at h
+  show RS.SC.StepsN 16 (scAppList .C (scOuroPre ++ (scOuroBlock ++ scOuroArgs m)))
+    (scAppList .C (scOuroPre ++ (scOuroBlock ++ (scOuroBlock ++ scOuroArgs m))))
+  rw [show scOuroPre ++ (scOuroBlock ++ scOuroArgs m)
+      = (scOuroPre ++ scOuroBlock) ++ scOuroArgs m from by simp,
+    show scOuroPre ++ (scOuroBlock ++ (scOuroBlock ++ scOuroArgs m))
+      = (scOuroPre ++ (scOuroBlock ++ scOuroBlock)) ++ scOuroArgs m from by simp]
+  exact h
+
+/-- **The eternal ouroboros**: the self-eating front reaches every wave phase. -/
+theorem sc_ouro_eternal : ∀ m, RS.SC.Steps scOuro (scOuroWave (m + 1))
+  | 0 => RS.StepsN.toSteps sc_ouroWave_entry
+  | m + 1 => RS.Steps.trans (sc_ouro_eternal m)
+      (RS.StepsN.toSteps (sc_ouroWave_law m))

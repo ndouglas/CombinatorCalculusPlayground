@@ -797,3 +797,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_ouroboros' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_ouroboros
+
+/-- info: 'sc_ouroWave_core' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_ouroWave_core
+
+/-- info: 'sc_ouroWave_law' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_ouroWave_law
+
+/-- info: 'sc_ouro_eternal' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_ouro_eternal
