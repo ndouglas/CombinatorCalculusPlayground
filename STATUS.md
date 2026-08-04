@@ -280,7 +280,12 @@ axiom-free): the S-fire's g-seat stamps the x-seat with any prefab —
 `C` mints successors, `C C` mints cells. The identity-tag rotation is
 three-quarters pinned (read half: the Stage 148 traversal; write half:
 the cell mint); what remains is THE WALK that folds stamped cells back
-into a word chain. Behind the alternator stand tag/Minsky hosting,
+into a word chain — and Stage 216 recorded its resistance: no
+parametric walker within nine-leaf heads (a nine-leaf phantom was
+caught by the placeholder discipline), and the visible convergence that
+THE WALK AND C10'S REGROWTH ARE THE SAME SPECIES OF PROBLEM: progress
+through material interleaved with preservation of machinery — the
+interleaving the six walls constrain. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

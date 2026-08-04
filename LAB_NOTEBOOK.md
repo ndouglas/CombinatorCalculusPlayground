@@ -6297,3 +6297,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   word chain; try prefab-chain designs (scChain-style nesting of cell-mint stages)
   before sweeping wider than 7 leaves. (2) floor14/n=16 harvests. (3) The lap budget
   (parked).
+
+## 2026-08-04 — Stage 216: the walk resists
+
+- Two sweeps, one phantom caught by the placeholder discipline. The convergence is now
+  visible: the walk (tag hosting) and regrowth (C10) are the same species of problem —
+  progress-through-material interleaved with machinery-preservation. Whatever solves one
+  will likely solve both, and whatever refutes one likely refutes both.
+- Ninety-eight autonomous stages (119–216). Ranking: (1) **the interleaving question**:
+  formalize the common core of walk and regrowth — a head that returns to its own shape
+  having consumed one queue item and emitted one product; probe as context families
+  (the corrected search language) over TWO-hole shapes (machine-hole and queue-hole)
+  at 9-12 leaves, sampled. (2) floor14/n=16 harvests. (3) A consolidation stage if the
+  interleaving probe zeros: the six-wall review as a single ledger entry.

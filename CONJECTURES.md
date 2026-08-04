@@ -6200,3 +6200,19 @@ per-symbol cell-stamping (this stage's fire); what remains is THE WALK — a hea
 stamps its arguments in turn and folds the cells back into a word chain. The 24,036-head
 rotator sweep found no walk within seven leaves; the stamp analysis says the walk is a
 multi-prefab design, not a wall. The tag step is now three-quarters pinned machinery.
+
+### Stage 216: the walk resists — and the tag arc's honest ledger
+
+The stamping walk took two principled zeros. Cells-as-arguments rotators: none in 24,036
+heads through seven leaves. Args-as-queue walkers: the nine-leaf sweep produced one hit —
+which the parametricity check (opaque placeholder symbols, lesson #9) exposed as a
+phantom: the "walker" depended on its symbols' own internal fires; with inert symbols the
+trace diverges. Parametric walkers do not exist within nine-leaf heads. The tag arc's
+ledger, honestly drawn: READ half pinned (the Stage 148 traversal — word to FIFO
+arguments), WRITE half pinned (the stamp — cell per fire), WALK open — the queue-advance
+that routes each stamped cell aside and brings the next symbol to the x-seat exceeds
+every small head, and the counting-chain trick (nested prefabs) stamps the same operand
+rather than advancing. The walk is where the tag step now lives; like C10's regrowth, it
+wants a designed multi-prefab machine, and the two problems may be the same problem —
+both ask a head to interleave PROGRESS through material with PRESERVATION of machinery,
+which is exactly the interleaving the six walls constrain.
