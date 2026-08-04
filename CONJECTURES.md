@@ -6432,3 +6432,16 @@ READS them, and fate is the readout — the medium is a tape written by machines
 by its own combustion. The hosting program's word-representation question ("how does a
 tape live in {S,C}?") has had its answer in the junk all along: Stage 179 named it
 storage, 218 gave it cells, 220 lit it, and now it reads in order.
+
+### Stage 232: the n=16 mountain — the ladder crosses one hundred
+
+Fourth straight graft win, 208 tries: `sc_bound_floor_308` — every valid bounding
+function clears 308 at (16, 207). The best-witness excess ladder now reads 12, 44, 69,
+86, 101 at n = 8, 10, 12, 14, 16: five rungs, one structural family of climbers
+(the `C … S S (S S) C (S (C S (C^j…)) C)` spine with the numeral tail deepening by one
+per generation — the family's own parameter is a numeral, which is either a fine irony
+or a hint), and kernel cost still linear in the path at march-600. Each rung is another
+finger on the scale against bounded intermediates; the family's regularity suggests the
+n→∞ law might itself be provable — a PARAMETRIC mountain family with excess growing in
+n would refute bounded intermediates outright, and the climbers' shared anatomy is the
+place to look. Registered as the ladder's endgame question.
