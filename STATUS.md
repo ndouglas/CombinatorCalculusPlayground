@@ -315,7 +315,13 @@ verbatim/cyclic/graded three), and pinning it wants C9-style trace
 templates. At the 103-stage mark the run stands: seven walls (five as
 theorems), the ISA complete, hosting three-quarters built, the floor
 ladder at four rungs, C9 proved, C10 hard-open, one medium under it
-all. Behind the alternator stand tag/Minsky hosting,
+all. Stage 222 PINNED THE PULSE (`sc_pulse_law`/`sc_burn_wave`): the
+burn is the verbatim-periodic family `S · PRE · BLOCK^m · SUF` in
+disguise (mid-spine insertion — where the cargo law puts growth), each
+phase twelve fires from the next, every phase reachable from three
+junk blocks. Periodic drift is now the toolkit's fourth certified
+recurrence technology, both alternator phases are pinned processes,
+and C8-final reduces to their splice. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

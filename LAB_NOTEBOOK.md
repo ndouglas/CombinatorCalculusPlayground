@@ -6372,3 +6372,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   recurrence technology and likely the alternator's missing certificate form.
   (2) The medium bestiary: classify small J-stream seeds (J^k, mixed with arms/cells)
   by behavior — map the substance before theorizing it. (3) floor14/n=16 harvests.
+
+## 2026-08-04 — Stage 222: the pulse, pinned
+
+- The archaeology took three probes (align, verify, window-check) and the formalization
+  one build. The disguise was mid-spine insertion — the third time the cargo law has
+  explained a detector miss. scStepsN_appList (the rider-list lift) is the small lemma
+  the whole template rested on; it will be used again.
+- One hundred four autonomous stages (119–222). Ranking: (1) **the splice**: the
+  alternator's last question — can a reader front FEED the wave (grow-phase junk
+  igniting into a burn-phase pulse in one configuration)? Probe: Front·J^k prefixes with
+  arms that trigger ignition of the junk tail; both processes are pinned, so the splice
+  is a finite search over coupling shapes. (2) The medium bestiary. (3) Harvests.

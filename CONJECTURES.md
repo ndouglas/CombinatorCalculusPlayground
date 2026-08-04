@@ -6294,3 +6294,19 @@ drift is additive). Registered as the medium theory's first concrete target. The
 convergence holds: one substance, four behaviors — write (reader), park (orbit), burn
 (ignition), pulse (this) — and every open question of the program is a question about
 what this substance can be made to do.
+
+### Stage 222: the pulse, pinned — the fourth recurrence technology
+
+The periodic drift decoded into verbatim periodicity wearing a disguise: the burn's state
+at fire 4 + 12m is EXACTLY `scPulseW m = S · PRE · BLOCK^m · SUF` — the front detector
+missed it because the block insertion is mid-spine, before the conserved tail, precisely
+where the cargo law says growth must go. The pin is complete and cheap: the Stage 220
+ignition target IS phase zero; twelve concrete fires take each phase to the next inside a
+six-argument window (`sc_pulse_core`, axiom-free), with everything beyond riding on the
+new `scStepsN_appList` lift; `sc_pulse_law` closes all phases and `sc_burn_wave` makes
+the junk medium's burn an ETERNAL WAVE — three 14-leaf junk blocks reach every phase of
+an unboundedly growing periodic process. The toolkit now certifies four recurrence kinds:
+verbatim (reader), cyclic (orbits), graded (ranked closures), and periodic drift (this).
+The alternator's grow and burn phases are both pinned persistent processes over one
+medium; what remains of C8-final is only their SPLICE — and the splice is now a question
+about two pinned waves meeting, not about unknown machinery.
