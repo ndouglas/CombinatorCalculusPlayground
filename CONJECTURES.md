@@ -6391,3 +6391,18 @@ ticks. The refutation hypothesis strengthens; the invariant that would prove it 
 recurrent process deepens its own numerals" — now has a natural formulation over the
 pinned wave families, where it is CHECKABLE: the wave laws are explicit, so bounded
 numeral depth along each pinned wave is a corollary away. The frontier stands there.
+
+### Stage 228: the waves are numeral-free — no-deepening, certified where it counts
+
+The medium's copies-not-depth fact is now theorem for every pinned wave:
+`sc_pulse_numeral_free` and `sc_ouroWave_numeral_free` — at EVERY phase of both eternal
+waves, maximum numeral depth is exactly zero ([propext], by the spine lemma
+`scMaxReg_appList_zero` plus phase induction over the explicit block vocabularies). The
+eternal machines of {S,C} run their entire unbounded lives without ever spending the
+speed limit's budget: one deepening per fire available, zero ever used. C10's
+no-deepening invariant — "no recurrent process deepens its own numerals" — now holds
+certified on every pinned eternal process in the program. What remains between this and
+a C10 refutation is the leap from THESE waves to ALL recurrences: an invariant proof
+that periodic-drift families over numeral-free vocabularies are the only eternal shapes,
+or a counterexample that carries a numeral where three and a half million probes found
+none. The question is exactly balanced on the best evidence the program can produce.

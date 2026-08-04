@@ -353,8 +353,13 @@ cycle) added the medium's most structural fact: COPIES MULTIPLY, DEPTH
 NEVER GROWS — no trajectory deepens its numerals, the speed limit's
 budget is never spent, and in the one machine family that sustains
 eternal computation the counter never ticks. C10's refutation
-hypothesis strengthens, with a checkable stepping stone: bounded
-numeral depth along the pinned waves. Behind the alternator stand tag/Minsky hosting,
+hypothesis strengthens — and Stage 228 CERTIFIED the stepping stone:
+`sc_pulse_numeral_free`/`sc_ouroWave_numeral_free` ([propext]) — both
+eternal waves run at numeral depth ZERO at every phase, forever; the
+speed limit's budget is never spent. The no-deepening invariant holds
+on every pinned eternal machine; C10 is balanced between an
+invariant proof over all recurrences and a carrier no probe has
+found. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

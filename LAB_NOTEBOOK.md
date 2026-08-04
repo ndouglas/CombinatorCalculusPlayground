@@ -6439,3 +6439,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   compute maxreg per phase, prove constancy by induction; first checkable case of the
   no-deepening invariant). (2) Bounded intermediates: n=16 rung via graft when wanted.
   (3) The hosting arc's walk, awaiting a growing-prefab idea.
+
+## 2026-08-04 — Stage 228: no-deepening, certified where it counts
+
+- The invariant's first cases cost one spine lemma and two decides — the pinned waves
+  made it checkable, exactly as Stage 227 predicted. C10 now rests on the cleanest
+  possible fork: prove numeral-free vocabularies are forced, or find the carrier.
+- One hundred ten autonomous stages (119–228). Ranking: (1) **the vocabulary question**:
+  why are wave vocabularies numeral-free? — probe whether ANY periodic-drift family can
+  carry a fixed nonzero-depth numeral in its block (seed waves from numeral-bearing
+  registers: the bestiary's GROW class with reg-containing r; template-align the
+  survivors). A numeral-carrying wave at CONSTANT depth is fine (copies!); the question
+  isolates whether blocks can carry depth at all. (2) floor16 rung. (3) Rest point: the
+  110-stage mark is a natural chapter close.
