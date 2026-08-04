@@ -274,7 +274,13 @@ Stage 214 added the dichotomy's positional corollary, THE CARGO LAW
 (`sc_cargo_law`, [propext]): the rightmost spine argument survives
 every fire — displaced only by a BOTTOM CALL at arity exactly three.
 FIFO is the geometry of the spine, and the tag step's architecture is
-now forced: burn down, bottom-call the production, rebuild. Behind the alternator stand tag/Minsky hosting,
+now forced: burn down, bottom-call the production, rebuild. Stage 215
+unified the mint family as THE STAMP (`sc_stamp`/`sc_cell_mint`,
+axiom-free): the S-fire's g-seat stamps the x-seat with any prefab —
+`C` mints successors, `C C` mints cells. The identity-tag rotation is
+three-quarters pinned (read half: the Stage 148 traversal; write half:
+the cell mint); what remains is THE WALK that folds stamped cells back
+into a word chain. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

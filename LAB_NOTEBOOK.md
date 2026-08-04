@@ -6286,3 +6286,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   the {S,C} one-tag-step from scBWord + gene + successor parts, probing only where the
   design underdetermines. (2) floor14/n=16 harvests. (3) The lap budget (blocked on new
   ideas; parked with analysis recorded).
+
+## 2026-08-04 — Stage 215: the stamp
+
+- The successor, the assembler, and the cell mint turned out to be one instruction with
+  three prefabs — the S-fire's g-seat is a stamping press. Rotation is now read-half
+  (pinned, 148) + write-half (pinned, here) + the walk (open engineering).
+- Ninety-seven autonomous stages (119–215). Ranking: (1) **the walk**: design the
+  stamping walk — a head that traverses its FIFO arguments stamping cells and folding a
+  word chain; try prefab-chain designs (scChain-style nesting of cell-mint stages)
+  before sweeping wider than 7 leaves. (2) floor14/n=16 harvests. (3) The lap budget
+  (parked).

@@ -6186,3 +6186,17 @@ the biodegradable word machines have been obeying since Stage 148 — FIFO is no
 choice in {S,C}, it is the geometry of the spine. For the hosting arc: a tag machine's
 append lands exactly at bottom calls, so the tag step's shape is forced — burn down,
 bottom-call with the appended production, rebuild; the walls now WRITE the architecture.
+
+### Stage 215: the stamp — the mint family unified, and the rotation ledger
+
+`S f g x ⟶ (f x)(g x)` read as an instruction: the prefab `g` STAMPS the x-seat.
+`g = C` was the successor (201); `g = C C` is THE CELL MINT (`sc_cell_mint`, axiom-free)
+— one fire builds a cell of any operand; general `g` stamps arbitrary prefab
+applications (`sc_stamp`). With this the identity-tag rotation splits cleanly against
+the pinned inventory: the READ half exists (the Stage 148 traversal converts a
+head-chain word into FIFO arguments — `scBWord_step` appends each read symbol as the
+rightmost argument, exactly where the cargo law says appends live); the WRITE half is
+per-symbol cell-stamping (this stage's fire); what remains is THE WALK — a head that
+stamps its arguments in turn and folds the cells back into a word chain. The 24,036-head
+rotator sweep found no walk within seven leaves; the stamp analysis says the walk is a
+multi-prefab design, not a wall. The tag step is now three-quarters pinned machinery.
