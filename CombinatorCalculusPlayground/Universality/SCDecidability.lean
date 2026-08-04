@@ -5581,3 +5581,77 @@ theorem sc_ouroWave_numeral_free (m : Nat) : scMaxReg (scOuroWave m) = 0 := by
       show scMaxReg (scAppList (.app .C a) rest) = 0
       exact scMaxReg_appList_zero rest (.app .C a) (.inr ⟨.C, a, rfl⟩) h0
         (fun x hx => hargs x (hl ▸ List.mem_cons_of_mem a hx))
+
+-- ## Stage 229: the carrier theorem — any depth rides forever; only deepening is forbidden
+-- The chapter's capstone calibration. Numeral registers cannot POWER eternity (the
+-- reader-frame halts on every pure numeral — flips have no engine), but eternity can
+-- CARRY numerals: the odd parity orbits hold their numeral verbatim at every phase, and
+-- here that is quantitative — `scMaxReg (scParityOrbT k) = k` for every k. Together with
+-- Stage 228: the medium's eternal processes realize numeral depth k for EVERY k, held
+-- constant forever; across all pinned machines and 3.5 million probes, depth never
+-- grows along any run. C10's final calibration: carrying is free at every level,
+-- deepening has never been seen, and the speed limit prices it at one fire per level.
+
+theorem scIsReg_parityReg : ∀ k, scIsReg (scParityReg k) = some k
+  | 0 => rfl
+  | k + 1 => by
+      show (scIsReg (scParityReg k)).map (· + 1) = some (k + 1)
+      rw [scIsReg_parityReg k]
+      rfl
+
+theorem scMaxReg_parityReg : ∀ k, scMaxReg (scParityReg k) = k
+  | 0 => rfl
+  | k + 1 => by
+      show max (max (scMaxReg .C) (scMaxReg (scParityReg k)))
+        ((scIsReg (.app .C (scParityReg k))).getD 0) = k + 1
+      have h1 : scIsReg (.app .C (scParityReg k)) = some (k + 1) := by
+        show (scIsReg (scParityReg k)).map (· + 1) = some (k + 1)
+        rw [scIsReg_parityReg k]
+        rfl
+      rw [h1, scMaxReg_parityReg k]
+      show max (max 0 k) (k + 1) = k + 1
+      omega
+
+theorem scIsReg_app_parityReg (k : Nat) (x : SCTerm) :
+    scIsReg (.app (scParityReg k) x) = none := by
+  cases k with
+  | zero => rfl
+  | succ j => rfl
+
+/-- **The carrier theorem**: the parity orbit at index k holds numeral depth exactly k —
+combined with its eternity (Stage 192), every depth rides forever. -/
+theorem sc_orbit_carries_depth (k : Nat) : scMaxReg (scParityOrbT k) = k := by
+  have hM : scMaxReg (.app (scParityReg k) scW) = k := by
+    show max (max (scMaxReg (scParityReg k)) (scMaxReg scW))
+      ((scIsReg (.app (scParityReg k) scW)).getD 0) = k
+    rw [scMaxReg_parityReg k, scIsReg_app_parityReg k]
+    show max (max k 0) 0 = k
+    omega
+  have hN : ∀ i, scMaxReg (scNof (scParityReg k) i) = k := by
+    intro i
+    induction i with
+    | zero => exact hM
+    | succ j ih =>
+        show max (max (scMaxReg scW) (scMaxReg (scNof (scParityReg k) j)))
+          ((scIsReg (.app scW (scNof (scParityReg k) j))).getD 0) = k
+        have : scIsReg (.app scW (scNof (scParityReg k) j)) = none := rfl
+        rw [this, ih]
+        show max (max 0 k) 0 = k
+        omega
+  show max (max (scMaxReg (.app (.app (scParityReg k) scW) (scNof (scParityReg k) 1)))
+      (scMaxReg (scNof (scParityReg k) 2)))
+    ((scIsReg (scParityOrbT k)).getD 0) = k
+  have h2 : scIsReg (scParityOrbT k) = none := by
+    show scIsReg (.app (.app (.app (scParityReg k) scW) _) _) = none
+    rfl
+  have h3 : scMaxReg (.app (.app (scParityReg k) scW) (scNof (scParityReg k) 1)) = k := by
+    show max (max (scMaxReg (.app (scParityReg k) scW))
+        (scMaxReg (scNof (scParityReg k) 1)))
+      ((scIsReg (.app (.app (scParityReg k) scW) (scNof (scParityReg k) 1))).getD 0) = k
+    have : scIsReg (.app (.app (scParityReg k) scW) (scNof (scParityReg k) 1)) = none := rfl
+    rw [this, hM, hN 1]
+    show max (max k k) 0 = k
+    omega
+  rw [h2, h3, hN 2]
+  show max (max k k) 0 = k
+  omega

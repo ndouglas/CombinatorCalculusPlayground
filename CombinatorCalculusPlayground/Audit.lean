@@ -815,3 +815,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_ouroWave_numeral_free' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_ouroWave_numeral_free
+
+/-- info: 'scMaxReg_parityReg' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMaxReg_parityReg
+
+/-- info: 'sc_orbit_carries_depth' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_orbit_carries_depth
