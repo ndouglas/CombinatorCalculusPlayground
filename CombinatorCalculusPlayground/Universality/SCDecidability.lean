@@ -5216,7 +5216,7 @@ theorem scStepsN_appList {n : Nat} {t t' : SCTerm} (l : List SCTerm)
 theorem scAppList_append : ∀ (l₁ l₂ : List SCTerm) (t : SCTerm),
     scAppList t (l₁ ++ l₂) = scAppList (scAppList t l₁) l₂
   | [], _, _ => rfl
-  | _ :: l₁, l₂, t => scAppList_append l₁ l₂ _
+  | _ :: l₁, l₂, _ => scAppList_append l₁ l₂ _
 
 /-- The pulse's fixed prelude arguments. -/
 def scBurnPre : List SCTerm :=
@@ -5496,3 +5496,88 @@ theorem sc_ouro_eternal : ∀ m, RS.SC.Steps scOuro (scOuroWave (m + 1))
   | 0 => RS.StepsN.toSteps sc_ouroWave_entry
   | m + 1 => RS.Steps.trans (sc_ouro_eternal m)
       (RS.StepsN.toSteps (sc_ouroWave_law m))
+
+-- ## Stage 228: the waves are numeral-free — no-deepening, first pinned instances
+-- The bestiary said the medium copies but never counts; here that becomes theorem for
+-- every pinned wave. Spine nodes over a non-`C`-atom head are never numerals, so a
+-- numeral-free head with numeral-free arguments stays numeral-free under application
+-- (`scMaxReg_appList_zero`); the wave families are explicit lists over a numeral-free
+-- vocabulary, so induction over phases gives `scMaxReg (scPulseW m) = 0` and
+-- `scMaxReg (scOuroWave m) = 0` for EVERY m. The eternal processes of this calculus run
+-- at numeral depth zero, forever — the speed limit's budget of one deepening per fire is
+-- never spent. C10's no-deepening invariant has its first two certified cases, covering
+-- every pinned eternal machine of the medium.
+
+/-- A numeral-free head with numeral-free arguments stays numeral-free. -/
+theorem scMaxReg_appList_zero : ∀ (l : List SCTerm) (t : SCTerm),
+    (t = .S ∨ ∃ a b, t = .app a b) → scMaxReg t = 0 →
+    (∀ x ∈ l, scMaxReg x = 0) →
+    scMaxReg (scAppList t l) = 0
+  | [], _, _, ht0, _ => ht0
+  | a :: l, t, ht, ht0, hl => by
+      have ha : scMaxReg a = 0 := hl a List.mem_cons_self
+      have hIsReg : scIsReg (.app t a) = none := by
+        rcases ht with rfl | ⟨f, g, rfl⟩ <;> rfl
+      have h0 : scMaxReg (.app t a) = 0 := by
+        show max (max (scMaxReg t) (scMaxReg a)) ((scIsReg (.app t a)).getD 0) = 0
+        rw [hIsReg, ht0, ha]
+        rfl
+      exact scMaxReg_appList_zero l (.app t a) (.inr ⟨t, a, rfl⟩) h0
+        (fun x hx => hl x (List.mem_cons_of_mem a hx))
+
+theorem scBurnArgs_numeral_free : ∀ m, ∀ x ∈ scBurnArgs m, scMaxReg x = 0
+  | 0, x, hx => by
+      have : ∀ y ∈ scBurnSuf, scMaxReg y = 0 := by decide
+      exact this x hx
+  | m + 1, x, hx => by
+      rcases List.mem_append.mp hx with h | h
+      · have : ∀ y ∈ scBurnBlock, scMaxReg y = 0 := by decide
+        exact this x h
+      · exact scBurnArgs_numeral_free m x h
+
+/-- **The pulse is numeral-free at every phase.** -/
+theorem sc_pulse_numeral_free (m : Nat) : scMaxReg (scPulseW m) = 0 := by
+  refine scMaxReg_appList_zero _ .S (.inl rfl) rfl ?_
+  intro x hx
+  rcases List.mem_append.mp hx with h | h
+  · have : ∀ y ∈ scBurnPre, scMaxReg y = 0 := by decide
+    exact this x h
+  · exact scBurnArgs_numeral_free m x h
+
+theorem scOuroArgs_numeral_free : ∀ m, ∀ x ∈ scOuroArgs m, scMaxReg x = 0
+  | 0, x, hx => by
+      have : ∀ y ∈ scOuroSuf, scMaxReg y = 0 := by decide
+      exact this x hx
+  | m + 1, x, hx => by
+      rcases List.mem_append.mp hx with h | h
+      · have : ∀ y ∈ scOuroBlock, scMaxReg y = 0 := by decide
+        exact this x h
+      · exact scOuroArgs_numeral_free m x h
+
+/-- **The ouroboros wave is numeral-free at every phase.** -/
+theorem sc_ouroWave_numeral_free (m : Nat) : scMaxReg (scOuroWave m) = 0 := by
+  have hargs : ∀ x ∈ scOuroPre ++ scOuroArgs m, scMaxReg x = 0 := by
+    intro x hx
+    rcases List.mem_append.mp hx with h | h
+    · have : ∀ y ∈ scOuroPre, scMaxReg y = 0 := by decide
+      exact this x h
+    · exact scOuroArgs_numeral_free m x h
+  show scMaxReg (scAppList .C (scOuroPre ++ scOuroArgs m)) = 0
+  cases hl : scOuroPre ++ scOuroArgs m with
+  | nil => rfl
+  | cons a rest =>
+      have ha : scMaxReg a = 0 := hargs a (hl ▸ List.mem_cons_self)
+      have hIsReg : scIsReg (.app .C a) = none := by
+        have : a = scOuroReg := by
+          have := congrArg (List.head?) hl
+          simp [scOuroPre] at this ⊢
+          exact this.symm
+        rw [this]
+        rfl
+      have h0 : scMaxReg (.app .C a) = 0 := by
+        show max (max (scMaxReg .C) (scMaxReg a)) ((scIsReg (.app .C a)).getD 0) = 0
+        rw [hIsReg, ha]
+        rfl
+      show scMaxReg (scAppList (.app .C a) rest) = 0
+      exact scMaxReg_appList_zero rest (.app .C a) (.inr ⟨.C, a, rfl⟩) h0
+        (fun x hx => hargs x (hl ▸ List.mem_cons_of_mem a hx))

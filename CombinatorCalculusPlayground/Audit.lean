@@ -806,3 +806,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_ouro_eternal' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_ouro_eternal
+
+/-- info: 'scMaxReg_appList_zero' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scMaxReg_appList_zero
+
+/-- info: 'sc_pulse_numeral_free' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_pulse_numeral_free
+
+/-- info: 'sc_ouroWave_numeral_free' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_ouroWave_numeral_free
