@@ -6538,3 +6538,19 @@ pinned process whose period grows because its own state does: it re-reads everyt
 has ever written into its tower, every cycle, forever. C11's remaining lemma is therefore
 a TOWER-MILL lemma (six fires per layer, layers passing through the burn), and the three
 certified turns bracket its statement exactly.
+
+### Stage 239: the mill read — C11's proof architecture, exact
+
+The turn-diff (depth-normalized, three certified turns as data) exposes the tower-mill's
+mechanism: the cycle's middle is a run of THREE-FIRE C-TRIPLETS visiting the tower's
+layers — `C_red` on `(C TWR)`-pairs at descending wrap-levels — with TWO passes per
+layer (a down-pass stripping toward `T₀` and an up-pass rebuilding one layer taller):
+six fires per layer, as the schedule demanded. The alignment obstacle is also now exact:
+the cycle's fires reference tower-wraps at EVERY level (not just the top), so the mill
+lemma is not a single rider-lifted core like the waves — it is a TWO-PHASE LAYER
+INDUCTION, C9's strip-run-and-rebuild shape with the tower in place of the numeral. The
+C11 proof is therefore: anchor (pinned) + fixed prelude + down-pass induction over j
+layers + mint + up-pass induction + fixed close, each phase's fires readable off the
+certified turns. Nothing about it is unknown anymore; it is a day of careful Lean. The
+spiral keeps the medal for most-structured object of the run: a machine that mills its
+own history, two passes a layer, six fires a memory.

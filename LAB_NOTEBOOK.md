@@ -6574,3 +6574,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   the extra six fires are one motif instance; state it as a parametric layer-pass and
   assemble scSpiralLaw). (2) After C11: corridor-infinite + the parametric staircase.
   (3) Frontiers standing.
+
+## 2026-08-04 — Stage 239: the mill read
+
+- Three certified turns were exactly enough data: the mill is a two-pass-per-layer
+  C-triplet run, and C11's proof decomposes into five phases with every fire already
+  emitted somewhere in turns 0–2. A focused session finishes it.
+- One hundred twenty-one autonomous stages (119–239). Ranking: (1) **C11, the
+  assembly**: the five-phase parametric proof (down-pass lemma, up-pass lemma, mint and
+  fixed fires from the turn emissions; anchor and three instances already pinned).
+  (2) After C11: corridor-infinite + the parametric staircase + the no-normal-form
+  corollary for scMt5T. (3) Frontiers standing (C10; bounded-intermediates asymptotics).

@@ -1071,7 +1071,13 @@ schedule live), leaving the law resting on a single six-fire lemma — identifie
 Stage 238 (third turn certified, 42 fires) as a TOWER-MILL lemma: the
 block run never ignites; the cycle is head-metabolism that re-reads
 the growing tower layer by layer, six fires each. The spiral is the
-first pinned process whose period grows because its own state does. All certified by the forced-march toolkit
+first pinned process whose period grows because its own state does.
+Stage 239 read the mill exactly: three-fire C-triplets, two passes per
+layer (down-strip to T₀, up-rebuild one taller) — C11's proof is a
+five-phase parametric assembly in C9's strip-and-rebuild shape, every
+fire already emitted in the three certified turns. A day of careful
+Lean separates the program from the corridor's infinity and the
+parametric floor staircase. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now
