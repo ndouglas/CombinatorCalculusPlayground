@@ -5655,3 +5655,48 @@ theorem sc_orbit_carries_depth (k : Nat) : scMaxReg (scParityOrbT k) = k := by
   rw [h2, h3, hN 2]
   show max (max k k) 0 = k
   omega
+
+-- ## Stage 230: C10, formalized — the deepening question as a proposition
+-- The regrowth question becomes a Lean statement: `scDeepening` — some single term whose
+-- reachable set attains every numeral depth. The quantifier order IS the question: the
+-- counting chain gives the swapped form for free (`sc_depth_breadth`: for every n, SOME
+-- term reaches depth n — breadth), and the speed limit prices the strong form
+-- (`sc_depth_cost`: reaching depth n from a depth-zero term costs at least n fires —
+-- deepening is linear-time at best). Every pinned eternal machine refutes its own
+-- candidacy (Stages 228–229); 3.5 million probes found no witness; and no counting
+-- invariant can refute it (S-stock farms). The program's second frontier now lives in
+-- the theory itself, one definition long.
+
+/-- **C10, the deepening question**: does any single term reach every numeral depth? -/
+def scDeepening : Prop :=
+  ∃ t : SCTerm, ∀ n : Nat, ∃ u : SCTerm, RS.SC.Steps t u ∧ n ≤ scMaxReg u
+
+/-- **Breadth is free**: for every depth, SOME term reaches it — the counting chain
+delivers `C^n S` to a continuation. The quantifier swap between this and `scDeepening`
+is the entire question. -/
+theorem sc_depth_breadth : ∀ n : Nat, ∃ t u : SCTerm,
+    RS.SC.Steps t u ∧ n ≤ scMaxReg u := by
+  intro n
+  obtain ⟨u, hu, hunder⟩ := sc_bounded_odometer n 0 .S
+  refine ⟨.app (scChain n .S) (scParityReg 0), u, hu, ?_⟩
+  have : scMaxReg (.app .S (scParityReg (0 + n))) = n := by
+    show max (max (scMaxReg .S) (scMaxReg (scParityReg (0 + n))))
+      ((scIsReg (.app .S (scParityReg (0 + n)))).getD 0) = n
+    have h1 : scIsReg (.app .S (scParityReg (0 + n))) = none := rfl
+    rw [h1, scMaxReg_parityReg]
+    show max (max 0 (0 + n)) 0 = n
+    omega
+  clear hu
+  induction hunder with
+  | refl => omega
+  | @app w x _ ih =>
+      show n ≤ max (max (scMaxReg w) (scMaxReg x)) ((scIsReg (.app w x)).getD 0)
+      omega
+
+/-- **Deepening is linear-time at best**: reaching depth `n` from a depth-zero start
+costs at least `n` fires. -/
+theorem sc_depth_cost {n m : Nat} {t u : SCTerm}
+    (h : RS.SC.StepsN m t u) (ht : scMaxReg t = 0) (hu : n ≤ scMaxReg u) :
+    n ≤ m := by
+  have := sc_numeral_speed_limit_run h
+  omega

@@ -821,3 +821,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_orbit_carries_depth' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_orbit_carries_depth
+
+/-- info: 'sc_depth_breadth' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_depth_breadth
+
+/-- info: 'sc_depth_cost' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_depth_cost
