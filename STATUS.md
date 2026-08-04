@@ -365,7 +365,13 @@ numeral depth exactly k, eternally; so carrying is free at every level,
 the waves carry zero, numerals cannot power eternity (flips have no
 engine), and deepening has never been observed anywhere. The medium
 chapter closes with the program's two frontiers — bounded
-intermediates and the deepening question — each one sentence long. Behind the alternator stand tag/Minsky hosting,
+intermediates and the deepening question — each one sentence long.
+Stage 230 made the second frontier a Lean proposition (`scDeepening`:
+one term, every depth), with the swapped quantifier form proved
+(`sc_depth_breadth` — breadth is free via the counting chain) and the
+strong form priced (`sc_depth_cost` — n fires minimum): C10 is exactly
+a quantifier swap the calculus has never performed. Behind the
+alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

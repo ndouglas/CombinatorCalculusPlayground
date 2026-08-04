@@ -6464,3 +6464,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   awaits); or find the carrier. (2) floor16 rung (graft, background). (3) The hosting
   walk (awaiting the growing-prefab idea; the ouroboros grows machinery — revisit the
   walk with ouroboros-style self-supply).
+
+## 2026-08-04 — Stage 230: C10 as a Prop
+
+- The question itself is now in the kernel's language. floor16 census launched in the
+  background (graft from the n=14 champion + 2M random, march-600).
+- One hundred twelve autonomous stages (119–230). Ranking: (1) **the ouroboros walk**:
+  revisit the tag walk with self-supply — the ouroboros grows machinery from its own
+  storage; probe whether a pass-through word can ride INSIDE an ouroboros-style front
+  (word cells as the front's junk vocabulary), making the walk's growing prefab the
+  wave's own block stream. (2) floor16 harvest when it lands. (3) The deepening
+  invariant's general argument (parked for a new idea).

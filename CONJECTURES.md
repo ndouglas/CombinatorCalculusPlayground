@@ -6406,3 +6406,15 @@ a C10 refutation is the leap from THESE waves to ALL recurrences: an invariant p
 that periodic-drift families over numeral-free vocabularies are the only eternal shapes,
 or a counterexample that carries a numeral where three and a half million probes found
 none. The question is exactly balanced on the best evidence the program can produce.
+
+### Stage 230: C10, formalized — the question is a quantifier swap
+
+The deepening question is now a Lean proposition: `scDeepening := ∃ t, ∀ n, ∃ u,
+Steps t u ∧ n ≤ scMaxReg u` — one term, every depth. The formalization exposes its
+skeleton: `sc_depth_breadth` proves the SWAPPED form outright (for every n, some term
+reaches depth n — the counting chain), so C10 is exactly the question of commuting
+∀n∃t into ∃t∀n; and `sc_depth_cost` prices the strong form linearly (n fires minimum
+from depth zero — so a witness must deepen forever at bounded amortized cost, which is
+precisely what every pinned eternal machine declines to do). The conjecture registry now
+holds the question in its final dress: a one-line Prop whose refutation would be the
+program's deepest invariant and whose proof would be its most surprising machine.
