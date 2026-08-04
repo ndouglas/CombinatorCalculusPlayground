@@ -14,10 +14,18 @@ inherited since Stage 0. As of Stage 76 this claim is **build-enforced**:
 `Audit.lean` pins the headline theorems' exact footprints with `#guard_msgs`,
 so any drift fails the build.
 
-At time of writing (Stage 208 review): 36 modules, ~1,231 theorems, 437
-build-enforced `#guard`s plus 241 `#guard_msgs`-pinned axiom footprints,
-~25,400 lines of Lean, zero warnings, 478 commits. The run stands at 90
-consecutive autonomous stages (119–208). Since the Stage 170 review the
+At time of writing (Stage 226 review): 36 modules, ~1,265 theorems, 437
+build-enforced `#guard`s plus 265 `#guard_msgs`-pinned axiom footprints,
+~26,200 lines of Lean, zero warnings, 508 commits. The run stands at 108
+consecutive autonomous stages (119–226). The week since Stage 208: the
+seven walls (five as [propext]-clean theorems — dichotomy, provenance,
+speed limit, cargo, suffix); the pass-through word (optimal read);
+front death and THE OUROBOROS (grow feeds burn in one 24-leaf term);
+the pulse-template method and all three medium metabolisms certified
+(periods 7, 12, 16); C8-final closed as a taxonomy of pinned survival
+strategies. Open: bounded intermediates (floor ladder 12→44→69→86) and
+C10 regrowth (calibrated hard from both sides; the ouroboros grows but
+does not count). Since the Stage 170 review the
 program delivered: the persistence campaign's full resolution (the
 persistent reader, the parking orbit, the fate machine and its universal
 certificates); the floor ladder to n=14 (excess 12 → 44 → 69 → 86); the

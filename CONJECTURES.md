@@ -6357,3 +6357,19 @@ one metabolism, certified forever. The persistence campaign that began at Stage 
 "can state outlive the machine's step?" ends with a taxonomy: state outlives by verbatim
 growth, by bounded orbit, by fate, by phase, by storage, and now by self-consumption —
 and every one is a theorem.
+
+### Stage 226: the review at one hundred eight
+
+Counts refreshed: ~1,265 theorems, 265 pinned footprints, ~26,200 lines, zero warnings,
+508 commits, one hundred eight consecutive autonomous stages. The week's shape, seen
+whole: the invariant program turned seven probe-walls into five clean theorems and two
+design constraints; the constraints forced the pass-through word and then the ouroboros;
+the ouroboros closed C8-final; and the template method certified every observed behavior
+of the junk medium. Two questions remain open, both now precisely calibrated: BOUNDED
+INTERMEDIATES (the floor ladder's excess marches 12 → 44 → 69 → 86 against any
+computable bound) and C10 REGROWTH (counting is free, regrowth resists 3.5 million
+probes and every design; the ouroboros grows without counting, the chain counts without
+growing, and whether any machine does both is the sharpest question this calculus has
+produced). The program's next arcs, in standing order: the medium bestiary, an n=16
+rung if wanted, and the two frontiers — which now have seven walls, four recurrence
+technologies, and a complete ISA to attack with.
