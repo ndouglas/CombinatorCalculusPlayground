@@ -6157,3 +6157,19 @@ dynasty re-supplies through genes — and C10 asks precisely whether a re-suppli
 can carry an incremented address through its own supply chain. The invariant program has
 its platform: provenance is pinned; what remains is to track the ADDRESS through the
 supply, which is a data-flow refinement of the same induction.
+
+### Stage 213: the numeral speed limit — wall six, quantitative
+
+Address flow resolved into something stronger than tracking: `sc_numerals_are_sources`
+([propext]) — NO step produces a numeral, at any depth; the proof is three-pronged (root
+fires make double applications; an appL-target numeral would need a produced atom; an
+appR-target numeral descends infinitely through its own wrap). Numerals exist only where
+they were written — bits-are-sources was the depth-1 shadow of this. The corollary is
+the program's sixth wall and its first QUANTITATIVE one: `sc_numeral_speed_limit` — the
+maximum numeral depth advances by at most one per fire, because a fresh wrap requires an
+atom `C` meeting the x-seat and a fire has exactly one x-seat; over any reduction the
+growth is linear in fires (`sc_numeral_speed_limit_run`). For C10: an odometer of period
+p advances its address by at most p per lap, so a +2-per-lap odometer spends at least
+two of its p fires on mints — mints that consume prefab atoms the machine must ALSO
+regrow inside the same p fires. The invariant program's next target is exactly that
+budget: fires per lap vs. mints plus regrowth, an accounting that may close C10.

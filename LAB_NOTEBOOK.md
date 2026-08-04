@@ -6261,3 +6261,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   no-mixing lemma would decide C10's small cases and possibly the general one.
   (2) floor14/n=16 harvests as they land. (3) The multi-period odometer in
   call-sequence language.
+
+## 2026-08-04 — Stage 213: the numeral speed limit
+
+- The address-flow question collapsed into a sources theorem plus a counting corollary —
+  the fifth time this run that a tracking problem became a conservation law. Lean note:
+  keep `getD`/`scIsReg` as opaque atoms for omega; reduce only the rfl-none boundary
+  terms (mismatched match-normal-forms are invisible to omega as equal atoms).
+- Ninety-five autonomous stages (119–213). Ranking: (1) **the lap budget**: formalize
+  per-lap accounting for recurrent families — fires per period vs. mints required vs.
+  prefab regrowth — aiming at a C10 refutation for fixed-period odometers (the
+  speed-limit machinery plus the dichotomy's call-frames are the ingredients).
+  (2) floor14/n=16 harvests as they land. (3) The hosting integration (tag step from
+  tape + successor + gene), which the six walls now constrain helpfully.

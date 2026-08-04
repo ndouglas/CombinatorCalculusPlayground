@@ -262,7 +262,13 @@ incremented copy of its own address into its own return stack? Stage
 212 iterated the dichotomy (`sc_head_provenance`, [propext]): over any
 reduction the head either survives or is supplied by a first argument
 of a reachable state — no third source of control exists. Provenance
-is pinned; C10 is now an address-flow question on supply chains. Behind the alternator stand tag/Minsky hosting,
+is pinned; C10 is now an address-flow question on supply chains — and
+Stage 213 added WALL SIX, the first quantitative one: NUMERALS ARE
+SOURCES at every depth (`sc_numerals_are_sources`, no step ever
+produces one) and the NUMERAL SPEED LIMIT (`sc_numeral_speed_limit`)
+caps address advance at one depth per fire. Any odometer is
+fire-paced; C10's endgame is a lap-budget accounting: fires per period
+versus mints plus prefab regrowth. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
