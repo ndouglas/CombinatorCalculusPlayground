@@ -881,3 +881,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scMillT_normal' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scMillT_normal
+
+/-- info: 'sc_mill_descent_forced' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_mill_descent_forced
+
+/-- info: 'sc_mill_turnover_forced' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_mill_turnover_forced

@@ -6318,3 +6318,59 @@ theorem scMillL_normal {t : SCTerm} (ht : ∀ v, ¬ RS.SC.step t v) :
 theorem scMillT_normal : ∀ m, ∀ v, ¬ RS.SC.step (scMillT m) v
   | 0 => scMillK_normal
   | m + 1 => scMillL_normal (scMillT_normal m)
+
+-- ## Stage 242 (feat): the mill is FORCED — unique successors, parametrically
+-- The mill laws gave existence; these give uniqueness. Given normal payloads, every
+-- state of the descent and the turnover has EXACTLY ONE successor — the mill path is
+-- the only path, parametrically in the towers. With `SCForced_append` the revolutions
+-- chain, and the parametric staircase (every mill peak an on-path mountain, at every
+-- scale, in one theorem) is now an assembly task over these pieces.
+
+/-- Normality computes: a normal term has an empty successor list. -/
+theorem scSucc_nil_of_normal {t : SCTerm} (h : ∀ v, ¬ RS.SC.step t v) :
+    scSucc t = [] := by
+  cases hs : scSucc t with
+  | nil => rfl
+  | cons a l =>
+      exact absurd (scSucc_sound (hs ▸ List.mem_cons_self)) (h a)
+
+/-- Forced chains concatenate. -/
+theorem SCForced_append : ∀ {l₁ l₂ : List SCTerm} {t : SCTerm},
+    SCForced t l₁ → SCForced (l₁.getLastD t) l₂ → SCForced t (l₁ ++ l₂) := by
+  intro l₁
+  induction l₁ with
+  | nil => intro l₂ t _ h2; exact h2
+  | cons v rest ih =>
+      intro l₂ t h1 h2
+      refine ⟨h1.1, ih h1.2 ?_⟩
+      have : (v :: rest).getLastD t = rest.getLastD v := by
+        cases rest <;> rfl
+      rw [← this]
+      exact h2
+
+/-- **The descent is forced**: with normal payloads, each of its six fires is the only
+possible fire. -/
+theorem sc_mill_descent_forced (x y : SCTerm)
+    (hx : scSucc x = []) (hy : scSucc y = []) :
+    SCForced (.app (.app (scMillL x) (.app .C (scMillL x))) y)
+      [(.app (.app (.app .C (.app .C (.app (.app .C .C) (.app .C x)))) (.app .C x)) y),
+       (.app (.app (.app .C (.app (.app .C .C) (.app .C x))) y) (.app .C x)),
+       (.app (.app (.app (.app .C .C) (.app .C x)) (.app .C x)) y),
+       (.app (.app (.app .C (.app .C x)) (.app .C x)) y),
+       (.app (.app (.app .C x) y) (.app .C x)),
+       (.app (.app x (.app .C x)) y)] := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, trivial⟩ <;>
+    simp [scMillL, scSucc, scSuccRoot, hx, hy]
+
+/-- **The turnover is forced**: with a normal tower, each of its six fires is the only
+possible fire. -/
+theorem sc_mill_turnover_forced (M : SCTerm) (hM : scSucc M = []) :
+    SCForced (.app (.app scMillK (.app .C scMillK)) M)
+      [(.app (.app (.app (.app .S .C) (.app .C scMillK)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)) M),
+       (.app (.app (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) M),
+       (.app (.app (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C) M) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))),
+       (.app (.app (.app (.app (.app .C .S) (.app .C .C)) M) (.app .C M)) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))),
+       (.app (.app (.app (.app .S M) (.app .C .C)) (.app .C M)) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))),
+       (.app (.app (.app M (.app .C M)) (.app (.app .C .C) (.app .C M))) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))] := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, trivial⟩ <;>
+    simp [scMillK, scSucc, scSuccRoot, hM]
