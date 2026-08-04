@@ -773,3 +773,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_cword_run' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_cword_run
+
+/-- info: 'sc_junk_ignition' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_junk_ignition
+
+/-- info: 'sc_junk_is_cell' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_junk_is_cell

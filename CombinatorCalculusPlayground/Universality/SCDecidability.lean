@@ -5163,3 +5163,30 @@ theorem sc_cword_run : ∀ (ws : List SCTerm) (E A : SCTerm),
       show RS.SC.StepsN (ws.length + 1) _ _
       exact RS.StepsN.tail (sc_passthrough (scCWord ws E) W A)
         (scStepsN_appL W (sc_cword_run ws E A))
+
+-- ## Stage 220: the burn — the reader's storage reads itself back
+-- Stage 179 called the reader's junk C-shelled register storage; Stage 218 identified
+-- the shell as a pass-through cell; this stage certifies the consequence: THE STORAGE IS
+-- LIVE. Three junk blocks applied to each other ignite — the first fire is the
+-- pass-through, two more expose the stored register in head position, and the fourth
+-- fire is a CONSULTATION: the register `S S C` fires on stored material. The burn does
+-- not decay: probe-traced, the stream metabolizes — registers consult, fresh cells form
+-- around junk pairs (second-order storage), and the configuration grows reader-like.
+-- The alternator's burn phase exists; grow and burn are two behaviors of one medium.
+
+/-- **The ignition**: three junk blocks ignite in four fires — pass-through, register
+exposure, and the stored register's consultation fire. -/
+theorem sc_junk_ignition :
+    RS.SC.StepsN 4 (.app (.app scRdrJ scRdrJ) scRdrJ)
+      (.app (.app (.app (.app (.app .S (.app .C scRdrReg))
+        (.app .C (.app .C scRdrReg))) scRdrJ) (.app .C scRdrReg)) scRdrJ) :=
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red scRdrP (.app .C scRdrReg) scRdrJ))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C scRdrReg) (.app .C scRdrReg) scRdrJ)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red scRdrReg scRdrJ (.app .C scRdrReg))))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .S .C (.app .C scRdrReg)))))
+  (@RS.StepsN.refl RS.SC _)))))
+
+/-- The junk block is a pass-through cell: one fire unloads it onto any arm. -/
+theorem sc_junk_is_cell (A : SCTerm) :
+    RS.SC.step (.app scRdrJ A) (.app (.app scRdrP A) (.app .C scRdrReg)) :=
+  SCStep.C_red scRdrP (.app .C scRdrReg) A
