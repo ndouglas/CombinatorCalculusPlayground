@@ -294,7 +294,14 @@ CLOSED with the PASS-THROUGH CELL (`sc_passthrough`, axiom-free):
 `C M W · A ⟶ M A W`, the arm conserved, one fire per symbol
 (`sc_cword_run` — optimal, versus the old chassis's seven fires and an
 arm consumed per symbol), symbols emerging in rotation order. The
-identity tag machine lacks exactly one mechanism: the loop closure. Behind the alternator stand tag/Minsky hosting,
+identity tag machine lacks exactly one mechanism: the loop closure —
+and Stage 219 recorded its resistance (six-leaf repackers are
+symbol-dependent phantoms; parametric repacking needs a GROWING
+prefab, which fixed shapes cannot supply). Loop closure, the walk, and
+C10's regrowth are one problem in three costumes: output-paced
+machinery growth — solved in this calculus only by the reader's
+growing front. The recorded suspicion: the tag machine is a
+reader-variant, not a cycle. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

@@ -6246,3 +6246,21 @@ question: nothing is consumed at all. The identity tag machine is now a single m
 mechanism: the LOOP CLOSURE — an end-marker that re-packs emitted arguments into a fresh
 C-word. And the C-word is the cheapest word representation the calculus admits: one
 fire per symbol is a trivial lower bound, and the pass-through achieves it.
+
+### Stage 219: the loop closure resists — repackers are phantoms at six leaves
+
+The end-marker sweep produced five six-leaf "repackers" — and the two-placeholder-set
+discipline (lesson #9) exposed all of them: the rebuilt C-word appears for one symbol
+alphabet and not another, so the assembly routes through the symbols' own internals.
+Parametric repackers do not exist within the swept envelope. What the phantom still
+shows: C-word shapes CAN be assembled by fires (the target structure appeared, cells and
+all — built from an S-fire's duplication and C-routing); what is missing is symbol-blind
+assembly, and the stamp analysis says why it is hard — stamping `C`-applications
+requires the symbol in the x-seat and the half-built word as the prefab, which means the
+prefab GROWS as the word packs: the repacker needs a growing g-seat, and prefabs in this
+calculus are fixed shapes. The loop closure is therefore the same species as C10's
+regrowth for the third time: machinery that must grow in step with its own output. The
+identity tag machine now has every part but this one, and this one has resisted three
+architectures. Suspicion, recorded: the loop closure may REQUIRE the growing-front
+technology (the reader's), making the tag machine a reader-variant rather than a cycle —
+which would be consistent with every wall and every existing machine.
