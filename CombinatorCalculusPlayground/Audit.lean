@@ -761,3 +761,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_cell_mint' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_cell_mint
+
+/-- info: 'scStepAt_split' does not depend on any axioms -/
+#guard_msgs in #print axioms scStepAt_split
+
+/-- info: 'sc_suffix_law' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_suffix_law

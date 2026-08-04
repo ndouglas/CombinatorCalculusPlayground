@@ -5061,3 +5061,63 @@ theorem sc_cell_mint (f x : SCTerm) :
     RS.SC.step (.app (.app (.app .S f) (.app .C .C)) x)
       (.app (.app f x) (.app (.app .C .C) x)) :=
   SCStep.S_red f (.app .C .C) x
+
+-- ## Stage 217: the suffix law — no overtaking on the spine
+-- The fueled-walk sweep was chasing an impossible shape, and the impossibility is the
+-- theorem. Any argument-list suffix lying beyond the call frame (the first three
+-- arguments) is untouchable: a step either leaves it verbatim — same elements, same
+-- order, same distance from the end — or steps ONE of its elements in place. Products
+-- never migrate rightward past surviving material; the unread queue is sacred; stamped
+-- output accumulating "behind" the queue cannot exist. Walk architectures are therefore
+-- forced onto the scBWord chassis — queue in the head-chain, products appended by the
+-- per-cell bottom calls — which is precisely the one machine family in the program that
+-- already does both halves. The walk's remaining freedom is one dimension: the arm
+-- supply.
+
+theorem scStepAt_split : ∀ {pre suf m : List SCTerm},
+    scStepAt (pre ++ suf) m →
+    (∃ pre', m = pre' ++ suf ∧ scStepAt pre pre') ∨
+    (∃ suf', m = pre ++ suf' ∧ scStepAt suf suf') := by
+  intro pre
+  induction pre with
+  | nil =>
+      intro suf m h
+      exact .inr ⟨m, rfl, h⟩
+  | cons a pre₀ ih =>
+      intro suf m h
+      cases h with
+      | head s => exact .inl ⟨_ :: pre₀, rfl, scStepAt.head s⟩
+      | tail h' =>
+          rcases ih h' with ⟨pre', rfl, hp⟩ | ⟨suf', rfl, hs⟩
+          · exact .inl ⟨a :: pre', rfl, scStepAt.tail hp⟩
+          · exact .inr ⟨suf', rfl, hs⟩
+
+/-- **The suffix law**: an argument suffix beyond the call frame survives every step —
+verbatim, or with one element stepped in place. No product ever overtakes it. -/
+theorem sc_suffix_law {t u : SCTerm} (h : RS.SC.step t u) {pre suf : List SCTerm}
+    (hargs : scSpineArgs t = pre ++ suf) (hlen : 3 ≤ pre.length) :
+    ∃ pre', (scSpineArgs u = pre' ++ suf) ∨
+      (∃ suf', scStepAt suf suf' ∧ scSpineArgs u = pre' ++ suf') := by
+  rcases sc_spine_dichotomy h with ⟨_, hstep⟩ | ⟨f, g, x, rest, _, hcase⟩
+  · rw [hargs] at hstep
+    rcases scStepAt_split hstep with ⟨pre', hm, _⟩ | ⟨suf', hm, hs⟩
+    · exact ⟨pre', .inl hm⟩
+    · exact ⟨pre, .inr ⟨suf', hs, hm⟩⟩
+  · have hargst : scSpineArgs t = f :: g :: x :: rest :=
+      hcase.elim (fun hc => hc.2.1) (fun hc => hc.2.1)
+    obtain ⟨w, hu⟩ : ∃ w, scSpineArgs u = scSpineArgs f ++ x :: w :: rest :=
+      hcase.elim (fun hc => ⟨.app g x, hc.2.2⟩) (fun hc => ⟨g, hc.2.2⟩)
+    have h3 : f :: g :: x :: rest = pre ++ suf := by rw [← hargst, hargs]
+    match pre, hlen with
+    | [a, b, c], _ =>
+        have : f = a ∧ g = b ∧ x = c ∧ rest = suf := by
+          simpa using h3
+        obtain ⟨rfl, rfl, rfl, rfl⟩ := this
+        exact ⟨scSpineArgs f ++ [x, w], .inl (by rw [hu]; simp)⟩
+    | a :: b :: c :: d :: pre₀, _ =>
+        have : f = a ∧ g = b ∧ x = c ∧ rest = (d :: pre₀) ++ suf := by
+          simpa using h3
+        obtain ⟨rfl, rfl, rfl, hrest⟩ := this
+        refine ⟨scSpineArgs f ++ x :: w :: d :: pre₀, .inl ?_⟩
+        rw [hu, hrest]
+        simp
