@@ -833,3 +833,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scOrderNf_normal' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scOrderNf_normal
+
+/-- info: 'scMt8_no_capped_path' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt8_no_capped_path
+
+/-- info: 'sc_bound_floor_308' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_bound_floor_308
