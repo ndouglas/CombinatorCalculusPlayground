@@ -1075,9 +1075,15 @@ first pinned process whose period grows because its own state does.
 Stage 239 read the mill exactly: three-fire C-triplets, two passes per
 layer (down-strip to T₀, up-rebuild one taller) — C11's proof is a
 five-phase parametric assembly in C9's strip-and-rebuild shape, every
-fire already emitted in the three certified turns. A day of careful
-Lean separates the program from the corridor's infinity and the
-parametric floor staircase. All certified by the forced-march toolkit
+fire already emitted in the three certified turns. Stage 240 delivered it: THE MILL LAWS
+(`sc_mill_descent`/`sc_mill_turnover`, six fires each, axiom-free,
+parametric in everything) — the spiral is a two-counter machine that
+rebuilds its counter as a copy of its own tower, one duplication per
+revolution. C11 PROVED (`sc_mill_cycle`); the spiral is eternal
+(`sc_mill_eternal`); and THE CORRIDOR IS INFINITE
+(`sc_corridor_unbounded`): the 12-leaf climber's reachable set is
+unbounded, certified end to end. Two conjectures now closed by
+template (C9, C11); the mill is the calculus's fourth named engine. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now

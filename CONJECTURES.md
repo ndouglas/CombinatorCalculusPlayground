@@ -6554,3 +6554,25 @@ layers + mint + up-pass induction + fixed close, each phase's fires readable off
 certified turns. Nothing about it is unknown anymore; it is a day of careful Lean. The
 spiral keeps the medal for most-structured object of the run: a machine that mills its
 own history, two passes a layer, six fires a memory.
+
+### Stage 240: THE MILL LAWS — C11 proved; the corridor is infinite
+
+The spiral dissolved. Its engine is a two-counter machine `G a m = T_a · (C T_a) · T_m`
+over the layer grammar `L x = (C C)(C x)` and a nine-leaf core — and everything the
+program had named separately (B₁, Y, the tower, the junk block) turned out to be
+tower-terms in disguise. Two six-fire laws, both axiom-free and parametric in EVERYTHING:
+
+  THE DESCENT   (L x)·(C (L x))·y ⟶⁶ x·(C x)·y
+  THE TURNOVER  K·(C K)·M ⟶⁶ M·(C M)·(L M)·B₂
+
+The turnover is the heart: at counter zero the core fires and the counter is rebuilt as
+a COPY of the tower — one duplication, which is why six fires suffice at every scale —
+while the tower gains a layer and one junk block falls out. From these: the cycle law
+(`6(m+1)` fires per revolution — C11's content, PROVED), the eternal spiral
+(`sc_mill_eternal`: k revolutions for every k), the anchor identification
+(`sc_spiral_is_mill`, by decide), and the headline corollary `sc_corridor_unbounded`:
+THE 12-LEAF CLIMBER'S REACHABLE SET IS UNBOUNDED — certified end to end, 44 anchor fires
+plus pure law. C11: registered at Stage 234, proved at Stage 240. The spiral joins C9 as
+the second conjecture closed by template, and the mill joins the fate machine, the
+reader, and the gene as the fourth named engine of the calculus — the one that counts
+its own age in layers, rebuilds its counter from its tower, and never stops.

@@ -6585,3 +6585,18 @@ what automation could and couldn't do. This file is a first-class deliverable
   fixed fires from the turn emissions; anchor and three instances already pinned).
   (2) After C11: corridor-infinite + the parametric staircase + the no-normal-form
   corollary for scMt5T. (3) Frontiers standing (C10; bounded-intermediates asymptotics).
+
+## 2026-08-04 — Stage 240: THE MILL LAWS; C11 proved
+
+- The reverse-engineering cascade: suffix-free core → uniform tower → G-family → two
+  six-fire laws. Each simplification came from refusing to formalize the previous
+  too-complex reading. Final proof: ~120 lines including both emissions. One placeholder
+  collision caught (reg(9) ⊂ reg(11) — distinct-tip placeholders now standard).
+- The corridor is INFINITE, by theorem. The census's best climber has an unbounded
+  reachable set — the first pinned unbounded-reachability result of the program.
+- One hundred twenty-two autonomous stages (119–240). Ranking: (1) **the corridor
+  census** (approved plan): march every 12-leaf term, classify — how common are
+  corridors/spirals/mills? The statistical mechanics of term space, bearing directly on
+  bounded intermediates. (2) The parametric staircase (mill floors at every m — needs
+  the peak/dip inside the mill cycle as G-states + forcedness or on-path mountains
+  parametrically). (3) The no-normal-form corollary (needs parametric forcedness).
