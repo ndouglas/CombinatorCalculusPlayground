@@ -5326,3 +5326,52 @@ theorem sc_alternator_coexist (n m : Nat) :
         | succ j ih => exact RS.Steps.trans ih (scReader_step j)
       exact h n)
     (sc_burn_wave m)
+
+-- ## Stage 224: the ouroboros — the front that writes its storage and then eats it
+-- FRONT DEATH, found at three leaves. Put the register `ρ = S (S S)` in the reader
+-- frame: the first fire WRITES the junk block (the reader's own write mechanism,
+-- verbatim); the register's consultations then route that block leftward — `ρ`'s fire
+-- duplicates the junk into operator position — and at fire ten THE WRITTEN BLOCK TAKES
+-- THE HEAD; fire eleven unloads its stored payload. One 24-leaf term: grow feeds burn.
+-- The alternator's feeding form exists — not as two coupled machines but as one machine
+-- whose register calls its own storage. C8-final's last mechanism, pinned; probe-traced
+-- past the pin, the burn metabolizes onward (a third wave, growing through 400 leaves).
+
+def scOuroReg : SCTerm := .app .S (.app .S .S)
+
+def scOuroP : SCTerm :=
+  .app (.app .C (.app .C scOuroReg)) (.app .C scOuroReg)
+
+def scOuroJ : SCTerm := .app (.app .C scOuroP) (.app .C scOuroReg)
+
+/-- The ouroboros front: the reader frame over `S (S S)`. -/
+def scOuro : SCTerm :=
+  .app (.app (.app .S scOuroP) (.app .C scOuroP)) (.app .C scOuroReg)
+
+/-- **The write beat**: the first fire writes the junk block, verbatim reader mechanics. -/
+theorem sc_ouro_writes :
+    RS.SC.step scOuro (.app (.app scOuroP (.app .C scOuroReg)) scOuroJ) :=
+  SCStep.S_red scOuroP (.app .C scOuroP) (.app .C scOuroReg)
+
+/-- **The ouroboros**: eleven fires — the block written at fire one takes the head at
+fire ten and unloads at fire eleven. Grow feeds burn in one term. -/
+theorem sc_ouroboros :
+    RS.SC.StepsN 11 scOuro
+      (.app (.app (.app (.app scOuroP (.app .C scOuroReg)) (.app .C scOuroReg))
+        (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg)))
+          scOuroJ))
+        (.app (.app (.app .C scOuroReg) (.app scOuroJ (.app .C scOuroReg)))
+          (.app (.app (.app .C scOuroReg)
+            (.app (.app .C scOuroReg) (.app .C scOuroReg))) scOuroJ))) :=
+  (RS.StepsN.tail (SCStep.S_red scOuroP (.app .C scOuroP) (.app .C scOuroReg))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C scOuroReg) (.app .C scOuroReg) (.app .C scOuroReg)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red scOuroReg (.app .C scOuroReg) (.app .C scOuroReg)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .S .S) (.app .C scOuroReg) (.app .C scOuroReg)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red .S (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))))
+  (RS.StepsN.tail (SCStep.S_red (.app (.app .C scOuroReg) (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) scOuroJ)
+  (RS.StepsN.tail (SCStep.appL (SCStep.C_red scOuroReg (.app .C scOuroReg) scOuroJ))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app .S .S) scOuroJ (.app .C scOuroReg)))
+  (RS.StepsN.tail (SCStep.appL (SCStep.S_red .S (.app .C scOuroReg) (.app scOuroJ (.app .C scOuroReg))))
+  (RS.StepsN.tail (SCStep.S_red (.app scOuroJ (.app .C scOuroReg)) (.app (.app .C scOuroReg) (.app scOuroJ (.app .C scOuroReg))) (.app (.app (.app .C scOuroReg) (.app (.app .C scOuroReg) (.app .C scOuroReg))) scOuroJ))
+  (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red scOuroP (.app .C scOuroReg) (.app .C scOuroReg))))
+  (@RS.StepsN.refl RS.SC _))))))))))))

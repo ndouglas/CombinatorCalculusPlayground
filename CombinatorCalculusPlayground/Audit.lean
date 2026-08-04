@@ -791,3 +791,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_alternator_coexist' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_alternator_coexist
+
+/-- info: 'sc_ouro_writes' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_ouro_writes
+
+/-- info: 'sc_ouroboros' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_ouroboros
