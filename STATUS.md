@@ -327,7 +327,13 @@ one term, every joint phase reachable) and reduced, for the feeding
 form, to a single named mechanism: FRONT DEATH (in-place ignition
 impossible; the immortal reader never yields; the mortal candidate is
 a third wave). One mechanism between the program and the full
-alternator. Behind the alternator stand tag/Minsky hosting,
+alternator — and Stage 224 pinned it: THE OUROBOROS (`sc_ouroboros`,
+eleven fires, axiom-free) — the reader frame over `ρ = S (S S)` writes
+its junk block at fire one, the register's consultations route the
+block into operator position, and the written storage takes the head
+at fire ten and unloads at eleven. Grow FEEDS burn in one 24-leaf
+term; the C8 campaign's mechanism ledger is complete, and the lesson
+is that grow and burn are one metabolism seen at different moments. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

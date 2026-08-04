@@ -6396,3 +6396,13 @@ what automation could and couldn't do. This file is a first-class deliverable
   r = register contents from the fatemap's halt class embedded in reader geometry;
   the search is small (the front shape is fixed, the register slot is the variable).
   (2) The medium bestiary. (3) Harvests; review at 225.
+
+## 2026-08-04 — Stage 224: the ouroboros
+
+- Three stages from "the gap named front death" to the mechanism pinned — and the answer
+  was the smallest possible register mutation (S S C → S (S S), same three leaves
+  rearranged). The eternal reader and the self-eating one differ by one association.
+- One hundred six autonomous stages (119–224). Ranking: (1) **the ouroboros wave**: the
+  post-splice burn grows through 400 leaves with recurring consultation shapes — align
+  it (pulse-template archaeology) and pin the third wave if it templates; that would
+  make every observed medium behavior certified. (2) The 225 review. (3) Harvests.

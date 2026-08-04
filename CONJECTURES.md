@@ -6325,3 +6325,20 @@ out to be a THIRD wave — the medium is generous with persistence and stingy wi
 A front that runs, writes, and then expires — the fate machine's halt inside a reader —
 is the single remaining design target of the C8 campaign, with both endpoint technologies
 pinned and waiting.
+
+### Stage 224: the ouroboros — grow feeds burn, in one term
+
+Front death was hiding at three leaves. Put `ρ = S (S S)` in the reader frame and the
+machine becomes the OUROBOROS: fire one WRITES the junk block (verbatim reader
+mechanics — `sc_ouro_writes`); the register's own consultation fires then duplicate the
+written block leftward into operator position; at fire ten THE BLOCK TAKES THE HEAD and
+at fire eleven it unloads its stored payload (`sc_ouroboros`, eleven fires, axiom-free).
+The alternator's feeding form is real — not two coupled machines, but one machine whose
+register CALLS ITS OWN STORAGE. With this, the C8 campaign's ledger closes its last
+mechanism column: persistence with growth (reader), persistence without growth (orbit),
+fate by register (fate machine), storage as medium (junk-is-storage), the burn
+(ignition), the wave (pulse), coexistence (chassis), and now feeding (ouroboros). What
+the campaign has NOT produced is the disciplined alternation — grow k, burn k, repeat —
+and the ouroboros suggests why: in this calculus grow and burn are not phases to
+alternate but one metabolism seen at different moments. The medium theory begins from
+that observation.
