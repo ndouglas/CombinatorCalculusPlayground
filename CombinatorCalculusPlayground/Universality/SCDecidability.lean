@@ -6295,3 +6295,26 @@ theorem sc_corridor_unbounded (n : Nat) :
       + (scAppList (scAppList (scMillG 0 (4 + n)) (List.replicate n scMillB2))
           (List.replicate 3 scMillB2)).leafCount
     omega
+
+-- ## Stage 241 (part): the towers are normal — forcedness groundwork
+-- The mill's data is inert: the core and every tower over it are normal forms. This is
+-- the ground layer of the parametric-forcedness project (the mill path as the UNIQUE
+-- path, which would make every mill peak an on-path mountain at every scale).
+
+theorem scMillK_normal : ∀ v, ¬ RS.SC.step scMillK v := by
+  intro v h
+  have hm := scSucc_complete h
+  rw [show scSucc scMillK = [] from rfl] at hm
+  exact absurd hm List.not_mem_nil
+
+theorem scMillL_normal {t : SCTerm} (ht : ∀ v, ¬ RS.SC.step t v) :
+    ∀ v, ¬ RS.SC.step (scMillL t) v := by
+  intro v h
+  rcases scCPair_inv h with ⟨x', hx, _⟩ | ⟨y', hy, _⟩
+  · cases hx
+  · obtain ⟨m', hm, _⟩ := scWrap_inv hy
+    exact ht m' hm
+
+theorem scMillT_normal : ∀ m, ∀ v, ¬ RS.SC.step (scMillT m) v
+  | 0 => scMillK_normal
+  | m + 1 => scMillL_normal (scMillT_normal m)

@@ -878,3 +878,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_corridor_unbounded' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_corridor_unbounded
+
+/-- info: 'scMillT_normal' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMillT_normal
