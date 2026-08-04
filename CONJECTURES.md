@@ -6173,3 +6173,16 @@ p advances its address by at most p per lap, so a +2-per-lap odometer spends at 
 two of its p fires on mints — mints that consume prefab atoms the machine must ALSO
 regrow inside the same p fires. The invariant program's next target is exactly that
 budget: fires per lap vs. mints plus regrowth, an accounting that may close C10.
+
+### Stage 214: the cargo law — the rightmost argument survives every fire
+
+The dichotomy's positional corollary ([propext]): the rightmost spine argument of any
+term survives every step — verbatim in last position, stepped in place, or, in exactly
+one case, displaced: a BOTTOM CALL, a call whose frame consumes the entire argument list
+(arity exactly three), which slides the old cargo to second-to-last and installs the
+call's product as the new tail. Cargo is never erased, never skipped, never overtaken:
+to touch its own tail a machine must burn its arity down to three. This is the theorem
+the biodegradable word machines have been obeying since Stage 148 — FIFO is not a design
+choice in {S,C}, it is the geometry of the spine. For the hosting arc: a tag machine's
+append lands exactly at bottom calls, so the tag step's shape is forced — burn down,
+bottom-call with the appended production, rebuild; the walls now WRITE the architecture.

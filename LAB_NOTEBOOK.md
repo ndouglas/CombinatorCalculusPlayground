@@ -6274,3 +6274,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   speed-limit machinery plus the dichotomy's call-frames are the ingredients).
   (2) floor14/n=16 harvests as they land. (3) The hosting integration (tag step from
   tape + successor + gene), which the six walls now constrain helpfully.
+
+## 2026-08-04 — Stage 214: the cargo law
+
+- Four invariant-program theorems in three days (dichotomy, provenance, speed limit,
+  cargo). The pin-audit discipline caught one wrong footprint guess — the build gate
+  works. Lean friction was all list-append bookkeeping (append_inj + eq_nil_or_concat
+  is the pattern for last-element case splits).
+- Ninety-six autonomous stages (119–214). Ranking: (1) **the tag step**: the cargo law
+  forces the architecture (burn down → bottom-call the production → rebuild); design
+  the {S,C} one-tag-step from scBWord + gene + successor parts, probing only where the
+  design underdetermines. (2) floor14/n=16 harvests. (3) The lap budget (blocked on new
+  ideas; parked with analysis recorded).

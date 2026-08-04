@@ -268,7 +268,13 @@ SOURCES at every depth (`sc_numerals_are_sources`, no step ever
 produces one) and the NUMERAL SPEED LIMIT (`sc_numeral_speed_limit`)
 caps address advance at one depth per fire. Any odometer is
 fire-paced; C10's endgame is a lap-budget accounting: fires per period
-versus mints plus prefab regrowth. Behind the alternator stand tag/Minsky hosting,
+versus mints plus prefab regrowth (analyzed: neither depth-counting
+nor atom-counting closes it — a positional invariant is required).
+Stage 214 added the dichotomy's positional corollary, THE CARGO LAW
+(`sc_cargo_law`, [propext]): the rightmost spine argument survives
+every fire — displaced only by a BOTTOM CALL at arity exactly three.
+FIFO is the geometry of the spine, and the tag step's architecture is
+now forced: burn down, bottom-call the production, rebuild. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi
