@@ -6514,3 +6514,18 @@ what automation could and couldn't do. This file is a first-class deliverable
   data is one probe away); a corridor template proves excess → ∞ on one term — the
   endgame lever. (2) Corridor deep-pins (excess 241 at march-5169) if kernel budget
   allows. (3) The compound-wave template technology (needed by both this and Stage 231).
+
+## 2026-08-04 — Stage 234: the spiral
+
+- Eighty exact cycles: +25 peak, +1 block, +3+3+3 towers, +6 spacing, per cycle. The
+  fifth recurrence kind, and the first with a GROWING period — the corridor is the
+  calculus's quadratic-time odometer-that-doesn't-count (cycle k starts at a time
+  quadratic in k; the state encodes k in unary three ways; and still no numeral
+  deepens — the spiral counts in blocks and towers, not wraps, consistent with wall six).
+- C11 registered. The proof plan is C9-shaped: fixed prelude + 6-fire block lemma × k +
+  tower-context close. Sessions-scale, fully de-risked.
+- One hundred sixteen autonomous stages (119–234). Ranking: (1) **the six-fire block
+  lemma**: the spiral proof's first brick — trace one cycle at two k's, isolate the
+  per-block six fires, pin the block-processing lemma parametrically (rider-lifted, like
+  the wave cores). (2) The spiral's Φ(k) Lean family (defs + the fixed prelude). (3)
+  Corridor deep-pins as budget allows.

@@ -6460,3 +6460,24 @@ sharpens: if the corridor's oscillation TEMPLATES (a rising wave family), then p
 and dip(k) become theorems, excess(k) → ∞ along one term's corridor, and the bounded-
 intermediates question resolves negatively for (12, m)-families — with the frontier
 equivalence waiting. The corridor's wave archaeology is the program's next great object.
+
+### Stage 234: the spiral — a fifth recurrence kind, exactly regular
+
+The corridor's archaeology returned the cleanest structure of the run. The n=12
+climber's forced path is a SPIRAL: cycles of EXACTLY linearly growing length (spacing
+252 + 6k at cycle k), each cycle raising the peak by exactly 25 leaves, adding exactly
+one 16-leaf block to the blob's run, and growing each of three towers by exactly one
+3-leaf context at a fixed position (verified through eighty consecutive cycles, fires
+5,400–44,300, every count exact). The macro-state at peak k is fully characterized:
+`C · a₉ · (C · x · T₁ctxᵏ · T₂ctxᵏ · T₃ctxᵏ · B^(42+k))`. This is a FIFTH recurrence
+kind — the spiral: linearly growing period, linear growth, exact template — and it is
+C9-SHAPED: the parametric proof needs a fixed-fire prelude plus a six-fire-per-block
+processing lemma iterated k times, exactly the strip-run pattern that proved the parity
+law. Registered as **C11 (the spiral law)**: Φ(k) ⟶^(252+6k) Φ(k+1) for all k. Its
+consequences, mapped honestly: C11 proves the corridor INFINITE (scMt5T has no normal
+form; its floor staircase never ends — a PARAMETRIC floor family, infinitely many pinned
+floors from one theorem); but corridor excess is linear-plus-constant in the dip size,
+so C11 alone improves the bounded-intermediates constants, not the asymptotics — the
+undecidability endgame still needs superlinear excess, which must come from elsewhere
+(deeper climber families, or corridors that crash). The spiral proof is the program's
+next major formalization; every piece is de-risked and exact.

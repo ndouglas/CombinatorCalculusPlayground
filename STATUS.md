@@ -1049,7 +1049,14 @@ staircase: `sc_bound_floor_666` (excess 151 at (12,515), march-2109
 kernel decide) with 241+ deeper. If the corridor's oscillation
 TEMPLATES, excess → ∞ on one term is a theorem and bounded
 intermediates falls negatively, with the frontier equivalence
-waiting. The corridor wave is the program's next great object. All certified by the forced-march toolkit
+waiting. The corridor wave is the program's next great object — and Stage 234
+resolved its anatomy: THE SPIRAL, a fifth recurrence kind (linearly
+growing period, spacing exactly 252+6k; +25 peak, +1 block, +3-leaf
+tower contexts per cycle, exact through eighty consecutive cycles).
+Registered as C11 (the spiral law), C9-shaped and fully de-risked: its
+proof makes the corridor INFINITE and the floor staircase a parametric
+family — though corridor excess is linear-plus-constant, so the
+undecidability endgame still needs superlinear excess from elsewhere. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now
