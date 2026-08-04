@@ -6310,3 +6310,18 @@ verbatim (reader), cyclic (orbits), graded (ranked closures), and periodic drift
 The alternator's grow and burn phases are both pinned persistent processes over one
 medium; what remains of C8-final is only their SPLICE — and the splice is now a question
 about two pinned waves meeting, not about unknown machinery.
+
+### Stage 223: the alternator, coexistence form — and the gap named FRONT DEATH
+
+`sc_alternator_coexist`: one term in which the reader writes storage forever while the
+burn wave consumes storage forever — every joint phase `(n, m)` reachable, by the chassis
+and the two pinned wave laws. C8-final's machinery now runs jointly in a single
+configuration. What separates coexistence from the full alternator (the grow-phase's own
+junk igniting) is exactly ONE mechanism, and this stage's probes named it: FRONT DEATH.
+In-place ignition is impossible (junk blocks are inert two-argument cells until they
+reach head position — the pass-through's flip side); the immortal reader never yields the
+head; and the mortal-reader candidate (the halting bit `C C` in the reader frame) turns
+out to be a THIRD wave — the medium is generous with persistence and stingy with death.
+A front that runs, writes, and then expires — the fate machine's halt inside a reader —
+is the single remaining design target of the C8 campaign, with both endpoint technologies
+pinned and waiting.

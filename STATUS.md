@@ -321,7 +321,13 @@ disguise (mid-spine insertion — where the cargo law puts growth), each
 phase twelve fires from the next, every phase reachable from three
 junk blocks. Periodic drift is now the toolkit's fourth certified
 recurrence technology, both alternator phases are pinned processes,
-and C8-final reduces to their splice. Behind the alternator stand tag/Minsky hosting,
+and C8-final reduces to their splice — which Stage 223 delivered in
+COEXISTENCE FORM (`sc_alternator_coexist`: writer and burner eternal in
+one term, every joint phase reachable) and reduced, for the feeding
+form, to a single named mechanism: FRONT DEATH (in-place ignition
+impossible; the immortal reader never yields; the mortal candidate is
+a third wave). One mechanism between the program and the full
+alternator. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

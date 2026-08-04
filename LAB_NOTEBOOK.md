@@ -6384,3 +6384,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   igniting into a burn-phase pulse in one configuration)? Probe: Front·J^k prefixes with
   arms that trigger ignition of the junk tail; both processes are pinned, so the splice
   is a finite search over coupling shapes. (2) The medium bestiary. (3) Harvests.
+
+## 2026-08-04 — Stage 223: coexistence, and the gap named
+
+- The alternator went from "unknown machinery" to "one named mechanism" in three stages
+  (220 burn, 222 pulse, 223 splice-analysis). Front death is the whole remaining gap —
+  ironic, in a program that built a fate machine: we can kill any machine except the
+  one that writes.
+- One hundred five autonomous stages (119–223). Ranking: (1) **front death**: probe
+  reader-front variants whose consultation register is FRAME-mortal — candidates:
+  r = register contents from the fatemap's halt class embedded in reader geometry;
+  the search is small (the front shape is fixed, the register slot is the variable).
+  (2) The medium bestiary. (3) Harvests; review at 225.
