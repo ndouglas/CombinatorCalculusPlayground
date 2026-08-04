@@ -6428,3 +6428,14 @@ what automation could and couldn't do. This file is a first-class deliverable
   own census. (2) C10 via the ouroboros: does ANY self-eating front's wave carry a
   numeral? (the wave blocks contain ρ-copies — a register-bearing block family would be
   an odometer). (3) floor16 if the ladder calls.
+
+## 2026-08-04 — Stage 227: the bestiary; copies not depth
+
+- The census closed the medium chapter for now: behavior-complete frame, three pinned
+  waves, and a clean structural fact — the medium copies, it does not count. C10's
+  refutation now has a checkable stepping stone (bounded maxreg along the pinned waves).
+- One hundred nine autonomous stages (119–227). Ranking: (1) **wave depth bounds**: pin
+  scMaxReg-boundedness along scPulseW and scOuroWave (the families are explicit lists —
+  compute maxreg per phase, prove constancy by induction; first checkable case of the
+  no-deepening invariant). (2) Bounded intermediates: n=16 rung via graft when wanted.
+  (3) The hosting arc's walk, awaiting a growing-prefab idea.

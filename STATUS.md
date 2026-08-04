@@ -347,7 +347,14 @@ self-eating front is the pinned period-16 family `C·PRE·BLOCK^m·SUF`,
 so it eats and GROWS, forever. The medium's three observed behaviors
 (reader wave 7/verbatim, burn pulse 12/drift, ouroboros wave 16/drift)
 are all certified processes; the persistence campaign closes as a
-taxonomy in which every survival strategy is a theorem. Behind the alternator stand tag/Minsky hosting,
+taxonomy in which every survival strategy is a theorem. Stage 227's
+bestiary (3,238 reader-frame registers: 451 halt / 2,153 grow / 162
+cycle) added the medium's most structural fact: COPIES MULTIPLY, DEPTH
+NEVER GROWS — no trajectory deepens its numerals, the speed limit's
+budget is never spent, and in the one machine family that sustains
+eternal computation the counter never ticks. C10's refutation
+hypothesis strengthens, with a checkable stepping stone: bounded
+numeral depth along the pinned waves. Behind the alternator stand tag/Minsky hosting,
 undecidability, and the frontier equivalence's negative resolution. Since the Stage 114 review, one autonomous run
 (Stages 119–129) delivered two threads: the DECIDABILITY KIT for `{S,C}`
 (confluence and unique normal forms transported from the SK Takahashi

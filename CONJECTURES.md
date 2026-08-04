@@ -6373,3 +6373,21 @@ growing, and whether any machine does both is the sharpest question this calculu
 produced). The program's next arcs, in standing order: the medium bestiary, an n=16
 rung if wanted, and the two frontiers — which now have seven walls, four recurrence
 technologies, and a complete ISA to attack with.
+
+### Stage 227: the medium bestiary — copies multiply, depth never grows
+
+The reader frame's full census over registers up to six leaves: 451 halting, 2,153
+growing, 162 cycling, 472 undetermined-at-300 — the frame is behavior-complete over its
+register slot, echoing the fate frame's trichotomy at Stage 190. And the C10 detector
+came back empty in a new, sharper way: across all 3,238 fronts, NO trajectory shows
+unboundedly growing numeral depth. The medium's metabolisms — including the three pinned
+waves — multiply COPIES of their registers (block counts grow linearly forever) but never
+DEEPEN them (max numeral depth is bounded on every observed trajectory). The speed limit
+permits one deepening per fire; the medium's geometry never spends it — the wrap-mint
+needs a numeral in an x-seat beside an atom-C prefab, and reader-frame dynamics never
+assemble that meeting. C10's ledger gains its most structural entry yet: in the one
+family of machines that demonstrably sustains eternal computation, the counter never
+ticks. The refutation hypothesis strengthens; the invariant that would prove it — "no
+recurrent process deepens its own numerals" — now has a natural formulation over the
+pinned wave families, where it is CHECKABLE: the wave laws are explicit, so bounded
+numeral depth along each pinned wave is a corollary away. The frontier stands there.
