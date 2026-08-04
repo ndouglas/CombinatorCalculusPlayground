@@ -1083,7 +1083,13 @@ revolution. C11 PROVED (`sc_mill_cycle`); the spiral is eternal
 (`sc_mill_eternal`); and THE CORRIDOR IS INFINITE
 (`sc_corridor_unbounded`): the 12-leaf climber's reachable set is
 unbounded, certified end to end. Two conjectures now closed by
-template (C9, C11); the mill is the calculus's fourth named engine. All certified by the forced-march toolkit
+template (C9, C11); the mill is the calculus's fourth named engine.
+Stage 241's corridor census mapped term space's phases: 67% halt, 33%
+branch, 0.15% CORRIDOR (7,311 at n=10, median peak 1,048 leaves) — the
+forced-eternal phase is rare, stable across sizes, and enormous
+inside; the mill was not a miracle but the phase's expected anatomy.
+The bounded-intermediates endgame is now a finite screen: hunt the
+7,311 corridors for one that crashes. All certified by the forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now

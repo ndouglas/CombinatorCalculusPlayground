@@ -6600,3 +6600,12 @@ what automation could and couldn't do. This file is a first-class deliverable
   bounded intermediates. (2) The parametric staircase (mill floors at every m — needs
   the peak/dip inside the mill cycle as G-states + forcedness or on-path mountains
   parametrically). (3) The no-normal-form corollary (needs parametric forcedness).
+
+## 2026-08-04 — Stage 241: the corridor census
+
+- Term space has phases: halt (67%), branch (33%), corridor (0.15%) — and the corridor
+  phase is where every deep object of this program has lived. The mill was not luck.
+- Ranking: (1) **the crash screen**: scan the 7,311 n=10 corridors for maximal
+  peak-to-later-dip drops (the superlinear hunt — one crasher breaks the linear
+  barrier); pin the winner with scForced_mountain_last. (2) The parametric mill
+  forcedness (staircase at every scale). (3) The no-NF corollary for scMt5T.

@@ -6576,3 +6576,22 @@ plus pure law. C11: registered at Stage 234, proved at Stage 240. The spiral joi
 the second conjecture closed by template, and the mill joins the fate machine, the
 reader, and the gene as the fourth named engine of the calculus — the one that counts
 its own age in layers, rebuilds its counter from its tower, and never stops.
+
+### Stage 241: the corridor census — the statistical mechanics of term space
+
+The approved landscape survey, delivered. Exhaustive at n=10 (all 4,978,688 terms,
+800-fire horizon): 67.1% reach normal form, 32.8% branch into nondeterminism, and
+0.147% — 7,311 terms — are CORRIDORS: fully forced for at least 800 fires, of which
+3,148 blow a 1,500-leaf cap outright. The n=12 sample (300,000 terms) shows the same
+phase at 0.17%. The corridor phase is rare, stable across sizes, and ENORMOUS inside:
+median corridor peak 1,048 leaves at n=10 (max 1,670) — ten-leaf terms routinely forced
+through thousand-leaf skies. Three readings. First: the floor ladder's rungs were vast
+underestimates — thousands of corridors each carry floors at the 1,000+ scale, and the
+mountain censuses were sampling this phase without knowing it. Second: the spiral/mill
+is not a miracle — forced eternal machines are a solid phase of term space, which makes
+mill-like engines the EXPECTED anatomy of deep {S,C} dynamics. Third, and sharpest: the
+bounded-intermediates endgame is now a FINITE SCREEN — scan the 7,311 corridors for one
+whose path crashes far below its running peak (superlinear drop); one crashing corridor
+plus the on-path mountain technology would break the linear-excess barrier that the
+spiral could not. The towers-are-normal lemmas (this stage's feat) lay the forcedness
+groundwork for pinning whatever the screen finds.
