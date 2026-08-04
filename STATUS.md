@@ -1062,7 +1062,11 @@ EXACTLY six fires per block — the corridor IS a word machine (a walker
 on a self-extending tape), the architecture the hosting campaign tried
 to build by hand, running wild inside the census's best climber. C11's
 proof plan is concrete and C9-shaped: block-step lemma, Φ(k) family,
-traversal induction. All certified by the forced-march toolkit
+traversal induction — and Stage 236 laid the ground floor: `scSpiral j`
+defined exactly (its vocabulary is the pass-through grammar), the
+anchor pinned axiom-free (44 fires from the climber onto `scSpiral 0`),
+and `scSpiralLaw` registered as the formal target. All certified by the
+forced-march toolkit
 (`scForcedMarch`/`scForced_mountain`/`scChained_steps`: chains computed by
 the verified successor, certificates linear in the path; the n=9 census
 found 13,721 such mountains, exhaustively). And the equivalence is now

@@ -6497,3 +6497,17 @@ needs a blob-spine tracker); (2) the Φ(k) Lean family over the exact template; 
 traversal induction (block-step × (42+k), rider-lifted) and the cycle close. C9's proof
 was this shape at period 7+k; C11 is the same theorem grown up — and with it, the
 corridor's infinity, the parametric floor family, and the fifth recurrence technology.
+
+### Stage 236: the spiral family, anchored — C11 has a formal ground floor
+
+`scSpiral j` is now a Lean definition matching the corridor's exact template — and its
+vocabulary is the PASS-THROUGH FAMILY: the tower grows by `(C C)·(C ·)` per cycle, the
+blocks are C-headed cells, the whole spiral is built from the same three-leaf grammar
+that runs the reader, the ouroboros, and the tape. `sc_spiral_anchor` (axiom-free):
+forty-four fires take the n=12 climber exactly onto `scSpiral 0`. `scSpiralLaw` is the
+registered formal target — every cycle in 30 + 6j fires — and its proof plan is fully
+concrete: twelve fixed fires, a six-fire run-block lemma iterated 3 + j times with the
+tower riding passively, rider lifts throughout. One probe near-miss caught by exact
+assertion (TWO distinct 16-leaf blocks, not one — the honest-assembly discipline again).
+When scSpiralLaw lands, the corridor is infinite, the climber has no normal form, and
+the floor staircase becomes a single parametric theorem.

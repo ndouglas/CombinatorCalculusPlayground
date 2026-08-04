@@ -6540,3 +6540,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   motif with exact walker/cursor terms — the C11 proof's first brick, and the priority
   of the next session. (2) The Φ(k) family defs. (3) Corridor deep-pin at march-5169
   (kernel budget test).
+
+## 2026-08-04 — Stage 236: the spiral family, anchored
+
+- The spiral speaks the pass-through grammar — every deep structure in this calculus
+  keeps being made of the same three leaves. Anchor pinned axiom-free; the law is
+  registered as a formal Prop; the proof is a bounded engineering task.
+- One hundred eighteen autonomous stages (119–236). Ranking: (1) **the run-block
+  lemma**: isolate the six fires that process one B₂ (trace the anchor cycle 44→74
+  against the scSpiral 0 spine, identify the walker's exact state between blocks, pin
+  walker·B₂·rest ⟶⁶ walker'·rest·output parametrically). (2) The twelve fixed fires +
+  the cycle-law assembly (scSpiralLaw for j=0 first, then parametric). (3) Deep pins
+  and the two frontier questions, standing.
