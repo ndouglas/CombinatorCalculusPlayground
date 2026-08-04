@@ -6075,3 +6075,68 @@ theorem sc_spiral_reach2 : RS.SC.StepsN 110 scMt5T (scSpiral 2) := by
     (RS.StepsN.trans sc_spiral_turn0 sc_spiral_turn1)
   rw [show (110 : Nat) = 44 + (30 + 36) from rfl]
   exact h
+
+
+-- ## Stage 238: the third turn — and the cycle's true anatomy
+-- Forty-two more fires certify the third schedule point (30, 36, 42 all kernel facts).
+-- The walker analysis corrected the cycle's anatomy: the block run never ignites — it
+-- rides as passive suffix, exactly as the cargo law prescribes; all thirty-plus fires
+-- churn the blob's leading four arguments. The head matter burns, the TOWER passes
+-- through the mill and re-emerges one layer taller, a fresh run-block is minted at the
+-- burn's bottom, and the front rebuilds. The 6j in the schedule is six fires per TOWER
+-- LAYER (tower and block count are locked at +1 per cycle, indistinguishable by
+-- arithmetic alone — only the trace separates them). The spiral is head-metabolism with
+-- a passive wake: the machine reprocesses its own growing tower every cycle, the first
+-- pinned process whose period grows because its own state does.
+
+/-- **The third turn**: forty-two fires, `scSpiral 2` to `scSpiral 3`. -/
+theorem sc_spiral_turn2 : RS.SC.StepsN 42 (scSpiral 2) (scSpiral 3) :=
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C scSpB1 scSpY))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scSpY scSpB1 (scSpTower 2))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) scSpB1) (scSpTower 2) scSpB1)))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C scSpB1 scSpB1))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scSpB1 scSpB1 (scSpTower 2))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C scSpA)))) (scSpTower 2) scSpB1)))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app (.app .C .C) (.app .C scSpA))) scSpB1))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scSpB1 (.app .C (.app (.app .C .C) (.app .C scSpA))) (scSpTower 2))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app .C (.app (.app .C .C) (.app .C scSpA)))) (scSpTower 2) (.app .C (.app (.app .C .C) (.app .C scSpA))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (.app (.app .C .C) (.app .C scSpA))) (.app .C (.app (.app .C .C) (.app .C scSpA)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C (.app (.app .C .C) (.app .C scSpA))) (.app .C (.app (.app .C .C) (.app .C scSpA))) (scSpTower 2))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app .C scSpA)) (scSpTower 2) (.app .C (.app (.app .C .C) (.app .C scSpA))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C scSpA) (.app .C (.app (.app .C .C) (.app .C scSpA)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C (.app (.app .C .C) (.app .C scSpA))) (.app .C scSpA) (scSpTower 2))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app .C scSpA)) (scSpTower 2) (.app .C scSpA))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C scSpA) (.app .C scSpA)))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C scSpA) (.app .C scSpA) (scSpTower 2))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scSpA (scSpTower 2) (.app .C scSpA))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .S .C) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C) (.app .C scSpA)))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red .C (.app .C scSpA) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C) scSpB2 (scSpTower 2))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C .S) (.app .C .C)) .C (scSpTower 2)))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .S (.app .C .C) (scSpTower 2))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.S_red (scSpTower 2) (.app .C .C) (.app .C (scSpTower 2))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (scSpTower 1)) (.app .C (scSpTower 2)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C (scSpTower 2)) (.app .C (scSpTower 1)) (.app (.app .C .C) (.app .C (scSpTower 2)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (scSpTower 2) (.app (.app .C .C) (.app .C (scSpTower 2))) (.app .C (scSpTower 1))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C (scSpTower 1)) (.app .C (scSpTower 1)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C (scSpTower 1)) (.app .C (scSpTower 1)) (.app (.app .C .C) (.app .C (scSpTower 2)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (scSpTower 1) (.app (.app .C .C) (.app .C (scSpTower 2))) (.app .C (scSpTower 1))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C scSpT0) (.app .C (scSpTower 1)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C (scSpTower 1)) (.app .C scSpT0) (.app (.app .C .C) (.app .C (scSpTower 2)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (scSpTower 1) (.app (.app .C .C) (.app .C (scSpTower 2))) (.app .C scSpT0)))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app .C scSpT0) (.app .C scSpT0))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C scSpT0) (.app .C scSpT0) (.app (.app .C .C) (.app .C (scSpTower 2)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scSpT0 (.app (.app .C .C) (.app .C (scSpTower 2))) (.app .C scSpT0)))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C scSpY (.app .C scSpT0))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C scSpT0) scSpY (.app (.app .C .C) (.app .C (scSpTower 2)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scSpT0 (.app (.app .C .C) (.app .C (scSpTower 2))) scSpY))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C scSpY scSpY)))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red scSpY scSpY (.app (.app .C .C) (.app .C (scSpTower 2)))))))))))
+  (RS.StepsN.tail (SCStep.appR (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) scSpB1) (.app (.app .C .C) (.app .C (scSpTower 2))) scSpY))))))))
+  (@RS.StepsN.refl RS.SC (scSpiral 3))))))))))))))))))))))))))))))))))))))))))))
+
+/-- The climber reaches the spiral's fourth state in 152 fires. -/
+theorem sc_spiral_reach3 : RS.SC.StepsN 152 scMt5T (scSpiral 3) := by
+  have h := RS.StepsN.trans sc_spiral_reach2 sc_spiral_turn2
+  rw [show (152 : Nat) = 110 + 42 from rfl]
+  exact h
