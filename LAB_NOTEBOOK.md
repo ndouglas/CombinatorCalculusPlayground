@@ -6631,3 +6631,15 @@ what automation could and couldn't do. This file is a first-class deliverable
 - Ranking: (1) harvest crashscreen.log (TOP-10 tables at DONE marker). (2) The
   parametric staircase assembly (descent-run forced is in; turnover-run + anchor +
   scForced_all_le_last parametric remain). (3) The no-NF corollary for scMt5T.
+
+## 2026-08-04 — Stage 243: the screen verdict; C12 registered
+
+- Forty stages of floors pointed one way; one exhaustive screen pointed back. This is
+  what the census methodology is FOR. The frontier now has a conjecture on each side:
+  C10 (deepening, leaning false) and C12 (linear excess, leaning true) — and C12-true
+  would decide reachability POSITIVELY via the frontier equivalence.
+- One hundred twenty-five autonomous stages (119–243). Ranking: (1) **C12 probes**: the
+  n=12 corridor sample's drop distribution (does the linear constant hold as n grows?),
+  and the theory side — a max-drop analysis of the mill laws (can ANY G-machine-style
+  engine exceed ratio 3?). (2) The parametric staircase + no-NF (mill assembly,
+  unchanged value). (3) The 245 review.

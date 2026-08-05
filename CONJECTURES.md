@@ -6607,3 +6607,26 @@ concrete head with the opaque towers confined to argument seats, so `scSucc` com
 structural simp against the payloads' normality. With `SCForced_append` the revolutions
 concatenate; the parametric staircase — every mill peak an on-path mountain, at every
 scale, in one theorem — is now pure assembly over pinned parts.
+
+### Stage 243: the crash screen verdict — the corridor phase is linear, and the frontier flips
+
+The finite screen ran to completion: all 7,311 n=10 corridors, deep-marched 4,000 fires,
+ranked by peak-to-later-dip drop. THE VERDICT: no crasher exists. Maximum drop anywhere
+is 211 (peak 628 → dip 417, ratio 1.51 — and the witness is the Stage 181 census
+champion's own family); maximum peak/dip ratio anywhere is 2.50, achieved only on
+20-leaf transients. The mill's own asymptotic ratio is 3 (peak 31+9m against dip 28+3m).
+Within the entire exhaustively-known corridor phase, EXCESS IS LINEAR IN THE ENDPOINT
+with constant ≤ ~3.
+
+This flips the working hypothesis of the decidability frontier. The program spent forty
+stages accumulating floors "against bounded intermediates" — but every floor was linear
+in its endpoint, and the census now says linear is ALL THERE IS at n=10. The honest new
+position: the evidence favors a computable bound of the form f(n, m) ≈ 3m + g(n) — and
+by the frontier equivalence, a PROOF of any such linear law would make {S,C}
+reachability DECIDABLE. The endgame question inverts from "find a crasher" to "prove
+the linear law": does every {S,C} reduction admit a path whose intermediates are
+bounded by C·(|t| + |u|)? Registered as **C12 (the linear-excess law)** — the program's
+third live conjecture, and the first on the DECIDABLE side of its central question.
+Both directions now have concrete attack surfaces: C12 via standardization-style
+arguments over the call-stack discipline (the seven walls constrain what a path can
+do), refutation via corridors at n ≥ 12 where the phase may behave differently.

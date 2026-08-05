@@ -1088,8 +1088,14 @@ Stage 241's corridor census mapped term space's phases: 67% halt, 33%
 branch, 0.15% CORRIDOR (7,311 at n=10, median peak 1,048 leaves) — the
 forced-eternal phase is rare, stable across sizes, and enormous
 inside; the mill was not a miracle but the phase's expected anatomy.
-The bounded-intermediates endgame is now a finite screen: hunt the
-7,311 corridors for one that crashes. Stage 242 made the mill FORCED
+The bounded-intermediates endgame ran its finite screen (Stage 243):
+all 7,311 corridors deep-marched — NO CRASHER EXISTS; maximum drop 211,
+maximum ratio 2.50, the mill's own asymptote 3. THE CORRIDOR PHASE IS
+LINEAR, exhaustively at n=10, and the frontier hypothesis FLIPS:
+registered as C12 (the linear-excess law, f(n,m) ≈ 3m + g(n)) — whose
+proof would make {S,C} reachability DECIDABLE via the frontier
+equivalence. The program's central question now has a live conjecture
+on each side. Stage 242 made the mill FORCED
 parametrically (`sc_mill_descent_forced`/`sc_mill_turnover_forced` —
 the program's first parametric SCForced): the mill path is the only
 path, and the parametric staircase is pure assembly. All certified by the forced-march toolkit
