@@ -6706,3 +6706,28 @@ linear-excess law holds because EVERY corridor is a mill in disguise (rigid, for
 characterizable), then reachability is decidable not despite the corridors but
 because of them. That is now the sharpest available formulation of the program's
 central question.
+
+### Stage 249: the six champions are corridors — and C13 is born
+
+The ideonomy pass, run over the corridor arc's new inventory, opened with an
+empirical question: are the n=12 crash-screen drop-leaders G-machines like the mill?
+The probe answered harder than expected: **all six are fully forced — zero branch
+points in 6000 fires — with revolution periods growing arithmetically** (+6/cycle for
+four of them, +4/cycle for two — the +4 pair suggesting a leaner layer grammar than
+`L x = (C C)(C x)`). Pinned: 500 consecutive forced fires apiece.
+
+**C13 (THE RIGIDITY CONJECTURE), registered**: every {S,C} term that avoids both
+normal form and branching — every corridor — is eventually a G-machine: its reachable
+set is a finite prefix plus a parametric family of forced revolution chains. C13
+would give corridor terms decidable reachability by the Stage 245–248 pipeline
+(family → size floor → bounded scan), and with the census phases (NF: decidable by
+normalization; BRANCH: the remaining question) it is now the sharpest route to full
+decidability. C12 (linear excess) would follow from C13 with mill-style size ledgers.
+
+Ideonomy residue (ranked leads): (a) classify two-leaf layer grammars admitting
+descent laws — the +4-period champions should yield a second, smaller mill; (b) check
+whether the climber's growing towers settle C10 (scDeepening) — the mill's `T m` has
+unbounded depth, so if scDeepening's depth notion matches, C10 resolves POSITIVE off
+the shelf; (c) the BRANCH phase: probe whether branch points reconverge (local
+confluence statistics) — if corridors are rigid and branches reconverge, the whole
+space may be tamer than the frontier assumed.

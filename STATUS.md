@@ -1094,7 +1094,11 @@ maximum ratio 2.50, the mill's own asymptote 3. THE CORRIDOR PHASE IS
 LINEAR, exhaustively at n=10, and the frontier hypothesis FLIPS:
 registered as C12 (the linear-excess law, f(n,m) ≈ 3m + g(n)) — whose
 proof would make {S,C} reachability DECIDABLE via the frontier
-equivalence. REACHABILITY FROM THE CLIMBER IS DECIDABLE
+equivalence. C13 (THE RIGIDITY CONJECTURE, Stage 249): every
+corridor is eventually a G-machine — all six n=12 drop-leaders probed
+fully forced (6000 fires, zero branches, arithmetic revolution
+periods; 500-fire certificates pinned). REACHABILITY FROM THE CLIMBER
+IS DECIDABLE
 (Stage 248, `scMt5TReach_decidable`): a certified decision procedure —
 the wildest term in the census is the term whose reachability question
 is now completely solved. THE CORRIDOR, EXACTLY (Stage 247,

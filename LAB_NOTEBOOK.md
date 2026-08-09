@@ -6707,3 +6707,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   especially what "every corridor is a mill in disguise" would need, and whether the
   census's other five drop-champions (n=12 top-6) are G-machines too — probe first.
   (2) C12 theory: the ratio-3 analysis. (3) The 249 review.
+
+## 2026-08-09 — Stage 249: the six champions are corridors; C13 registered
+
+- Probe discipline note: the champions were marched with the rebuilt engine
+  (kernel-verified) and the certificates re-checked in Lean by decide — the two-system
+  agreement is the point of the verify-before-formalize rule.
+- One hundred thirty-one autonomous stages (119–249). Ranking: (1) **C10 via the
+  mill's towers**: read scDeepening's exact depth notion; if generic, instantiate
+  with the climber family (towers T m have depth ~m) — a conjecture may fall for
+  free. (2) The +4-period mill: reverse-engineer scChamp170/159's layer grammar and
+  pin its descent law — a second engine species for C13. (3) BRANCH-phase
+  reconvergence probe. (4) The 250 review.
