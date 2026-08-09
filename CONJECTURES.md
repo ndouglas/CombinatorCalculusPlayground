@@ -6675,3 +6675,19 @@ does NOT yet say is the *must-pass* form (every path from the climber to `w` vis
 `≥ |u|` state) — that needs the reachable-set characterization (every reachable term
 lies on the family), which the no-NF principle's induction already contains and which
 would also make reachability FROM the climber decidable. That extraction is next.
+
+### Stage 247: THE CORRIDOR, EXACTLY — `sc_mt5T_reach_iff`
+
+The no-NF principle's induction knew more than it said: extracting its membership
+invariant gives `sc_forced_family_mem` (everything reachable from a forced family's
+start lies on the family), and with the converse this becomes an if-and-only-if:
+**a term is reachable from the twelve-leaf climber iff it is a generation start or on a
+generation's forced chain.** The wildest term the census found — 60k+ forced fires,
+unbounded growth, no normal form — has the TAMEST possible reachable set: a single
+path, in closed form. This sharpens the two-regime picture into an irony worth
+recording: wildness in {S,C} (so far) is not chaos but pure rigidity. The three open
+follow-ons: (a) pinned decidability of reachability-from-scMt5T (sizes grow with
+generation, so the iff reduces membership to finitely many checks); (b) the must-pass
+staircase (the iff makes "every path passes the peak" immediate — there IS only one
+path); (c) C12 theory — whether every corridor is this rigid is exactly the question
+the linear-excess law now hangs on.

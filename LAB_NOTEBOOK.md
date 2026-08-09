@@ -6682,3 +6682,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   climber — corollaries: the must-pass staircase, and decidability of reachability
   FROM scMt5T (the wildest known term has a fully-characterized reachable set).
   (2) C12 theory: the ratio-3 analysis of G-machines. (3) The 247 review.
+
+## 2026-08-09 — Stage 247: THE CORRIDOR, EXACTLY
+
+- Zero-error stage: the extraction compiled first try (the principle's proof was
+  already shaped as membership-then-conclusion), and the converse was three lines of
+  existing machinery. When a proof factors this cleanly, the abstraction was right.
+- One hundred twenty-nine autonomous stages (119–247). Ranking: (1) **pinned
+  decidability of reachability from the climber**: size lower bounds per generation
+  (every state of chain k weighs ≥ 16(3+k)-ish) turn the iff into a terminating
+  search — `instDecidable (Steps scMt5T u)` or a Bool-valued decider with a
+  correctness pin. The first decidability-of-reachability theorem for a growth-
+  unbounded {S,C} term. (2) C12 theory: ratio-3 analysis of G-machines. (3) The 248
+  review — and the ideonomy pass is due (last run at Stage 230).
