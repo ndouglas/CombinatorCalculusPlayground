@@ -1094,7 +1094,11 @@ maximum ratio 2.50, the mill's own asymptote 3. THE CORRIDOR PHASE IS
 LINEAR, exhaustively at n=10, and the frontier hypothesis FLIPS:
 registered as C12 (the linear-excess law, f(n,m) ≈ 3m + g(n)) — whose
 proof would make {S,C} reachability DECIDABLE via the frontier
-equivalence. THE TRICHOTOMY (Stage 250, `sc_mt5T_flat`): the
+equivalence. THE BRANCH PHASE DECOMPOSES (Stage 252): with
+confluence on the shelf, 88.2% of BRANCH terms leftmost-normalize
+within 1000 fires; the undecidability search space shrinks to the
+~3.5% divergent-growing residue — the C13 suspicion is they are all
+embedded G-machines. THE TRICHOTOMY (Stage 250, `sc_mt5T_flat`): the
 climber is size-unbounded, dynamically rigid, and numerically FLAT —
 no reachable register deeper than one; the wildest term is no C10
 witness, and C10 leans harder false. C13 (THE RIGIDITY CONJECTURE, Stage 249): every

@@ -6749,3 +6749,18 @@ out at compounds, so they too read `scIsReg = none` at every wrap) or live in th
 BRANCH phase. C10 leans harder false; the sharpest attack now: prove flatness for
 EVERY corridor species (C13 would industrialize this), leaving only BRANCH terms as
 candidate deepeners.
+
+### Stage 252: the BRANCH phase decomposes — confluence plus an 88% norm
+
+Two facts reshape the third phase. First, from the shelf: {S,C} is orthogonal and the
+repo already holds full confluence (SCConfluence.lean: parallel reduction, triangle,
+diamond, strip) — so branch points always reconverge and BRANCH is not about
+divergence of ARMS but about termination. Second, the probe: of 600 n=10 BRANCH terms,
+**88.2% leftmost-normalize within 1000 fires, 10.5% grow past 2500 leaves (divergent
+growers — the C13 suspicion: embedded G-machines), 1.3% linger small.** The
+decidability picture now factors as: NF phase (67%) + normalizing BRANCH (~29% of all
+terms) decidable by normalization-and-compare under confluence; corridors (0.15%)
+decidable if C13; the residue — divergent-growing BRANCH (~3.5% of all terms) — is
+where any undecidability must hide, and where the corridor pipeline (find the engine,
+pin the family) is the obvious siege engine. C10's last refuge shrinks to the same
+residue.

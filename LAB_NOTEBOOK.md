@@ -6773,3 +6773,14 @@ proved would make C13's "eventually a G-machine" a classification program, not a
 guess. (2) **BRANCH-phase reconvergence probe** — statistics on whether branch points
 rejoin (local confluence in practice); the decidability picture's missing third.
 (3) C12 theory: can any G-style engine exceed ratio 3?
+
+## 2026-08-09 — Stage 252: the BRANCH phase decomposes
+
+- Method note: the first probe run was mis-scaled (3000×3000 on growing terms) and
+  timed out; the rescue was the standing sweep rule — shrink, cap sizes, print
+  incrementally. The numbers stabilized by sample 300.
+- One hundred thirty-four autonomous stages (119–252). Ranking: (1) **the divergent
+  residue**: sample the 10.5% growers, march them past their branch points, and test
+  the C13 suspicion — do they stabilize into forced corridors (engines) after a
+  transient? If yes, the residue collapses into C13 and the undecidability search
+  space empties. (2) The +4-species mill formalization. (3) C12 ratio-3 theory.
