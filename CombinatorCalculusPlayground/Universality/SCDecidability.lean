@@ -6414,3 +6414,31 @@ theorem sc_mill_descent_run_forced : ∀ (d a m : Nat),
           show SCForced ((scMillDescentStates (scMillT (a + d))
             (scMillT m)).getLastD _) (scMillDescentChain d a m)
           exact sc_mill_descent_run_forced d a m)
+
+-- ## Stage 244 (feat): forcedness survives riders — the corridor's junk changes nothing
+-- The mill emits a junk block every revolution, so the corridor's states carry ever more
+-- riders; this lemma says the riders never open an escape: if a chain is forced and the
+-- rider is normal (and no root redex forms at the join), the ridden chain is forced too.
+-- With it, forcedness propagates through the junk stack — the last ingredient of the
+-- no-normal-form corollary and the parametric staircase.
+
+/-- Forced chains stay forced under a normal rider that forms no root redex. -/
+theorem sc_forced_rider : ∀ {l : List SCTerm} {t x : SCTerm},
+    scSucc x = [] →
+    (∀ u ∈ t :: l, scSuccRoot (.app u x) = []) →
+    SCForced t l →
+    SCForced (.app t x) (l.map (.app · x)) := by
+  intro l
+  induction l with
+  | nil => intro t x _ _ _; exact trivial
+  | cons v rest ih =>
+      intro t x hx hroot hf
+      refine ⟨?_, ?_⟩
+      · show scSucc (.app t x) = [.app v x]
+        show scSuccRoot (.app t x)
+          ++ (scSucc t).map (fun f' => .app f' x)
+          ++ (scSucc x).map (fun x' => .app t x') = [.app v x]
+        rw [hroot t List.mem_cons_self, hf.1, hx]
+        rfl
+      · exact ih hx
+          (fun u hu => hroot u (List.mem_cons_of_mem t hu)) hf.2
