@@ -6645,3 +6645,19 @@ corridors deep-marched — returns the SAME maximum drop as n=10 (211, the same 
 family), ratio distribution median 1.23, p95 1.71, max 3.44. The linear-excess law C12
 is two-generation stable with constants: no corridor at either size exceeds ratio 3.5,
 against the mill's own asymptote of 3. The frontier's decidable side keeps firming.
+
+### Stage 245: THE CLIMBER NEVER RESTS — `sc_mt5T_no_nf`
+
+The corridor no-NF instantiation closed. The invariant that makes it work is SPINE
+DEPTH: every state the mill ever visits has left-spine depth ≥ 3 (`SCSpine3`), so no
+rider — junk block, junk stack, or the outer carrier — can ever complete a root redex.
+Forcedness therefore survives arbitrary stacking (`sc_forced_riders`, and the mirror
+carrier lemma), the revolution is forced as a named whole (`scMillRevStates_forced`:
+from `G 0 m` the entire cycle of `6(m+2)` fires is the ONLY reduction), and the chain
+family — anchor march, initial descent, then one ridden revolution per generation —
+satisfies the no-normal-form principle. `sc_mt5T_no_nf`: every term reachable from the
+twelve-leaf climber `S (S S C (S C) (S (C S (C C)) C))` still has a step. The corridor
+is not just unbounded (Stage 240); it is INESCAPABLE. This is the program's first
+pinned non-normalization of a census-found wild term, and the strongest possible form
+of the two-regime picture: the climber's entire reachable set lives outside the
+normal-form phase. Axioms: [propext, Quot.sound].

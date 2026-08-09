@@ -1094,7 +1094,11 @@ maximum ratio 2.50, the mill's own asymptote 3. THE CORRIDOR PHASE IS
 LINEAR, exhaustively at n=10, and the frontier hypothesis FLIPS:
 registered as C12 (the linear-excess law, f(n,m) ≈ 3m + g(n)) — whose
 proof would make {S,C} reachability DECIDABLE via the frontier
-equivalence. The program's central question now has a live conjecture
+equivalence. The corridor is now INESCAPABLE, not merely
+unbounded: `sc_mt5T_no_nf` (Stage 245) pins that every term reachable
+from the census's twelve-leaf climber still has a step — no reachable
+normal form, the first pinned non-normalization of a wild term. The
+program's central question now has a live conjecture
 on each side — and Stage 244 firmed the decidable side twice over: the
 n=12 screen (1,500 corridors) returns the SAME max drop as n=10 (211)
 with ratios ≤ 3.44 (median 1.23) — C12 is two-generation stable — and

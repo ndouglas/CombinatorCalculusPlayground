@@ -6656,3 +6656,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   principle — scMt5T has no normal form, the program's first pinned non-normalization
   of a census-found term. (2) C12 theory: the ratio-3 analysis of G-machines. (3) The
   245 review.
+
+## 2026-08-09 — Stage 245: THE CLIMBER NEVER RESTS
+
+- The assembly went exactly as the Stage 244 ranking specified: spine-3 invariant →
+  iterated riders → named revolution → family → principle. Two mechanical potholes
+  (dotted-notation ambiguity under `List.map`'s free codomain; `rw` not delta-unfolding
+  match-defs — bridged with `show`/`exact rfl`), zero mathematical ones. The march-44
+  landing and the two ≠-refutations were the only kernel `decide`s, all under a second.
+- One hundred twenty-seven autonomous stages (119–245). Ranking: (1) **the parametric
+  staircase**: the mill's peaks as on-path mountains at every scale — turn
+  sc_corridor_unbounded + forcedness into a pinned ∀-scale floor-ladder theorem
+  (excess → ∞ along the corridor), retiring the hand-built ladder. (2) C12 theory:
+  why ratio 3 — the descent's 6-fires-per-layer against the turnover's +1 growth;
+  can any G-style engine beat it? (3) The 246 review.
