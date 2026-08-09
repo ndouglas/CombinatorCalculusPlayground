@@ -6885,3 +6885,136 @@ and the carrier never opening an exit. -/
 theorem sc_mt5T_no_nf : ∀ u, RS.SC.Steps scMt5T u → ∃ v, RS.SC.step u v :=
   sc_forced_forever_no_nf scNoNFF scNoNFChain scNoNFF_forced scNoNFChain_last
     scNoNFChain_ne
+
+-- ## Stage 246: the parametric staircase — unbounded excess along the corridor.
+-- The mill's peaks pinned at every scale: right after each turnover the state stands
+-- `6m` leaves above the ground it descends to, and the road runs through both. The
+-- hand-built floor ladder measured this at three scales; here it is for all of them.
+
+/-- From any member of a checked chain, the reduction continues to the chain's last. -/
+theorem scChained_steps_last : ∀ (l : List SCTerm) (t u : SCTerm), SCChained t l →
+    u ∈ t :: l → RS.SC.Steps u (l.getLastD t) := by
+  intro l
+  induction l with
+  | nil =>
+      intro t u _ hu
+      rcases List.mem_cons.mp hu with rfl | hu
+      · exact @RS.Steps.refl RS.SC u
+      · exact absurd hu (List.not_mem_nil)
+  | cons v rest ih =>
+      intro t u hc hu
+      rw [List.getLastD_cons]
+      rcases List.mem_cons.mp hu with rfl | hu
+      · exact RS.Steps.tail (scSucc_sound hc.1) (ih v v hc.2 List.mem_cons_self)
+      · exact ih v u hc.2 hu
+
+/-- Every generation's start is reachable from the climber. -/
+theorem scNoNFF_steps : ∀ k, RS.SC.Steps scMt5T (scNoNFF k)
+  | 0 => @RS.Steps.refl RS.SC scMt5T
+  | k + 1 => by
+      have h2 : RS.SC.Steps (scNoNFF k) ((scNoNFChain k).getLastD (scNoNFF k)) :=
+        scChained_steps_last (scNoNFChain k) (scNoNFF k) (scNoNFF k)
+          (scForced_chained _ _ (scNoNFF_forced k)) List.mem_cons_self
+      rw [scNoNFChain_last k] at h2
+      exact RS.Steps.trans (scNoNFF_steps k) h2
+
+/-- The peak inside each revolution: right after the turnover, before the descent. -/
+def scMillPeak (m : Nat) : SCTerm := .app (scMillG m (m + 1)) scMillB2
+
+/-- The peak is the turnover's last state. -/
+theorem scMillPeak_mem (m : Nat) :
+    scMillPeak m ∈ scMillTurnStates (scMillT m) :=
+  List.Mem.tail _ (.tail _ (.tail _ (.tail _ (.tail _ (.head _)))))
+
+/-- The full-dress peak at generation `j`: under the carrier, over the junk stack. -/
+def scNoNFPeak (j : Nat) : SCTerm :=
+  .app (.app .C scSpA)
+    (scAppList (scMillPeak (4 + j)) (List.replicate (3 + j) scMillB2))
+
+/-- The full-dress peak lies on generation `j`'s forced chain. -/
+theorem scNoNFPeak_mem (j : Nat) : scNoNFPeak j ∈ scNoNFChain (j + 2) := by
+  show _ ∈ ((scMillRevStates (4 + j)).map
+      (scAppList · (List.replicate (3 + j) scMillB2))).map
+        (SCTerm.app (.app .C scSpA) ·)
+  exact List.mem_map_of_mem
+    (List.mem_map_of_mem
+      (List.mem_append_left _ (scMillPeak_mem (4 + j))))
+
+/-- The climber reaches every peak. -/
+theorem scNoNFPeak_reach (j : Nat) : RS.SC.Steps scMt5T (scNoNFPeak j) :=
+  RS.Steps.trans (scNoNFF_steps (j + 2))
+    (scChained_steps _ _ _ (scForced_chained _ _ (scNoNFF_forced (j + 2)))
+      (List.mem_cons_of_mem _ (scNoNFPeak_mem j)))
+
+/-- Every peak descends to the next generation's start. -/
+theorem scNoNFPeak_descends (j : Nat) :
+    RS.SC.Steps (scNoNFPeak j) (scNoNFF (j + 3)) := by
+  have h := scChained_steps_last (scNoNFChain (j + 2)) (scNoNFF (j + 2)) (scNoNFPeak j)
+    (scForced_chained _ _ (scNoNFF_forced (j + 2)))
+    (List.mem_cons_of_mem _ (scNoNFPeak_mem j))
+  rw [scNoNFChain_last (j + 2)] at h
+  exact h
+
+/-- Leaf count distributes over an application list. -/
+theorem scAppList_size : ∀ (zs : List SCTerm) (t : SCTerm),
+    (scAppList t zs).leafCount = t.leafCount + (zs.map SCTerm.leafCount).sum := by
+  intro zs
+  induction zs with
+  | nil => intro t; simp [scAppList]
+  | cons z zs ih =>
+      intro t
+      show (scAppList (.app t z) zs).leafCount = _
+      rw [ih (.app t z), List.map_cons, List.sum_cons,
+        show (SCTerm.app t z).leafCount = t.leafCount + z.leafCount from rfl]
+      omega
+
+/-- The junk block weighs sixteen leaves. -/
+theorem scMillB2_size : scMillB2.leafCount = 16 := rfl
+
+/-- The junk stack's total weight. -/
+theorem scRepB2_sum : ∀ n : Nat,
+    ((List.replicate n scMillB2).map SCTerm.leafCount).sum = 16 * n
+  | 0 => rfl
+  | n + 1 => by
+      show 16 + ((List.replicate n scMillB2).map SCTerm.leafCount).sum = 16 * (n + 1)
+      rw [scRepB2_sum n]
+      omega
+
+/-- The two-counter state's weight. -/
+theorem scMillG_size (a m : Nat) : (scMillG a m).leafCount = 28 + 6 * a + 3 * m := by
+  show (scMillT a).leafCount + (1 + (scMillT a).leafCount) + (scMillT m).leafCount = _
+  rw [scMillT_size, scMillT_size]
+  omega
+
+/-- The peak's weight. -/
+theorem scMillPeak_size (m : Nat) : (scMillPeak m).leafCount = 47 + 9 * m := by
+  show (scMillG m (m + 1)).leafCount + scMillB2.leafCount = _
+  rw [scMillG_size, scMillB2_size]
+  omega
+
+/-- The full-dress peak's weight at generation `j`. -/
+theorem scNoNFPeak_size (j : Nat) : (scNoNFPeak j).leafCount = 141 + 25 * j := by
+  show 1 + scSpA.leafCount
+      + (scAppList (scMillPeak (4 + j)) (List.replicate (3 + j) scMillB2)).leafCount = _
+  rw [scAppList_size, scRepB2_sum, scMillPeak_size,
+    show scSpA.leafCount = 9 from rfl]
+  omega
+
+/-- The generation start's weight. -/
+theorem scNoNFF_size (j : Nat) : (scNoNFF (j + 3)).leafCount = 117 + 19 * j := by
+  show 1 + scSpA.leafCount
+      + (scAppList (scMillG 0 (4 + (j + 1)))
+          (List.replicate (3 + (j + 1)) scMillB2)).leafCount = _
+  rw [scAppList_size, scRepB2_sum, scMillG_size,
+    show scSpA.leafCount = 9 from rfl]
+  omega
+
+/-- **THE PARAMETRIC STAIRCASE**: excess is unbounded along the corridor — at every
+scale `d`, the climber's road climbs to a peak at least `d` leaves above a state the
+peak itself still reaches. The floor ladder, at all scales at once. -/
+theorem sc_corridor_excess (d : Nat) : ∃ u w : SCTerm,
+    RS.SC.Steps scMt5T u ∧ RS.SC.Steps u w ∧ w.leafCount + d ≤ u.leafCount := by
+  refine ⟨scNoNFPeak d, scNoNFF (d + 3), scNoNFPeak_reach d,
+    scNoNFPeak_descends d, ?_⟩
+  rw [scNoNFPeak_size, scNoNFF_size]
+  omega

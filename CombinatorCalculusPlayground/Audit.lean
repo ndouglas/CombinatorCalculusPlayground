@@ -905,3 +905,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_mt5T_no_nf' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_mt5T_no_nf
+
+/-- info: 'scNoNFF_steps' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scNoNFF_steps
+
+/-- info: 'sc_corridor_excess' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_corridor_excess
