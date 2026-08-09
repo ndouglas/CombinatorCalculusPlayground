@@ -7018,3 +7018,97 @@ theorem sc_corridor_excess (d : Nat) : ∃ u w : SCTerm,
     scNoNFPeak_descends d, ?_⟩
   rw [scNoNFPeak_size, scNoNFF_size]
   omega
+
+-- ## Stage 247: the reachable-set characterization — the corridor, exactly.
+-- The no-NF principle's induction knows more than "everything still steps": it knows
+-- WHERE everything is. Extracted here: every term reachable from the family's start
+-- lies on the family; instantiated to the climber, with the converse, this is the
+-- complete description of the wildest census term's reachable set.
+
+/-- **The family membership theorem**: everything reachable from `F 0` is a generation
+start or lies on a generation's chain. -/
+theorem sc_forced_family_mem (F : Nat → SCTerm) (chain : Nat → List SCTerm)
+    (hf : ∀ k, SCForced (F k) (chain k))
+    (hlast : ∀ k, (chain k).getLastD (F k) = F (k + 1))
+    (hne : ∀ k, chain k ≠ []) :
+    ∀ u, RS.SC.Steps (F 0) u → ∃ k, u = F k ∨ u ∈ chain k := by
+  have hmem_succ : ∀ k u, (u = F k ∨ u ∈ chain k) → ∃ w,
+      scSucc u = [w] ∧
+        ((w = F (k + 1) ∨ w ∈ chain (k + 1)) ∨ w ∈ chain k) := by
+    intro k u hu
+    rcases hu with rfl | hu
+    · cases hc : chain k with
+      | nil => exact absurd hc (hne k)
+      | cons v rest =>
+          have h1 := hf k
+          rw [hc] at h1
+          exact ⟨v, h1.1, .inr List.mem_cons_self⟩
+    · have hwalk : ∀ (l : List SCTerm) (t : SCTerm), SCForced t l →
+          l.getLastD t = F (k + 1) → ∀ u ∈ l, ∃ w, scSucc u = [w] ∧
+            ((w = F (k + 1) ∨ w ∈ chain (k + 1)) ∨ w ∈ l) := by
+        intro l
+        induction l with
+        | nil => intro t _ _ u hu; exact absurd hu List.not_mem_nil
+        | cons v rest ih =>
+            intro t hfl hl u hu
+            rcases List.mem_cons.mp hu with rfl | hu'
+            · cases hr : rest with
+              | nil =>
+                  have hv : u = F (k + 1) := by
+                    rw [hr] at hl
+                    simpa using hl
+                  cases hc2 : chain (k + 1) with
+                  | nil => exact absurd hc2 (hne (k + 1))
+                  | cons w2 r2 =>
+                      have h2 := hf (k + 1)
+                      rw [hc2] at h2
+                      exact ⟨w2, by rw [hv]; exact h2.1,
+                        .inl (.inr List.mem_cons_self)⟩
+              | cons v2 r2 =>
+                  have h2 := hfl.2
+                  rw [hr] at h2
+                  exact ⟨v2, h2.1,
+                    .inr (List.mem_cons.mpr (.inr List.mem_cons_self))⟩
+            · have hl' : rest.getLastD v = F (k + 1) := by
+                have hstep : (v :: rest).getLastD t = rest.getLastD v := by
+                  cases rest <;> rfl
+                rw [← hstep, hl]
+              obtain ⟨w, hw, hwm⟩ := ih v hfl.2 hl' u hu'
+              exact ⟨w, hw, hwm.imp id (List.mem_cons_of_mem v)⟩
+      obtain ⟨w, hw, hwm⟩ := hwalk (chain k) (F k) (hf k) (hlast k) u hu
+      exact ⟨w, hw, hwm⟩
+  have hreach : ∀ (a u : SCTerm), RS.SC.Steps a u →
+      (∃ k, a = F k ∨ a ∈ chain k) → ∃ k, u = F k ∨ u ∈ chain k := by
+    intro a u h
+    refine h.rec (motive := fun (x y : SCTerm) _ =>
+        (∃ k, x = F k ∨ x ∈ chain k) → ∃ k, y = F k ∨ y ∈ chain k) ?_ ?_
+    · intro _ hx
+      exact hx
+    · intro x y c s rest ih hx
+      obtain ⟨k, hk⟩ := hx
+      obtain ⟨w, hw, hwm⟩ := hmem_succ k x hk
+      have hy : y = w := by
+        have hm := scSucc_complete s
+        rw [hw] at hm
+        simpa using hm
+      subst hy
+      apply ih
+      rcases hwm with h1 | h2
+      · exact ⟨k + 1, h1.imp id id⟩
+      · exact ⟨k, .inr h2⟩
+  intro u hsteps
+  exact hreach (F 0) u hsteps ⟨0, .inl rfl⟩
+
+/-- **THE CORRIDOR, EXACTLY**: a term is reachable from the census's twelve-leaf
+climber if and only if it is a generation start or lies on a generation's forced
+chain. The complete reachable set of the wildest known term, in closed form. -/
+theorem sc_mt5T_reach_iff (u : SCTerm) :
+    RS.SC.Steps scMt5T u ↔ ∃ k, u = scNoNFF k ∨ u ∈ scNoNFChain k := by
+  constructor
+  · exact sc_forced_family_mem scNoNFF scNoNFChain scNoNFF_forced scNoNFChain_last
+      scNoNFChain_ne u
+  · rintro ⟨k, rfl | hu⟩
+    · exact scNoNFF_steps k
+    · exact RS.Steps.trans (scNoNFF_steps k)
+        (scChained_steps _ _ _ (scForced_chained _ _ (scNoNFF_forced k))
+          (List.mem_cons_of_mem _ hu))

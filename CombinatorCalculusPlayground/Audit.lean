@@ -911,3 +911,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_corridor_excess' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_corridor_excess
+
+/-- info: 'sc_forced_family_mem' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_forced_family_mem
+
+/-- info: 'sc_mt5T_reach_iff' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_mt5T_reach_iff
