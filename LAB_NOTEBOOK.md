@@ -6733,3 +6733,43 @@ what automation could and couldn't do. This file is a first-class deliverable
   mill formalization (second engine, tests C13's "every corridor is a G-machine").
   (3) BRANCH-phase reconvergence probe (C10's last refuge; also the missing third of
   the decidability picture).
+
+## 2026-08-09 — Stage 251: the review at 250
+
+**The corridor arc (Stages 240–250), consolidated.** Eleven stages from discovery to
+trichotomy, and the arc is a self-contained unit: THE MILL's laws (descent, turnover,
+cycle, eternity — C11 PROVED) → the census and crash screens (n=10 exhaustive, n=12
+sampled; NO crasher; C12 registered, two-generation stable) → forcedness made
+parametric (Stage 242) → the no-NF principle and its instantiation (`sc_mt5T_no_nf`,
+Stage 245) → the parametric staircase (`sc_corridor_excess`, Stage 246) → the
+reachable set in closed form (`sc_mt5T_reach_iff`, Stage 247) → certified decidability
+of reachability from the climber (`scMt5TReach_decidable`, Stage 248) → all six n=12
+champions certified corridors, C13 registered (Stage 249) → numerical flatness and the
+C10-negative (`sc_mt5T_flat`, Stage 250). Ledger: 308 audit pins, 7,409 lines in
+SCDecidability.lean, 553 commits, zero warnings, axiom ceiling [propext, Quot.sound]
+throughout, no sorry / native_decide / Classical.choice anywhere.
+
+**The frontier, re-ranked.**
+- **C12 (linear excess; leaning TRUE)** is the program's center of gravity: every
+  probe strengthens it, and the mill's own ledger (peak 141+25j over ground 117+19j,
+  ratio → 25/19) shows WHY a linear law is natural for G-machines.
+- **C13 (rigidity; fresh, leaning TRUE)** is the mechanism that would explain C12:
+  if every corridor is eventually a G-machine, the 245–248 pipeline industrializes —
+  family, size floor, bounded scan — and corridor reachability is decidable wholesale.
+- **C10 (deepening; leaning FALSE, harder now)**: corridors of both known species are
+  flat; a witness must be a new species or live in BRANCH.
+- The decidability question itself now factors cleanly by census phase:
+  NF (67%, decidable by normalization) + CORRIDOR (0.15%, decidable if C13) +
+  BRANCH (33%, open — the whole remaining question).
+
+**Dead-weight sweep**: none found — the Stage-244 draft reverts left no orphans; the
+spine-3/register calculi are both live (used by 245–250); the champion defs feed the
+planned +4-mill work.
+
+**Next arc.** Ranking: (1) **the +4-species mill** — reverse-engineer scChamp170's
+C-chain engine to laws (its descent should be `C-chain swap`: 1 fire/layer + junk-pair
+traversal), prove its cycle, then its trichotomy by the same pipeline; two species
+proved would make C13's "eventually a G-machine" a classification program, not a
+guess. (2) **BRANCH-phase reconvergence probe** — statistics on whether branch points
+rejoin (local confluence in practice); the decidability picture's missing third.
+(3) C12 theory: can any G-style engine exceed ratio 3?
