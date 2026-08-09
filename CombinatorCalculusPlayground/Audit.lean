@@ -896,3 +896,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_forced_forever_no_nf' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_forced_forever_no_nf
+
+/-- info: 'scMillRevStates_forced' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMillRevStates_forced
+
+/-- info: 'sc_forced_riders' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_forced_riders
+
+/-- info: 'sc_mt5T_no_nf' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_mt5T_no_nf

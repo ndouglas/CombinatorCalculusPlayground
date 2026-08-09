@@ -6529,3 +6529,359 @@ theorem sc_forced_forever_no_nf (F : Nat → SCTerm) (chain : Nat → List SCTer
   obtain ⟨k, hk⟩ := hreach (F 0) u hsteps ⟨0, .inl rfl⟩
   obtain ⟨w, hw, _⟩ := hmem_succ k u hk
   exact ⟨w, scSucc_sound (hw ▸ List.mem_cons_self)⟩
+
+-- ## Stage 245: the corridor no-NF assembly, piece A — carriers and chain plumbing.
+
+/-- Mirror of the rider lemma: forcedness survives an inert left carrier. -/
+theorem sc_forced_carrier : ∀ {l : List SCTerm} {t c : SCTerm},
+    scSucc c = [] →
+    (∀ u ∈ t :: l, scSuccRoot (.app c u) = []) →
+    SCForced t l →
+    SCForced (.app c t) (l.map (.app c ·)) := by
+  intro l
+  induction l with
+  | nil => intro t c _ _ _; exact trivial
+  | cons v rest ih =>
+      intro t c hc hroot hf
+      refine ⟨?_, ?_⟩
+      · show scSucc (.app c t) = [.app c v]
+        show scSuccRoot (.app c t)
+          ++ (scSucc c).map (fun f' => .app f' t)
+          ++ (scSucc t).map (fun x' => .app c x') = [.app c v]
+        rw [hroot t List.mem_cons_self, hc, hf.1]
+        rfl
+      · exact ih hc (fun u hu => hroot u (List.mem_cons_of_mem t hu)) hf.2
+
+/-- The outer spiral carrier is inert. -/
+theorem scSpCarrier_succ_nil : scSucc (.app .C scSpA) = [] := rfl
+
+/-- The outer carrier never forms a root redex. -/
+theorem scSpCarrier_root_nil (u : SCTerm) :
+    scSuccRoot (.app (.app .C scSpA) u) = [] := rfl
+
+/-- `getLastD` of an append with a nonempty right part. -/
+theorem List.getLastD_append_right {α : Type} {l₂ : List α} (l₁ : List α)
+    (h : l₂ ≠ []) : ∀ d d' : α, (l₁ ++ l₂).getLastD d = l₂.getLastD d' := by
+  induction l₁ with
+  | nil =>
+      intro d d'
+      cases l₂ with
+      | nil => exact absurd rfl h
+      | cons a t => rw [List.nil_append, List.getLastD_cons, List.getLastD_cons]
+  | cons a l₁ ih =>
+      intro d d'
+      rw [List.cons_append, List.getLastD_cons]
+      exact ih a d'
+
+-- ## Stage 245 piece B: spine depth, iterated riders, and the revolution chain.
+-- The route to no-normal-form: every corridor state has left-spine depth ≥ 3, so no
+-- rider (junk block or stack) can ever complete a root redex; forcedness therefore
+-- survives the whole junk stack and the outer carrier, and the revolutions chain into
+-- the family the principle needs.
+
+/-- Left-spine depth at least three: enough structure that no rider completes a redex. -/
+def SCSpine3 (u : SCTerm) : Prop :=
+  ∃ p q g x : SCTerm, u = .app (.app (.app p q) g) x
+
+/-- A spine-3 term ridden by anything has no root redex. -/
+theorem scSuccRoot_nil_of_spine3 {u z : SCTerm} (h : SCSpine3 u) :
+    scSuccRoot (.app u z) = [] := by
+  obtain ⟨p, q, g, x, rfl⟩ := h
+  exact scSuccRoot_deep_nil
+
+/-- Spine depth only grows under application. -/
+theorem SCSpine3.app {u : SCTerm} (h : SCSpine3 u) (z : SCTerm) :
+    SCSpine3 (.app u z) := by
+  obtain ⟨p, q, g, x, rfl⟩ := h
+  exact ⟨.app p q, g, x, z, rfl⟩
+
+/-- The two-counter state is spine-3 (towers are applications). -/
+theorem scMillG_spine3 (a m : Nat) : SCSpine3 (scMillG a m) := by
+  obtain ⟨p, q, hpq⟩ := scMillT_isApp a
+  refine ⟨p, q, .app .C (scMillT a), scMillT m, ?_⟩
+  show SCTerm.app (.app (scMillT a) (.app .C (scMillT a))) (scMillT m) = _
+  rw [hpq]
+
+/-- Every descent state is spine-3 when the counter payload is an application. -/
+theorem scMillDescentStates_spine3 {x : SCTerm} (y : SCTerm)
+    (hx : ∃ a b, x = .app a b) :
+    ∀ u ∈ scMillDescentStates x y, SCSpine3 u := by
+  obtain ⟨a, b, rfl⟩ := hx
+  intro u hu
+  simp only [scMillDescentStates, List.mem_cons, List.not_mem_nil, or_false] at hu
+  rcases hu with rfl | rfl | rfl | rfl | rfl | rfl <;> exact ⟨_, _, _, _, rfl⟩
+
+/-- Every state of the descent run is spine-3. -/
+theorem scMillDescentChain_spine3 : ∀ (d a m : Nat),
+    ∀ u ∈ scMillDescentChain d a m, SCSpine3 u
+  | 0, _, _ => by intro u hu; exact absurd hu (List.not_mem_nil)
+  | d + 1, a, m => by
+      intro u hu
+      rcases List.mem_append.mp hu with h | h
+      · exact scMillDescentStates_spine3 (scMillT m) (scMillT_isApp (a + d)) u h
+      · exact scMillDescentChain_spine3 d a m u h
+
+/-- A positive descent run is a nonempty chain. -/
+theorem scMillDescentChain_ne (d a m : Nat) (hd : 1 ≤ d) :
+    scMillDescentChain d a m ≠ [] := by
+  cases d with
+  | zero => omega
+  | succ d =>
+      show scMillDescentStates _ _ ++ _ ≠ []
+      simp [scMillDescentStates]
+
+/-- The descent run ends at the ground state `G a m`. -/
+theorem scMillDescentChain_last (a m : Nat) : ∀ d, 1 ≤ d → ∀ dflt : SCTerm,
+    (scMillDescentChain d a m).getLastD dflt = scMillG a m := by
+  intro d
+  induction d with
+  | zero => intro h; omega
+  | succ d ih =>
+      intro _ dflt
+      cases d with
+      | zero =>
+          show (scMillDescentStates (scMillT (a + 0)) (scMillT m)
+            ++ scMillDescentChain 0 a m).getLastD dflt = scMillG a m
+          rw [show scMillDescentChain 0 a m = [] from rfl, List.append_nil]
+          rfl
+      | succ d' =>
+          show (scMillDescentStates (scMillT (a + (d' + 1))) (scMillT m)
+            ++ scMillDescentChain (d' + 1) a m).getLastD dflt = scMillG a m
+          rw [List.getLastD_append_right _
+            (scMillDescentChain_ne (d' + 1) a m (by omega)) dflt dflt]
+          exact ih (by omega) dflt
+
+/-- The junk block is inert. -/
+theorem scMillB2_succ_nil : scSucc scMillB2 = [] := rfl
+
+/-- Forced chains stay forced under a whole stack of inert riders, provided every state
+is spine-3 (so no root redex ever forms at any level of the stack). -/
+theorem sc_forced_riders : ∀ (zs : List SCTerm) {t : SCTerm} {l : List SCTerm},
+    (∀ z ∈ zs, scSucc z = []) →
+    (∀ u ∈ t :: l, SCSpine3 u) →
+    SCForced t l →
+    SCForced (scAppList t zs) (l.map (scAppList · zs)) := by
+  intro zs
+  induction zs with
+  | nil =>
+      intro t l _ _ hf
+      show SCForced t (l.map (scAppList · []))
+      rw [show l.map (scAppList · []) = l from by simp [scAppList]]
+      exact hf
+  | cons z zs ih =>
+      intro t l hz hsp hf
+      show SCForced (scAppList (.app t z) zs) (l.map (scAppList · (z :: zs)))
+      rw [show l.map (scAppList · (z :: zs))
+          = (l.map (.app · z)).map (scAppList · zs) from by
+        rw [List.map_map]; rfl]
+      refine ih (fun w hw => hz w (List.mem_cons_of_mem z hw)) ?_ ?_
+      · intro u hu
+        rcases List.mem_cons.mp hu with rfl | hu
+        · exact (hsp t List.mem_cons_self).app z
+        · obtain ⟨w, hw, rfl⟩ := List.mem_map.mp hu
+          exact (hsp w (List.mem_cons_of_mem t hw)).app z
+      · exact sc_forced_rider (hz z List.mem_cons_self)
+          (fun u hu => scSuccRoot_nil_of_spine3 (hsp u hu)) hf
+
+/-- The six turnover states for tower payload `M`. -/
+def scMillTurnStates (M : SCTerm) : List SCTerm :=
+  [(.app (.app (.app (.app .S .C) (.app .C scMillK)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)) M),
+   (.app (.app (.app .C (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))) M),
+   (.app (.app (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C) M) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))),
+   (.app (.app (.app (.app (.app .C .S) (.app .C .C)) M) (.app .C M)) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))),
+   (.app (.app (.app (.app .S M) (.app .C .C)) (.app .C M)) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))),
+   (.app (.app (.app M (.app .C M)) (.app (.app .C .C) (.app .C M))) (.app (.app .C scMillK) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))]
+
+/-- The turnover, restated over the named states: from `G 0 m`, six forced fires. -/
+theorem scMillTurnStates_forced (m : Nat) :
+    SCForced (scMillG 0 m) (scMillTurnStates (scMillT m)) :=
+  sc_mill_turnover_forced (scMillT m) (scSucc_nil_of_normal (scMillT_normal m))
+
+/-- Every turnover state is spine-3 when the tower payload is an application. -/
+theorem scMillTurnStates_spine3 {M : SCTerm} (hM : ∃ a b, M = .app a b) :
+    ∀ u ∈ scMillTurnStates M, SCSpine3 u := by
+  obtain ⟨a, b, rfl⟩ := hM
+  intro u hu
+  simp only [scMillTurnStates, List.mem_cons, List.not_mem_nil, or_false] at hu
+  rcases hu with rfl | rfl | rfl | rfl | rfl | rfl <;> exact ⟨_, _, _, _, rfl⟩
+
+/-- One full revolution from `G 0 m`: six turnover fires, then the descent home under
+the freshly emitted junk rider. -/
+def scMillRevStates (m : Nat) : List SCTerm :=
+  scMillTurnStates (scMillT m)
+    ++ (scMillDescentChain m 0 (m + 1)).map (.app · scMillB2)
+
+/-- **The revolution is forced** — from `G 0 m`, the whole cycle is the only reduction. -/
+theorem scMillRevStates_forced (m : Nat) :
+    SCForced (scMillG 0 m) (scMillRevStates m) := by
+  refine SCForced_append (scMillTurnStates_forced m) ?_
+  rw [show (scMillTurnStates (scMillT m)).getLastD (scMillG 0 m)
+      = .app (scMillG m (m + 1)) scMillB2 from rfl]
+  refine sc_forced_rider scMillB2_succ_nil ?_ ?_
+  · intro u hu
+    rcases List.mem_cons.mp hu with rfl | hu
+    · exact scSuccRoot_nil_of_spine3 (scMillG_spine3 m (m + 1))
+    · exact scSuccRoot_nil_of_spine3 (scMillDescentChain_spine3 m 0 (m + 1) u hu)
+  · have h := sc_mill_descent_run_forced m 0 (m + 1)
+    rw [Nat.zero_add] at h
+    exact h
+
+/-- The revolution ends one tower higher, one junk block richer. -/
+theorem scMillRevStates_getLastD (m : Nat) (hm : 1 ≤ m) (dflt : SCTerm) :
+    (scMillRevStates m).getLastD dflt = .app (scMillG 0 (m + 1)) scMillB2 := by
+  have h1 : (scMillRevStates m).getLastD dflt
+      = ((scMillDescentChain m 0 (m + 1)).map (.app · scMillB2)).getLastD
+          (.app (scMillG 0 (m + 1)) scMillB2) :=
+    List.getLastD_append_right _
+      (fun h => scMillDescentChain_ne m 0 (m + 1) hm (List.map_eq_nil_iff.mp h))
+      dflt _
+  have h2 : ((scMillDescentChain m 0 (m + 1)).map (SCTerm.app · scMillB2)).getLastD
+      (SCTerm.app (scMillG 0 (m + 1)) scMillB2)
+      = SCTerm.app ((scMillDescentChain m 0 (m + 1)).getLastD (scMillG 0 (m + 1))) scMillB2 :=
+    List.getLastD_map
+  rw [h1, h2, scMillDescentChain_last 0 (m + 1) m hm]
+
+/-- Revolutions are nonempty chains. -/
+theorem scMillRevStates_ne (m : Nat) : scMillRevStates m ≠ [] := by
+  show scMillTurnStates (scMillT m) ++ _ ≠ []
+  simp [scMillTurnStates]
+
+/-- Every revolution state is spine-3. -/
+theorem scMillRevStates_spine3 (m : Nat) :
+    ∀ u ∈ scMillRevStates m, SCSpine3 u := by
+  intro u hu
+  rcases List.mem_append.mp hu with h | h
+  · exact scMillTurnStates_spine3 (scMillT_isApp m) u h
+  · obtain ⟨w, hw, rfl⟩ := List.mem_map.mp h
+    exact (scMillDescentChain_spine3 m 0 (m + 1) w hw).app scMillB2
+
+-- ## Stage 245 piece C: the family, and the climber's no-normal-form theorem.
+-- The chain family the principle needs: the forty-four-fire anchor march, the initial
+-- three-layer descent, then one ridden revolution per generation — each under the
+-- spiral carrier and an ever-deeper junk stack.
+
+/-- The corridor's generation-`k` state: the climber, the spiral ground state, then
+tower `4+j` over a `3+j`-deep junk stack under the carrier. -/
+def scNoNFF : Nat → SCTerm
+  | 0 => scMt5T
+  | 1 => .app (.app .C scSpA) (scAppList (scMillG 3 4) (List.replicate 3 scMillB2))
+  | j + 2 => .app (.app .C scSpA)
+      (scAppList (scMillG 0 (4 + j)) (List.replicate (3 + j) scMillB2))
+
+/-- The generation-`k` forced chain: anchor march, ridden initial descent, then the
+ridden revolutions. -/
+def scNoNFChain : Nat → List SCTerm
+  | 0 => scForcedMarch scMt5T 44
+  | 1 => ((scMillDescentChain 3 0 4).map
+      (scAppList · (List.replicate 3 scMillB2))).map (.app (.app .C scSpA) ·)
+  | j + 2 => ((scMillRevStates (4 + j)).map
+      (scAppList · (List.replicate (3 + j) scMillB2))).map (.app (.app .C scSpA) ·)
+
+/-- Every generation's chain is forced. -/
+theorem scNoNFF_forced : ∀ k, SCForced (scNoNFF k) (scNoNFChain k)
+  | 0 => scForcedMarch_forced 44 scMt5T
+  | 1 => by
+      refine sc_forced_carrier scSpCarrier_succ_nil
+        (fun u _ => scSpCarrier_root_nil u) ?_
+      refine sc_forced_riders _ ?_ ?_ ?_
+      · intro z hz; rw [List.eq_of_mem_replicate hz]; exact scMillB2_succ_nil
+      · intro u hu
+        rcases List.mem_cons.mp hu with rfl | hu
+        · exact scMillG_spine3 3 4
+        · exact scMillDescentChain_spine3 3 0 4 u hu
+      · exact sc_mill_descent_run_forced 3 0 4
+  | j + 2 => by
+      refine sc_forced_carrier scSpCarrier_succ_nil
+        (fun u _ => scSpCarrier_root_nil u) ?_
+      refine sc_forced_riders _ ?_ ?_ ?_
+      · intro z hz; rw [List.eq_of_mem_replicate hz]; exact scMillB2_succ_nil
+      · intro u hu
+        rcases List.mem_cons.mp hu with rfl | hu
+        · exact scMillG_spine3 0 (4 + j)
+        · exact scMillRevStates_spine3 (4 + j) u hu
+      · exact scMillRevStates_forced (4 + j)
+
+/-- Each generation's chain ends exactly where the next generation begins. -/
+theorem scNoNFChain_last : ∀ k, (scNoNFChain k).getLastD (scNoNFF k) = scNoNFF (k + 1)
+  | 0 => by
+      have h : (scForcedMarch scMt5T 44).getLastD scMt5T = scSpiral 0 := by decide
+      show (scForcedMarch scMt5T 44).getLastD scMt5T = scNoNFF 1
+      rw [h, sc_spiral_is_mill]
+      rfl
+  | 1 => by
+      have h1 : (((scMillDescentChain 3 0 4).map
+            (scAppList · (List.replicate 3 scMillB2))).map
+              (.app (.app .C scSpA) ·)).getLastD
+            (SCTerm.app (.app .C scSpA)
+              (scAppList (scMillG 3 4) (List.replicate 3 scMillB2)))
+          = SCTerm.app (.app .C scSpA)
+              (((scMillDescentChain 3 0 4).map
+                (scAppList · (List.replicate 3 scMillB2))).getLastD
+                  (scAppList (scMillG 3 4) (List.replicate 3 scMillB2))) :=
+        List.getLastD_map
+      have h2 : ((scMillDescentChain 3 0 4).map
+            (scAppList · (List.replicate 3 scMillB2))).getLastD
+            (scAppList (scMillG 3 4) (List.replicate 3 scMillB2))
+          = scAppList ((scMillDescentChain 3 0 4).getLastD (scMillG 3 4))
+              (List.replicate 3 scMillB2) :=
+        List.getLastD_map
+      show (((scMillDescentChain 3 0 4).map
+          (scAppList · (List.replicate 3 scMillB2))).map
+            (.app (.app .C scSpA) ·)).getLastD (scNoNFF 1) = scNoNFF 2
+      exact h1.trans (by rw [h2, scMillDescentChain_last 0 4 3 (by omega)]; exact rfl)
+  | k + 2 => by
+      have h1 : (((scMillRevStates (4 + k)).map
+            (scAppList · (List.replicate (3 + k) scMillB2))).map
+              (.app (.app .C scSpA) ·)).getLastD
+            (SCTerm.app (.app .C scSpA)
+              (scAppList (scMillG 0 (4 + k)) (List.replicate (3 + k) scMillB2)))
+          = SCTerm.app (.app .C scSpA)
+              (((scMillRevStates (4 + k)).map
+                (scAppList · (List.replicate (3 + k) scMillB2))).getLastD
+                  (scAppList (scMillG 0 (4 + k)) (List.replicate (3 + k) scMillB2))) :=
+        List.getLastD_map
+      have h2 : ((scMillRevStates (4 + k)).map
+            (scAppList · (List.replicate (3 + k) scMillB2))).getLastD
+            (scAppList (scMillG 0 (4 + k)) (List.replicate (3 + k) scMillB2))
+          = scAppList ((scMillRevStates (4 + k)).getLastD (scMillG 0 (4 + k)))
+              (List.replicate (3 + k) scMillB2) :=
+        List.getLastD_map
+      show (((scMillRevStates (4 + k)).map
+          (scAppList · (List.replicate (3 + k) scMillB2))).map
+            (.app (.app .C scSpA) ·)).getLastD (scNoNFF (k + 2)) = scNoNFF (k + 3)
+      refine h1.trans ?_
+      rw [h2, scMillRevStates_getLastD (4 + k) (by omega) (scMillG 0 (4 + k))]
+      show SCTerm.app (.app .C scSpA)
+          (scAppList (scMillG 0 (4 + k + 1)) (List.replicate (3 + k + 1) scMillB2))
+        = scNoNFF (k + 3)
+      rw [show 4 + k + 1 = 4 + (k + 1) from by omega,
+          show 3 + k + 1 = 3 + (k + 1) from by omega]
+      exact rfl
+
+/-- No generation's chain is empty. -/
+theorem scNoNFChain_ne : ∀ k, scNoNFChain k ≠ []
+  | 0 => fun h => by
+      have h0 := scNoNFChain_last 0
+      rw [h] at h0
+      exact absurd h0 (by decide)
+  | 1 => fun h => by
+      have h' : ((scMillDescentChain 3 0 4).map
+          (scAppList · (List.replicate 3 scMillB2))).map
+            (SCTerm.app (.app .C scSpA) ·) = [] := h
+      exact scMillDescentChain_ne 3 0 4 (by omega)
+        (List.map_eq_nil_iff.mp (List.map_eq_nil_iff.mp h'))
+  | k + 2 => fun h => by
+      have h' : ((scMillRevStates (4 + k)).map
+          (scAppList · (List.replicate (3 + k) scMillB2))).map
+            (SCTerm.app (.app .C scSpA) ·) = [] := h
+      exact scMillRevStates_ne (4 + k)
+        (List.map_eq_nil_iff.mp (List.map_eq_nil_iff.mp h'))
+
+/-- **THE CLIMBER NEVER RESTS**: every term reachable from the census's twelve-leaf
+climber still has a step — `scMt5T` has no reachable normal form. The corridor is not
+just unbounded (Stage 240); it is inescapable: forty-four anchor fires, the initial
+descent, and then one forced revolution after another, forever, with the junk stack
+and the carrier never opening an exit. -/
+theorem sc_mt5T_no_nf : ∀ u, RS.SC.Steps scMt5T u → ∃ v, RS.SC.step u v :=
+  sc_forced_forever_no_nf scNoNFF scNoNFChain scNoNFF_forced scNoNFChain_last
+    scNoNFChain_ne
