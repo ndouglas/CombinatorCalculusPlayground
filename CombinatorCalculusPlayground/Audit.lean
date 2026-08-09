@@ -923,3 +923,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scMt5TReach_decidable' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scMt5TReach_decidable
+
+/-- info: 'sc_champ211_corridor' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_champ211_corridor
+
+/-- info: 'sc_champ159_corridor' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_champ159_corridor

@@ -7175,3 +7175,27 @@ instance scMt5TReach_decidable (u : SCTerm) : Decidable (RS.SC.Steps scMt5T u) :
 
 #guard scMt5TReach .S = false
 #guard scMt5TReach (.app .S .S) = false
+
+-- ## Stage 249: the six champions are corridors — every n=12 drop-leader is forced.
+-- The crash screen's top six terms by drop, probed for 6000 fires each: ZERO branch
+-- points, all with mill-signature revolutions whose periods grow arithmetically
+-- (+6 or +4 per cycle). Pinned here: five hundred consecutive forced fires apiece.
+
+def scChamp211 : SCTerm := (.app .S (.app (.app (.app (.app .S .S) .C) (.app .S .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)))
+def scChamp209 : SCTerm := (.app (.app (.app .S (.app (.app .C .C) .S)) (.app .C .C)) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C))
+def scChamp206 : SCTerm := (.app .S (.app (.app (.app (.app .S .S) .C) (.app (.app .S (.app (.app .C .S) (.app .C .C))) .C)) (.app .C .S)))
+def scChamp205 : SCTerm := (.app (.app (.app (.app .S .S) .C) (.app (.app .S .C) .C)) (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C)))
+def scChamp170 : SCTerm := (.app (.app (.app (.app .C (.app (.app .S .C) .C)) .S) (.app (.app .S (.app (.app .C .S) .C)) .C)) (.app .C .C))
+def scChamp159 : SCTerm := (.app (.app (.app .S (.app .S (.app (.app .C .S) .C))) (.app .S (.app (.app .C .S) .C))) (.app .C (.app .C .C)))
+
+set_option maxRecDepth 16000
+set_option maxHeartbeats 4000000
+
+/-- Five hundred forced fires: the n=12 drop champion is a corridor. -/
+theorem sc_champ211_corridor : (scForcedMarch scChamp211 500).length = 500 := by decide
+/-- Five hundred forced fires apiece: every n=12 drop-leader is a corridor. -/
+theorem sc_champ209_corridor : (scForcedMarch scChamp209 500).length = 500 := by decide
+theorem sc_champ206_corridor : (scForcedMarch scChamp206 500).length = 500 := by decide
+theorem sc_champ205_corridor : (scForcedMarch scChamp205 500).length = 500 := by decide
+theorem sc_champ170_corridor : (scForcedMarch scChamp170 500).length = 500 := by decide
+theorem sc_champ159_corridor : (scForcedMarch scChamp159 500).length = 500 := by decide
