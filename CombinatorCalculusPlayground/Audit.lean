@@ -893,3 +893,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_forced_rider' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_forced_rider
+
+/-- info: 'sc_forced_forever_no_nf' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_forced_forever_no_nf
