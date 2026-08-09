@@ -917,3 +917,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_mt5T_reach_iff' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_mt5T_reach_iff
+
+/-- info: 'scMt5TReach_iff' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt5TReach_iff
+
+/-- info: 'scMt5TReach_decidable' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMt5TReach_decidable

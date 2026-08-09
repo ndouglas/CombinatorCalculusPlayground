@@ -7112,3 +7112,66 @@ theorem sc_mt5T_reach_iff (u : SCTerm) :
     · exact RS.Steps.trans (scNoNFF_steps k)
         (scChained_steps _ _ _ (scForced_chained _ _ (scNoNFF_forced k))
           (List.mem_cons_of_mem _ hu))
+
+-- ## Stage 248: reachability from the climber is DECIDABLE.
+-- The closed-form reachable set plus a size floor per generation turns membership into
+-- a terminating search: no state of generation `j+2` weighs less than `59 + 16j`, so a
+-- candidate of `n` leaves can only live in the first `n + 2` generations.
+
+/-- The generation size floor: nothing in generation `j+2` weighs less than `59+16j`. -/
+theorem scNoNFGen_size_lb (j : Nat) (u : SCTerm)
+    (hu : u = scNoNFF (j + 2) ∨ u ∈ scNoNFChain (j + 2)) :
+    59 + 16 * j ≤ u.leafCount := by
+  rcases hu with rfl | hu
+  · show 59 + 16 * j ≤ 1 + scSpA.leafCount
+      + (scAppList (scMillG 0 (4 + j)) (List.replicate (3 + j) scMillB2)).leafCount
+    rw [scAppList_size, scRepB2_sum, scMillG_size,
+      show scSpA.leafCount = 9 from rfl]
+    omega
+  · have h' : u ∈ ((scMillRevStates (4 + j)).map
+        (scAppList · (List.replicate (3 + j) scMillB2))).map
+          (SCTerm.app (.app .C scSpA) ·) := hu
+    obtain ⟨w1, hw1, rfl⟩ := List.mem_map.mp h'
+    obtain ⟨w0, _, rfl⟩ := List.mem_map.mp hw1
+    show 59 + 16 * j ≤ 1 + scSpA.leafCount
+      + (scAppList w0 (List.replicate (3 + j) scMillB2)).leafCount
+    rw [scAppList_size, scRepB2_sum, show scSpA.leafCount = 9 from rfl]
+    have := SCTerm.leafCount_pos w0
+    omega
+
+/-- The reachable set, bounded: only the first `|u| + 2` generations can hold `u`. -/
+theorem sc_mt5T_reach_bounded (u : SCTerm) :
+    RS.SC.Steps scMt5T u
+      ↔ ∃ k, k < u.leafCount + 2 ∧ (u = scNoNFF k ∨ u ∈ scNoNFChain k) := by
+  rw [sc_mt5T_reach_iff]
+  constructor
+  · rintro ⟨k, hk⟩
+    refine ⟨k, ?_, hk⟩
+    rcases Nat.lt_or_ge k (u.leafCount + 2) with h | h
+    · exact h
+    · have hb := scNoNFGen_size_lb (k - 2) u
+        (by rw [show k - 2 + 2 = k from by omega]; exact hk)
+      omega
+  · rintro ⟨k, _, hk⟩
+    exact ⟨k, hk⟩
+
+/-- The decider: scan the first `|u| + 2` generations. -/
+def scMt5TReach (u : SCTerm) : Bool :=
+  (List.range (u.leafCount + 2)).any
+    (fun k => decide (u = scNoNFF k) || decide (u ∈ scNoNFChain k))
+
+/-- The decider is correct. -/
+theorem scMt5TReach_iff (u : SCTerm) :
+    scMt5TReach u = true ↔ RS.SC.Steps scMt5T u := by
+  rw [sc_mt5T_reach_bounded]
+  show ((List.range (u.leafCount + 2)).any
+    (fun k => decide (u = scNoNFF k) || decide (u ∈ scNoNFChain k))) = true ↔ _
+  simp [List.any_eq_true, List.mem_range]
+
+/-- **REACHABILITY FROM THE CLIMBER IS DECIDABLE**: the first decision procedure for
+reachability from a growth-unbounded {S,C} term, certified end to end. -/
+instance scMt5TReach_decidable (u : SCTerm) : Decidable (RS.SC.Steps scMt5T u) :=
+  decidable_of_iff (scMt5TReach u = true) (scMt5TReach_iff u)
+
+#guard scMt5TReach .S = false
+#guard scMt5TReach (.app .S .S) = false
