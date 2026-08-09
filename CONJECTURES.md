@@ -6661,3 +6661,17 @@ is not just unbounded (Stage 240); it is INESCAPABLE. This is the program's firs
 pinned non-normalization of a census-found wild term, and the strongest possible form
 of the two-regime picture: the climber's entire reachable set lives outside the
 normal-form phase. Axioms: [propext, Quot.sound].
+
+### Stage 246: THE PARAMETRIC STAIRCASE — `sc_corridor_excess`
+
+The floor ladder, at all scales at once. `sc_corridor_excess`: for every `d` there are
+`u, w` with `scMt5T →* u →* w` and `|w| + d ≤ |u|` — the full-dress peak right after
+generation `j`'s turnover (`141 + 25j` leaves) stands `24 + 6j` above the ground state
+it then descends to (`117 + 19j`). The size ledger is exact: towers weigh `9 + 3m`,
+`G a m` weighs `28 + 6a + 3m`, junk blocks 16 each. The hand-built ladder rungs
+(f(6,6)≥7 through the corridor mountain's excess 151) measured single peaks with
+per-instance marches; this theorem covers every rung above them in one stroke. What it
+does NOT yet say is the *must-pass* form (every path from the climber to `w` visits a
+`≥ |u|` state) — that needs the reachable-set characterization (every reachable term
+lies on the family), which the no-NF principle's induction already contains and which
+would also make reachability FROM the climber decidable. That extraction is next.

@@ -6670,3 +6670,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   (excess → ∞ along the corridor), retiring the hand-built ladder. (2) C12 theory:
   why ratio 3 — the descent's 6-fires-per-layer against the turnover's +1 growth;
   can any G-style engine beat it? (3) The 246 review.
+
+## 2026-08-09 — Stage 246: THE PARAMETRIC STAIRCASE
+
+- One theorem retired the ladder's whole upper half. The proof is bookkeeping over
+  Stage 245's skeleton — member-to-last Steps, generation reachability, and an exact
+  leaf-count ledger; the single arity slip was the only error in the block.
+- One hundred twenty-eight autonomous stages (119–246). Ranking: (1) **the reachable-
+  set characterization**: extract sc_forced_family_mem from the principle's induction
+  (every u reachable from F 0 is some F k or lies on chain k), instantiate to the
+  climber — corollaries: the must-pass staircase, and decidability of reachability
+  FROM scMt5T (the wildest known term has a fully-characterized reachable set).
+  (2) C12 theory: the ratio-3 analysis of G-machines. (3) The 247 review.
