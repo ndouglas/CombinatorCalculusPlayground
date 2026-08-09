@@ -929,3 +929,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_champ159_corridor' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_champ159_corridor
+
+/-- info: 'sc_mt5T_flat' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_mt5T_flat
+
+/-- info: 'sc_mt5T_not_deepening' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_mt5T_not_deepening

@@ -7199,3 +7199,211 @@ theorem sc_champ206_corridor : (scForcedMarch scChamp206 500).length = 500 := by
 theorem sc_champ205_corridor : (scForcedMarch scChamp205 500).length = 500 := by decide
 theorem sc_champ170_corridor : (scForcedMarch scChamp170 500).length = 500 := by decide
 theorem sc_champ159_corridor : (scForcedMarch scChamp159 500).length = 500 := by decide
+
+-- ## Stage 250: THE CLIMBER NEVER DEEPENS — flatness over the whole reachable set.
+-- The mill's towers are `(C C)(C ·)`-nests, not numerals: no state the climber ever
+-- reaches holds a register deeper than one. The wildest term is size-unbounded,
+-- dynamically rigid — and numerically FLAT. In particular it is no C10 witness.
+
+theorem scIsReg_app_app (p q x : SCTerm) : scIsReg (.app (.app p q) x) = none := rfl
+theorem scIsReg_app_S (x : SCTerm) : scIsReg (.app .S x) = none := rfl
+theorem scIsReg_atomC : scIsReg .C = none := rfl
+theorem scIsReg_CS : scIsReg (.app .C .S) = some 1 := rfl
+theorem scIsReg_CC : scIsReg (.app .C .C) = none := rfl
+theorem scIsReg_c_app_app (p q x : SCTerm) :
+    scIsReg (.app .C (.app (.app p q) x)) = none := rfl
+theorem scIsReg_c_app_S (x : SCTerm) :
+    scIsReg (.app .C (.app .S x)) = none := rfl
+theorem scIsReg_cc_app_app (p q x : SCTerm) :
+    scIsReg (.app .C (.app .C (.app (.app p q) x))) = none := rfl
+theorem scIsReg_millT : ∀ m, scIsReg (scMillT m) = none
+  | 0 => rfl
+  | _ + 1 => rfl
+
+/-- A `C`-parked tower is no numeral. -/
+theorem scIsReg_c_millT (m : Nat) : scIsReg (.app .C (scMillT m)) = none := by
+  show (scIsReg (scMillT m)).map (· + 1) = none
+  rw [scIsReg_millT]
+  rfl
+
+/-- Nor is a doubly parked one. -/
+theorem scIsReg_cc_millT (m : Nat) :
+    scIsReg (.app .C (.app .C (scMillT m))) = none := by
+  show (scIsReg (.app .C (scMillT m))).map (· + 1) = none
+  rw [scIsReg_c_millT]
+  rfl
+
+/-- A tower in function position blocks the register pattern. -/
+theorem scIsReg_millT_app (m : Nat) (x : SCTerm) :
+    scIsReg (.app (scMillT m) x) = none := by
+  obtain ⟨p, q, hp⟩ := scMillT_isApp m
+  rw [hp]
+  exact scIsReg_app_app p q x
+
+/-- A spine-3 term in function position blocks the register pattern. -/
+theorem scIsReg_of_spine3 {u : SCTerm} (h : SCSpine3 u) (z : SCTerm) :
+    scIsReg (.app u z) = none := by
+  obtain ⟨p, q, g, x, rfl⟩ := h
+  exact scIsReg_app_app _ _ _
+
+/-- Spine-3 terms are applications. -/
+theorem SCSpine3.isApp {u : SCTerm} (h : SCSpine3 u) : ∃ p q, u = .app p q := by
+  obtain ⟨p, q, g, x, rfl⟩ := h
+  exact ⟨_, _, rfl⟩
+
+/-- The towers are flat: no register deeper than one, at any height. -/
+theorem scMaxReg_millT : ∀ m, scMaxReg (scMillT m) ≤ 1
+  | 0 => Nat.le_refl 1
+  | m + 1 => by
+      have ih := scMaxReg_millT m
+      show scMaxReg (.app (.app .C .C) (.app .C (scMillT m))) ≤ 1
+      simp only [scMaxReg, Option.getD, scIsReg_app_app, scIsReg_CC,
+        scIsReg_c_millT]
+      omega
+
+/-- Flatness climbs one application, absent a fresh register at the root. -/
+theorem scMaxReg_app_le {f x : SCTerm} (h : scIsReg (.app f x) = none)
+    (hf : scMaxReg f ≤ 1) (hx : scMaxReg x ≤ 1) : scMaxReg (.app f x) ≤ 1 := by
+  show max (max (scMaxReg f) (scMaxReg x)) ((scIsReg (.app f x)).getD 0) ≤ 1
+  rw [h]
+  simp only [Option.getD]
+  omega
+
+/-- Every descent state is flat. -/
+theorem scMaxReg_descentStates (a m : Nat) :
+    ∀ u ∈ scMillDescentStates (scMillT a) (scMillT m), scMaxReg u ≤ 1 := by
+  have ha := scMaxReg_millT a
+  have hm := scMaxReg_millT m
+  intro u hu
+  simp only [scMillDescentStates, List.mem_cons, List.not_mem_nil, or_false] at hu
+  rcases hu with rfl | rfl | rfl | rfl | rfl | rfl <;>
+    (simp only [scMaxReg, Option.getD, scIsReg_app_app, scIsReg_CC,
+      scIsReg_c_app_app, scIsReg_cc_app_app, scIsReg_c_millT, scIsReg_cc_millT,
+      scIsReg_millT_app]; omega)
+
+/-- Every state of the descent run is flat. -/
+theorem scMaxReg_descentChain : ∀ (d a m : Nat),
+    ∀ u ∈ scMillDescentChain d a m, scMaxReg u ≤ 1
+  | 0, _, _ => by intro u hu; exact absurd hu (List.not_mem_nil)
+  | d + 1, a, m => by
+      intro u hu
+      rcases List.mem_append.mp hu with h | h
+      · exact scMaxReg_descentStates (a + d) m u h
+      · exact scMaxReg_descentChain d a m u h
+
+/-- Every turnover state is flat. -/
+theorem scMaxReg_turnStates (m : Nat) :
+    ∀ u ∈ scMillTurnStates (scMillT m), scMaxReg u ≤ 1 := by
+  have hm := scMaxReg_millT m
+  intro u hu
+  simp only [scMillTurnStates, List.mem_cons, List.not_mem_nil, or_false] at hu
+  rcases hu with rfl | rfl | rfl | rfl | rfl | rfl <;>
+    (simp only [scMillK, scMaxReg, Option.getD, scIsReg_app_app, scIsReg_app_S,
+      scIsReg_CC, scIsReg_CS, scIsReg_c_app_app, scIsReg_c_app_S,
+      scIsReg_c_millT, scIsReg_millT_app];
+     omega)
+
+/-- The two-counter state is flat. -/
+theorem scMaxReg_millG (a m : Nat) : scMaxReg (scMillG a m) ≤ 1 := by
+  have ha := scMaxReg_millT a
+  have hm := scMaxReg_millT m
+  show scMaxReg (.app (.app (scMillT a) (.app .C (scMillT a))) (scMillT m)) ≤ 1
+  simp only [scMaxReg, Option.getD, scIsReg_app_app, scIsReg_c_millT,
+    scIsReg_millT_app]
+  omega
+
+/-- The junk block is flat. -/
+theorem scMaxReg_millB2 : scMaxReg scMillB2 = 1 := rfl
+
+/-- Every revolution state is flat. -/
+theorem scMaxReg_revStates (m : Nat) :
+    ∀ u ∈ scMillRevStates m, scMaxReg u ≤ 1 := by
+  intro u hu
+  rcases List.mem_append.mp hu with h | h
+  · exact scMaxReg_turnStates m u h
+  · obtain ⟨w, hw, rfl⟩ := List.mem_map.mp h
+    exact scMaxReg_app_le
+      (scIsReg_of_spine3 (scMillDescentChain_spine3 m 0 (m + 1) w hw) scMillB2)
+      (scMaxReg_descentChain m 0 (m + 1) w hw)
+      (Nat.le_of_eq scMaxReg_millB2)
+
+/-- Flatness survives the junk stack. -/
+theorem scMaxReg_appList : ∀ (zs : List SCTerm) {t : SCTerm},
+    (∃ p q, t = .app p q) → scMaxReg t ≤ 1 →
+    (∀ z ∈ zs, scMaxReg z ≤ 1) → scMaxReg (scAppList t zs) ≤ 1 := by
+  intro zs
+  induction zs with
+  | nil => intro t _ ht _; exact ht
+  | cons z zs ih =>
+      intro t hap ht hz
+      obtain ⟨p, q, rfl⟩ := hap
+      show scMaxReg (scAppList (.app (.app p q) z) zs) ≤ 1
+      exact ih ⟨_, _, rfl⟩
+        (scMaxReg_app_le (scIsReg_app_app _ _ _) ht (hz z List.mem_cons_self))
+        (fun w hw => hz w (List.mem_cons_of_mem z hw))
+
+/-- Flatness survives the carrier. -/
+theorem scMaxReg_carrier {x : SCTerm} (hx : scMaxReg x ≤ 1) :
+    scMaxReg (.app (.app .C scSpA) x) ≤ 1 :=
+  scMaxReg_app_le (scIsReg_app_app _ _ _)
+    (Nat.le_of_eq (rfl : scMaxReg (.app .C scSpA) = 1)) hx
+
+/-- Every generation is flat. -/
+theorem scMaxReg_gen : ∀ k, ∀ u, (u = scNoNFF k ∨ u ∈ scNoNFChain k) →
+    scMaxReg u ≤ 1
+  | 0 => by
+      intro u hu
+      rcases hu with rfl | hu
+      · decide
+      · revert hu
+        revert u
+        decide
+  | 1 => by
+      intro u hu
+      have hrep : ∀ z ∈ List.replicate 3 scMillB2, scMaxReg z ≤ 1 := by
+        intro z hz
+        rw [List.eq_of_mem_replicate hz]
+        exact Nat.le_of_eq scMaxReg_millB2
+      rcases hu with rfl | hu
+      · exact scMaxReg_carrier
+          (scMaxReg_appList _ ⟨_, _, rfl⟩ (scMaxReg_millG 3 4) hrep)
+      · have h' : u ∈ ((scMillDescentChain 3 0 4).map
+            (scAppList · (List.replicate 3 scMillB2))).map
+              (SCTerm.app (.app .C scSpA) ·) := hu
+        obtain ⟨w1, hw1, rfl⟩ := List.mem_map.mp h'
+        obtain ⟨w0, hw0, rfl⟩ := List.mem_map.mp hw1
+        exact scMaxReg_carrier (scMaxReg_appList _
+          (scMillDescentChain_spine3 3 0 4 w0 hw0).isApp
+          (scMaxReg_descentChain 3 0 4 w0 hw0) hrep)
+  | j + 2 => by
+      intro u hu
+      have hrep : ∀ z ∈ List.replicate (3 + j) scMillB2, scMaxReg z ≤ 1 := by
+        intro z hz
+        rw [List.eq_of_mem_replicate hz]
+        exact Nat.le_of_eq scMaxReg_millB2
+      rcases hu with rfl | hu
+      · exact scMaxReg_carrier (scMaxReg_appList _ ⟨_, _, rfl⟩
+          (scMaxReg_millG 0 (4 + j)) hrep)
+      · have h' : u ∈ ((scMillRevStates (4 + j)).map
+            (scAppList · (List.replicate (3 + j) scMillB2))).map
+              (SCTerm.app (.app .C scSpA) ·) := hu
+        obtain ⟨w1, hw1, rfl⟩ := List.mem_map.mp h'
+        obtain ⟨w0, hw0, rfl⟩ := List.mem_map.mp hw1
+        exact scMaxReg_carrier (scMaxReg_appList _
+          (scMillRevStates_spine3 (4 + j) w0 hw0).isApp
+          (scMaxReg_revStates (4 + j) w0 hw0) hrep)
+
+/-- **THE CLIMBER NEVER DEEPENS**: no reachable state holds a register deeper than
+one. Size-unbounded, dynamically rigid — and numerically flat. -/
+theorem sc_mt5T_flat : ∀ u, RS.SC.Steps scMt5T u → scMaxReg u ≤ 1 := by
+  intro u h
+  obtain ⟨k, hk⟩ := (sc_mt5T_reach_iff u).mp h
+  exact scMaxReg_gen k u hk
+
+/-- The climber is no C10 witness: its reachable set misses every depth past one. -/
+theorem sc_mt5T_not_deepening :
+    ¬ (∀ n : Nat, ∃ u : SCTerm, RS.SC.Steps scMt5T u ∧ n ≤ scMaxReg u) := by
+  intro h
+  obtain ⟨u, hu, hn⟩ := h 2
+  have := sc_mt5T_flat u hu
+  omega
