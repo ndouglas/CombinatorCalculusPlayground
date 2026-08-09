@@ -1094,7 +1094,12 @@ maximum ratio 2.50, the mill's own asymptote 3. THE CORRIDOR PHASE IS
 LINEAR, exhaustively at n=10, and the frontier hypothesis FLIPS:
 registered as C12 (the linear-excess law, f(n,m) ≈ 3m + g(n)) — whose
 proof would make {S,C} reachability DECIDABLE via the frontier
-equivalence. THE BRANCH PHASE DECOMPOSES (Stage 252): with
+equivalence. THE THREE REGIMES (Stage 253): normalizers
+(~96%), corridors (rigid, decidable by pipeline), and S-STORMS —
+branchy exponential growers (~3.5%) where the divergent residue lives;
+they are NOT corridors in disguise (median late forced-fraction 0.00),
+and the program's central question now lives entirely in the storm
+regime. THE BRANCH PHASE DECOMPOSES (Stage 252): with
 confluence on the shelf, 88.2% of BRANCH terms leftmost-normalize
 within 1000 fires; the undecidability search space shrinks to the
 ~3.5% divergent-growing residue — the C13 suspicion is they are all

@@ -6784,3 +6784,16 @@ rejoin (local confluence in practice); the decidability picture's missing third.
   the C13 suspicion — do they stabilize into forced corridors (engines) after a
   transient? If yes, the residue collapses into C13 and the undecidability search
   space empties. (2) The +4-species mill formalization. (3) C12 ratio-3 theory.
+
+## 2026-08-09 — Stage 253: the residue is not corridors — the S-storm regime named
+
+- The negative result is the finding: the pipeline that conquered the corridors does
+  not reach the storms, because the storms are not secretly corridors. Probe rescue
+  discipline held (first attempt uncapped and killed; second capped and clean).
+- One hundred thirty-five autonomous stages (119–253). Ranking: (1) **storm anatomy**:
+  what do storm reducts look like — is the branching factor structured (all branches
+  S-copies of each other, i.e., a bounded-width bisimulation), and do storm drops stay
+  under the C12 line on RANDOM paths (not just leftmost)? (2) The +4-species mill
+  formalization (C13's second engine). (3) All-paths excess: formalize "every path
+  from t to u passes a peak" for the mill via sc_mt5T_reach_iff (the unique-path form
+  makes it immediate — a warm-up for storm mountains).

@@ -6764,3 +6764,20 @@ decidable if C13; the residue — divergent-growing BRANCH (~3.5% of all terms) 
 where any undecidability must hide, and where the corridor pipeline (find the engine,
 pin the family) is the obvious siege engine. C10's last refuge shrinks to the same
 residue.
+
+### Stage 253: the residue is NOT corridors — the S-storm regime
+
+The C13-collapse hope for the divergent residue is dead, and the negative is sharp:
+forty n=10 divergent growers, marched with a size cap — median forced-fraction 0.00
+over their late fires, zero fully-forced tails, 31/40 blowing past 12,000 leaves
+within 500 fires. The residue is massively BRANCHING exponential growth (S-duplication
+storms), not corridors in disguise. Consequences: (a) C13's scope is clarified, not
+refuted — it governs forced terms, and the storms are its complement; (b) the
+decidability question's hard core is now named: the S-storm regime — confluent,
+exponentially growing, maximally branchy (~3.5% of terms at n=10); (c) C12's role
+sharpens — the crash screens measured single marches, but taming the storms needs the
+ALL-PATHS excess bound: does ANY reduction path from a storm ever dip below the
+linear-excess floor? The mountain machinery (paths must pass peaks) meets its real
+test here. The space now has THREE dynamic regimes: normalizers (fast, ~96% overall),
+corridors (rigid, decidable-by-pipeline), storms (branchy, open) — and the program's
+central question lives entirely in the third.
