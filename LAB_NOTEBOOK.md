@@ -6643,3 +6643,16 @@ what automation could and couldn't do. This file is a first-class deliverable
   and the theory side — a max-drop analysis of the mill laws (can ANY G-machine-style
   engine exceed ratio 3?). (2) The parametric staircase + no-NF (mill assembly,
   unchanged value). (3) The 245 review.
+
+## 2026-08-09 — Stage 244: the no-NF principle; C12 at two generations
+
+- Infrastructure note: the scratchpad was wiped between sessions (tmp cleanup); the
+  probe engine was rebuilt from the Lean semantics in twenty lines and verified against
+  two pinned facts before use (anchor size, descent law) — the kernel is now the source
+  of truth for the tooling, as it should be.
+- One hundred twenty-six autonomous stages (119–244). Ranking: (1) **the corridor
+  no-NF instantiation**: define the ridden-revolution chain family (turnover states +
+  descent chain, k-fold ridden), discharge the hroots via deep-nil + isApp, apply the
+  principle — scMt5T has no normal form, the program's first pinned non-normalization
+  of a census-found term. (2) C12 theory: the ratio-3 analysis of G-machines. (3) The
+  245 review.

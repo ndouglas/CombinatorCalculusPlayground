@@ -1095,7 +1095,12 @@ LINEAR, exhaustively at n=10, and the frontier hypothesis FLIPS:
 registered as C12 (the linear-excess law, f(n,m) ≈ 3m + g(n)) — whose
 proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. The program's central question now has a live conjecture
-on each side. Stage 242 made the mill FORCED
+on each side — and Stage 244 firmed the decidable side twice over: the
+n=12 screen (1,500 corridors) returns the SAME max drop as n=10 (211)
+with ratios ≤ 3.44 (median 1.23) — C12 is two-generation stable — and
+the NO-NORMAL-FORM PRINCIPLE (`sc_forced_forever_no_nf`) plus the
+rider lemma leave the climber's non-normalization one assembly from
+theorem. Stage 242 made the mill FORCED
 parametrically (`sc_mill_descent_forced`/`sc_mill_turnover_forced` —
 the program's first parametric SCForced): the mill path is the only
 path, and the parametric staircase is pure assembly. All certified by the forced-march toolkit

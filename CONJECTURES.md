@@ -6630,3 +6630,18 @@ third live conjecture, and the first on the DECIDABLE side of its central questi
 Both directions now have concrete attack surfaces: C12 via standardization-style
 arguments over the call-stack discipline (the seven walls constrain what a path can
 do), refutation via corridors at n ≥ 12 where the phase may behave differently.
+
+### Stage 244: the no-normal-form principle, and C12 at two generations
+
+Two results. THEORY: `sc_forced_forever_no_nf` — an infinite family of nonempty forced
+chains, each ending where the next begins, traps every reduction: everything reachable
+from the family's start still steps, so no reachable normal form exists. With the rider
+lemma (`sc_forced_rider`: forcedness survives normal riders), the deep-spine root-
+vanishing (`scSuccRoot_deep_nil`), and the parametric forced mill runs, every ingredient
+for instantiating the principle on the corridor is pinned — the instantiation (ridden
+revolutions as the chain family) is the one assembly step left before "the census's best
+climber has NO normal form" becomes a theorem. EVIDENCE: the n=12 crash screen — 1,500
+corridors deep-marched — returns the SAME maximum drop as n=10 (211, the same climber
+family), ratio distribution median 1.23, p95 1.71, max 3.44. The linear-excess law C12
+is two-generation stable with constants: no corridor at either size exceeds ratio 3.5,
+against the mill's own asymptote of 3. The frontier's decidable side keeps firming.
