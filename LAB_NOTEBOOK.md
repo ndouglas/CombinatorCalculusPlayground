@@ -6719,3 +6719,17 @@ what automation could and couldn't do. This file is a first-class deliverable
   free. (2) The +4-period mill: reverse-engineer scChamp170/159's layer grammar and
   pin its descent law — a second engine species for C13. (3) BRANCH-phase
   reconvergence probe. (4) The 250 review.
+
+## 2026-08-09 — Stage 250: the climber never deepens; the trichotomy completes
+
+- The register-shape calculus (eight rfl-lemmas + three tower lemmas + omega-with-max)
+  is reusable: any engine with an explicit chain family can be run through it. The
+  probe-first discipline caught the shape early: the +4 champions' C-chains bottom
+  out at compounds, so even the species closest to numerals is flat at every wrap.
+- One hundred thirty-two autonomous stages (119–250). Ranking: (1) **the 251
+  review** — the corridor arc (240–250) is a paper-sized unit: eleven stages from
+  discovery to trichotomy; consolidate, re-rank the frontier (C10 leaning false, C12
+  leaning true, C13 fresh), and sweep the file for dead weight. (2) The +4-species
+  mill formalization (second engine, tests C13's "every corridor is a G-machine").
+  (3) BRANCH-phase reconvergence probe (C10's last refuge; also the missing third of
+  the decidability picture).

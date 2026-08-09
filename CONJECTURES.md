@@ -6731,3 +6731,21 @@ unbounded depth, so if scDeepening's depth notion matches, C10 resolves POSITIVE
 the shelf; (c) the BRANCH phase: probe whether branch points reconverge (local
 confluence statistics) — if corridors are rigid and branches reconverge, the whole
 space may be tamer than the frontier assumed.
+
+### Stage 250: THE CLIMBER NEVER DEEPENS — `sc_mt5T_flat`, and C10 narrows
+
+The C10-via-towers lead resolved NEGATIVE, and the negative is a theorem: the mill's
+towers are `(C C)(C ·)`-nests, not numerals (`C^n S`), and a register-shape calculus
+over the closed-form reachable set shows `scMaxReg u ≤ 1` for every state the climber
+ever reaches (`sc_mt5T_flat`; corollary `sc_mt5T_not_deepening`). The corridor
+trichotomy is complete and pinned: the climber is size-UNBOUNDED (`sc_corridor_
+unbounded`), dynamically RIGID (`sc_mt5T_no_nf`, `sc_mt5T_reach_iff`), and numerically
+FLAT (`sc_mt5T_flat`). What this teaches about C10: corridor engines of the mill
+species cannot deepen — their growth lives in layer-nesting, and layers are not
+registers. A C10 witness, if it exists, must either be a corridor of a genuinely
+different species (the +4 family's C-CHAIN counters are structurally closer to
+numerals — `C^k(base)` differs from `C^k S` only in its base — but their chains bottom
+out at compounds, so they too read `scIsReg = none` at every wrap) or live in the
+BRANCH phase. C10 leans harder false; the sharpest attack now: prove flatness for
+EVERY corridor species (C13 would industrialize this), leaving only BRANCH terms as
+candidate deepeners.
