@@ -6691,3 +6691,18 @@ generation, so the iff reduces membership to finitely many checks); (b) the must
 staircase (the iff makes "every path passes the peak" immediate — there IS only one
 path); (c) C12 theory — whether every corridor is this rigid is exactly the question
 the linear-excess law now hangs on.
+
+### Stage 248: reachability from the climber is DECIDABLE — `scMt5TReach_decidable`
+
+The punchline of the corridor arc. With the reachable set in closed form and a size
+floor per generation (nothing in generation `j+2` weighs less than `59 + 16j`), the
+membership question needs only the first `|u| + 2` generations — a terminating,
+certified scan (`scMt5TReach`, with `scMt5TReach_iff` and a `Decidable` instance).
+The term that the crash screens crowned wildest — no normal form, unbounded growth,
+60k+ forced fires — is now the term whose reachability problem is COMPLETELY SOLVED.
+The moral for C12 and the frontier: in {S,C}, the wild terms found so far are wild in
+size only; dynamically they are the most predictable objects in the space. If C12's
+linear-excess law holds because EVERY corridor is a mill in disguise (rigid, forced,
+characterizable), then reachability is decidable not despite the corridors but
+because of them. That is now the sharpest available formulation of the program's
+central question.

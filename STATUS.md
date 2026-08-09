@@ -1094,7 +1094,10 @@ maximum ratio 2.50, the mill's own asymptote 3. THE CORRIDOR PHASE IS
 LINEAR, exhaustively at n=10, and the frontier hypothesis FLIPS:
 registered as C12 (the linear-excess law, f(n,m) ≈ 3m + g(n)) — whose
 proof would make {S,C} reachability DECIDABLE via the frontier
-equivalence. THE CORRIDOR, EXACTLY (Stage 247,
+equivalence. REACHABILITY FROM THE CLIMBER IS DECIDABLE
+(Stage 248, `scMt5TReach_decidable`): a certified decision procedure —
+the wildest term in the census is the term whose reachability question
+is now completely solved. THE CORRIDOR, EXACTLY (Stage 247,
 `sc_mt5T_reach_iff`): a term is reachable from the climber IFF it is a
 generation start or on a generation's forced chain — the wildest known
 term's reachable set in closed form; wildness here is rigidity, not

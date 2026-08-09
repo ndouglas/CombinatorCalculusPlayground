@@ -6695,3 +6695,15 @@ what automation could and couldn't do. This file is a first-class deliverable
   correctness pin. The first decidability-of-reachability theorem for a growth-
   unbounded {S,C} term. (2) C12 theory: ratio-3 analysis of G-machines. (3) The 248
   review — and the ideonomy pass is due (last run at Stage 230).
+
+## 2026-08-09 — Stage 248: reachability from the climber, decided
+
+- The corridor arc closes a four-stage sweep (245–248): no normal form → parametric
+  staircase → closed-form reachable set → certified decider. Each stage's proof was
+  the previous stage's induction, re-read. The lesson of the week: prove the generic
+  principle FIRST; the corollaries then cost one screen each.
+- One hundred thirty autonomous stages (119–248). Ranking: (1) **the ideonomy pass**
+  (due since 230): systematic idea generation over the new theorem inventory —
+  especially what "every corridor is a mill in disguise" would need, and whether the
+  census's other five drop-champions (n=12 top-6) are G-machines too — probe first.
+  (2) C12 theory: the ratio-3 analysis. (3) The 249 review.
