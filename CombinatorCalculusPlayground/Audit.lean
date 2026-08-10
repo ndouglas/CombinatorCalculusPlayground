@@ -935,3 +935,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_mt5T_not_deepening' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_mt5T_not_deepening
+
+/-- info: 'scChained_comparable' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scChained_comparable
+
+/-- info: 'sc_mt5T_line' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_mt5T_line

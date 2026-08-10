@@ -7407,3 +7407,77 @@ theorem sc_mt5T_not_deepening :
   obtain ⟨u, hu, hn⟩ := h 2
   have := sc_mt5T_flat u hu
   omega
+
+-- ## Stage 255: THE LINE — the climber's reachable set is totally ordered.
+-- Forcedness means there is only one road: any two reachable states are comparable
+-- under reduction. The strongest closed-form corollary of the reachable-set theorem,
+-- and the formal seed of every must-pass/all-paths statement about the corridor.
+
+/-- Along a checked chain, any two states are comparable. -/
+theorem scChained_comparable : ∀ (l : List SCTerm) (t : SCTerm), SCChained t l →
+    ∀ u ∈ t :: l, ∀ v ∈ t :: l, RS.SC.Steps u v ∨ RS.SC.Steps v u := by
+  intro l
+  induction l with
+  | nil =>
+      intro t _ u hu v hv
+      have hu' : u = t := by
+        rcases List.mem_cons.mp hu with h | h
+        · exact h
+        · exact absurd h List.not_mem_nil
+      have hv' : v = t := by
+        rcases List.mem_cons.mp hv with h | h
+        · exact h
+        · exact absurd h List.not_mem_nil
+      rw [hu', hv']
+      exact .inl (@RS.Steps.refl RS.SC t)
+  | cons w rest ih =>
+      intro t hc u hu v hv
+      rcases List.mem_cons.mp hu with rfl | hu'
+      · exact .inl (scChained_steps _ _ _ hc hv)
+      · rcases List.mem_cons.mp hv with rfl | hv'
+        · exact .inr (scChained_steps _ _ _ hc hu)
+        · exact ih w hc.2 u hu' v hv'
+
+/-- Any state of generation `k` reduces to the next generation's start. -/
+theorem scNoNF_mem_to_next (k : Nat) {u : SCTerm}
+    (hu : u = scNoNFF k ∨ u ∈ scNoNFChain k) :
+    RS.SC.Steps u (scNoNFF (k + 1)) := by
+  have h := scChained_steps_last (scNoNFChain k) (scNoNFF k) u
+    (scForced_chained _ _ (scNoNFF_forced k)) (List.mem_cons.mpr hu)
+  rw [scNoNFChain_last k] at h
+  exact h
+
+/-- Generation starts reduce forward. -/
+theorem scNoNFF_steps_from (k : Nat) : ∀ d, RS.SC.Steps (scNoNFF k) (scNoNFF (k + d))
+  | 0 => @RS.Steps.refl RS.SC _
+  | d + 1 => RS.Steps.trans (scNoNFF_steps_from k d)
+      (scNoNF_mem_to_next (k + d) (.inl rfl))
+
+/-- **THE LINE**: any two states reachable from the climber are comparable — the
+reachable set is one infinite road, totally ordered by reduction. -/
+theorem sc_mt5T_line : ∀ u v, RS.SC.Steps scMt5T u → RS.SC.Steps scMt5T v →
+    RS.SC.Steps u v ∨ RS.SC.Steps v u := by
+  have cross : ∀ k k', k < k' → ∀ u v, (u = scNoNFF k ∨ u ∈ scNoNFChain k) →
+      (v = scNoNFF k' ∨ v ∈ scNoNFChain k') → RS.SC.Steps u v := by
+    intro k k' hkk u v hu hv
+    have h1 : RS.SC.Steps u (scNoNFF (k + 1)) := scNoNF_mem_to_next k hu
+    have h2 : RS.SC.Steps (scNoNFF (k + 1)) (scNoNFF k') := by
+      have h := scNoNFF_steps_from (k + 1) (k' - (k + 1))
+      rw [show k + 1 + (k' - (k + 1)) = k' from by omega] at h
+      exact h
+    have h3 : RS.SC.Steps (scNoNFF k') v := by
+      rcases hv with rfl | hv
+      · exact @RS.Steps.refl RS.SC _
+      · exact scChained_steps _ _ _ (scForced_chained _ _ (scNoNFF_forced k'))
+          (List.mem_cons_of_mem _ hv)
+    exact RS.Steps.trans h1 (RS.Steps.trans h2 h3)
+  intro u v hu hv
+  obtain ⟨k, hk⟩ := (sc_mt5T_reach_iff u).mp hu
+  obtain ⟨k', hk'⟩ := (sc_mt5T_reach_iff v).mp hv
+  rcases Nat.lt_trichotomy k k' with h | h | h
+  · exact .inl (cross k k' h u v hk hk')
+  · subst h
+    exact scChained_comparable (scNoNFChain k) (scNoNFF k)
+      (scForced_chained _ _ (scNoNFF_forced k)) u (List.mem_cons.mpr hk)
+      v (List.mem_cons.mpr hk')
+  · exact .inr (cross k' k h v u hk' hk)
