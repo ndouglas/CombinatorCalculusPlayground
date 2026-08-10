@@ -965,3 +965,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_cold_law' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_cold_law
+
+/-- info: 'scCInv_succ_le_leaf' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scCInv_succ_le_leaf
+
+/-- info: 'sc_minting_law' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_minting_law

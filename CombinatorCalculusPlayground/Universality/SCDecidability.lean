@@ -7762,3 +7762,145 @@ theorem sc_cold_law {t u : SCTerm} (h : SCStepC t u) : scCInv u ≤ scCInv t := 
     have h1 := scStepC_c3 h
     have h2 : scIsC3 (.app (.app .C w) v) = 1 := rfl
     omega
+
+-- ## Stage 263: THE MINTING LAW — inventory growth is paid for in leaves.
+-- The hot half of C14's ledger, for the FULL step relation: across any fire, the
+-- C-redex inventory (plus the head indicator) grows by at most the leaf growth plus
+-- two. An S-fire's mint is dominated by its own duplication — a term's inventory
+-- sits strictly below its leaf count — and a C-fire's mint is paid by the shape it
+-- destroys. With the cold law and the unit drop law, every reduction's descent
+-- budget is now accounted: drops come from C-fires, C-fires come from inventory,
+-- and inventory comes from growth.
+
+/-- Inventory sits strictly below leaf count. -/
+theorem scCInv_succ_le_leaf : ∀ t : SCTerm, scCInv t + 1 ≤ t.leafCount
+  | .S => Nat.le_refl 1
+  | .C => Nat.le_refl 1
+  | .app a b => by
+      have ha := scCInv_succ_le_leaf a
+      have hb := scCInv_succ_le_leaf b
+      have hc := scIsC3_le_one a
+      show scIsC3 a + scCInv a + scCInv b + 1 ≤ a.leafCount + b.leafCount
+      omega
+
+/-- Full steps fire inside applications. -/
+theorem scStep_src_app {r r' : SCTerm} (h : SCStep r r') :
+    ∃ a b, r = .app a b := by
+  cases h with
+  | S_red f g x => exact ⟨_, _, rfl⟩
+  | C_red f g x => exact ⟨_, _, rfl⟩
+  | appL _ => exact ⟨_, _, rfl⟩
+  | appR _ => exact ⟨_, _, rfl⟩
+
+/-- Full steps land on applications. -/
+theorem scStep_tgt_app {r r' : SCTerm} (h : SCStep r r') :
+    ∃ a b, r' = .app a b := by
+  cases h with
+  | S_red f g x => exact ⟨_, _, rfl⟩
+  | C_red f g x => exact ⟨_, _, rfl⟩
+  | appL _ => exact ⟨_, _, rfl⟩
+  | appR _ => exact ⟨_, _, rfl⟩
+
+/-- The one-app head indicator is invariant under all fires. -/
+theorem scStep_hd1C {p p' : SCTerm} (h : SCStep p p') :
+    scIsHd1C p' = scIsHd1C p := by
+  cases h with
+  | S_red f g x => rfl
+  | C_red f g x => rfl
+  | appL h' =>
+      obtain ⟨a, b, rfl⟩ := scStep_src_app h'
+      obtain ⟨a', b', rfl⟩ := scStep_tgt_app h'
+      rfl
+  | appR h' =>
+      rename_i r s s'
+      cases r <;> rfl
+
+/-- Two-spines stay two-spines under all fires. -/
+theorem scStep_c3 {w v u : SCTerm}
+    (h : SCStep (.app (.app .C w) v) u) : scIsC3 u = 1 := by
+  cases h with
+  | appL h' =>
+      cases h' with
+      | appL h'' => cases h''
+      | appR h'' => rfl
+  | appR h' => rfl
+
+/-- **THE MINTING LAW**: across any fire, inventory-plus-indicator grows by at most
+the leaf growth plus two. -/
+theorem sc_minting_law : ∀ {t u : SCTerm}, SCStep t u →
+    scCInv u + scIsC3 u + t.leafCount
+      ≤ scCInv t + scIsC3 t + u.leafCount + 2 := by
+  intro t u h
+  induction h with
+  | S_red f g x =>
+      have e1 : scCInv (.app (.app (.app .S f) g) x)
+          = scCInv f + scCInv g + scCInv x := by
+        show 0 + (0 + (0 + 0 + scCInv f) + scCInv g) + scCInv x = _
+        omega
+      have e2 : scCInv (.app (.app f x) (.app g x))
+          = scIsHd1C f + (scIsC3 f + scCInv f + scCInv x)
+            + (scIsC3 g + scCInv g + scCInv x) := by
+        show scIsC3 (.app f x) + (scIsC3 f + scCInv f + scCInv x)
+          + (scIsC3 g + scCInv g + scCInv x) = _
+        rw [scIsC3_app]
+      have e3 : scIsC3 (.app (.app f x) (.app g x)) = scIsAtomC f := by
+        rw [scIsC3_app, scIsHd1C_app]
+      have e4 : scIsC3 (.app (.app (.app .S f) g) x) = 0 := rfl
+      have e5 := sc_shape_excl f
+      have e6 := scIsC3_le_one g
+      have e7 := scCInv_succ_le_leaf x
+      have e8 : (SCTerm.app (.app (.app .S f) g) x).leafCount
+          = 1 + f.leafCount + g.leafCount + x.leafCount := by
+        show 1 + f.leafCount + g.leafCount + x.leafCount = _
+        omega
+      have e9 : (SCTerm.app (.app f x) (.app g x)).leafCount
+          = f.leafCount + x.leafCount + (g.leafCount + x.leafCount) := rfl
+      rw [e1, e2, e3, e4, e8, e9]
+      omega
+  | C_red f g x =>
+      have e1 : scCInv (.app (.app (.app .C f) g) x)
+          = 1 + scCInv f + scCInv g + scCInv x := by
+        show 1 + (0 + (0 + 0 + scCInv f) + scCInv g) + scCInv x = _
+        omega
+      have e2 : scCInv (.app (.app f x) g)
+          = scIsHd1C f + (scIsC3 f + scCInv f + scCInv x) + scCInv g := by
+        show scIsC3 (.app f x) + (scIsC3 f + scCInv f + scCInv x) + scCInv g = _
+        rw [scIsC3_app]
+      have e3 : scIsC3 (.app (.app f x) g) = scIsAtomC f := by
+        rw [scIsC3_app, scIsHd1C_app]
+      have e4 : scIsC3 (.app (.app (.app .C f) g) x) = 0 := rfl
+      have e5 := sc_shape_excl f
+      have e8 : (SCTerm.app (.app (.app .C f) g) x).leafCount
+          = 1 + f.leafCount + g.leafCount + x.leafCount := by
+        show 1 + f.leafCount + g.leafCount + x.leafCount = _
+        omega
+      have e9 : (SCTerm.app (.app f x) g).leafCount
+          = f.leafCount + x.leafCount + g.leafCount := rfl
+      rw [e1, e2, e3, e4, e8, e9]
+      omega
+  | appL h' ih =>
+      rename_i p p' q
+      rw [show scCInv (.app p' q) = scIsC3 p' + scCInv p' + scCInv q from rfl,
+        show scCInv (.app p q) = scIsC3 p + scCInv p + scCInv q from rfl,
+        scIsC3_app, scIsC3_app, scStep_hd1C h',
+        show (SCTerm.app p' q).leafCount = p'.leafCount + q.leafCount from rfl,
+        show (SCTerm.app p q).leafCount = p.leafCount + q.leafCount from rfl]
+      omega
+  | appR h' ih =>
+      rename_i p q q'
+      rw [show scCInv (.app p q') = scIsC3 p + scCInv p + scCInv q' from rfl,
+        show scCInv (.app p q) = scIsC3 p + scCInv p + scCInv q from rfl,
+        scIsC3_app, scIsC3_app,
+        show (SCTerm.app p q').leafCount = p.leafCount + q'.leafCount from rfl,
+        show (SCTerm.app p q).leafCount = p.leafCount + q.leafCount from rfl]
+      have hq : scCInv q' + q.leafCount ≤ scCInv q + q'.leafCount + 2 := by
+        rcases hc : scIsC3 q with _ | n
+        · omega
+        · have hone : scIsC3 q = 1 := by
+            have := scIsC3_le_one q
+            omega
+          obtain ⟨w, v, rfl⟩ := scIsC3_eq_one hone
+          have h1 := scStep_c3 h'
+          have h2 : scIsC3 (.app (.app .C w) v) = 1 := rfl
+          omega
+      omega
