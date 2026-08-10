@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE SWAPMILL (Stage 257): the +4-period
+confluence makes even the trees rejoin. THE SWAPMILL CYCLE (Stage 258, `sc_swap_cycle`):
+turnover + descent composed parametrically — regrowth is free, the
+tower gains its layer by being wrapped; the G-machine efficiency
+frontier has two data points and wrapping looks like the floor.
+THE SWAPMILL (Stage 257): the +4-period
 champions' engine pinned — bare C-chain counter, ping-pong descent,
 three-fire turnover re-emitting the first mill's own x·(C x) pattern;
 two species, one phenomenon — C13's shape firms. C14 FORTIFIED (Stage 256): adversarial beam

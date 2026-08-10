@@ -6845,3 +6845,11 @@ rejoin (local confluence in practice); the decidability picture's missing third.
   revolution law for scChamp170's actual states (the analog of sc_mill_cycle), then
   the forced/family/trichotomy pipeline if it fits — C13's second complete instance.
   (2) The 258–260 review (cadence). (3) C14 formal target (weighted monotone measure).
+
+## 2026-08-10 — Stage 258: the swapmill cycle; regrowth by wrapping
+
+- One hundred forty autonomous stages (119–258). Ranking: (1) **the 259 review**
+  (cadence: the swapmill arc's remaining ridden-integration is next-session-sized;
+  close the ledger cleanly and re-rank). (2) The swapmill ridden cycle on
+  scChamp170's actual states (junk-stack integration → forced → family → second
+  trichotomy). (3) C14 formal target (weighted monotone measure for storms).

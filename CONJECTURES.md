@@ -6847,3 +6847,18 @@ engine carries its own blueprint, which is how the turnover can regrow the tower
 ledger: species one pays 6 fires per 3-leaf layer; the swapmill pays 2 per 1 — the
 leanest G-machine seen, and a hint that the G-machine space has a nontrivial
 efficiency frontier (what is the cheapest possible eternal growth in {S,C}?).
+
+### Stage 258: the swapmill cycle — regrowth is free
+
+`sc_swap_cycle` composes turnover and descent parametrically in both the layer count
+and the base: `3 + 2j` fires from the driver over `C^{2j} B` to `B·(C T)·(C (C T))` —
+and `C T` is literally the next tower. Species two's regrowth mechanism is thereby
+explained exactly: the turnover's junk seed `C (C T)` pays the growth, the descent
+never touches the base, and the tower gains its layer by BEING WRAPPED, not by being
+rebuilt. (`sc_swap_reseed` then shows the concrete base handing its riders forward in
+two fires, exposing the 8-leaf junk block the probes saw in every valley.) Contrast
+with species one, where each descent layer costs six fires of active machinery: the
+G-machine efficiency frontier now has two data points, 6-fires/3-leaves and
+2-fires/1-leaf, and the swapmill's trick — growth by wrapping — looks like the floor.
+Methodology note for the placeholder rule: C-wrapped distinct tips LEAK in species-2
+traces (the protocol peels C's); S-headed tips are the safe choice there.
