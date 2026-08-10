@@ -6891,3 +6891,19 @@ schedule profits. What remains for a proof is the minting rate: bound how many c
 moves one hot fire can create (S duplicates x, so ≤ the C-redexes inside x plus one
 boundary effect — a countable, local quantity). That is wall-shaped, and it is the
 next formal target.
+
+### Stage 262: THE COLD LAW — `sc_cold_law`, the ninth wall
+
+C-fires never mint C-redexes: the inventory `scCInv` is non-increasing across every
+C-fragment step. The proof's engine is a three-way shape ledger — atom `C`, C-headed
+one-app, C-headed two-spine are mutually exclusive, and a C-fire converts the redex
+it consumes into AT MOST one of these shapes one level up — so the invariant
+`Cinv + isC3` never rises. With the unit drop law this gives the storm floor's cold
+half: a C-only cascade from `t` consumes a non-increasing inventory while shrinking,
+which is exactly why the exact cold-fragment BFS terminates in ≤ 14 rounds. C14's
+remaining formal debt is now ONE lemma: the hot minting bound (an S-fire increases
+`scCInv` by at most `scCInv x + 2`, x its duplicated argument) — measured, mechanism
+understood (duplicated content + two boundary nodes), wall-shaped. The minting probe
+also suggests the endgame inequality: hot fires pay ≥ +1 size for ≤ Cinv(x)+2 minted
+drops, and Cinv(x) < |x|, so no reduction schedule can convert growth into unbounded
+descent faster than linearly — C12's linear-excess law, derived rather than observed.

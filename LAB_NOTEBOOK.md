@@ -6899,3 +6899,17 @@ efficiency frontier: is 2-fires/1-leaf optimal? (4) Ideonomy pass due ~Stage 262
   redex inventories across single fires, classified by fire kind) — if hot fires mint
   ≤ inventory-of-x cold moves and cold fires mint ≤ 1, the C14 potential closes.
   (2) The ideonomy pass (due at 262). (3) The swapmill ridden trichotomy.
+
+## 2026-08-10 — Stage 262: the cold law — the ninth wall
+
+- The proof came out exactly as the hand analysis predicted (shape exclusivity paying
+  for the single possible mint). Lesson repeated: don't let simp unfold a recursive
+  measure into variable subterms — state targeted node equations and keep the measure
+  atomic. Ideonomy note (pass was due): the minting-ledger frame generalizes — any
+  conserved-or-paid quantity over fires is a wall candidate; S-inventory, redex depth,
+  and spine length deserve the same probe+ledger treatment.
+- One hundred forty-four autonomous stages (119–262). Ranking: (1) **the hot minting
+  bound**: scCInv ((f x)(g x)-form result) ≤ scCInv (S-redex) + scCInv x + 2 — the
+  same shape-ledger method, S-fragment step relation (or full SCStep with C-fire case
+  reusing sc_cold_law); closing it makes the C14 potential fully formal. (2) The
+  swapmill ridden trichotomy. (3) The 264 review.
