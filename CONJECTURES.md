@@ -6832,3 +6832,18 @@ law's machinery, aimed at weights instead of counts). That is C14's formal targe
 Must-pass note: the planned all-paths mountain theorem is SUBSUMED — THE LINE plus
 the closed form already give it (there is only one road, so every route to the ground
 passes the peak by definition).
+
+### Stage 257: THE SWAPMILL — species two, core laws
+
+The +4-period champions' engine, decoded and pinned. The counter is a bare C-chain
+`C^k B`; descent is rider ping-pong (`sc_swap`, `sc_swap2`, `sc_swap_run` — one fire
+per layer, two per net pair, riders home on even chains); the turnover is three fires
+through the driver `S ((C S) C) C`, and its output is the FIRST mill's own driving
+pattern `T·(C T)` plus the junk seed `C (C T)` (`sc_swap_turnover`). Two structural
+surprises worth their weight: (a) both species run on the same `x·(C x)` self-
+application pattern — the "mill" may be one phenomenon with many layer grammars, which
+is exactly what C13 needs; (b) the driver lives inside the chain's ten-leaf base — the
+engine carries its own blueprint, which is how the turnover can regrow the tower. Cost
+ledger: species one pays 6 fires per 3-leaf layer; the swapmill pays 2 per 1 — the
+leanest G-machine seen, and a hint that the G-machine space has a nontrivial
+efficiency frontier (what is the cheapest possible eternal growth in {S,C}?).

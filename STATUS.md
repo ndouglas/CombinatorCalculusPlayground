@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. C14 FORTIFIED (Stage 256): adversarial beam
+confluence makes even the trees rejoin. THE SWAPMILL (Stage 257): the +4-period
+champions' engine pinned — bare C-chain counter, ping-pong descent,
+three-fire turnover re-emitting the first mill's own x·(C x) pattern;
+two species, one phenomenon — C13's shape firms. C14 FORTIFIED (Stage 256): adversarial beam
 search digs at most 26 leaves from storm peaks of 700–1500 — descent
 in a storm is structurally unavailable; formal target identified (a
 weighted step-monotone measure). C14 (THE STORM FLOOR, Stage 254): storms are

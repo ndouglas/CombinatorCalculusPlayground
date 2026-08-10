@@ -6834,3 +6834,14 @@ rejoin (local confluence in practice); the decidability picture's missing third.
   species, and the test of whether the 245–248 pipeline is truly generic. (2) C14
   formal target: a weighted step-monotone measure for the storm regime. (3) The 257
   review (due at 260 by cadence; early if the mill arc completes).
+
+## 2026-08-10 — Stage 257: the swapmill's core laws
+
+- The reverse-engineering took one probe and one emission — against three stages for
+  species one. The pipeline is genuinely generic now: valley-spine anatomy → law
+  guess → placeholder verification → constructor emission.
+- One hundred thirty-nine autonomous stages (119–257). Ranking: (1) **the swapmill
+  cycle**: integrate turnover + descent + re-anchor through the base B into a full
+  revolution law for scChamp170's actual states (the analog of sc_mill_cycle), then
+  the forced/family/trichotomy pipeline if it fits — C13's second complete instance.
+  (2) The 258–260 review (cadence). (3) C14 formal target (weighted monotone measure).
