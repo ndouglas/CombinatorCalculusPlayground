@@ -7904,3 +7904,24 @@ theorem sc_minting_law : ∀ {t u : SCTerm}, SCStep t u →
           have h2 : scIsC3 (.app (.app .C w) v) = 1 := rfl
           omega
       omega
+
+-- ## Stage 266: the integrated minting law — the ledger, summed along any path.
+-- Over `n` fires, inventory-plus-indicator grows by at most the net leaf growth plus
+-- `2n`. With the descent speed limit this bounds every reduction's bookkeeping from
+-- both sides: leaves fall at most one per fire, and the C-redex stock that pays for
+-- those falls is minted at a bounded exchange rate against the leaves gained.
+
+/-- **The integrated minting law**: over `n` fires, inventory grows by at most the
+net leaf growth plus `2n`. -/
+theorem sc_minting_run : ∀ {n : Nat} {t u : SCTerm}, RS.SC.StepsN n t u →
+    scCInv u + scIsC3 u + t.leafCount
+      ≤ scCInv t + scIsC3 t + u.leafCount + 2 * n := by
+  intro n t u h
+  refine h.rec (motive := fun n t u _ =>
+      scCInv u + scIsC3 u + SCTerm.leafCount t
+        ≤ scCInv t + scIsC3 t + SCTerm.leafCount u + 2 * n) ?_ ?_
+  · intro a
+    omega
+  · intro m a b c s rest ih
+    have h1 := sc_minting_law s
+    omega

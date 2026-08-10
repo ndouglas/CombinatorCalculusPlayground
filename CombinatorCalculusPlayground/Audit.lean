@@ -971,3 +971,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_minting_law' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_minting_law
+
+/-- info: 'sc_minting_run' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_minting_run
