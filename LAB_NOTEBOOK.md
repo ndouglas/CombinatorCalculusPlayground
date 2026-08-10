@@ -6924,3 +6924,40 @@ efficiency frontier: is 2-fires/1-leaf optimal? (4) Ideonomy pass due ~Stage 262
   argument (the mint is in the copy) — probe: where do minted redexes sit relative to
   the duplicated subterm, and do fired-in-copy C-redexes ever propagate drops out?
   (3) The swapmill ridden trichotomy.
+
+## 2026-08-10 — Stage 264: the review at 263
+
+**The wall table.** Ten pinned structural laws now constrain every {S,C} reduction:
+1. Spine dichotomy (every step is a mutation or a call)
+2. Head provenance
+3. Numeral speed limit (+ numerals-are-sources)
+4. Cargo law
+5. Suffix law (no overtaking)
+6. No-pair / no-erasure / bits-are-sources
+7. Unit drop law (Stage 260: no fire loses more than one leaf)
+8. Descent speed limit (Stage 261: n fires lose at most n leaves)
+9. Cold law (Stage 262: C-fires never mint C-redexes)
+10. Minting law (Stage 263: inventory growth ≤ leaf growth + 2, full relation)
+
+**The storm arc (254–263), consolidated.** Ten stages from anatomy to ledger: storms
+are shallow-wide (254) → adversary can't dig (256) → unit drop + inventory mechanism
+(260) → cold fragment exhausts, exactly (261) → cold law (262) → minting law (263).
+C14's per-step accounting is CLOSED; the open gap is integration: the observed floor
+(digs ≈ initial inventory) is tighter than the walls' linear-in-growth bound, and the
+registered attack is locality — minted redexes live inside the duplicated copy.
+
+**Ledger.** 320 pins, 7,906 lines in SCDecidability.lean, 573 commits, zero warnings,
+axiom ceiling [propext, Quot.sound], 146 consecutive autonomous stages (119–264).
+
+**Conjecture board.** C10 leaning false (flat corridors; storms shed no numerals in
+any probe — worth its own check someday). C11 PROVED. C12 leaning true — and now
+DERIVABLE-SHAPED: the minting law is precisely the "excess is linear" mechanism.
+C13 firming (two species, one x·(C x) phenomenon, laws pinned for both). C14 twice
+fortified, ledger closed, one integration step from proof.
+
+**Next arc (ranked).** (1) The C14 locality probe: where do minted redexes sit
+relative to the duplicated copy; do in-copy C-fires ever propagate drops out? If
+locality holds empirically, attempt THE FLOOR THEOREM: dig from any state ≤ scCInv +
+constant. (2) The swapmill ridden trichotomy (C13's second complete instance).
+(3) The path-integrated minting corollary (StepsN version — cheap, pin it when
+convenient). (4) Ideonomy at ~267.
