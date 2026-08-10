@@ -6853,3 +6853,30 @@ rejoin (local confluence in practice); the decidability picture's missing third.
   close the ledger cleanly and re-rank). (2) The swapmill ridden cycle on
   scChamp170's actual states (junk-stack integration → forced → family → second
   trichotomy). (3) C14 formal target (weighted monotone measure for storms).
+
+## 2026-08-10 — Stage 259: the review at 258
+
+**The regime program (Stages 252–258), consolidated.** After the corridor arc closed
+at 250, seven stages mapped the rest of the space and opened the second engine:
+confluence recalled to duty + the 88% norm (252) → the S-storm regime named, residue
+≠ corridors (253) → C14 the storm floor, registered (254) → THE LINE, the corridor's
+total order (255) → the adversary cannot dig, C14 fortified (256) → THE SWAPMILL's
+core laws (257) → the cycle: regrowth by wrapping (258). Ledger: 314 pins, 7,567
+lines in SCDecidability.lean, 564 commits, zero warnings, axiom ceiling [propext,
+Quot.sound], several new laws fully axiom-free.
+
+**The map as it stands.** {S,C} term space at n=10: ~67% normal-form-bound at first
+census + ~29% more normalizing BRANCH = ~96% tame; 0.15% corridors — infinite LINES,
+fully conquered (no-NF, closed form, decidable reachability, flat, totally ordered);
+~3.5% storms — infinite TREES, shallow (digs ≤ 26 adversarial) and wide (hundreds of
+redexes), floored by C14 (open). Conjecture board: C10 leaning false (both engine
+species flat); C11 PROVED; C12 leaning true, subsumed regime-wise by C14; C13 firming
+(two species, one x·(C x) phenomenon); C14 fresh, twice fortified, formal target
+identified (weighted step-monotone measure).
+
+**Next arc (ranked).** (1) The swapmill's ridden cycle on scChamp170's actual states
+→ forced → family → the SECOND trichotomy (C13's crucial instance: if the pipeline
+runs unchanged on species two, it is a classification program). (2) C14's weighted
+measure: find w(S-slot), w(C-slot) making every storm step non-decreasing — probe
+first over storm samples, then formalize as wall four-teen. (3) The G-machine
+efficiency frontier: is 2-fires/1-leaf optimal? (4) Ideonomy pass due ~Stage 262.
