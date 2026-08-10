@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE UNIT DROP LAW (Stage 260, `sc_unit_drop`):
+confluence makes even the trees rejoin. THE COLD FRAGMENT (Stage 261, `sc_descent_speed`):
+non-growing fires exhaust in ≤14 rounds from storm states — the storm
+floor is now an exact terminating computation, and C14's proof shape
+is a minting-rate bound. THE UNIT DROP LAW (Stage 260, `sc_unit_drop`):
 no fire loses more than one leaf — descent is bounded by C-fire count,
 and probes show the dig budget IS the C-redex inventory (median 9);
 C14 now has a mechanism with named parts. THE SWAPMILL CYCLE (Stage 258, `sc_swap_cycle`):

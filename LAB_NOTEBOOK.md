@@ -6887,3 +6887,15 @@ efficiency frontier: is 2-fires/1-leaf optimal? (4) Ideonomy pass due ~Stage 262
   potential (C14's formal core): bound the C-redex stock along storm reductions —
   probe how inventory evolves per fire class first. (2) The swapmill's ridden cycle
   → second trichotomy. (3) Ideonomy pass at 262.
+
+## 2026-08-10 — Stage 261: the cold fragment and the descent speed limit
+
+- The cold fragment is the right abstraction: it turns "adversarial digging" from a
+  search problem into a terminating computation, and its exhaustion IS the storm
+  floor. StepsN inductions need the explicit-recursor pattern (mkElimApp chokes on
+  indexed `induction`) — third time this pattern has been needed; noted for reuse.
+- One hundred forty-three autonomous stages (119–261). Ranking: (1) **the minting
+  bound**: count C-redexes created per fire (probe: instrument the engine to diff
+  redex inventories across single fires, classified by fire kind) — if hot fires mint
+  ≤ inventory-of-x cold moves and cold fires mint ≤ 1, the C14 potential closes.
+  (2) The ideonomy pass (due at 262). (3) The swapmill ridden trichotomy.

@@ -6875,3 +6875,19 @@ the storm regime the standing C-redex stock (plus whatever a descent exposes) st
 bounded — a potential-function argument over redex counts, with sc_unit_drop as its
 per-step ledger. Between the unit drop law and the C-inventory, the storm floor has
 gone from an empirical surprise to a mechanism with named parts.
+
+### Stage 261: the descent speed limit, and the cold fragment
+
+`sc_descent_speed` (the unit drop law, integrated): over `n` fires at most `n` leaves
+are lost — the dual of the numeral speed limit, and a lower bound on the fire count of
+any shrinking reduction. The probe behind it introduces THE COLD FRAGMENT — the
+sub-relation of non-growing fires (C-fires, plus S-fires whose third argument is a
+single leaf). Exact BFS over the cold fragment from storm states TERMINATES, fast:
+cascades of at most 14 rounds, digs 0–13 with median 9 — the C-redex inventory again,
+now as an exact computation rather than a correlation. The C14 proof shape that
+emerges: any path's dig = cold moves it makes minus hot gains it suffers; cold supply
+is consumed 1:1 and only hot fires (each costing ≥ +1) mint new cold moves — so no
+schedule profits. What remains for a proof is the minting rate: bound how many cold
+moves one hot fire can create (S duplicates x, so ≤ the C-redexes inside x plus one
+boundary effect — a countable, local quantity). That is wall-shaped, and it is the
+next formal target.
