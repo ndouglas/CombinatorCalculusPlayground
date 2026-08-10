@@ -7530,3 +7530,38 @@ theorem sc_swap_turnover (T : SCTerm) :
   RS.StepsN.tail (SCStep.S_red scSwapA .C T)
     (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S .C T))
       (RS.StepsN.tail (SCStep.S_red T .C (.app .C T)) (@RS.StepsN.refl RS.SC _)))
+
+-- ## Stage 258: the swapmill cycle — turnover and descent composed, and the reseed.
+-- The abstract revolution, parametric in BOTH the layer count and the base: from the
+-- driver over an even chain, `3 + 2j` fires reach the base holding `C T` — and `C T`
+-- IS the next tower: regrowth costs nothing, the turnover's junk seed pays for it.
+-- The concrete base then reseeds in two fires, handing `(C T)` its own successor.
+
+/-- The swapmill's ten-leaf base, as found in scChamp170's valleys: it carries the
+driver inside itself. -/
+def scSwapB : SCTerm :=
+  .app (.app .C .C) (.app (.app .C (.app (.app .S scSwapA) .C)) (.app .C .C))
+
+/-- **THE SWAPMILL CYCLE**: turnover then full descent, parametric in layer count and
+base — `3 + 2j` fires from the driver to the base holding the grown tower `C T`. -/
+theorem sc_swap_cycle (j : Nat) (B : SCTerm) :
+    RS.SC.StepsN (3 + 2 * j)
+      (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * j) B))
+      (.app (.app B (.app .C (scSwapT (2 * j) B)))
+        (.app .C (.app .C (scSwapT (2 * j) B)))) :=
+  RS.StepsN.trans (sc_swap_turnover (scSwapT (2 * j) B))
+    (sc_swap_run j B (.app .C (scSwapT (2 * j) B))
+      (.app .C (.app .C (scSwapT (2 * j) B))))
+
+/-- **THE RESEED**: the concrete base hands its riders forward in two fires,
+exposing the junk block `G = (C (S scSwapA C)) (C C)`. -/
+theorem sc_swap_reseed (y z : SCTerm) :
+    RS.SC.StepsN 2 (.app (.app scSwapB y) z)
+      (.app (.app y z)
+        (.app (.app .C (.app (.app .S scSwapA) .C)) (.app .C .C))) :=
+  RS.StepsN.tail
+    (SCStep.appL
+      (SCStep.C_red .C (.app (.app .C (.app (.app .S scSwapA) .C)) (.app .C .C)) y))
+    (RS.StepsN.tail
+      (SCStep.C_red y (.app (.app .C (.app (.app .S scSwapA) .C)) (.app .C .C)) z)
+      (@RS.StepsN.refl RS.SC _))

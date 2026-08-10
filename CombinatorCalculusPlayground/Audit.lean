@@ -947,3 +947,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_swap_turnover' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_swap_turnover
+
+/-- info: 'sc_swap_cycle' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_swap_cycle
+
+/-- info: 'sc_swap_reseed' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_swap_reseed
