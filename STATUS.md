@@ -1094,7 +1094,11 @@ maximum ratio 2.50, the mill's own asymptote 3. THE CORRIDOR PHASE IS
 LINEAR, exhaustively at n=10, and the frontier hypothesis FLIPS:
 registered as C12 (the linear-excess law, f(n,m) ≈ 3m + g(n)) — whose
 proof would make {S,C} reachability DECIDABLE via the frontier
-equivalence. THE THREE REGIMES (Stage 253): normalizers
+equivalence. C14 (THE STORM FLOOR, Stage 254): storms are
+shallow — random-path drops ≤ 23 vs corridor drops of 200+ — so
+bounded-drop plus finite search would decide the storm regime; the
+central question now decomposes regime by regime, each with its own
+decidability mechanism. THE THREE REGIMES (Stage 253): normalizers
 (~96%), corridors (rigid, decidable by pipeline), and S-STORMS —
 branchy exponential growers (~3.5%) where the divergent residue lives;
 they are NOT corridors in disguise (median late forced-fraction 0.00),

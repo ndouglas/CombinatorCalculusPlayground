@@ -6797,3 +6797,15 @@ rejoin (local confluence in practice); the decidability picture's missing third.
   formalization (C13's second engine). (3) All-paths excess: formalize "every path
   from t to u passes a peak" for the mill via sc_mt5T_reach_iff (the unique-path form
   makes it immediate — a warm-up for storm mountains).
+
+## 2026-08-10 — Stage 254: storm anatomy — shallow, wide, and C14
+
+- The regime table now reads: corridors = deep and narrow (drops 200+, width 1);
+  storms = shallow and wide (drops ≤ 23, width 100s); normalizers = short. Depth and
+  width look complementary — worth a conjecture of its own someday (no term is both
+  deep and wide?).
+- One hundred thirty-six autonomous stages (119–254). Ranking: (1) **THE LINE**: the
+  climber's reachable set is totally ordered by reduction (∀ u v reachable, u →* v ∨
+  v →* u) — the strongest closed-form corollary of reach_iff, and the formal seed of
+  the must-pass/all-paths story C14 needs. (2) Adversarial storm digging (falsify or
+  fortify C14). (3) The +4-species mill.

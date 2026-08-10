@@ -6781,3 +6781,24 @@ linear-excess floor? The mountain machinery (paths must pass peaks) meets its re
 test here. The space now has THREE dynamic regimes: normalizers (fast, ~96% overall),
 corridors (rigid, decidable-by-pipeline), storms (branchy, open) — and the program's
 central question lives entirely in the third.
+
+### Stage 254: storm anatomy — the drop law, and C14
+
+The storms are explosive but SHALLOW: across 150 random walks over 25 n=10 storms
+(fuel 600, size cap 12k), the maximum path drop was 23 leaves and the median 5 —
+against corridor drops of 200+ — while late branching width runs to hundreds of
+redexes per state (median 167, max 444). Every choice in a storm goes up; the
+regime's danger is width, not depth.
+
+**C14 (THE STORM FLOOR), registered**: in the storm regime, path drops are bounded —
+every reduction path from a storm term of size n has excess bounded by a slowly
+growing g(n) (the data suggests g(10) ≲ 25). C14 is a decidability mechanism: if no
+path from t ever dips more than D below its running peak, then deciding t →* u needs
+only the finite state space of size ≤ |u| + D. The full decomposition of the central
+question is now: normalizers (decide by normalization + confluence), corridors
+(decide by the 245–248 pipeline, industrialized by C13), storms (decide by C14's
+floor + bounded search). C12 remains the cross-regime linear form; C14 is its
+storm-local, all-paths sharpening — and the all-paths quantifier is exactly what the
+crash screens (leftmost-only) could not see. Verification pressure should go to
+adversarial path search: can a C-heavy pocket inside a storm be steered into a deep
+dig? 150 random walks say no; a targeted search is the next falsification attempt.
