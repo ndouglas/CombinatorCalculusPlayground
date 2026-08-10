@@ -6968,3 +6968,10 @@ convenient). (4) Ideonomy at ~267.
   minting law** (StepsN corollary — cheap, closes the per-path ledger formally).
   (2) The copy-tracking floor theorem (C14 endgame; likely needs a marked-reduction
   formalism — next-arc scale). (3) The swapmill ridden trichotomy. (4) Ideonomy ~267.
+
+## 2026-08-10 — Stage 266: the integrated minting law
+
+- One hundred forty-eight autonomous stages (119–266). Ranking: (1) the swapmill
+  ridden trichotomy (C13's second instance — the largest remaining project with all
+  tools in hand). (2) The copy-tracking floor theorem (C14 endgame; marked-reduction
+  formalism). (3) Ideonomy at 267 (due).

@@ -6941,3 +6941,12 @@ cold-dig(t) ≤ a few × scCInv(t). The formal version needs a copy-tracking arg
 endgame, alongside the cheap integrated corollary of the minting law (path version,
 next). C12 note: this locality is exactly why observed excess is linear with a SMALL
 constant, not merely linear.
+
+### Stage 266: the integrated minting law
+
+`sc_minting_run`: over `n` fires, `Cinv + isC3` grows by at most the net leaf growth
+plus `2n` — the tenth wall, summed along arbitrary paths. The per-path ledger is now
+formal end to end: `sc_descent_speed` caps how fast leaves can fall; `sc_minting_run`
+caps how fast the currency that pays for falling can be minted. The gap between these
+walls and the observed floor (digs ≈ initial inventory) is the copy-tracking locality
+argument, C14's endgame, next-arc scale.
