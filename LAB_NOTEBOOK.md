@@ -6809,3 +6809,15 @@ rejoin (local confluence in practice); the decidability picture's missing third.
   v →* u) — the strongest closed-form corollary of reach_iff, and the formal seed of
   the must-pass/all-paths story C14 needs. (2) Adversarial storm digging (falsify or
   fortify C14). (3) The +4-species mill.
+
+## 2026-08-10 — Stage 255: THE LINE
+
+- First-try green, second stage running (247 was the other). The corollary economy of
+  reach_iff keeps paying: every new corridor theorem is now cheap because the hard
+  invariant (the family) was proved once.
+- One hundred thirty-seven autonomous stages (119–255). Ranking: (1) **adversarial
+  storm digging**: targeted search (prefer C-reductions / size-decreasing successors
+  greedily) to falsify or fortify C14 — if greedy-down paths still can't dig, the
+  storm floor is real. (2) The +4-species mill formalization (C13's second engine).
+  (3) The must-pass excess theorem (sc_corridor_excess upgraded with sc_mt5T_line to
+  "every route to the ground passes the peak").

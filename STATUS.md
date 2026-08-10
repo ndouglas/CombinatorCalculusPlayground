@@ -1094,7 +1094,10 @@ maximum ratio 2.50, the mill's own asymptote 3. THE CORRIDOR PHASE IS
 LINEAR, exhaustively at n=10, and the frontier hypothesis FLIPS:
 registered as C12 (the linear-excess law, f(n,m) ≈ 3m + g(n)) — whose
 proof would make {S,C} reachability DECIDABLE via the frontier
-equivalence. C14 (THE STORM FLOOR, Stage 254): storms are
+equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
+climber's reachable set is totally ordered by reduction — one infinite
+road; corridors are lines, storms are trees that never descend, and
+confluence makes even the trees rejoin. C14 (THE STORM FLOOR, Stage 254): storms are
 shallow — random-path drops ≤ 23 vs corridor drops of 200+ — so
 bounded-drop plus finite search would decide the storm regime; the
 central question now decomposes regime by regime, each with its own

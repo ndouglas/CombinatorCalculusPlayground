@@ -6802,3 +6802,17 @@ storm-local, all-paths sharpening — and the all-paths quantifier is exactly wh
 crash screens (leftmost-only) could not see. Verification pressure should go to
 adversarial path search: can a C-heavy pocket inside a storm be steered into a deep
 dig? 150 random walks say no; a targeted search is the next falsification attempt.
+
+### Stage 255: THE LINE — `sc_mt5T_line`
+
+Any two states reachable from the climber are comparable under reduction: the
+reachable set is one infinite road, totally ordered. This is forcedness stated in its
+purest order-theoretic form, and it makes every must-pass claim about the corridor a
+one-liner: the peak at generation `j` and any later state are both on the road, so
+whatever reaches past the peak went through it — there is nowhere else to go. Beside
+`sc_mt5T_no_nf` (the road never ends), `sc_mt5T_reach_iff` (the road in closed form),
+`scMt5TReach_decidable` (the road is searchable), and `sc_mt5T_flat` (the road never
+deepens), the corridor's portrait is complete. Contrast is now the program's sharpest
+image: a corridor is an infinite LINE; a storm is an infinite TREE that hardly ever
+descends; and the calculus is confluent, so even the tree's branches all lead to the
+same places.
