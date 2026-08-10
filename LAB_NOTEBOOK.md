@@ -6821,3 +6821,16 @@ rejoin (local confluence in practice); the decidability picture's missing third.
   storm floor is real. (2) The +4-species mill formalization (C13's second engine).
   (3) The must-pass excess theorem (sc_corridor_excess upgraded with sc_mt5T_line to
   "every route to the ground passes the peak").
+
+## 2026-08-10 — Stage 256: the adversary cannot dig
+
+- Probe engineering note: the first two dig attempts drowned in successor explosion
+  (full step_results on 6k-leaf terms × dedup hashing); the runnable version sampled
+  25 successors per state and capped peaks at ~1500 — and the answer was already
+  unambiguous at that scale.
+- One hundred thirty-eight autonomous stages (119–256). Ranking: (1) **the +4-species
+  mill**: reverse-engineer scChamp170's engine to laws (C-chain counter, junk pairs),
+  emit and pin its descent/turnover, then run the trichotomy pipeline — C13's second
+  species, and the test of whether the 245–248 pipeline is truly generic. (2) C14
+  formal target: a weighted step-monotone measure for the storm regime. (3) The 257
+  review (due at 260 by cadence; early if the mill arc completes).

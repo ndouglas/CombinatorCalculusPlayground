@@ -6816,3 +6816,19 @@ deepens), the corridor's portrait is complete. Contrast is now the program's sha
 image: a corridor is an infinite LINE; a storm is an infinite TREE that hardly ever
 descends; and the calculus is confluent, so even the tree's branches all lead to the
 same places.
+
+### Stage 256: the adversary cannot dig — C14 fortified
+
+The falsification attempt failed convincingly. Beam search steering always toward the
+smallest successors (beam 10, 100 steps, sampled width 25) from storm peaks of
+700–1500 leaves achieved digs of at most 26 leaves, median 6 — about two percent of
+peak size, and no deeper than random walks found. The storm floor is not an artifact
+of path choice: descent in a storm is structurally unavailable, not merely unlikely.
+C14's mechanism firms up: S-duplication puts copies of every C-redex's future into
+multiple positions, so firing a C (the only shrinking move) somewhere is always
+outweighed by the S-material it leaves behind. A proof shape suggests itself — a
+weighted size measure in which every storm-regime step is non-decreasing (the cargo
+law's machinery, aimed at weights instead of counts). That is C14's formal target.
+Must-pass note: the planned all-paths mountain theorem is SUBSUMED — THE LINE plus
+the closed form already give it (there is only one road, so every route to the ground
+passes the peak by definition).

@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. C14 (THE STORM FLOOR, Stage 254): storms are
+confluence makes even the trees rejoin. C14 FORTIFIED (Stage 256): adversarial beam
+search digs at most 26 leaves from storm peaks of 700–1500 — descent
+in a storm is structurally unavailable; formal target identified (a
+weighted step-monotone measure). C14 (THE STORM FLOOR, Stage 254): storms are
 shallow — random-path drops ≤ 23 vs corridor drops of 200+ — so
 bounded-drop plus finite search would decide the storm regime; the
 central question now decomposes regime by regime, each with its own
