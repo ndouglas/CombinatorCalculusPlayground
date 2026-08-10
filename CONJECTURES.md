@@ -6862,3 +6862,16 @@ G-machine efficiency frontier now has two data points, 6-fires/3-leaves and
 2-fires/1-leaf, and the swapmill's trick — growth by wrapping — looks like the floor.
 Methodology note for the placeholder rule: C-wrapped distinct tips LEAK in species-2
 traces (the protocol peels C's); S-headed tips are the safe choice there.
+
+### Stage 260: THE UNIT DROP LAW — the arithmetic beneath the storm floor
+
+`sc_unit_drop`, the eighth wall: no {S,C} fire loses more than one leaf (S-fires
+never shrink; C-fires drop exactly one). Total descent along any path is bounded by
+its C-fire count. The companion probe closes the mechanism: late storm states hold a
+median of NINE C-redexes (range 0–27) against S-stocks up to 77 — and the adversarial
+dig maximum from Stage 256 was 26, matching the C-inventory almost exactly. The drop
+budget IS the C-redex inventory. C14's formal target is now concrete: show that in
+the storm regime the standing C-redex stock (plus whatever a descent exposes) stays
+bounded — a potential-function argument over redex counts, with sc_unit_drop as its
+per-step ledger. Between the unit drop law and the C-inventory, the storm floor has
+gone from an empirical surprise to a mechanism with named parts.

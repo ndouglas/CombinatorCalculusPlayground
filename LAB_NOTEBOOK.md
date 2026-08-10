@@ -6880,3 +6880,10 @@ runs unchanged on species two, it is a classification program). (2) C14's weight
 measure: find w(S-slot), w(C-slot) making every storm step non-decreasing — probe
 first over storm samples, then formalize as wall four-teen. (3) The G-machine
 efficiency frontier: is 2-fires/1-leaf optimal? (4) Ideonomy pass due ~Stage 262.
+
+## 2026-08-10 — Stage 260: the unit drop law; the mechanism has named parts
+
+- One hundred forty-two autonomous stages (119–260). Ranking: (1) the C-inventory
+  potential (C14's formal core): bound the C-redex stock along storm reductions —
+  probe how inventory evolves per fire class first. (2) The swapmill's ridden cycle
+  → second trichotomy. (3) Ideonomy pass at 262.
