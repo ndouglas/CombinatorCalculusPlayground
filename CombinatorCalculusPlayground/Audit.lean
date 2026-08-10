@@ -953,3 +953,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_swap_reseed' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_swap_reseed
+
+/-- info: 'sc_unit_drop' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_unit_drop

@@ -7565,3 +7565,33 @@ theorem sc_swap_reseed (y z : SCTerm) :
     (RS.StepsN.tail
       (SCStep.C_red y (.app (.app .C (.app (.app .S scSwapA) .C)) (.app .C .C)) z)
       (@RS.StepsN.refl RS.SC _))
+
+-- ## Stage 260: THE UNIT DROP LAW — no fire loses more than one leaf.
+-- The arithmetic beneath the storm floor: an S-fire duplicates its third argument and
+-- never shrinks (Δ = |x| − 1 ≥ 0); a C-fire drops exactly its own head (Δ = −1). So
+-- any path's total descent is bounded by its C-fire count — and the probes show storm
+-- states hold only a handful of C-redexes (median 9), which is why adversarial digs
+-- max out at 26: the drop budget IS the C-redex inventory.
+
+/-- **THE UNIT DROP LAW**: every fire loses at most one leaf. -/
+theorem sc_unit_drop : ∀ {t u : SCTerm}, RS.SC.step t u →
+    t.leafCount ≤ u.leafCount + 1 := by
+  intro t u h
+  induction h with
+  | S_red f g x =>
+      show SCTerm.leafCount .S + f.leafCount + g.leafCount + x.leafCount
+        ≤ f.leafCount + x.leafCount + (g.leafCount + x.leafCount) + 1
+      have := SCTerm.leafCount_pos x
+      show 1 + f.leafCount + g.leafCount + x.leafCount ≤ _
+      omega
+  | C_red f g x =>
+      show SCTerm.leafCount .C + f.leafCount + g.leafCount + x.leafCount
+        ≤ f.leafCount + x.leafCount + g.leafCount + 1
+      show 1 + f.leafCount + g.leafCount + x.leafCount ≤ _
+      omega
+  | appL h ih =>
+      show _ + _ ≤ _ + _ + 1
+      omega
+  | appR h ih =>
+      show _ + _ ≤ _ + _ + 1
+      omega
