@@ -7608,3 +7608,157 @@ theorem sc_descent_speed : ∀ {n : Nat} {t u : SCTerm}, RS.SC.StepsN n t u →
   · intro m a b c s rest ih
     have h1 := sc_unit_drop s
     omega
+
+-- ## Stage 262: THE COLD LAW — C-fires never mint C-redexes.
+-- The probe said it (390 C-fires, not one inventory increase); here is why. The
+-- fired redex is consumed, and at most one of the two fresh application nodes can
+-- complete a new redex — paid for exactly by the head shape the fire destroys. The
+-- invariant is `Cinv + isC3` (inventory plus a two-spine head indicator), monotone
+-- under every C-fire. The ninth wall, and one half of C14's minting ledger.
+
+/-- Indicator: the atom `C`. -/
+def scIsAtomC : SCTerm → Nat
+  | .C => 1
+  | _ => 0
+
+/-- Indicator: a `C`-headed one-app (whose parent-of-parent is a redex). -/
+def scIsHd1C : SCTerm → Nat
+  | .app .C _ => 1
+  | _ => 0
+
+/-- Indicator: a `C`-headed two-spine (the shape that makes its parent a redex). -/
+def scIsC3 : SCTerm → Nat
+  | .app (.app .C _) _ => 1
+  | _ => 0
+
+/-- The C-redex inventory. -/
+def scCInv : SCTerm → Nat
+  | .S => 0
+  | .C => 0
+  | .app a b => scIsC3 a + scCInv a + scCInv b
+
+/-- The two-spine indicator of an application, read off its function part. -/
+theorem scIsC3_app (p q : SCTerm) : scIsC3 (.app p q) = scIsHd1C p := by
+  rcases p with _ | _ | ⟨(_ | _ | ⟨a, b⟩), s⟩ <;> rfl
+
+/-- The one-app indicator of an application, read off its function part. -/
+theorem scIsHd1C_app (p q : SCTerm) : scIsHd1C (.app p q) = scIsAtomC p := by
+  cases p <;> rfl
+
+/-- The three head shapes are mutually exclusive. -/
+theorem sc_shape_excl (x : SCTerm) :
+    scIsHd1C x + scIsC3 x + scIsAtomC x ≤ 1 := by
+  rcases x with _ | _ | ⟨(_ | _ | ⟨(_ | _ | ⟨a, b⟩), s⟩), v⟩ <;> simp [scIsHd1C, scIsC3, scIsAtomC]
+
+/-- The two-spine indicator is at most one. -/
+theorem scIsC3_le_one (q : SCTerm) : scIsC3 q ≤ 1 := by
+  have := sc_shape_excl q
+  omega
+
+/-- Reading the two-spine indicator backwards. -/
+theorem scIsC3_eq_one {q : SCTerm} (h : scIsC3 q = 1) :
+    ∃ w v, q = .app (.app .C w) v := by
+  rcases q with _ | _ | ⟨(_ | _ | ⟨(_ | _ | ⟨a, b⟩), s⟩), v⟩
+  · simp [scIsC3] at h
+  · simp [scIsC3] at h
+  · simp [scIsC3] at h
+  · simp [scIsC3] at h
+  · simp [scIsC3] at h
+  · exact ⟨s, v, rfl⟩
+  · simp [scIsC3] at h
+
+/-- C-steps fire inside applications. -/
+theorem scStepC_src_app {r r' : SCTerm} (h : SCStepC r r') :
+    ∃ a b, r = .app a b := by
+  cases h with
+  | C_red x y z => exact ⟨_, _, rfl⟩
+  | appL _ => exact ⟨_, _, rfl⟩
+  | appR _ => exact ⟨_, _, rfl⟩
+
+/-- C-steps land on applications. -/
+theorem scStepC_tgt_app {r r' : SCTerm} (h : SCStepC r r') :
+    ∃ a b, r' = .app a b := by
+  cases h with
+  | C_red x y z => exact ⟨_, _, rfl⟩
+  | appL _ => exact ⟨_, _, rfl⟩
+  | appR _ => exact ⟨_, _, rfl⟩
+
+/-- The one-app head indicator is invariant under C-fires. -/
+theorem scStepC_hd1C {p p' : SCTerm} (h : SCStepC p p') :
+    scIsHd1C p' = scIsHd1C p := by
+  cases h with
+  | C_red x y z => rfl
+  | appL h' =>
+      obtain ⟨a, b, rfl⟩ := scStepC_src_app h'
+      obtain ⟨a', b', rfl⟩ := scStepC_tgt_app h'
+      rfl
+  | appR h' =>
+      rename_i r s s'
+      cases r <;> rfl
+
+/-- Two-spines stay two-spines under C-fires: the root cannot fire, and inner fires
+preserve the skeleton. -/
+theorem scStepC_c3 {w v u : SCTerm}
+    (h : SCStepC (.app (.app .C w) v) u) : scIsC3 u = 1 := by
+  cases h with
+  | appL h' =>
+      cases h' with
+      | appL h'' => cases h''
+      | appR h'' => rfl
+  | appR h' => rfl
+
+/-- **The cold invariant**: `Cinv + isC3` never increases across a C-fire. -/
+theorem scStepC_psi : ∀ {t u : SCTerm}, SCStepC t u →
+    scCInv u + scIsC3 u ≤ scCInv t + scIsC3 t := by
+  intro t u h
+  induction h with
+  | C_red x y z =>
+      have e1 : scCInv (.app (.app (.app .C x) y) z)
+          = 1 + scCInv x + scCInv y + scCInv z := by
+        show 1 + (0 + (0 + 0 + scCInv x) + scCInv y) + scCInv z = _
+        omega
+      have e2 : scCInv (.app (.app x z) y)
+          = scIsHd1C x + (scIsC3 x + scCInv x + scCInv z) + scCInv y := by
+        show scIsC3 (.app x z) + (scIsC3 x + scCInv x + scCInv z) + scCInv y = _
+        rw [scIsC3_app]
+      have e3 : scIsC3 (.app (.app x z) y) = scIsAtomC x := by
+        rw [scIsC3_app, scIsHd1C_app]
+      have e4 : scIsC3 (.app (.app (.app .C x) y) z) = 0 := rfl
+      have e5 := sc_shape_excl x
+      rw [e1, e2, e3, e4]
+      omega
+  | appL h' ih =>
+      rename_i p p' q
+      rw [show scCInv (.app p' q) = scIsC3 p' + scCInv p' + scCInv q from rfl,
+        show scCInv (.app p q) = scIsC3 p + scCInv p + scCInv q from rfl,
+        scIsC3_app, scIsC3_app, scStepC_hd1C h']
+      omega
+  | appR h' ih =>
+      rename_i p q q'
+      rw [show scCInv (.app p q') = scIsC3 p + scCInv p + scCInv q' from rfl,
+        show scCInv (.app p q) = scIsC3 p + scCInv p + scCInv q from rfl,
+        scIsC3_app, scIsC3_app]
+      have hq : scCInv q' ≤ scCInv q := by
+        rcases hc : scIsC3 q with _ | n
+        · omega
+        · have hone : scIsC3 q = 1 := by
+            have := scIsC3_le_one q
+            omega
+          obtain ⟨w, v, rfl⟩ := scIsC3_eq_one hone
+          have h1 := scStepC_c3 h'
+          have h2 : scIsC3 (.app (.app .C w) v) = 1 := rfl
+          omega
+      omega
+
+/-- **THE COLD LAW**: a C-fire never increases the C-redex inventory. -/
+theorem sc_cold_law {t u : SCTerm} (h : SCStepC t u) : scCInv u ≤ scCInv t := by
+  have hpsi := scStepC_psi h
+  rcases hc : scIsC3 t with _ | n
+  · omega
+  · have hone : scIsC3 t = 1 := by
+      have := scIsC3_le_one t
+      omega
+    obtain ⟨w, v, rfl⟩ := scIsC3_eq_one hone
+    have h1 := scStepC_c3 h
+    have h2 : scIsC3 (.app (.app .C w) v) = 1 := rfl
+    omega

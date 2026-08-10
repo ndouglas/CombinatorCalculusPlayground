@@ -959,3 +959,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_descent_speed' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_descent_speed
+
+/-- info: 'scStepC_psi' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scStepC_psi
+
+/-- info: 'sc_cold_law' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_cold_law
