@@ -7481,3 +7481,52 @@ theorem sc_mt5T_line : ∀ u v, RS.SC.Steps scMt5T u → RS.SC.Steps scMt5T v �
       (scForced_chained _ _ (scNoNFF_forced k)) u (List.mem_cons.mpr hk)
       v (List.mem_cons.mpr hk')
   · exact .inr (cross k' k h v u hk' hk)
+
+-- ## Stage 257: THE SWAPMILL — the second engine species, core laws.
+-- Inside scChamp170 (and its +4-period siblings) runs a leaner mill: the counter is a
+-- bare C-chain `C^k B`, descent is rider ping-pong (one C-fire per layer, two per net
+-- pair), and the turnover is three fires through the driver `S ((C S) C) C` — which
+-- re-emits the SAME `x·(C x)` pattern that drives the first mill, plus the junk seed
+-- `C (C T)`. The driver even lives inside the chain's ten-leaf base: the engine
+-- carries its own blueprint. Species one grows 3 leaves per layer and pays 6 fires;
+-- the swapmill grows 1 and pays 2 — the leanest G-machine yet seen.
+
+/-- The swap tower: a bare `C`-chain over base `f`. -/
+def scSwapT : Nat → SCTerm → SCTerm
+  | 0, f => f
+  | k + 1, f => .app .C (scSwapT k f)
+
+/-- The swapmill driver's argument block. -/
+def scSwapA : SCTerm := .app (.app .C .S) .C
+
+/-- **THE SWAP**: one fire exchanges the two riders and strips a layer. -/
+theorem sc_swap (f y z : SCTerm) :
+    RS.SC.StepsN 1 (.app (.app (.app .C f) y) z) (.app (.app f z) y) :=
+  RS.StepsN.tail (SCStep.C_red f y z) (@RS.StepsN.refl RS.SC _)
+
+/-- **THE DOUBLE SWAP**: two fires strip two layers and restore rider order. -/
+theorem sc_swap2 (f y z : SCTerm) :
+    RS.SC.StepsN 2 (.app (.app (.app .C (.app .C f)) y) z) (.app (.app f y) z) :=
+  RS.StepsN.tail (SCStep.C_red (.app .C f) y z)
+    (RS.StepsN.tail (SCStep.C_red f z y) (@RS.StepsN.refl RS.SC _))
+
+/-- **THE SWAP DESCENT**: an even chain unwinds in one fire per layer, riders home. -/
+theorem sc_swap_run : ∀ (j : Nat) (f y z : SCTerm),
+    RS.SC.StepsN (2 * j) (.app (.app (scSwapT (2 * j) f) y) z) (.app (.app f y) z)
+  | 0, f, y, z => @RS.StepsN.refl RS.SC _
+  | j + 1, f, y, z => by
+      show RS.SC.StepsN (2 * j + 2)
+        (.app (.app (scSwapT (2 * j + 2) f) y) z) (.app (.app f y) z)
+      have h := RS.StepsN.trans (sc_swap2 (scSwapT (2 * j) f) y z)
+        (sc_swap_run j f y z)
+      rw [show (2 : Nat) + 2 * j = 2 * j + 2 from by omega] at h
+      exact h
+
+/-- **THE SWAP TURNOVER**: three fires through the driver re-emit the mill pattern
+`T·(C T)` and the junk seed `C (C T)`. -/
+theorem sc_swap_turnover (T : SCTerm) :
+    RS.SC.StepsN 3 (.app (.app (.app .S scSwapA) .C) T)
+      (.app (.app T (.app .C T)) (.app .C (.app .C T))) :=
+  RS.StepsN.tail (SCStep.S_red scSwapA .C T)
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S .C T))
+      (RS.StepsN.tail (SCStep.S_red T .C (.app .C T)) (@RS.StepsN.refl RS.SC _)))

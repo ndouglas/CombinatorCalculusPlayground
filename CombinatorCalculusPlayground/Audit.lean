@@ -941,3 +941,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_mt5T_line' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_mt5T_line
+
+/-- info: 'sc_swap_run' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_swap_run
+
+/-- info: 'sc_swap_turnover' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_swap_turnover
