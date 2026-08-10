@@ -6907,3 +6907,21 @@ understood (duplicated content + two boundary nodes), wall-shaped. The minting p
 also suggests the endgame inequality: hot fires pay ≥ +1 size for ≤ Cinv(x)+2 minted
 drops, and Cinv(x) < |x|, so no reduction schedule can convert growth into unbounded
 descent faster than linearly — C12's linear-excess law, derived rather than observed.
+
+### Stage 263: THE MINTING LAW — `sc_minting_law`, the tenth wall
+
+Across ANY fire, `scCInv + scIsC3` grows by at most the leaf growth plus two. The
+S-fire's mint is dominated by its own duplication (`scCInv_succ_le_leaf`: inventory
+sits strictly below leaf count — every redex owns a distinct application node), the
+C-fire's is paid by the shape it destroys, and congruence rides on the cold law's two
+facts, now proved for the full relation. **C14's per-step ledger is closed**: descent
+comes only from C-fires (unit drop law), C-fires consume inventory without minting
+(cold law), and inventory is minted only by growth, at a bounded exchange rate
+(minting law). What separates this from a C14 PROOF is one integration step: summing
+the ledger along an arbitrary path still lets inventory-purchased drops accumulate
+linearly in total growth — the observed floor (digs ≈ initial inventory, ~2% of peak)
+is TIGHTER than the walls yet imply. Either a sharper exchange-rate (the +2 boundary
+mints seem almost never realized: median hot mint was 0) or a locality argument
+(minted redexes sit inside the duplicated copy, where firing them cannot undo the
+duplication that paid for them) is the remaining gap. That locality observation — the
+mint is in the copy — is registered as the C14 attack vector.

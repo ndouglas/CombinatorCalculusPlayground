@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE COLD LAW (Stage 262, `sc_cold_law`, ninth
+confluence makes even the trees rejoin. THE MINTING LAW (Stage 263, `sc_minting_law`,
+tenth wall): inventory growth is paid for in leaves — C14's per-step
+ledger closed (drops ← C-fires ← inventory ← growth, at bounded
+exchange); remaining gap is one integration/locality step. THE COLD
+LAW (Stage 262, `sc_cold_law`, ninth
 wall): C-fires never mint C-redexes — the storm floor's cold half is
 a theorem; C14's remaining debt is one lemma (the hot minting bound).
 THE COLD FRAGMENT (Stage 261, `sc_descent_speed`):

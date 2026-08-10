@@ -6913,3 +6913,14 @@ efficiency frontier: is 2-fires/1-leaf optimal? (4) Ideonomy pass due ~Stage 262
   same shape-ledger method, S-fragment step relation (or full SCStep with C-fire case
   reusing sc_cold_law); closing it makes the C14 potential fully formal. (2) The
   swapmill ridden trichotomy. (3) The 264 review.
+
+## 2026-08-10 — Stage 263: the minting law — the tenth wall, first-try green
+
+- Two walls in one day with the same proof skeleton (shape ledger + targeted node
+  equations + omega). The method is now routine: probe the quantity, guess the paid-
+  for-by term, hand-check the four constructor cases, emit.
+- One hundred forty-five autonomous stages (119–263). Ranking: (1) **the 264 review**
+  (cadence, and the wall count deserves a consolidated table). (2) The C14 locality
+  argument (the mint is in the copy) — probe: where do minted redexes sit relative to
+  the duplicated subterm, and do fired-in-copy C-redexes ever propagate drops out?
+  (3) The swapmill ridden trichotomy.
