@@ -7595,3 +7595,16 @@ theorem sc_unit_drop : ∀ {t u : SCTerm}, RS.SC.step t u →
   | appR h ih =>
       show _ + _ ≤ _ + _ + 1
       omega
+
+/-- **THE DESCENT SPEED LIMIT**: over `n` fires, at most `n` leaves are lost — reaching
+a small term from a big one takes at least their size difference in fires. -/
+theorem sc_descent_speed : ∀ {n : Nat} {t u : SCTerm}, RS.SC.StepsN n t u →
+    t.leafCount ≤ u.leafCount + n := by
+  intro n t u h
+  refine h.rec (motive := fun n t u _ =>
+      SCTerm.leafCount t ≤ SCTerm.leafCount u + n) ?_ ?_
+  · intro a
+    exact Nat.le_refl _
+  · intro m a b c s rest ih
+    have h1 := sc_unit_drop s
+    omega

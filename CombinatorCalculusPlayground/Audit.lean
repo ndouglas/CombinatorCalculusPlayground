@@ -956,3 +956,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_unit_drop' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_unit_drop
+
+/-- info: 'sc_descent_speed' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_descent_speed
