@@ -6925,3 +6925,19 @@ mints seem almost never realized: median hot mint was 0) or a locality argument
 (minted redexes sit inside the duplicated copy, where firing them cannot undo the
 duplication that paid for them) is the remaining gap. That locality observation — the
 mint is in the copy — is registered as the C14 attack vector.
+
+### Stage 265: the mint is dig-inert — locality confirmed
+
+The C14 attack vector, measured: across 96 hot fires in storm walks, the achievable
+cold descent (`cold-dig`, computed exactly by BFS before and after each fire) rises
+by MEDIAN ZERO — p90 two, maximum six — even though hot fires duplicate whole
+subtrees of inventory. The minted redexes are nearly dig-inert: they sit inside the
+duplicated copy where firing them shrinks the copy but cannot undo the duplication
+that paid for it. Combined with the per-fire cost of ≥ +1 leaf, the exchange rate is
+ruinous for any digging schedule: pay ≥ 1 up, receive ~0 (at most 6) of future down.
+THE FLOOR THEOREM's empirical form: dig(t) ≤ cold-dig(t) + small·(hot fires), with
+cold-dig(t) ≤ a few × scCInv(t). The formal version needs a copy-tracking argument
+(where a redex lives relative to the duplication boundary) — registered as the C14
+endgame, alongside the cheap integrated corollary of the minting law (path version,
+next). C12 note: this locality is exactly why observed excess is linear with a SMALL
+constant, not merely linear.

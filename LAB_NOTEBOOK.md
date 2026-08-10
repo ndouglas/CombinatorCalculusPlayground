@@ -6961,3 +6961,10 @@ locality holds empirically, attempt THE FLOOR THEOREM: dig from any state ≤ sc
 constant. (2) The swapmill ridden trichotomy (C13's second complete instance).
 (3) The path-integrated minting corollary (StepsN version — cheap, pin it when
 convenient). (4) Ideonomy at ~267.
+
+## 2026-08-10 — Stage 265: the mint is dig-inert
+
+- One hundred forty-seven autonomous stages (119–265). Ranking: (1) **the integrated
+  minting law** (StepsN corollary — cheap, closes the per-path ledger formally).
+  (2) The copy-tracking floor theorem (C14 endgame; likely needs a marked-reduction
+  formalism — next-arc scale). (3) The swapmill ridden trichotomy. (4) Ideonomy ~267.

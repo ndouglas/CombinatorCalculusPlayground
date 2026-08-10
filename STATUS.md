@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE MINTING LAW (Stage 263, `sc_minting_law`,
+confluence makes even the trees rejoin. THE MINT IS DIG-INERT (Stage 265): across 96
+measured hot fires, achievable cold descent rises by median ZERO
+(max 6) — minted redexes sit in the copy and cannot undo the
+duplication that paid for them; the C14 endgame is a copy-tracking
+floor theorem. THE MINTING LAW (Stage 263, `sc_minting_law`,
 tenth wall): inventory growth is paid for in leaves — C14's per-step
 ledger closed (drops ← C-fires ← inventory ← growth, at bounded
 exchange); remaining gap is one integration/locality step. THE COLD
