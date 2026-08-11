@@ -980,3 +980,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_swap_revolution' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_swap_revolution
+
+/-- info: 'sc_swap_eternal' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_swap_eternal
+
+/-- info: 'sc_swap_unbounded' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_swap_unbounded

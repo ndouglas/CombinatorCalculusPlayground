@@ -7987,3 +7987,75 @@ theorem sc_swap_revolution (j : Nat) (zs : List SCTerm) :
   have lifted := scStepsN_appList zs core
   rw [← scAppList_append] at lifted
   exact lifted
+
+-- ## Stage 268: THE SWAPMILL IS ETERNAL — the second engine runs forever.
+-- Iterating the ridden revolution: from the fifteen-leaf pure seed, every number of
+-- revolutions is realized, the tower climbs two per cycle, and the junk pairs pile
+-- up in front of a stack nothing ever touches. The second species' analog of
+-- sc_mill_eternal and sc_corridor_unbounded, at half the leaf budget.
+
+/-- `r` revolutions' worth of emitted junk pairs. -/
+def scSwapPairs : Nat → List SCTerm
+  | 0 => []
+  | r + 1 => .app .C .C :: scSwapJ1 :: scSwapPairs r
+
+/-- Uniform pairs slide past one pair. -/
+theorem scSwapPairs_shift : ∀ (r : Nat) (zs : List SCTerm),
+    scSwapPairs r ++ .app .C .C :: scSwapJ1 :: zs
+      = .app .C .C :: scSwapJ1 :: (scSwapPairs r ++ zs)
+  | 0, zs => rfl
+  | r + 1, zs => by
+      show .app .C .C :: scSwapJ1 :: (scSwapPairs r ++ .app .C .C :: scSwapJ1 :: zs)
+        = .app .C .C :: scSwapJ1 :: (.app .C .C :: scSwapJ1 :: (scSwapPairs r ++ zs))
+      rw [scSwapPairs_shift r zs]
+
+/-- The swapmill's state after `r` revolutions from tower height `2j`. -/
+def scSwapState (j : Nat) (zs : List SCTerm) : SCTerm :=
+  scAppList (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * j) scSwapB)) zs
+
+/-- **THE SWAPMILL IS ETERNAL**: every revolution count is realized. -/
+theorem sc_swap_eternal : ∀ (r j : Nat) (zs : List SCTerm),
+    RS.SC.Steps (scSwapState j zs) (scSwapState (j + r) (scSwapPairs r ++ zs))
+  | 0, j, zs => @RS.Steps.refl RS.SC _
+  | r + 1, j, zs => by
+      have h1 : RS.SC.Steps (scSwapState j zs)
+          (scSwapState (j + 1) (.app .C .C :: scSwapJ1 :: zs)) := by
+        have h := sc_swap_revolution j zs
+        rw [show 2 * j + 2 = 2 * (j + 1) from by omega] at h
+        exact RS.StepsN.toSteps h
+      have h2 := sc_swap_eternal r (j + 1) (.app .C .C :: scSwapJ1 :: zs)
+      have h := RS.Steps.trans h1 h2
+      rw [show j + 1 + r = j + (r + 1) from by omega] at h
+      rw [show scSwapPairs (r + 1) ++ zs
+          = scSwapPairs r ++ (.app .C .C :: scSwapJ1 :: zs) from
+        (scSwapPairs_shift r zs).symm]
+      exact h
+
+/-- The tower's weight. -/
+theorem scSwapT_size : ∀ (k : Nat) (f : SCTerm),
+    (scSwapT k f).leafCount = k + f.leafCount
+  | 0, f => by show f.leafCount = 0 + f.leafCount; omega
+  | k + 1, f => by
+      show 1 + (scSwapT k f).leafCount = _
+      rw [scSwapT_size k f]
+      omega
+
+/-- **THE SECOND CORRIDOR IS INFINITE**: the fifteen-leaf pure swapmill seed has an
+unbounded reachable set. -/
+theorem sc_swap_unbounded (n : Nat) :
+    ∃ u, RS.SC.Steps (scSwapState 0 []) u ∧ n ≤ u.leafCount := by
+  have hs := sc_swap_eternal n 0 []
+  rw [Nat.zero_add] at hs
+  refine ⟨scSwapState n (scSwapPairs n ++ []), hs, ?_⟩
+  show n ≤ (scAppList (.app (.app (.app .S scSwapA) .C)
+    (scSwapT (2 * n) scSwapB)) (scSwapPairs n ++ [])).leafCount
+  have h := scAppList_leaf_ge (scSwapPairs n ++ [])
+    (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * n) scSwapB))
+  have h2 : (SCTerm.app (.app (.app .S scSwapA) .C)
+      (scSwapT (2 * n) scSwapB)).leafCount
+      = 5 + (scSwapT (2 * n) scSwapB).leafCount := by
+    show 1 + 3 + 1 + (scSwapT (2 * n) scSwapB).leafCount = _
+    omega
+  rw [scSwapT_size] at h2
+  have h3 : scSwapB.leafCount = 10 := rfl
+  omega
