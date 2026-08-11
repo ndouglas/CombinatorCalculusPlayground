@@ -1,0 +1,79 @@
+:root {
+  --bg: #fbfaf8;
+  --fg: #1a1c20;
+  --muted: #5c626e;
+  --rule: #dcd8d0;
+  --panel: #ffffff;
+  --accent: #b45309;
+  --proved: #166534;
+  --probed: #92400e;
+  --open: #9f1239;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1014;
+    --fg: #e8e6e3;
+    --muted: #9aa1ad;
+    --rule: #262b33;
+    --panel: #14171d;
+    --accent: #fbbf24;
+    --proved: #4ade80;
+    --probed: #fbbf24;
+    --open: #fb7185;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 17px/1.65 Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+}
+
+main { max-width: 44rem; margin: 0 auto; padding: 4rem 1.25rem 6rem; }
+
+h1 { font-size: 2.1rem; line-height: 1.15; margin: 0 0 .4rem; letter-spacing: -.01em; }
+h2 { font-size: 1.35rem; margin: 3rem 0 .75rem; letter-spacing: -.005em; }
+.standfirst { color: var(--muted); font-size: 1.1rem; margin: 0 0 3rem; }
+
+code, .mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .88em;
+}
+
+figure {
+  margin: 2.5rem 0;
+  padding: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+figure .scroll { overflow-x: auto; }
+canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+figcaption { color: var(--muted); font-size: .9rem; margin-top: .85rem; }
+
+.controls {
+  display: flex; flex-wrap: wrap; gap: .6rem; align-items: center;
+  margin-bottom: .9rem; font-family: ui-monospace, Menlo, monospace; font-size: .82rem;
+}
+.controls select, .controls input, .controls button {
+  font: inherit; padding: .3rem .5rem;
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--rule); border-radius: 4px;
+}
+.controls input[type=text] { flex: 1 1 16rem; min-width: 0; }
+.controls button { cursor: pointer; }
+#parse-error { color: var(--open); font-size: .82rem; min-height: 1.2em; }
+
+.tiers { border: 1px solid var(--rule); border-radius: 6px; padding: 1.25rem 1.5rem; margin: 3rem 0 0; }
+.tiers dt { font-weight: bold; margin-top: .9rem; }
+.tiers dt:first-child { margin-top: 0; }
+.tiers dd { margin: .2rem 0 0; color: var(--muted); }
+.tier-proved { color: var(--proved); }
+.tier-probed { color: var(--probed); }
+.tier-open { color: var(--open); }
+
+.noscript { padding: 1rem; border: 1px dashed var(--rule); color: var(--muted); }
