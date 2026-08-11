@@ -7155,3 +7155,24 @@ corridor ladders, two crash screens, and the storm-dig program. The conjecture i
 strongly supported as probes can make it; what remains is proof, and the proof's
 known shape is regime-by-regime assembly (bulk-normalization + engine-classification
 + the affine tail).
+
+### Stage 283: the species-3 descent, and the ideonomy pass — the C13 grid
+
+`sc_l3_descent` (axiom-free): d159's layer strips in four fires with riders home —
+no parity, unlike the swapmill's ping-pong. Species 3's core is now two laws deep
+(family driver law + own descent law), confirming the classification's economy.
+
+**Ideonomy pass (due).** The C13 grid as it stands: an engine = (driver slot X) ×
+(layer grammar L) × (junk policy). Observed points: the swapmill (C, bare C-chain,
+junk-is-parked-driver), the mill (its own driver family — mill-K deserves the same
+family-level treatment as the swap-driver got), d159 (C (C C), L₃, junk-is-tower-
+snapshot). Generated leads, ranked: (a) derive the MILL's laws from a family law the
+way the swap family now works — if both driver motifs admit slot-parametric laws,
+the enumeration is two axes shorter; (b) the SLOT-X REVOLUTION: how much of Stage
+267's seven-phase composition is X-generic? The reseed and rebirth used B's
+concrete shape — parametrize B over the layer grammar and the whole trichotomy may
+become a functor over the grid; (c) junk policies seem binary (blueprint vs
+snapshot) — is that forced by the no-erasure wall? A snapshot IS the only other
+thing the machine has to emit; (d) the grid predicts UNSEEN species — enumerate
+small (X, L) pairs, synthesize seeds, and check which run; a predicted-then-found
+species would be C13's strongest possible evidence.

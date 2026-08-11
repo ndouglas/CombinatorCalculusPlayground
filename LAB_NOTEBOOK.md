@@ -7162,3 +7162,10 @@ normalizing terms with bounded excess (the 96%, formally). (4) Ideonomy at ~283.
   layer grammar × junk policy) as a formal grid; and what OTHER driver motifs exist
   (the mill-K family deserves its own family-level law). (3) The n=12 diagonal
   (sampled, not exhaustive — 5M×many too heavy; targeted at storm-phase starts).
+
+## 2026-08-11 — Stage 283: species-3 descent; the ideonomy grid
+
+- One hundred sixty-five autonomous stages (119–283). Ranking: (1) **grid
+  prediction**: synthesize seeds for unseen (X, L) pairs and march them — a
+  predicted species would be C13's strongest evidence (probe-only, cheap).
+  (2) The mill-family driver law (mill-K slot-parametric). (3) The 285 review.

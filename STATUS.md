@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. MOUNTAIN HEIGHT PLATEAUS (Stage 282): exhaustive
+confluence makes even the trees rejoin. THE C13 GRID (Stage 283): engine = slot X ×
+layer grammar × junk policy; species-3 descent pinned (axiom-free);
+the grid now PREDICTS unseen species — synthesis is the next test.
+MOUNTAIN HEIGHT PLATEAUS (Stage 282): exhaustive
 n=10 minimax over 4.98M terms — max excess 20, BELOW n=8's 23; the
 diagonal f-ladder plateaus and C12 survives its hardest test.
 THE DRIVER LAW (Stage 281, `sc_driver_law`,
