@@ -6950,3 +6950,20 @@ formal end to end: `sc_descent_speed` caps how fast leaves can fall; `sc_minting
 caps how fast the currency that pays for falling can be minted. The gap between these
 walls and the observed floor (digs ≈ initial inventory) is the copy-tracking locality
 argument, C14's endgame, next-arc scale.
+
+### Stage 267: THE RIDDEN REVOLUTION — the swapmill's biography in one law
+
+`sc_swap_revolution`: under ANY rider stack, `4j + 9` fires take the driver over an
+even tower to the driver over the tower-plus-two, emitting the junk pair `(C C, J₁)`
+in front of an untouched stack. The decomposition (cycle → reseed → trigger → second
+descent → reseed → REBIRTH) exposed the engine's secret: the junk block
+`J₁ = (C driver)(C C)` is a PARKED COPY OF THE DRIVER, and the rebirth fire unparks
+it while the twice-wrapped old tower `C (C T)` becomes the new tower. Growth by
+wrapping, rebirth by unparking, junk as self-blueprint — species two is not just
+leaner than the mill, it is more elegant: the machine IS its own waste product. For
+C13 this is the strongest structural evidence yet: both species' junk carries the
+driver pattern, which suggests the general G-machine form is "driver + tower +
+self-seeding junk," a shape one could plausibly ENUMERATE. The trichotomy pipeline
+(forced → family → no-NF → decider) now has everything it needs at the swapmill's
+core level; the remaining work is the anchor from scChamp170 and the forced/family
+assembly — mill-1's Stages 242–248, replayed on species two.

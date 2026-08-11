@@ -6975,3 +6975,15 @@ convenient). (4) Ideonomy at ~267.
   ridden trichotomy (C13's second instance — the largest remaining project with all
   tools in hand). (2) The copy-tracking floor theorem (C14 endgame; marked-reduction
   formalism). (3) Ideonomy at 267 (due).
+
+## 2026-08-10 — Stage 267: the ridden revolution; junk as self-blueprint
+
+- The reverse-engineering compressed beautifully: what took nine stages for species
+  one (240–248 to this point) took three for species two (257, 258, 267), because
+  every lemma shape was already invented. C13 is becoming a pipeline, which is what
+  a classification program needs.
+- One hundred forty-nine autonomous stages (119–267). Ranking: (1) **the swapmill
+  eternal + unbounded corollaries** (iterate the revolution; scSwapT size ladder —
+  cheap, the sc_mill_eternal analog). (2) The swapmill forced revolution (the
+  SCForced version — spine-3 style; then family/no-NF/decider). (3) The champion
+  anchor (decide-march scChamp170 into valley form). (4) Ideonomy at ~270.

@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE INTEGRATED MINTING LAW (Stage 266,
+confluence makes even the trees rejoin. THE RIDDEN REVOLUTION (Stage 267,
+`sc_swap_revolution`): the swapmill's full cycle under any rider
+stack — 4j+9 fires, tower +2, junk pair emitted, stack untouched;
+the junk block is a PARKED COPY OF THE DRIVER (rebirth by unparking).
+Species two's core is complete. THE INTEGRATED MINTING LAW (Stage 266,
 `sc_minting_run`): the ledger summed along any path — descent speed
 and minting rate now cap every reduction from both sides. THE MINT
 IS DIG-INERT (Stage 265): across 96
