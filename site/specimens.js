@@ -5,6 +5,15 @@
 /** The 12-leaf climber, scMt5T. */
 export const CLIMBER = 'C S S (S S) C (S (C S (C C)) C)';
 
+/**
+ * The deepest-descending branchy term found while sampling at ten leaves.
+ * Cited in the essay: it falls 165 leaves at a 1,200-fire horizon, but from a
+ * peak of 5,268 -- standing only 1.04 above its own floor, against the corridor
+ * phase's 2.50 and the mill's asymptote of 3. It is why absolute drop was
+ * rejected as an axis: the measure flatters large terms.
+ */
+export const DEEP_BRANCHY = 'C S S (S S) (C (S S S) C)';
+
 /** The spacetime figure's menu. `fires` is tuned per specimen. */
 export const SPECIMENS = [
   { label: 'the climber — 12 leaves, forced forever', source: CLIMBER, fires: 520 },
