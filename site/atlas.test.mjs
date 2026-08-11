@@ -1,7 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { KNOWN_CORRIDORS, knownCorridorPoints, project } from './atlas.js';
-import { QUADRANT_WIDTH, QUADRANT_DROP, coords } from './sample.js';
+import {
+  KNOWN_CORRIDORS, knownCorridorPoints, project,
+  DEFAULT_MAX_DROP, DEFAULT_MAX_WIDTH,
+} from './atlas.js';
+import { QUADRANT_WIDTH, QUADRANT_DROP, coords, mulberry32, sampleBatch } from './sample.js';
 import { FOUND_CORRIDORS, SPECIMENS, CLIMBER } from './specimens.js';
 import { parse, leaves, march } from './sc.js';
 
@@ -62,4 +65,17 @@ test('width 0 (normalizers) projects onto the left edge, not off it', () => {
   const box = { x: 0, y: 0, w: 100, h: 100, maxWidth: 1000, maxDrop: 250 };
   const p = project({ width: 0, drop: 0 }, box);
   assert.ok(p.x >= 0 && p.x <= 100);
+});
+
+test('the default axes contain the data without wasting the frame', () => {
+  const deepest = Math.max(...knownCorridorPoints().map((p) => p.drop));
+  assert.ok(deepest <= DEFAULT_MAX_DROP,
+    `deepest corridor drop ${deepest} must fit inside maxDrop ${DEFAULT_MAX_DROP}`);
+  assert.ok(deepest > DEFAULT_MAX_DROP * 0.6,
+    `maxDrop ${DEFAULT_MAX_DROP} wastes most of the frame against deepest ${deepest}`);
+
+  const rnd = mulberry32(20260810);
+  const widest = Math.max(...sampleBatch(rnd, 500, { size: 10 }).map((s) => s.width));
+  assert.ok(widest <= DEFAULT_MAX_WIDTH,
+    `widest sampled term ${widest} must fit inside maxWidth ${DEFAULT_MAX_WIDTH}`);
 });

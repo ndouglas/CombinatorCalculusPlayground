@@ -8,6 +8,11 @@ import {
 } from './sample.js';
 import { FOUND_CORRIDORS, CLIMBER } from './specimens.js';
 
+/** Chosen to contain the data: deepest point anywhere is 109 (the climber). */
+export const DEFAULT_MAX_DROP = 120;
+/** Widest observed sampled term is 3343. */
+export const DEFAULT_MAX_WIDTH = 4000;
+
 /**
  * Constructed, not sampled. Uniform sampling at n=10 yields ~2 corridors per
  * 1,000 terms and almost none with the deep drops that define the corridor
@@ -41,18 +46,77 @@ const PHASE_COLOUR = {
   corridor: 'rgba(255,196,64,0.95)',
 };
 
+const AXIS = 'rgba(128,134,148,0.95)';
+const AXIS_FAINT = 'rgba(128,134,148,0.26)';
+
+function drawAxes(ctx, box) {
+  ctx.font = '12px ui-monospace, Menlo, monospace';
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = AXIS;
+  ctx.fillStyle = AXIS;
+
+  ctx.beginPath();
+  ctx.moveTo(box.x, box.y);
+  ctx.lineTo(box.x, box.y + box.h);
+  ctx.lineTo(box.x + box.w, box.y + box.h);
+  ctx.stroke();
+
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  for (const d of [0, 40, 80, 120]) {
+    if (d > box.maxDrop) continue;
+    const y = box.y + box.h - (d / box.maxDrop) * box.h;
+    ctx.strokeStyle = AXIS;
+    ctx.beginPath();
+    ctx.moveTo(box.x - 4, y);
+    ctx.lineTo(box.x, y);
+    ctx.stroke();
+    ctx.fillText(String(d), box.x - 8, y);
+    if (d > 0) {
+      ctx.strokeStyle = AXIS_FAINT;
+      ctx.beginPath();
+      ctx.moveTo(box.x, y);
+      ctx.lineTo(box.x + box.w, y);
+      ctx.stroke();
+    }
+  }
+
+  ctx.strokeStyle = AXIS;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  for (const w of [1, 2, 10, 100, 1000, 4000]) {
+    if (w > box.maxWidth) continue;
+    const x = box.x + (Math.log(Math.max(1, w)) / Math.log(box.maxWidth)) * box.w;
+    ctx.beginPath();
+    ctx.moveTo(x, box.y + box.h);
+    ctx.lineTo(x, box.y + box.h + 4);
+    ctx.stroke();
+    ctx.fillText(String(w), x, box.y + box.h + 8);
+  }
+
+  ctx.fillText('median late branching width  (log scale)', box.x + box.w / 2, box.y + box.h + 28);
+  ctx.save();
+  ctx.translate(box.x - 42, box.y + box.h / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('max drop from running peak', 0, 0);
+  ctx.restore();
+}
+
 export function drawAtlas(canvas, points, opts = {}) {
   const ctx = canvas.getContext('2d');
-  const pad = 48;
+  const padL = 62, padR = 24, padT = 24, padB = 66;
   const box = {
-    x: pad, y: pad,
-    w: canvas.width - pad * 2,
-    h: canvas.height - pad * 2,
-    maxWidth: opts.maxWidth ?? 1000,
-    maxDrop: opts.maxDrop ?? 250,
+    x: padL, y: padT,
+    w: canvas.width - padL - padR,
+    h: canvas.height - padT - padB,
+    maxWidth: opts.maxWidth ?? DEFAULT_MAX_WIDTH,
+    maxDrop: opts.maxDrop ?? DEFAULT_MAX_DROP,
   };
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawAxes(ctx, box);
 
   // The empty quadrant, drawn because it is the subject.
   const q = project({ width: QUADRANT_WIDTH, drop: box.maxDrop }, box);
@@ -63,6 +127,12 @@ export function drawAtlas(canvas, points, opts = {}) {
   ctx.setLineDash([4, 4]);
   ctx.strokeRect(q.x, q.y, box.x + box.w - q.x, qb.y - q.y);
   ctx.setLineDash([]);
+
+  ctx.fillStyle = 'rgba(220,60,60,0.85)';
+  ctx.font = '12px ui-monospace, Menlo, monospace';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'top';
+  ctx.fillText('branching AND descending: empty', box.x + box.w - 8, q.y + 8);
 
   for (const p of points) {
     const { x, y } = project(p, box);
