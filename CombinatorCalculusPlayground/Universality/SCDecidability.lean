@@ -8409,3 +8409,69 @@ theorem sc_swapseed_reach_iff (u : SCTerm) :
     · exact RS.Steps.trans (scSwapF_steps k)
         (scChained_steps _ _ _ (scForced_chained _ _ (scSwapF_forced k))
           (List.mem_cons_of_mem _ hu))
+
+-- ## Stage 272: THE LINE, GENERIC — total order is a property of forced families.
+-- Extracted from the mill's proof: ANY forced chain family's reachable set is
+-- totally ordered by reduction. Both engines get their lines as instances; so will
+-- every engine C13's classification ever finds.
+
+/-- Any family state reduces to the next generation's start. -/
+theorem sc_forced_family_to_next (F : Nat → SCTerm) (chain : Nat → List SCTerm)
+    (hf : ∀ k, SCForced (F k) (chain k))
+    (hlast : ∀ k, (chain k).getLastD (F k) = F (k + 1))
+    (k : Nat) {u : SCTerm} (hu : u = F k ∨ u ∈ chain k) :
+    RS.SC.Steps u (F (k + 1)) := by
+  have h := scChained_steps_last (chain k) (F k) u
+    (scForced_chained _ _ (hf k)) (List.mem_cons.mpr hu)
+  rw [hlast k] at h
+  exact h
+
+/-- Generation starts reduce forward. -/
+theorem sc_forced_family_steps_from (F : Nat → SCTerm) (chain : Nat → List SCTerm)
+    (hf : ∀ k, SCForced (F k) (chain k))
+    (hlast : ∀ k, (chain k).getLastD (F k) = F (k + 1)) :
+    ∀ (k d : Nat), RS.SC.Steps (F k) (F (k + d))
+  | _, 0 => @RS.Steps.refl RS.SC _
+  | k, d + 1 =>
+      RS.Steps.trans (sc_forced_family_steps_from F chain hf hlast k d)
+        (sc_forced_family_to_next F chain hf hlast (k + d) (.inl rfl))
+
+/-- **THE LINE, GENERIC**: a forced chain family's reachable set is totally ordered
+by reduction — one road, for every engine. -/
+theorem sc_forced_family_line (F : Nat → SCTerm) (chain : Nat → List SCTerm)
+    (hf : ∀ k, SCForced (F k) (chain k))
+    (hlast : ∀ k, (chain k).getLastD (F k) = F (k + 1))
+    (hne : ∀ k, chain k ≠ []) :
+    ∀ u v, RS.SC.Steps (F 0) u → RS.SC.Steps (F 0) v →
+      RS.SC.Steps u v ∨ RS.SC.Steps v u := by
+  have cross : ∀ k k', k < k' → ∀ u v, (u = F k ∨ u ∈ chain k) →
+      (v = F k' ∨ v ∈ chain k') → RS.SC.Steps u v := by
+    intro k k' hkk u v hu hv
+    have h1 := sc_forced_family_to_next F chain hf hlast k hu
+    have h2 : RS.SC.Steps (F (k + 1)) (F k') := by
+      have h := sc_forced_family_steps_from F chain hf hlast (k + 1) (k' - (k + 1))
+      rw [show k + 1 + (k' - (k + 1)) = k' from by omega] at h
+      exact h
+    have h3 : RS.SC.Steps (F k') v := by
+      rcases hv with rfl | hv
+      · exact @RS.Steps.refl RS.SC _
+      · exact scChained_steps _ _ _ (scForced_chained _ _ (hf k'))
+          (List.mem_cons_of_mem _ hv)
+    exact RS.Steps.trans h1 (RS.Steps.trans h2 h3)
+  intro u v hu hv
+  obtain ⟨k, hk⟩ := sc_forced_family_mem F chain hf hlast hne u hu
+  obtain ⟨k', hk'⟩ := sc_forced_family_mem F chain hf hlast hne v hv
+  rcases Nat.lt_trichotomy k k' with h | h | h
+  · exact .inl (cross k k' h u v hk hk')
+  · subst h
+    exact scChained_comparable (chain k) (F k)
+      (scForced_chained _ _ (hf k)) u (List.mem_cons.mpr hk)
+      v (List.mem_cons.mpr hk')
+  · exact .inr (cross k' k h v u hk' hk)
+
+/-- **THE SECOND LINE**: the swapmill seed's reachable set is one road. -/
+theorem sc_swapseed_line : ∀ u v,
+    RS.SC.Steps (scSwapF 0) u → RS.SC.Steps (scSwapF 0) v →
+    RS.SC.Steps u v ∨ RS.SC.Steps v u :=
+  sc_forced_family_line scSwapF scSwapChain scSwapF_forced scSwapChain_last
+    scSwapChain_ne
