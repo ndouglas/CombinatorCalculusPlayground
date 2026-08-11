@@ -920,7 +920,11 @@ export function runAtlas(canvas, opts = {}) {
 Run: `node --test site/atlas.test.mjs`
 Expected: PASS, 8 tests.
 
-If "constructed corridors reach the deep-descent arm" fails, the horizon is too short. Measured maxima: the climber drops 121, and the deepest found corridor drops 66 — both clear the threshold of 40 at horizon 1200, but a short horizon will not reach them.
+If "constructed corridors reach the deep-descent arm" fails, the horizon is too short. Measured at the horizon the code actually uses (1200): the climber drops **109** and the deepest found corridor drops 66 — both clear the threshold of 40.
+
+**A corridor's `drop` is horizon-dependent, and this is not a rounding detail.** The climber drops 85 at horizon 800, 109 at 1200, 121 at 1400, 145 at 2000. Because the corridor is eternal and its peak keeps rising, the deepest fall-back from that peak grows without bound as you look longer. So the vertical extent of the atlas's corridor arm is a property of the chosen horizon, not an intrinsic property of the terms. (An earlier draft of this plan cited 121 as the value "at horizon 1200"; 121 is the figure at 1400, and the conflation was caught in review.)
+
+Two consequences. First, any prose or caption describing the vertical axis must say the drops are measured at a fixed horizon — otherwise a reader takes the arm's height for an intrinsic quantity. Second, the essay's actual argument does **not** depend on these magnitudes: it rests on branchy terms staying shallow, deep descenders having width exactly 1, and the upper-right region being empty. Those three survive any horizon choice. Do not restate the argument in terms of specific drop values.
 
 - [ ] **Step 6: Commit**
 
@@ -1148,11 +1152,27 @@ Create `site/index.html`. The prose below is the deliverable — do not paraphra
 </figure>
 
 <p>
-  The branching terms run off to the right and stay flat. The deeply descending
-  terms sit hard against the left edge, at width exactly one — no choices at all,
-  ever. The region where a computer would have to live is empty, and it stays empty
-  as the sample grows. You can reseed it and watch.
+  The branching terms run off to the right and stay flat. The deeply descending terms
+  sit hard against the left edge, at width exactly one — no choices at all, ever. The
+  region where a computer would have to live is very nearly empty: about three terms in
+  eight thousand land in it, and none of them deeply. Branchy terms top out near a drop
+  of 55, while the width-one corridors reach 109 and keep descending further the longer
+  you watch. So the two capabilities are near-exclusive rather than exclusive — and it
+  is that <em>near</em> that the open question lives in. You can reseed the figure and
+  watch it happen.
 </p>
+
+<!--
+  An earlier draft of this paragraph claimed the region "is empty, and it stays empty
+  as the sample grows". That was FALSE and shipped past 33 green tests: the guarding
+  test sampled 2,000 terms while the figure draws 4,000, and two terms land inside at
+  4,000 (`C S S (S S) (C (S S S) C)` width 3 drop 47; `S C S (S S C (S (S S))) C`
+  width 107 drop 55), three at 8,000. It was caught by looking at a screenshot.
+  `ATLAS_TOTAL` is now exported from atlas.js so the figure and its test cannot sample
+  different amounts, and the shaded region's label counts the points actually drawn
+  rather than repeating a fixed word. Do not restore an absolute emptiness claim.
+-->
+
 
 <p>
   This is measurement, not proof, and the distinction matters. What is proved is
@@ -1398,7 +1418,9 @@ Create an empty `site/.nojekyll` so GitHub Pages serves the directory verbatim.
 - [ ] **Step 2: Verify the suite passes the way CI will run it**
 
 Run: `node --test site/`
-Expected: PASS — all four test files, 31 tests total (11 + 7 + 5 + 8).
+Expected: PASS — all four test files. The count grew during implementation as review
+found tests that passed while asserting less than they appeared to; 34 at the time
+Task 6 was written. Assert the suite is green rather than pinning an exact count.
 
 - [ ] **Step 3: Add a pointer to the README**
 
