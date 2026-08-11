@@ -7216,3 +7216,10 @@ bounded excess, formally (the assembly's largest missing piece).
   motif deserves its slot-parametric law; d211/d209/d206/d205 wait on it). (2) The
   grid sweep at scale (synthesize all small (X, L) seeds; classify; count new
   species). (3) Bulk-C12 formal scoping. (4) The 288 review.
+
+## 2026-08-11 — Stage 287: both motifs are families
+
+- One hundred sixty-nine autonomous stages (119–287). Ranking: (1) the grid sweep at
+  scale (all small slots for BOTH cores — count species, hunt for a third motif).
+  (2) The mill-family instances: decode d211/d209/d206/d205's slots via the family
+  law. (3) Bulk-C12 formal scoping. (4) The 289 review.

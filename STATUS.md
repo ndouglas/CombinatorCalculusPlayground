@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE THIRD PORTRAIT (Stage 286): the metronome's
+confluence makes even the trees rejoin. THE MILL FAMILY LAW (Stage 287,
+`sc_millfam_law`, axiom-free): both driver motifs are one-law
+families — the corridor phase is a two-parameter family study; the
+enumeration of {S,C}'s eternal machines is in hand. THE THIRD
+PORTRAIT (Stage 286): the metronome's
 full trichotomy in ONE stage, first-try green — pipeline stage-counts
 per portrait: 9 → 5 → 1; the pipeline is regime-independent.
 THE METRONOME (Stage 284, `sc_metro_law` +
