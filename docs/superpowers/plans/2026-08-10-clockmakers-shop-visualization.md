@@ -505,7 +505,7 @@ rather than the page quietly continuing to claim otherwise."
 
 **Interfaces:**
 - Consumes: `march`, `leafSeq`, `leaves` from `./sc.js`.
-- Produces: `spacetimeRaster(term, opts) -> {width, height, pixels}` where `pixels` is a `Uint8ClampedArray` of RGBA, and `drawSpacetime(canvas, raster)`. `opts` is `{fires, mode, leafCap, theme}` with `mode` in `'atom' | 'depth'`.
+- Produces: `spacetimeRaster(term, opts) -> {width, height, pixels}` where `pixels` is a `Uint8ClampedArray` of RGBA, and `drawSpacetime(canvas, raster)`. `opts` is `{fires, mode, leafCap}` with `mode` in `'atom' | 'depth'`. (An earlier draft listed a `theme` option; it was never implemented and is not needed — the page themes itself in CSS via `prefers-color-scheme`, and the raster carries no background pixels to theme, since unused positions stay fully transparent.)
 
 The raster function is pure and returns pixels, so the figure's geometry is tested without a DOM. Only `drawSpacetime` touches a canvas, and it is deliberately trivial.
 
