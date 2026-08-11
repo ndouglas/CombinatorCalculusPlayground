@@ -8650,3 +8650,25 @@ theorem sc_champ170_no_nf :
     ∀ u, RS.SC.Steps scChamp170 u → ∃ v, RS.SC.step u v :=
   sc_forced_forever_no_nf scChampF scChampChain scChampF_forced scChampChain_last
     scChampChain_ne
+
+-- ## Stage 278: C12, STATED — the linear-excess conjecture and its payoff, named.
+-- The static-potential program for the storm floor ends here: both the inventory
+-- floor and the depth-weighted potential are falsified by late-completing S-redexes
+-- (duplications invisible to any static count). The viable mechanism was pinned at
+-- Stage 132 all along: THE BACKBONE (sc_decidable_of_bound). What remains is its
+-- hypothesis — stated now as a named conjecture, with the payoff as a theorem.
+
+/-- **C12, the linear-excess conjecture**: some affine function of the endpoint
+sizes bounds the intermediates of some path between any two reachable terms. -/
+def scLinearExcess : Prop :=
+  ∃ a b c : Nat, ∀ t u : SCTerm, RS.SC.Steps t u →
+    RS.StepsLe RS.SC SCTerm.leafCount
+      (a * t.leafCount + b * u.leafCount + c) t u
+
+/-- **C12 SUFFICES**: the linear-excess conjecture implies `{S,C}` reachability is
+decidable — the program's central question, reduced to one quantitative law. -/
+theorem sc_c12_decides (h : scLinearExcess) :
+    ∀ t u : SCTerm, Nonempty (Decidable (RS.SC.Steps t u)) := by
+  obtain ⟨a, b, c, hf⟩ := h
+  intro t u
+  exact ⟨sc_decidable_of_bound (fun m n => a * m + b * n + c) hf t u⟩
