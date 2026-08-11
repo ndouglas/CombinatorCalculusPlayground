@@ -7081,3 +7081,15 @@ partition as a computable classifier — scope it). (3) d159's snapshot-tape spe
   copies charged to their gains; start by probing whether ANY state's dig exceeds
   2·Cinv + 2 (falsification sweep at scale). (2) The assembly scoping (what "storms
   decidable" needs end to end). (3) d159's snapshot-tape species. (4) Ideonomy.
+
+## 2026-08-11 — Stage 277: the κ-floor falls; C14 restated
+
+- A good falsification: cheap, decisive, and it localized the truth (compounding
+  duplication). The program's epistemic machinery — register conjecture, probe to
+  falsify, restate sharper — is functioning exactly as designed.
+- One hundred fifty-nine autonomous stages (119–277). Ranking: (1) **the
+  depth-weighted potential probe**: compute Φ(t) = Σ_redexes 2^(S-arg nesting depth)
+  over storm states and test dig ≤ Φ + c — if it holds, Φ is wall-shaped (the
+  minting law's proof skeleton weights cleanly). (2) The assembly scoping under
+  C12-original (bounded intermediates ⇒ decidability — formalize the reduction as a
+  theorem sketch: StepsLe machinery already exists at line ~200). (3) d159 species.

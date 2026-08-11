@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE FLOOR PROBE (Stage 276): dig = Cinv EXACTLY
+confluence makes even the trees rejoin. THE κ-FLOOR FALSIFIED (Stage 277): duplication
+compounds — digs reach 4.4× inventory at n=12; C14 restated as a
+depth-weighted potential (or retreat to C12's bounded-intermediates
+form, which suffices for decidability). The walls survive untouched.
+THE FLOOR PROBE (Stage 276): dig = Cinv EXACTLY
 in 12/15 storm states — the inventory is the realized dig; outliers
 (≤ 2×) localize C14's last gap to the boundary mints, and either an
 S-guard or a κ-multiplicative floor closes it. THE SPECIES CENSUS (Stage 275): the remaining

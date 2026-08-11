@@ -7075,3 +7075,21 @@ the toll) or a κ-multiplicative floor (`dig ≤ 2·Cinv + c`) suffices for the 
 search and can be proved by charging each re-spend to its duplication. The
 decidability consequence is unchanged either way: peaks on any path to `u` stay below
 `|u| + κ·Cinv + c`, and the state space under that bound is finite.
+
+### Stage 277: the κ-floor falsified — duplication compounds
+
+The falsification sweep worked as designed, against us: at n=12, digs of 48 against
+inventory 11 (≈4.4×) and 25 against 6 (≈4.2×) kill both the additive and the
+constant-multiplicative floors. The mechanism is compounding: a hot fire duplicates a
+C-rich subterm, a second hot fire duplicates the copy, and each generation of copies
+is spendable — dig grows like inventory times duplication DEPTH, not inventory times
+a constant. **C14 is hereby restated (v2)**: the achievable dig from `t` is bounded
+by a depth-weighted inventory — `Φ(t) = Σ over C-redexes of 2^(S-argument nesting)`
+or similar — OR, more conservatively, the program should retreat to C12's original
+bounded-intermediates form (peaks on any path from `t` to `u` bounded by a computable
+`f(|t|,|u|)`), which the crash screens support with linear f and which suffices for
+decidability by finite search. Perspective: even the worst observed dig is ~5% of
+state size — the storm floor is real as a PHENOMENON; what fell is only the simplest
+formula for it. The walls (unit drop, cold, minting) all survive untouched; they were
+never strong enough to imply the constant floor, which is exactly why the probe could
+falsify it without contradicting anything pinned.
