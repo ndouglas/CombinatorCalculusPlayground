@@ -998,3 +998,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_swap_rev_forced' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_swap_rev_forced
+
+/-- info: 'sc_swapseed_no_nf' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_swapseed_no_nf
+
+/-- info: 'sc_swapseed_reach_iff' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_swapseed_reach_iff

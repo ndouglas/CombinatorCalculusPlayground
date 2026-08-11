@@ -8233,3 +8233,179 @@ theorem sc_swap_rev_forced (j : Nat) (hj : 1 ≤ j) :
       = (.app (.app scSwapJ1 (.app .C (.app .C (scSwapT (2 * j) scSwapB))))
           scSwapJ1) from rfl]
   exact sc_swap_rebirth_forced _ _ hCCT hJ
+
+-- ## Stage 271: THE SWAPMILL NEVER RESTS — family, membership, no normal form.
+-- The 245-replay on species two: revolutions as a chain family under growing junk,
+-- every state spine-3, the generic principle instantiated. The pure seventeen-leaf
+-- seed (driver over the two-layer tower) has no reachable normal form.
+
+/-- Swap towers are applications. -/
+theorem scSwapT_isApp : ∀ (k : Nat), ∃ a b, scSwapT k scSwapB = .app a b
+  | 0 => ⟨_, _, rfl⟩
+  | _ + 1 => ⟨_, _, rfl⟩
+
+/-- Run states are spine-3 when the base is an application. -/
+theorem scSwapRunChain_spine3 : ∀ (d : Nat) (f y z : SCTerm),
+    (∃ a b, f = .app a b) →
+    ∀ u ∈ scSwapRunChain d f y z, SCSpine3 u
+  | 0, _, _, _ => by intro _ u hu; exact absurd hu List.not_mem_nil
+  | d + 1, f, y, z => by
+      intro hf u hu
+      rcases List.mem_cons.mp hu with rfl | hu
+      · cases d with
+        | zero =>
+            obtain ⟨a, b, hab⟩ := hf
+            exact ⟨a, b, z, y, by rw [show scSwapT 0 f = f from rfl, hab]⟩
+        | succ d' => exact ⟨_, _, _, _, rfl⟩
+      · exact scSwapRunChain_spine3 d f z y hf u hu
+
+/-- Every revolution state is spine-3. -/
+theorem scSwapRevChain_spine3 (j : Nat) :
+    ∀ u ∈ scSwapRevChain j, SCSpine3 u := by
+  intro u hu
+  obtain ⟨a, b, hT⟩ := scSwapT_isApp (2 * j)
+  rcases List.mem_append.mp hu with h | h
+  · simp only [List.mem_cons, List.not_mem_nil, or_false] at h
+    rcases h with rfl | rfl | rfl
+    · exact ⟨_, _, _, _, rfl⟩
+    · exact ⟨_, _, _, _, rfl⟩
+    · exact ⟨a, b, _, _, by rw [hT]⟩
+  rcases List.mem_append.mp h with h | h
+  · exact scSwapRunChain_spine3 (2 * j) scSwapB _ _ ⟨_, _, rfl⟩ u h
+  rcases List.mem_append.mp h with h | h
+  · simp only [List.mem_cons, List.not_mem_nil, or_false] at h
+    rcases h with rfl | rfl
+    · exact ⟨_, _, _, _, rfl⟩
+    · exact ⟨_, _, _, _, rfl⟩
+  rcases List.mem_append.mp h with h | h
+  · simp only [List.mem_cons, List.not_mem_nil, or_false] at h
+    rcases h with rfl
+    exact ⟨a, b, _, _, by rw [hT]⟩
+  rcases List.mem_append.mp h with h | h
+  · exact scSwapRunChain_spine3 (2 * j) scSwapB _ _ ⟨_, _, rfl⟩ u h
+  rcases List.mem_append.mp h with h | h
+  · simp only [List.mem_cons, List.not_mem_nil, or_false] at h
+    rcases h with rfl | rfl
+    · exact ⟨_, _, _, _, rfl⟩
+    · exact ⟨_, _, _, _, rfl⟩
+  · simp only [List.mem_cons, List.not_mem_nil, or_false] at h
+    rcases h with rfl
+    exact ⟨_, _, _, _, rfl⟩
+
+/-- The driver state is spine-3. -/
+theorem scSwapDriver_spine3 (j : Nat) :
+    SCSpine3 (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * j) scSwapB)) :=
+  ⟨_, _, _, _, rfl⟩
+
+/-- The revolution chain is nonempty. -/
+theorem scSwapRevChain_ne (j : Nat) : scSwapRevChain j ≠ [] := by
+  show _ :: _ ≠ []
+  simp
+
+/-- The revolution chain ends at the rebirth state. -/
+theorem scSwapRevChain_last (j : Nat) (dflt : SCTerm) :
+    (scSwapRevChain j).getLastD dflt
+      = .app (.app (.app (.app (.app .S scSwapA) .C)
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))) (.app .C .C))
+          scSwapJ1 := by
+  have hne : ∀ (l r : List SCTerm), r ≠ [] → l ++ r ≠ [] :=
+    fun l r hr h => hr (List.append_eq_nil_iff.mp h).2
+  have h1 : ∀ zs : List SCTerm, zs ≠ [] → ∀ (l : List SCTerm) (d d' : SCTerm),
+      (l ++ zs).getLastD d = zs.getLastD d' :=
+    fun zs hzs l d d' => List.getLastD_append_right l hzs d d'
+  simp only [scSwapRevChain]
+  rw [h1 _ (hne _ _ (hne _ _ (hne _ _ (hne _ _ (hne _ _ (by simp)))))) _ dflt dflt]
+  rw [h1 _ (hne _ _ (hne _ _ (hne _ _ (hne _ _ (by simp))))) _ dflt dflt]
+  rw [h1 _ (hne _ _ (hne _ _ (hne _ _ (by simp)))) _ dflt dflt]
+  rw [h1 _ (hne _ _ (hne _ _ (by simp))) _ dflt dflt]
+  rw [h1 _ (hne _ _ (by simp)) _ dflt dflt]
+  rw [h1 _ (by simp) _ dflt dflt]
+  rfl
+
+/-- The junk stack is inert. -/
+theorem scSwapPairs_succ_nil : ∀ (r : Nat), ∀ z ∈ scSwapPairs r, scSucc z = []
+  | 0 => by intro z hz; exact absurd hz List.not_mem_nil
+  | r + 1 => by
+      intro z hz
+      rcases List.mem_cons.mp hz with rfl | hz
+      · rfl
+      · rcases List.mem_cons.mp hz with rfl | hz
+        · exact scSwapJ1_succ_nil
+        · exact scSwapPairs_succ_nil r z hz
+
+/-- The swapmill family: generation `r` is the driver over tower `2(1+r)` riding
+`r` junk pairs. -/
+def scSwapF (r : Nat) : SCTerm :=
+  scAppList (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * (1 + r)) scSwapB))
+    (scSwapPairs r)
+
+/-- The family's chains: the ridden revolutions. -/
+def scSwapChain (r : Nat) : List SCTerm :=
+  (scSwapRevChain (1 + r)).map (scAppList · (scSwapPairs r))
+
+/-- Every generation's chain is forced. -/
+theorem scSwapF_forced (r : Nat) : SCForced (scSwapF r) (scSwapChain r) := by
+  refine sc_forced_riders _ (scSwapPairs_succ_nil r) ?_
+    (sc_swap_rev_forced (1 + r) (by omega))
+  intro u hu
+  rcases List.mem_cons.mp hu with rfl | hu
+  · exact scSwapDriver_spine3 (1 + r)
+  · exact scSwapRevChain_spine3 (1 + r) u hu
+
+/-- Each generation's chain ends where the next begins. -/
+theorem scSwapChain_last (r : Nat) :
+    (scSwapChain r).getLastD (scSwapF r) = scSwapF (r + 1) := by
+  have h1 : (scSwapChain r).getLastD
+      (scAppList (.app (.app (.app .S scSwapA) .C)
+        (scSwapT (2 * (1 + r)) scSwapB)) (scSwapPairs r))
+      = scAppList ((scSwapRevChain (1 + r)).getLastD
+          (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * (1 + r)) scSwapB)))
+          (scSwapPairs r) :=
+    List.getLastD_map
+  rw [show scSwapF r = scAppList (.app (.app (.app .S scSwapA) .C)
+      (scSwapT (2 * (1 + r)) scSwapB)) (scSwapPairs r) from rfl, h1,
+    scSwapRevChain_last]
+  show scAppList (scAppList (.app (.app (.app .S scSwapA) .C)
+      (.app .C (.app .C (scSwapT (2 * (1 + r)) scSwapB))))
+      [.app .C .C, scSwapJ1]) (scSwapPairs r) = _
+  rw [← scAppList_append]
+  show scAppList (.app (.app (.app .S scSwapA) .C)
+      (scSwapT (2 * (1 + r) + 2) scSwapB))
+      (.app .C .C :: scSwapJ1 :: scSwapPairs r) = _
+  rw [show 2 * (1 + r) + 2 = 2 * (1 + (r + 1)) from by omega]
+  rfl
+
+/-- Chains are nonempty. -/
+theorem scSwapChain_ne (r : Nat) : scSwapChain r ≠ [] := by
+  intro h
+  exact scSwapRevChain_ne (1 + r) (List.map_eq_nil_iff.mp h)
+
+/-- **THE SWAPMILL NEVER RESTS**: the pure seventeen-leaf seed has no reachable
+normal form. -/
+theorem sc_swapseed_no_nf :
+    ∀ u, RS.SC.Steps (scSwapF 0) u → ∃ v, RS.SC.step u v :=
+  sc_forced_forever_no_nf scSwapF scSwapChain scSwapF_forced scSwapChain_last
+    scSwapChain_ne
+
+/-- Every generation start is reachable from the seed. -/
+theorem scSwapF_steps : ∀ k, RS.SC.Steps (scSwapF 0) (scSwapF k)
+  | 0 => @RS.Steps.refl RS.SC _
+  | k + 1 => by
+      have h2 : RS.SC.Steps (scSwapF k) ((scSwapChain k).getLastD (scSwapF k)) :=
+        scChained_steps_last (scSwapChain k) (scSwapF k) (scSwapF k)
+          (scForced_chained _ _ (scSwapF_forced k)) List.mem_cons_self
+      rw [scSwapChain_last k] at h2
+      exact RS.Steps.trans (scSwapF_steps k) h2
+
+/-- **THE SECOND CORRIDOR, EXACTLY**: a term is reachable from the swapmill seed iff
+it is a generation start or lies on a generation's forced chain. -/
+theorem sc_swapseed_reach_iff (u : SCTerm) :
+    RS.SC.Steps (scSwapF 0) u ↔ ∃ k, u = scSwapF k ∨ u ∈ scSwapChain k := by
+  constructor
+  · exact sc_forced_family_mem scSwapF scSwapChain scSwapF_forced scSwapChain_last
+      scSwapChain_ne u
+  · rintro ⟨k, rfl | hu⟩
+    · exact scSwapF_steps k
+    · exact RS.Steps.trans (scSwapF_steps k)
+        (scChained_steps _ _ _ (scForced_chained _ _ (scSwapF_forced k))
+          (List.mem_cons_of_mem _ hu))
