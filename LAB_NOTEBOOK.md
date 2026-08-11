@@ -7011,3 +7011,11 @@ convenient). (4) Ideonomy at ~267.
 - One hundred fifty-two autonomous stages (119–270). Ranking: (1) the swapmill
   family + no-NF + reach-iff + decider (the 245–248 replay — one stage if the
   generic theorems bite cleanly). (2) The champion anchor. (3) Ideonomy (due).
+
+## 2026-08-10 — Stage 271: the swapmill never rests; the pipeline is real
+
+- One hundred fifty-three autonomous stages (119–271). Ranking: (1) swapmill parity
+  pack: THE LINE + decider + flatness for the seed (mechanical, one stage). (2) The
+  champion anchor (scChamp170 decide-march into the swapmill family — connects the
+  census's wild term to the pure engine). (3) Ideonomy (overdue): the enumeration of
+  driver+tower+self-junk shapes as a C13 attack. (4) The copy-tracking floor (C14).

@@ -6999,3 +6999,17 @@ now exactly what Stages 245–248 did for the mill: chain family (revolutions wi
 riders), the generic no-NF principle, family membership, size floor, bounded-scan
 decider. Species two's laws needed no new ideas at any point past the probe — C13's
 "one phenomenon, many grammars" reading strengthens with every reused lemma.
+
+### Stage 271: THE SWAPMILL NEVER RESTS — the second corridor, exactly
+
+Species two's portrait, completed to match species one theorem for theorem:
+`sc_swapseed_no_nf` (no reachable normal form) and `sc_swapseed_reach_iff` (the
+reachable set in closed form — one road). The entire 245+247 pipeline instantiated
+verbatim: same generic principle, same membership theorem, same spine-3 invariant,
+same rider machinery. What took nine stages for the mill took five for the swapmill
+(257, 258, 267, 269–271), zero of them requiring a new idea — the strongest possible
+demonstration that C13 is a CLASSIFICATION PROGRAM: find the engine, name the phases,
+run the pipeline. Remaining for full parity: THE LINE, flatness, and the bounded-scan
+decider for the seed (all mechanical), plus the champion anchor connecting scChamp170
+to the pure engine. The G-machine picture after two species: driver + tower + junk
+that is a parked copy of the driver — a shape begging to be enumerated.
