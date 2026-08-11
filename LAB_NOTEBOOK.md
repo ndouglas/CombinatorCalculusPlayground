@@ -7035,3 +7035,12 @@ convenient). (4) Ideonomy at ~267.
   in riders via zs — may need a rider-generalized family or a direct forced-march
   decide). (2) Ideonomy: the G-machine enumeration (C13 attack). (3) Copy-tracking
   floor (C14). (4) The 275 review.
+
+## 2026-08-11 — Stage 274: the champion never rests
+
+- The anchor was cheaper than the mill's (22 fires vs 44+18) because the swapmill's
+  transient is short — the engine sits nearly on the surface of the wild term.
+- One hundred fifty-six autonomous stages (119–274). Ranking: (1) **species-typing
+  the remaining champions** (probe d211/d209/d206/d205 valleys against both engine
+  grammars — cheap, sharpens C13 to a classification with data). (2) The 275 review.
+  (3) Copy-tracking floor (C14). (4) Ideonomy: G-machine enumeration.

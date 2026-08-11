@@ -7033,3 +7033,15 @@ fully-machine-checked instances built from one generic pipeline. The remaining
 species-specific item is the champion anchor (scChamp170 → the pure engine), and the
 remaining structural item for the whole program is the storm floor (C14's copy-
 tracking lemma). Then: assembly.
+
+### Stage 274: THE CHAMPION NEVER RESTS — the anchor lands
+
+`sc_champ170_no_nf`: the census's fifth drop-champion (a wild twelve-leaf term) has
+no reachable normal form — anchored into the swapmill family in twenty-two forced
+fires, then carried forever by the stack-generalized family (`scSwapFam` over any
+inert base stack, a strictly more reusable form than the mill's hardcoded one). The
+program now has TWO wild census terms with complete non-normalization proofs, built
+from two engine species and one shared pipeline. C13's next probe target: the
+remaining four n=12 champions (d211, d209, d206, d205) — species one, species two,
+or a third grammar? The +6-period trio should be mills; d205's mixed signature is
+the interesting one.
