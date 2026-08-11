@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. C12, STATED (Stage 278, `scLinearExcess` +
+confluence makes even the trees rejoin. THE C12 LANDSCAPE (Stage 279): median excess
+ZERO over 548 random pairs — a flat plain with rare mountains, every
+mountain an engine; refined attack = C12-on-the-bulk + C13-on-the-
+tail, assembled regime by regime. C12, STATED (Stage 278, `scLinearExcess` +
 `sc_c12_decides`): the central question is now formally one
 quantitative law away — C12 implies decidability via Stage 132's
 backbone; every measurement supports C12 with small constants.

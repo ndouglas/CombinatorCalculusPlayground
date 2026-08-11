@@ -7104,3 +7104,10 @@ partition as a computable classifier — scope it). (3) d159's snapshot-tape spe
   path rather than arbitrary paths (the crash screens measured leftmost — exactly
   the right quantity for this route). Probe: do witness paths found by search ever
   need to exceed the leftmost-path peak? (2) d159 species. (3) The 280 review.
+
+## 2026-08-11 — Stage 279: the C12 landscape
+
+- One hundred sixty-one autonomous stages (119–279). Ranking: (1) **exhaustive
+  minimax at n=10** — the discriminating C12 experiment (heavy compute: restrict to
+  branch-phase starts, incremental logging, nohup+watcher per the sweep rule).
+  (2) The 280 review. (3) d159's snapshot-tape species (third trichotomy).

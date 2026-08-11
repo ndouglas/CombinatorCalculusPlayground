@@ -7107,3 +7107,21 @@ endpoint-size bound covers some path between any reachable pair) and `sc_c12_dec
 measured supports C12 with small constants: crash screens (no drop past 211 at two
 sizes), corridor ledgers (exact linear excess), storm digs (~5% of size). The
 program's central question is, formally and precisely, C12's truth.
+
+### Stage 279: the C12 landscape — a flat bulk with rare, affine mountains
+
+Direct measurement of the quantity C12 bounds: for random starts at n=8–10, the
+minimal path-peak needed to reach each target (iterative-deepening capped BFS over
+548 reachable pairs) has MEDIAN EXCESS ZERO — most reachability facts need no climb
+at all — and maximum 4. The mountains (f(8,8) ≥ 31, Stage 132's exhaustive minimax)
+are rare tail objects invisible to sampling; the tail evidence lives in the crash
+screens, which measured exactly the deep-drop terms and found excess bounded by
+roughly 3|t| at both n=10 (exhaustive over corridors) and n=12. Synthesis: the C12
+landscape is a flat plain with sparse mountains of observed-affine height, and every
+mountain so far is an ENGINE (corridor structure — which the pipeline decides
+independently). The refined attack: prove C12 restricted to the tame bulk (where the
+walls plus normalization should give small bounds), and handle the mountainous tail
+by C13's classification — decidability would then assemble regime by regime without
+ever needing a uniform static potential. The missing heavy compute: exhaustive
+minimax at n=10 to pin f(10,10) (the 6→8 jump was 1→23; corridor theory predicts
+~3n ≈ 30–40, explosive growth would predict ≫100 — a discriminating experiment).
