@@ -109,9 +109,15 @@
   What is known about storms is a floor, not a ceiling. No single fire loses more
   than one leaf (<code>sc_unit_drop</code>). C-fires never mint new C-redexes
   (<code>sc_cold_law</code>). Growth in inventory is paid for in leaves
-  (<code>sc_minting_law</code>). Adversarial search digs at most 26 leaves out of
-  storm peaks of 700 to 1,500 — so descent looks structurally unavailable, and the
-  remaining gap is an integration step.
+  (<code>sc_minting_law</code>). For a while it looked as though descent were
+  structurally unavailable: adversarial search dug at most 26 leaves out of storm
+  peaks of 700 to 1,500, and the remaining gap looked like an integration step. That
+  floor has since been falsified. At twelve leaves the same sweep found digs of 48
+  against an inventory of 11, and 25 against 6 — enough to kill both the additive and
+  the constant-multiplicative forms of the bound. The mechanism is compounding: a fire
+  duplicates a C-rich subterm, another duplicates the copy, and every generation of
+  copies is spendable, so the achievable dig grows like inventory times duplication
+  <em>depth</em>. C14 was restated rather than closed.
 </p>
 
 <p>
@@ -131,8 +137,11 @@
   </dd>
   <dt class="tier-probed">Probed (measured, not proved)</dt>
   <dd>
-    Storm digs ≤ 26 from peaks of 700–1,500. Median late forced-fraction 0.00 for
-    storms. Dig budget tracking C-redex inventory, median 9.
+    Median late forced-fraction 0.00 for storms. Dig budget tracking C-redex
+    inventory, median 9 at ten leaves — but <strong>superseded at twelve</strong>,
+    where digs of 48 against inventory 11 falsified both the additive and the
+    constant-multiplicative floors. Dig appears to grow like inventory times
+    duplication depth.
   </dd>
   <dd>
     The phase census, measured <em>exhaustively</em> at ten leaves — all 4,978,688
