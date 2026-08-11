@@ -62,7 +62,6 @@ function startAtlas(seed) {
   history.replaceState(null, '', url);
   atlas = runAtlas($('atlas'), {
     seed,
-    total: 4000,
     onProgress: (done, total) => { $('atlas-progress').textContent = `${done} / ${total} terms`; },
   });
 }

@@ -12,6 +12,8 @@ import { FOUND_CORRIDORS, CLIMBER } from './specimens.js';
 export const DEFAULT_MAX_DROP = 120;
 /** Widest observed sampled term is 3343. */
 export const DEFAULT_MAX_WIDTH = 4000;
+/** How many terms the published figure samples. Tests MUST cover at least this. */
+export const ATLAS_TOTAL = 4000;
 
 /**
  * Constructed, not sampled. Uniform sampling at n=10 yields ~2 corridors per
@@ -82,7 +84,6 @@ function drawAxes(ctx, box) {
   }
 
   ctx.strokeStyle = AXIS;
-  ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   for (const w of [1, 2, 10, 100, 1000, 4000]) {
     if (w > box.maxWidth) continue;
@@ -91,6 +92,7 @@ function drawAxes(ctx, box) {
     ctx.moveTo(x, box.y + box.h);
     ctx.lineTo(x, box.y + box.h + 6);
     ctx.stroke();
+    ctx.textAlign = w === box.maxWidth ? 'right' : (w === 1 ? 'left' : 'center');
     ctx.fillText(String(w), x, box.y + box.h + 12);
   }
 
@@ -128,11 +130,18 @@ export function drawAtlas(canvas, points, opts = {}) {
   ctx.strokeRect(q.x, q.y, box.x + box.w - q.x, qb.y - q.y);
   ctx.setLineDash([]);
 
+  const sampled = points.filter((p) => !p.constructed);
+  const inRegion = sampled.filter(
+    (p) => p.width >= QUADRANT_WIDTH && p.drop >= QUADRANT_DROP,
+  ).length;
   ctx.fillStyle = 'rgba(220,60,60,0.85)';
   ctx.font = '18px ui-monospace, Menlo, monospace';
   ctx.textAlign = 'right';
   ctx.textBaseline = 'top';
-  ctx.fillText('branching AND descending: empty', box.x + box.w - 8, q.y + 12);
+  ctx.fillText(
+    `branching AND descending: ${inRegion} of ${sampled.length}`,
+    box.x + box.w - 8, q.y + 12,
+  );
 
   for (const p of points) {
     const { x, y } = project(p, box);
@@ -157,7 +166,7 @@ export function drawAtlas(canvas, points, opts = {}) {
  */
 export function runAtlas(canvas, opts = {}) {
   const seed = opts.seed ?? 20260810;
-  const total = opts.total ?? 4000;
+  const total = opts.total ?? ATLAS_TOTAL;
   const budgetMs = opts.budgetMs ?? 12;
   const rnd = mulberry32(seed);
   const points = knownCorridorPoints();

@@ -79,3 +79,10 @@ test('the default axes contain the data without wasting the frame', () => {
   assert.ok(widest <= DEFAULT_MAX_WIDTH,
     `widest sampled term ${widest} must fit inside maxWidth ${DEFAULT_MAX_WIDTH}`);
 });
+
+test('corridors descend deeper than any branchy term', () => {
+  const deepestCorridor = Math.max(...knownCorridorPoints().map((p) => p.drop));
+  // Branchy terms are bounded near 55 (see sample.test.mjs); corridors reach 109.
+  assert.ok(deepestCorridor > 60,
+    `deepest corridor ${deepestCorridor} must exceed the branchy ceiling`);
+});

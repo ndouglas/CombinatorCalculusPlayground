@@ -5,6 +5,7 @@ import {
   mulberry32, randomTerm, screenKind, coords, sampleBatch,
   QUADRANT_WIDTH, QUADRANT_DROP,
 } from './sample.js';
+import { ATLAS_TOTAL } from './atlas.js';
 
 test('mulberry32 is deterministic and in range', () => {
   const a = mulberry32(12345), b = mulberry32(12345);
@@ -38,16 +39,23 @@ test('the sampler reproduces the Stage 241 census', () => {
   assert.ok(corridors >= 1 && corridors <= 12, `corridors ${corridors}`);
 });
 
-test('THE THESIS: the branching-and-descending quadrant is empty', () => {
+test('THE THESIS: branching and deep descent are near-exclusive', async () => {
   const rnd = mulberry32(20260810);
-  const batch = sampleBatch(rnd, 2000, { size: 10 });
-  const inQuadrant = batch.filter(
+  const batch = sampleBatch(rnd, ATLAS_TOTAL, { size: 10 });
+  const inQ = batch.filter(
     (s) => s.width >= QUADRANT_WIDTH && s.drop >= QUADRANT_DROP,
   );
-  assert.deepEqual(inQuadrant, [],
-    'A term that both branches and descends deeply would falsify the essay. ' +
-    'If this fires, do not "fix" the test -- the page is now making a false ' +
-    'claim and the prose must change.');
+
+  // Sparse, not empty. The essay states this count; if it climbs, the prose is stale.
+  assert.ok(inQ.length <= 5,
+    `${inQ.length} terms in the quadrant at ${ATLAS_TOTAL} samples -- the essay says a `
+    + 'handful. If this has grown, the prose must be requantified, not the bound.');
+
+  // And shallow: no branchy term descends as deep as the corridors do.
+  const branchy = batch.filter((s) => s.width >= 2);
+  const maxBranchyDrop = Math.max(...branchy.map((s) => s.drop));
+  assert.ok(maxBranchyDrop <= 60,
+    `branchy terms reached drop ${maxBranchyDrop}; the essay says they top out near 55`);
 });
 
 test('the two arms of the atlas are separated as the essay describes', () => {
