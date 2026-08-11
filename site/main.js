@@ -1,0 +1,53 @@
+import { parse, show, leaves } from './sc.js';
+import { spacetimeRaster, drawSpacetime } from './spacetime.js';
+import { SPECIMENS } from './specimens.js';
+
+const $ = (id) => document.getElementById(id);
+
+/** The render cap. A storm reaches it at fire 62; that wedge is the point. */
+const RENDER_LEAF_CAP = 1200;
+
+for (const [i, s] of SPECIMENS.entries()) {
+  const opt = document.createElement('option');
+  opt.value = String(i);
+  opt.textContent = s.label;
+  $('term-pick').append(opt);
+}
+
+function renderSpacetime() {
+  const text = $('term-text').value.trim();
+  const chosen = SPECIMENS[Number($('term-pick').value)];
+  let term;
+  try {
+    term = text ? parse(text) : parse(chosen.source);
+    $('parse-error').textContent = '';
+  } catch (e) {
+    $('parse-error').textContent = e.message;
+    return;
+  }
+  const fires = Number($('fires').value);
+  const raster = spacetimeRaster(term, {
+    fires, mode: $('mode-pick').value, leafCap: RENDER_LEAF_CAP,
+  });
+  const canvas = $('spacetime');
+  canvas.width = raster.width;
+  canvas.height = raster.height;
+  drawSpacetime(canvas, raster);
+  const capped = raster.fate === 'capped';
+  $('spacetime-caption').textContent =
+    `${show(term)} — ${leaves(term)} leaves, ${raster.width - 1} fires, ` +
+    `growing to ${raster.height} leaves` +
+    (capped ? `, cut off at the ${RENDER_LEAF_CAP}-leaf render cap.` : '.');
+}
+
+$('term-pick').addEventListener('input', () => {
+  $('term-text').value = '';
+  $('fires').value = String(SPECIMENS[Number($('term-pick').value)].fires);
+  renderSpacetime();
+});
+for (const id of ['mode-pick', 'fires']) {
+  $(id).addEventListener('input', renderSpacetime);
+}
+$('term-go').addEventListener('click', renderSpacetime);
+$('term-text').addEventListener('keydown', (e) => { if (e.key === 'Enter') renderSpacetime(); });
+renderSpacetime();

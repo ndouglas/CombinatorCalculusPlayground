@@ -21,6 +21,9 @@ long.
   A first-class deliverable per the spec, not a diary.
 - [docs/superpowers/specs/](docs/superpowers/specs/) — the design spec, which is
   the authority on what this program is for.
+- **[The Clockmaker's Shop](https://ndouglas.github.io/CombinatorCalculusPlayground/)**
+  — a visual essay on what `{S,C}` reduction looks like, with both figures computed
+  live in the browser by an engine the test suite checks against the Lean.
 
 Zero dependencies (no Mathlib, no Batteries). No `sorry`, no `native_decide`, no
 `Classical.choice`. `lake build` checks everything, including ~175 `#guard`s.

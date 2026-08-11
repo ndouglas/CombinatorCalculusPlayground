@@ -11,6 +11,7 @@
 ## Global Constraints
 
 - **No dependencies.** No npm packages, no CDN links, no build step. The repo is deliberately dependency-free (no Mathlib, no Batteries); the site matches that.
+- **Module setup:** exactly one `site/package.json` containing `{"type": "module"}` and nothing else — no name, no version, no dependencies, no scripts, and no lockfile. It exists solely so Node treats `site/*.js` as ES modules; without it `import { eq } from './sc.js'` fails with `Named export 'eq' not found`. It must stay scoped to `site/`: a root-level `package.json` would declare the whole Lean repository an ES-module package. Browsers ignore it. (Ruled by the human during Task 1, after the constraint proved unsatisfiable as first written.)
 - **Term representation:** nested two-element JS arrays; atoms are the strings `'S'` and `'C'`. `[a, b]` means application. Never classes, never objects.
 - **Step order must mirror Lean's `SCStep`:** root redex first, then `appL` successors, then `appR`. Verified output for `C S S (C S S S) C` is exactly `['S (C S S S) S C', 'C S S (S S S) C']` in that order.
 - **Surface syntax:** left-associative application, atoms `S`/`C`, parentheses. `C (S C C) S` is the notebook's style and the parser/printer must round-trip it.
@@ -504,7 +505,7 @@ rather than the page quietly continuing to claim otherwise."
 
 **Interfaces:**
 - Consumes: `march`, `leafSeq`, `leaves` from `./sc.js`.
-- Produces: `spacetimeRaster(term, opts) -> {width, height, pixels}` where `pixels` is a `Uint8ClampedArray` of RGBA, and `drawSpacetime(canvas, raster)`. `opts` is `{fires, mode, leafCap, theme}` with `mode` in `'atom' | 'depth'`.
+- Produces: `spacetimeRaster(term, opts) -> {width, height, pixels}` where `pixels` is a `Uint8ClampedArray` of RGBA, and `drawSpacetime(canvas, raster)`. `opts` is `{fires, mode, leafCap}` with `mode` in `'atom' | 'depth'`. (An earlier draft listed a `theme` option; it was never implemented and is not needed — the page themes itself in CSS via `prefers-color-scheme`, and the raster carries no background pixels to theme, since unused positions stay fully transparent.)
 
 The raster function is pure and returns pixels, so the figure's geometry is tested without a DOM. Only `drawSpacetime` touches a canvas, and it is deliberately trivial.
 
@@ -919,7 +920,11 @@ export function runAtlas(canvas, opts = {}) {
 Run: `node --test site/atlas.test.mjs`
 Expected: PASS, 8 tests.
 
-If "constructed corridors reach the deep-descent arm" fails, the horizon is too short. Measured maxima: the climber drops 121, and the deepest found corridor drops 66 — both clear the threshold of 40 at horizon 1200, but a short horizon will not reach them.
+If "constructed corridors reach the deep-descent arm" fails, the horizon is too short. Measured at the horizon the code actually uses (1200): the climber drops **109** and the deepest found corridor drops 66 — both clear the threshold of 40.
+
+**A corridor's `drop` is horizon-dependent, and this is not a rounding detail.** The climber drops 85 at horizon 800, 109 at 1200, 121 at 1400, 145 at 2000. Because the corridor is eternal and its peak keeps rising, the deepest fall-back from that peak grows without bound as you look longer. So the vertical extent of the atlas's corridor arm is a property of the chosen horizon, not an intrinsic property of the terms. (An earlier draft of this plan cited 121 as the value "at horizon 1200"; 121 is the figure at 1400, and the conflation was caught in review.)
+
+Two consequences. First, any prose or caption describing the vertical axis must say the drops are measured at a fixed horizon — otherwise a reader takes the arm's height for an intrinsic quantity. Second, the essay's actual argument does **not** depend on these magnitudes: it rests on branchy terms staying shallow, deep descenders having width exactly 1, and the upper-right region being empty. Those three survive any horizon choice. Do not restate the argument in terms of specific drop values.
 
 - [ ] **Step 6: Commit**
 
@@ -1147,11 +1152,27 @@ Create `site/index.html`. The prose below is the deliverable — do not paraphra
 </figure>
 
 <p>
-  The branching terms run off to the right and stay flat. The deeply descending
-  terms sit hard against the left edge, at width exactly one — no choices at all,
-  ever. The region where a computer would have to live is empty, and it stays empty
-  as the sample grows. You can reseed it and watch.
+  The branching terms run off to the right and stay flat. The deeply descending terms
+  sit hard against the left edge, at width exactly one — no choices at all, ever. The
+  region where a computer would have to live is very nearly empty: about three terms in
+  eight thousand land in it, and none of them deeply. Branchy terms top out near a drop
+  of 55, while the width-one corridors reach 109 and keep descending further the longer
+  you watch. So the two capabilities are near-exclusive rather than exclusive — and it
+  is that <em>near</em> that the open question lives in. You can reseed the figure and
+  watch it happen.
 </p>
+
+<!--
+  An earlier draft of this paragraph claimed the region "is empty, and it stays empty
+  as the sample grows". That was FALSE and shipped past 33 green tests: the guarding
+  test sampled 2,000 terms while the figure draws 4,000, and two terms land inside at
+  4,000 (`C S S (S S) (C (S S S) C)` width 3 drop 47; `S C S (S S C (S (S S))) C`
+  width 107 drop 55), three at 8,000. It was caught by looking at a screenshot.
+  `ATLAS_TOTAL` is now exported from atlas.js so the figure and its test cannot sample
+  different amounts, and the shaded region's label counts the points actually drawn
+  rather than repeating a fixed word. Do not restore an absolute emptiness claim.
+-->
+
 
 <p>
   This is measurement, not proof, and the distinction matters. What is proved is
@@ -1199,9 +1220,21 @@ Create `site/index.html`. The prose below is the deliverable — do not paraphra
   <dt class="tier-probed">Probed (measured, not proved)</dt>
   <dd>
     Storm digs ≤ 26 from peaks of 700–1,500. Median late forced-fraction 0.00 for
-    storms. Dig budget tracking C-redex inventory, median 9. The phase census
-    (≈67% halt, ≈33% branch, ≈0.15% corridor), which the figure above recomputes
-    live in your browser.
+    storms. Dig budget tracking C-redex inventory, median 9.
+  </dd>
+  <dd>
+    The phase census was measured <em>exhaustively</em> at ten leaves — all
+    4,978,688 terms, 800-fire horizon: <strong>67.1%</strong> reach a normal form,
+    <strong>32.8%</strong> branch, <strong>0.147%</strong> (7,311 terms) are
+    corridors. The atlas above does not reproduce that measurement; it runs a
+    cheaper analogue in your browser and lands nearby, at about 66.3 / 33.6 / 0.20.
+    Two honest differences: it samples at random rather than enumerating, and its
+    sampler is not uniform over term shapes (it splits leaf counts evenly, where
+    uniformity over binary trees would weight the split by Catalan numbers); and
+    its horizon is 330 fires rather than 800, so a term that stays forced through
+    330 and branches at 500 counts as a corridor here and did not there. That
+    second difference inflates the corridor column, which is the direction the
+    numbers actually differ.
   </dd>
   <dt class="tier-open">Open</dt>
   <dd>
@@ -1385,7 +1418,9 @@ Create an empty `site/.nojekyll` so GitHub Pages serves the directory verbatim.
 - [ ] **Step 2: Verify the suite passes the way CI will run it**
 
 Run: `node --test site/`
-Expected: PASS — all four test files, 31 tests total (11 + 7 + 5 + 8).
+Expected: PASS — all four test files. The count grew during implementation as review
+found tests that passed while asserting less than they appeared to; 34 at the time
+Task 6 was written. Assert the suite is green rather than pinning an exact count.
 
 - [ ] **Step 3: Add a pointer to the README**
 
@@ -1429,4 +1464,111 @@ The repo is public, so the essay becomes publicly readable the moment this runs.
 
 **Type consistency.** `march` returns `{states, fate, branched}` everywhere. `coords` returns `{width, drop, peak, kind}`; `sampleBatch` flattens it to `{term, phase, width, drop, peak}` — `phase` comes from `screenKind`, `kind` from `coords`, and they are deliberately different names because they are different measurements. `Point` is `{width, drop, phase, constructed, name?}` in both `knownCorridorPoints` and `runAtlas`. `spacetimeRaster` returns `{width, height, pixels}`, consumed by `drawSpacetime` and the tests.
 
-**Known risk carried forward.** The census tolerance in Task 2 may need widening for a different PRNG; the step says to widen only if the observed value is near the recorded census, and to treat a distant value as a porting bug.
+**Known risk carried forward.** The census tolerance in Task 2 may need widening for a different PRNG; the step says to widen only if the observed value is near the recorded census, and to treat a distant value as a porting bug. (Moot as of the postmortem below — the sampler was removed with the atlas.)
+
+---
+
+## Postmortem: the atlas was built, then cut
+
+The plan shipped two figures. Only one survived. The spacetime diagram is sound and
+is what the essay now rests on. **The phase atlas was removed after implementation**,
+because its axis could not support the argument built on it. The findings below cost
+real measurement and are recorded so a future attempt starts from them rather than
+rediscovering them.
+
+### Why the atlas failed
+
+**Absolute drop is not scale-free.** The y-axis was "maximum fall from the running
+peak along a leftmost march". That measure rewards large terms. Measured at a 1,200-fire
+horizon:
+
+```
+term                                fires  finalPeak  peak@maxDrop  maxDrop  ratio@maxDrop
+C S S (S S) (C (S S S) C)  (branchy)  1200       5268          4383      165          1.039
+the climber (corridor)                1200        516           491      109          1.285
+S (S C C) C (S (S C C) (C (C C)))     1200       1603          1525       66          1.045
+
+ratio@maxDrop is peak@maxDrop / dip@maxDrop -- the two numbers taken at the same
+moment. finalPeak is where the running maximum ends up by the horizon, which is a
+different and larger number; conflating the two is what made an earlier draft of
+this table wrong.
+
+for comparison, Stage 243, corridor phase, exhaustive at n=10:
+    max drop 211, MAX RATIO 2.50;  mill asymptotic ratio 3 (peak 31+9m / dip 28+3m)
+```
+
+The branchy term "descends" furthest in absolute leaves while standing only 1.04 above
+its own floor. The twelve-leaf climber falls less and stands 1.29 above. **The quantity
+this programme actually bounds is the ratio** (C12's linear-excess constant, ≤ ~3), not
+the raw fall. Any future figure should plot the ratio, or drop-per-fire — which respects
+`sc_unit_drop`, since no fire loses more than one leaf and descent is therefore metered
+by fire count, not by term size.
+
+**Drop never converges for a corridor.** The climber drops 85 by fire 800, 109 by 1,200,
+121 by 1,400, 145 by 2,000. A corridor is eternal and its peak keeps rising, so the
+deepest fall-back grows without bound with the horizon. A quantity whose value depends
+on how long you looked cannot describe what a term *is*.
+
+**The two families were measured at different horizons, and that was the visible bug.**
+`runAtlas` sampled through `sampleBatch` without forwarding a horizon, so sampled points
+used `DEEP_FIRES = 300` while constructed corridors used 1,200 — plotted on one axis,
+with a caption claiming 1,200 for both. At matched horizons the separation *inverts*:
+branchy 165 vs corridor 109 at 1,200; branchy 55 vs climber 49 at 300. Descent is not
+the discriminator between the regimes.
+
+**The measure was repurposed out of its domain.** Stage 243 introduced peak-to-later-dip
+drop as a screen *within* the corridor phase — hunting a crashing corridor among 7,311
+forced, mutually comparable terms. Using it as a cross-phase axis was the original error.
+The 211 and the 2.50 answer "is there a crasher among these", not "how do storms differ
+from corridors".
+
+**And the regimes may share no descent axis at all.** Drop is phase-bound to the descent
+arc of a revolution. Measured per revolution it is a constant of the family (which is how
+`sc_mill_cycle` states it); measured over a fixed horizon it cuts revolution boundaries
+arbitrarily, hence the non-convergence. Storms have no revolutions to measure per —
+median late forced-fraction 0.00. So the measure that is well-posed for corridors is
+undefined for storms, and vice versa. That is a structural obstruction, not a calibration
+problem, and it is the reason no patch to the axis would have worked.
+
+### What a future attempt should plot instead
+
+- The **ratio** peak/dip, or excess over endpoint — C12's quantity, scale-free, convergent.
+- **Adversarial dig from a peak** (Stage 256: ≤26 from storm peaks of 700–1500) — an upper
+  bound over paths, which is what C14 needs. A leftmost march gives only a lower bound
+  along one arbitrary path, and the calculus is confluent, so leftmost need not witness
+  the deepest available descent.
+- **Per-revolution** descent for corridors, accepting that it does not extend to storms.
+
+### The fourteen found corridors
+
+Found by search over ~37,000 random terms at 8–12 leaves, one per distinct maximum drop
+at horizon 1200. Recorded here because finding them cost a search and they are useful
+specimens for any future corridor work. Format: `drop: source`.
+
+```
+ 0: S (S (S C)) (S (S C)) (S S)          29: S (S C) (S C) (C (C (C C))) (S S C)
+ 1: S (C S) (S S) S (C (S C))            33: S C S C (S (C S)) (S (S C)) C
+ 3: S (S S S) C (C S C) S                34: S S C (C S C) (S C C)
+ 4: C (S S S) (S (C S S) C (S C C))      35: S (S (C (C (S S)) C)) (S C) C
+ 6: S (C S) (S C) S (C (C C (S (C C))))  64: S C C (S (S (C S C) C)) (S C)
+ 7: S (C C) C (C S (C C)) (S S C)        66: S (S C C) C (S (S C C) (C (C C)))
+ 8: C S (C S) (S (C S (C C))) C
+ 9: S S S (C S C) (C C) (S C (S C))
+```
+
+### Process findings worth keeping
+
+- **A test guarding a claim must cover at least what the figure displays.** The emptiness
+  assertion sampled 2,000 while the figure drew 4,000; two terms landed in the region the
+  prose called empty. Structural fix at the time was to export the figure's sample total
+  and have both derive from it.
+- **Green tests cannot see a bad picture.** Three defects shipped past a full green suite
+  and were caught only by rendering the page and looking: the oversized axes (data in the
+  bottom 12.8% of the frame, shaded region 84% of its height), the illegible downscaled
+  canvas labels, and the false emptiness claim.
+- **Green tests cannot check prose against a theorem.** The essay stated that
+  `sc_mill_descent` strips a *tower* layer; the Lean docstring says *counter* layer, and
+  `scMillG a m` puts the counter in the `a` position while the tower grows by wrapping.
+  Only a reviewer reading the Lean beside the English caught it.
+- **Testing `height >= leafCap` cannot detect a capped run**, because `march` checks the
+  cap before pushing and the trace stops one state short. Use the returned fate.

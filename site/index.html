@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Clockmaker's Shop — what {S,C} reduction actually looks like</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main>
+
+<h1>The Clockmaker's Shop</h1>
+<p class="standfirst">
+  What <code>{S,C}</code> reduction actually looks like — and why the interesting
+  question moved somewhere with nothing to look at.
+</p>
+
+<p>
+  Take two combinators. <code>S f g x</code> reduces to <code>(f x) (g x)</code>;
+  <code>C f g x</code> reduces to <code>(f x) g</code>. That is the whole system.
+  Below is a single term of twelve leaves, reduced for several hundred steps. Each
+  column is one reduction; the vertical axis is position in the term's leaf string,
+  anchored at the tail so that anything the term emits keeps its place.
+</p>
+
+<figure>
+  <div class="controls">
+    <label>term <select id="term-pick"><!-- populated from specimens.js --></select></label>
+    <label>colour
+      <select id="mode-pick">
+        <option value="atom">atom (S gold / C blue)</option>
+        <option value="depth">bracket depth</option>
+      </select>
+    </label>
+    <label>fires <input id="fires" type="range" min="40" max="900" value="520"></label>
+    <input id="term-text" type="text" spellcheck="false" aria-label="your own term">
+    <button id="term-go">run</button>
+  </div>
+  <div id="parse-error" role="status"></div>
+  <div class="scroll"><canvas id="spacetime" width="1040" height="700"></canvas></div>
+  <noscript><p class="noscript">This figure is computed in your browser and needs JavaScript.</p></noscript>
+  <figcaption id="spacetime-caption"></figcaption>
+</figure>
+
+<p>
+  It is hard not to read that as a cellular automaton. There are periodic engines,
+  a travelling structure, and debris shed behind it. The comb of triangles is a
+  real engine running a real cycle: six fires strip one layer off the machine's
+  counter, and each revolution leaves the tower one layer taller than it was — so the
+  counter it must burn down is longer every time, and the teeth widen as you go
+  right. That much is not an impression — <code>sc_mill_descent</code> is a
+  theorem, and the page you are reading re-checks it: six fires, exact term
+  equality, arbitrary payloads.
+</p>
+
+<p>
+  The solid band along the bottom is the interesting part. Those are emitted
+  blocks, and they never change again. Not "appear not to" — the swapmill's full
+  revolution has been certified under an arbitrary rider stack
+  (<code>sc_swap_revolution</code>): the junk is emitted, the stack underneath is
+  untouched, the engine walks on. One of those blocks turns out to be a parked copy
+  of the machine's own driver.
+</p>
+
+<h2>Scenery is not physics</h2>
+
+<p>
+  So the calculus has particles, periodic structures, and emitted debris — the
+  visual vocabulary of a Class 4 automaton. What it does not have is the thing that
+  makes that vocabulary matter. In Rule 110, gliders <em>collide</em>: two
+  structures meet, interact, and leave a third thing behind, and that is the entire
+  mechanism by which a cellular automaton computes. Here nothing collides. The
+  debris is provably inert and the engine is provably deterministic, so the
+  structures pass each other and nothing happens. It is a shop full of clocks.
+</p>
+
+<p>
+  Where could a computer be, then? It would need two things at once: it would have to
+  <em>branch</em>, so that something in the term can act as a choice, and it would have
+  to <em>descend</em>, so that a computation can consume what it built rather than
+  merely accumulating. Both of those happen here. What has never been found is a term
+  that does the second one deeply enough to matter — and stating that carefully turns
+  out to be harder than drawing it. Absolute descent flatters large terms: one sampled
+  ten-leaf term falls 165 leaves while standing a mere 1.04 above its own floor, where
+  the twelve-leaf climber falls 109 and stands 1.29 above it. The quantity this
+  programme actually bounds is that ratio, not the raw fall.
+</p>
+
+<p>
+  This is measurement, not proof, and the distinction matters. What is proved is
+  narrower and stranger: in the orderly phase, the structures provably do not
+  interact. The corridor terms have been screened exhaustively at ten leaves — all
+  7,311 of them, deep-marched, no crasher, maximum drop 211. The climber's
+  reachable set is a single totally ordered road (<code>sc_mt5T_line</code>). These
+  are the pretty objects, and they are closed.
+</p>
+
+<h2>The part with nothing to look at</h2>
+
+<p>
+  Which is why the open question is not here. It is in the storms — around 3.5% of
+  term space, branchy exponential growers with no periodic structure, no emitted
+  particles, and nothing that renders as anything but noise. They are not corridors
+  in disguise; their late forced-fraction is flat zero. Whether reduction in that
+  regime is decidable is <strong>open</strong>, and it is the whole question.
+</p>
+
+<p>
+  What is known about storms is a floor, not a ceiling. No single fire loses more
+  than one leaf (<code>sc_unit_drop</code>). C-fires never mint new C-redexes
+  (<code>sc_cold_law</code>). Growth in inventory is paid for in leaves
+  (<code>sc_minting_law</code>). For a while it looked as though descent were
+  structurally unavailable: adversarial search dug at most 26 leaves out of storm
+  peaks of 700 to 1,500, and the remaining gap looked like an integration step. That
+  floor has since been falsified. At twelve leaves the same sweep found digs of 48
+  against an inventory of 11, and 25 against 6 — enough to kill both the additive and
+  the constant-multiplicative forms of the bound. The mechanism is compounding: a fire
+  duplicates a C-rich subterm, another duplicates the copy, and every generation of
+  copies is spendable, so the achievable dig grows like inventory times duplication
+  <em>depth</em>. C14 was restated rather than closed.
+</p>
+
+<p>
+  The honest summary is that this calculus put all of its beauty in the phase that
+  turned out to be tractable, and hid its difficulty in the phase that looks like
+  static. The clocks are lovely and they are finished. The question is in the other
+  room.
+</p>
+
+<dl class="tiers">
+  <dt class="tier-proved">Proved (Lean, no <code>sorry</code>, no <code>native_decide</code>)</dt>
+  <dd>
+    <code>sc_mill_cycle</code>, <code>sc_mill_eternal</code>,
+    <code>sc_corridor_unbounded</code>, <code>sc_mt5T_line</code>,
+    <code>sc_swap_revolution</code>, <code>sc_unit_drop</code>,
+    <code>sc_cold_law</code>, <code>sc_minting_law</code>, <code>sc_minting_run</code>.
+  </dd>
+  <dt class="tier-probed">Probed (measured, not proved)</dt>
+  <dd>
+    Median late forced-fraction 0.00 for storms. Dig budget tracking C-redex
+    inventory, median 9 at ten leaves — but <strong>superseded at twelve</strong>,
+    where digs of 48 against inventory 11 falsified both the additive and the
+    constant-multiplicative floors. Dig appears to grow like inventory times
+    duplication depth.
+  </dd>
+  <dd>
+    The phase census, measured <em>exhaustively</em> at ten leaves — all 4,978,688
+    terms at an 800-fire horizon: <strong>67.1%</strong> reach a normal form,
+    <strong>32.8%</strong> branch, and <strong>0.147%</strong> (7,311 terms) are
+    corridors.
+  </dd>
+  <dt class="tier-open">Open</dt>
+  <dd>
+    C14, the storm floor — and therefore whether <code>{S,C}</code> reduction is
+    decidable at all. Nothing on this page shows that <code>{S,C}</code> is not
+    universal. It shows where the question has been driven.
+  </dd>
+</dl>
+
+<script type="module" src="./main.js"></script>
+</main>
+</body>
+</html>
