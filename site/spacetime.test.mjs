@@ -67,3 +67,9 @@ test('the leaf cap bounds the raster for a runaway term', () => {
   const r = spacetimeRaster(climber, { fires: 2000, mode: 'atom', leafCap: 200 });
   assert.ok(r.height <= 200);
 });
+
+test('the raster reports the march fate, so callers can see a capped run', () => {
+  assert.equal(spacetimeRaster(climber, { fires: 100 }).fate, 'running');
+  assert.equal(spacetimeRaster(climber, { fires: 2000, leafCap: 200 }).fate, 'capped');
+  assert.equal(spacetimeRaster(parse('S C'), { fires: 10 }).fate, 'halt');
+});

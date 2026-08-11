@@ -33,7 +33,7 @@ function renderSpacetime() {
   canvas.width = raster.width;
   canvas.height = raster.height;
   drawSpacetime(canvas, raster);
-  const capped = raster.height >= RENDER_LEAF_CAP;
+  const capped = raster.fate === 'capped';
   $('spacetime-caption').textContent =
     `${show(term)} — ${leaves(term)} leaves, ${raster.width - 1} fires, ` +
     `growing to ${raster.height} leaves` +

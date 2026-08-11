@@ -20,7 +20,7 @@ function ramp(u) {
 export function spacetimeRaster(term, opts = {}) {
   const fires = opts.fires ?? 520;
   const mode = opts.mode ?? 'atom';
-  const { states } = march(term, fires, { leafCap: opts.leafCap ?? 20000 });
+  const { states, fate } = march(term, fires, { leafCap: opts.leafCap ?? 20000 });
 
   const rows = states.map(leafSeq);
   const width = rows.length;
@@ -40,7 +40,7 @@ export function spacetimeRaster(term, opts = {}) {
       pixels[i] = r; pixels[i + 1] = g; pixels[i + 2] = b; pixels[i + 3] = 255;
     }
   }
-  return { width, height, pixels };
+  return { width, height, pixels, fate };
 }
 
 /** The only part that touches a canvas. Nearest-neighbour, never smoothed. */
