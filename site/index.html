@@ -74,45 +74,15 @@
 </p>
 
 <p>
-  Where could a computer be, then? It would need two things at once: it would have
-  to <em>branch</em>, so that something in the term can act as a choice, and it
-  would have to <em>descend</em>, so that a computation can consume what it built
-  rather than merely accumulating. Those are the two axes below. Every dot is a
-  random ten-leaf term. Horizontal is how many redexes the term offers late in its
-  run; vertical is the deepest it ever falls back from its own peak.
-</p>
-
-<figure>
-  <div class="controls">
-    <span>seed <span id="seed-shown" class="mono"></span></span>
-    <button id="reseed">reseed</button>
-    <button id="atlas-stop">stop</button>
-    <span id="atlas-progress" class="mono"></span>
-  </div>
-  <div class="scroll"><canvas id="atlas" width="1040" height="680"></canvas></div>
-  <noscript><p class="noscript">This figure is computed in your browser and needs JavaScript.</p></noscript>
-  <figcaption>
-    Grey: terms that reach a normal form. Blue: terms that branch. Gold crosses:
-    <strong>constructed</strong> corridor specimens, not sampled — random sampling
-    at this size turns up roughly two corridors per thousand terms and almost none
-    that descend deeply, so the deep arm is populated by hand and marked. The
-    shaded region is the subject of the figure. Drops are measured over a fixed
-    1,200-fire horizon; a corridor is eternal and its peak keeps rising, so its
-    deepest fall-back grows the longer you look — the climber drops 85 by fire 800
-    and 145 by fire 2,000. The vertical extent of the gold arm is therefore a
-    property of that horizon, not of the terms.
-  </figcaption>
-</figure>
-
-<p>
-  The branching terms run off to the right and stay flat. The deeply descending terms
-  sit hard against the left edge, at width exactly one — no choices at all, ever. The
-  region where a computer would have to live is very nearly empty: about three terms in
-  eight thousand land in it, and none of them deeply. Branchy terms top out near a drop
-  of 55, while the width-one corridors reach 109 and keep descending further the longer
-  you watch. So the two capabilities are near-exclusive rather than exclusive — and it
-  is that <em>near</em> that the open question lives in. You can reseed the figure and
-  watch it happen.
+  Where could a computer be, then? It would need two things at once: it would have to
+  <em>branch</em>, so that something in the term can act as a choice, and it would have
+  to <em>descend</em>, so that a computation can consume what it built rather than
+  merely accumulating. Both of those happen here. What has never been found is a term
+  that does the second one deeply enough to matter — and stating that carefully turns
+  out to be harder than drawing it. Absolute descent flatters large terms: one sampled
+  ten-leaf term falls 165 leaves while standing a mere 1.04 above its own floor, where
+  the twelve-leaf climber falls 109 and stands 1.28 above it. The quantity this
+  programme actually bounds is that ratio, not the raw fall.
 </p>
 
 <p>
@@ -164,18 +134,10 @@
     storms. Dig budget tracking C-redex inventory, median 9.
   </dd>
   <dd>
-    The phase census was measured <em>exhaustively</em> at ten leaves — all
-    4,978,688 terms, 800-fire horizon: <strong>67.1%</strong> reach a normal form,
-    <strong>32.8%</strong> branch, <strong>0.147%</strong> (7,311 terms) are
-    corridors. The atlas above does not reproduce that measurement; it runs a
-    cheaper analogue in your browser and lands nearby, at about 66.3 / 33.6 / 0.20.
-    Two honest differences: it samples at random rather than enumerating, and its
-    sampler is not uniform over term shapes (it splits leaf counts evenly, where
-    uniformity over binary trees would weight the split by Catalan numbers); and
-    its horizon is 330 fires rather than 800, so a term that stays forced through
-    330 and branches at 500 counts as a corridor here and did not there. That
-    second difference inflates the corridor column, which is the direction the
-    numbers actually differ.
+    The phase census, measured <em>exhaustively</em> at ten leaves — all 4,978,688
+    terms at an 800-fire horizon: <strong>67.1%</strong> reach a normal form,
+    <strong>32.8%</strong> branch, and <strong>0.147%</strong> (7,311 terms) are
+    corridors.
   </dd>
   <dt class="tier-open">Open</dt>
   <dd>
