@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE LINE, GENERIC (Stage 272,
+confluence makes even the trees rejoin. THE SECOND DECIDER (Stage 273,
+`scSwapReach_decidable`): reachability from the swapmill seed,
+certified — full theorem-for-theorem parity between the two engine
+species, from one generic pipeline. THE LINE, GENERIC (Stage 272,
 `sc_forced_family_line`): total order extracted into the generic
 pipeline; the swapmill's line is a one-line instance. THE SECOND
 TRICHOTOMY CORE (Stage 271,

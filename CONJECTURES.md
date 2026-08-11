@@ -7022,3 +7022,14 @@ one-line instance. The generic pipeline now contains: forcedness transport (ride
 carriers, stacks), family membership, no-normal-form, total order — every structural
 theorem the first trichotomy needed, engine-independent. The per-engine residue is
 exactly: the phase laws, the size ledger, and the decider's bounded scan.
+
+### Stage 273: the second decider — parity achieved
+
+`scSwapReach_decidable`: reachability from the swapmill seed, certified. Species two
+now matches species one on every structural theorem: eternal, no normal form, closed-
+form reachable set, total order, decidable reachability. The corridor program's
+central claim — that corridors are DECIDABLE TERRITORY — now has two independent,
+fully-machine-checked instances built from one generic pipeline. The remaining
+species-specific item is the champion anchor (scChamp170 → the pure engine), and the
+remaining structural item for the whole program is the storm floor (C14's copy-
+tracking lemma). Then: assembly.

@@ -7026,3 +7026,12 @@ convenient). (4) Ideonomy at ~267.
   decider (second certified reachability decision procedure; size floor from the
   pairs ledger). (2) The champion anchor. (3) Ideonomy: enumerate driver+tower+
   self-junk shapes (C13 attack). (4) Copy-tracking floor (C14).
+
+## 2026-08-11 — Stage 273: the second decider; parity
+
+- One hundred fifty-five autonomous stages (119–273). Ranking: (1) the champion
+  anchor: find scChamp170's entry into the swapmill family (probe the march for the
+  first state of the form scSwapF-with-extra-riders; the family theorems are generic
+  in riders via zs — may need a rider-generalized family or a direct forced-march
+  decide). (2) Ideonomy: the G-machine enumeration (C13 attack). (3) Copy-tracking
+  floor (C14). (4) The 275 review.
