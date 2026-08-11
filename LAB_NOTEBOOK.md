@@ -7179,3 +7179,32 @@ normalizing terms with bounded excess (the 96%, formally). (4) Ideonomy at ~283.
   (cadence; the session has been long and rich). (2) The metronome trichotomy
   (family/no-NF/decider — cheapest instance ever: constant chains). (3) The mill-K
   family driver law. (4) The grid sweep at scale (all small (X, L) pairs).
+
+## 2026-08-11 — Stage 285: the review at 284
+
+**The session (279–284), consolidated.** The C12 landscape mapped (flat bulk, median
+excess zero) → the discriminating experiment run EXHAUSTIVELY at n=10 (4.98M terms:
+max excess 20, BELOW n=8's 23 — mountain height plateaus, C12 survives its hardest
+test) → the driver law (one turnover for the whole swap family, axiom-free) → the
+species-3 descent (four fires, riders home) → THE METRONOME: the grid predicted,
+synthesis delivered a fixed-period oscillator, pinned axiom-free.
+
+**Ledger.** 343 pins, 8,796 lines in SCDecidability.lean, 633 commits, zero
+warnings; 167 consecutive autonomous stages (119–285). Axiom-free highlights now
+include: all four swapmill phase laws, the driver law, the species-3 descent, and
+the metronome's complete eternity.
+
+**The taxonomy at 285.** Corridor-phase engines = (driver family) × (slot X) ×
+(layer grammar) × (junk policy) × (period regime: climbing | pumping). Pinned
+instances: mill (climbing, 6/layer), swapmill (climbing, 2/layer), metronome
+(pumping, 17/cycle); decoded-not-yet-pinned: d159 (climbing, snapshot junk), d211/
+d209/d206/d205 (mill-K family, undecoded slots). The grid predicts and the engine
+confirms — C13 is a working classification, not a conjecture-shaped hope.
+
+**Next arc (ranked).** (1) The metronome trichotomy — cheapest instance ever
+(constant chains; forced-by-decide; family = pure pairs) — completes the third
+portrait and exercises the pipeline on the pumping regime. (2) The mill-K family
+driver law (second driver family gets slot-parametric treatment). (3) The grid
+sweep at scale (synthesize all small (X, L) pairs; count which run — the C13
+completeness question made empirical). (4) Bulk-C12: the normalizing 96% with
+bounded excess, formally (the assembly's largest missing piece).
