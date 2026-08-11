@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE CHAMPION NEVER RESTS (Stage 274,
+confluence makes even the trees rejoin. THE SPECIES CENSUS (Stage 275): the remaining
+champions decompose into the SAME two motifs (swap-driver and mill-K)
+under varied layer grammars — C13 becomes: enumerate motif
+compositions. THE CHAMPION NEVER RESTS (Stage 274,
 `sc_champ170_no_nf`): the census's wild fifth champion anchored into
 the swapmill family in 22 fires and carried forever — two wild terms,
 two engines, one pipeline. THE SECOND DECIDER (Stage 273,

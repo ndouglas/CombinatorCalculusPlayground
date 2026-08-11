@@ -7044,3 +7044,28 @@ convenient). (4) Ideonomy at ~267.
   the remaining champions** (probe d211/d209/d206/d205 valleys against both engine
   grammars — cheap, sharpens C13 to a classification with data). (2) The 275 review.
   (3) Copy-tracking floor (C14). (4) Ideonomy: G-machine enumeration.
+
+## 2026-08-11 — Stage 275: the review at 274, with the species census
+
+**The swapmill arc (267–274), consolidated.** Ridden revolution (junk = parked
+driver) → eternal → forced phases → forced revolution → family/no-NF/closed form →
+generic LINE → second decider → champion anchored and proved non-normalizing. Eight
+stages, zero new proof ideas after the probe — the pipeline is real.
+
+**Ledger.** 341 pins, ~8,700 lines, 597 commits, zero warnings, axiom ceiling
+[propext, Quot.sound]; 157 consecutive autonomous stages (119–275).
+
+**Conjecture board.** C11 proved twice over (two engines). C12 leaning true,
+mechanism identified (minting ledger). C13 refined: enumerate motif compositions —
+the species census shows grammars multiply but motifs repeat (two driver families,
+snapshot-junk vs blueprint-junk). C14 one lemma out (copy-tracking floor). C10
+leaning false, untouched this arc.
+
+**Next arc (ranked).** (1) **The copy-tracking floor** (C14's endgame): probe design
+first — mark the duplicated subterm at each hot fire and measure whether any minted
+C-fire's drop ever escapes the copy boundary; then the marked-reduction formalism if
+the probe holds. This is the last wall between the program and the assembled
+decidability case. (2) The assembly statement (what exactly "storms decidable" needs
+beyond the floor: normalization-decidability for the 96%, and the three-regime
+partition as a computable classifier — scope it). (3) d159's snapshot-tape species
+(third trichotomy, cheap by pipeline). (4) Ideonomy.
