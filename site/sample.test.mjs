@@ -58,7 +58,11 @@ test('the two arms of the atlas are separated as the essay describes', () => {
   assert.ok(branchy.length > 0, 'expected some branchy survivors');
   assert.ok(Math.max(...branchy.map((s) => s.width)) > 100, 'branchy arm should reach high width');
   assert.ok(Math.max(...branchy.map((s) => s.drop)) < QUADRANT_DROP, 'branchy arm must stay shallow');
-  for (const s of deep) assert.equal(s.width, 1, 'deep descenders must be width 1');
+  assert.equal(deep.length, 0,
+    'Uniform sampling finds no deep descenders at this size. '
+    + 'The deep arm of the atlas is reachable only via the '
+    + 'constructed corridors in specimens.js -- which is why '
+    + 'they are hard-coded there rather than sampled.');
 });
 
 test('coords caps runaway growth instead of chasing it', () => {
