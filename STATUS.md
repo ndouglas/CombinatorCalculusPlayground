@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE C13 GRID (Stage 283): engine = slot X ×
+confluence makes even the trees rejoin. THE METRONOME (Stage 284, `sc_metro_law` +
+`sc_metro_eternal`, both AXIOM-FREE): the grid predicted, synthesis
+delivered — a fixed-period oscillator (core returns exactly every 17
+fires), the first constant-period eternal engine and the first whose
+eternity needs no axioms; C13 can enumerate its own unknown corners.
+THE C13 GRID (Stage 283): engine = slot X ×
 layer grammar × junk policy; species-3 descent pinned (axiom-free);
 the grid now PREDICTS unseen species — synthesis is the next test.
 MOUNTAIN HEIGHT PLATEAUS (Stage 282): exhaustive

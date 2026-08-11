@@ -7169,3 +7169,13 @@ normalizing terms with bounded excess (the 96%, formally). (4) Ideonomy at ~283.
   prediction**: synthesize seeds for unseen (X, L) pairs and march them — a
   predicted species would be C13's strongest evidence (probe-only, cheap).
   (2) The mill-family driver law (mill-K slot-parametric). (3) The 285 review.
+
+## 2026-08-11 — Stage 284: the metronome — predict, synthesize, find, pin
+
+- The best kind of stage: the theory named a gap, the synthesis filled it, the
+  engine confirmed it, and the pin took one emission. Also the program's first
+  fully axiom-free eternal engine (the fixed point needs no rider lemmas at all).
+- One hundred sixty-six autonomous stages (119–284). Ranking: (1) the 285 review
+  (cadence; the session has been long and rich). (2) The metronome trichotomy
+  (family/no-NF/decider — cheapest instance ever: constant chains). (3) The mill-K
+  family driver law. (4) The grid sweep at scale (all small (X, L) pairs).

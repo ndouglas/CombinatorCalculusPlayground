@@ -7176,3 +7176,20 @@ snapshot) — is that forced by the no-erasure wall? A snapshot IS the only othe
 thing the machine has to emit; (d) the grid predicts UNSEEN species — enumerate
 small (X, L) pairs, synthesize seeds, and check which run; a predicted-then-found
 species would be C13's strongest possible evidence.
+
+### Stage 284: THE METRONOME — predict, synthesize, find, pin
+
+The C13 grid passed the strongest test a classification can face: PREDICTION. Seeds
+synthesized for unseen grid points behaved exactly as the grid says — the heavier
+slot `X = C (C C)` runs eternal with +8-fire periods; igniting slots (`C S`, `S C`)
+branch out of the corridor phase — and the grid point `X = C C` yielded a genuine
+DISCOVERY: a fixed-period oscillator. `sc_metro_law`: seventeen fires return the
+nineteen-leaf core EXACTLY, one junk pair emitted — a fixed point modulo emission.
+`sc_metro_eternal`: pumping forever under any riders. Both theorems are FULLY
+AXIOM-FREE — the metronome's eternity is pure computation, no propext, no
+Quot.sound. Taxonomically this is a new dynamic class: mills climb (growing periods),
+the metronome pumps (constant period) — the corridor phase contains both clocks that
+tick faster and clocks that tick steadily, and the grid found the steady one before
+any census did. C13's classification now has: two driver families, three layer
+grammars, two junk policies, two period regimes — and a demonstrated ability to
+enumerate its own unknown corners.
