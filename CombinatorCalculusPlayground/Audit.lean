@@ -1010,3 +1010,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_swapseed_line' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_swapseed_line
+
+/-- info: 'scSwapReach_iff' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scSwapReach_iff
+
+/-- info: 'scSwapReach_decidable' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scSwapReach_decidable

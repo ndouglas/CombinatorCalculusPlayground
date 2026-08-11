@@ -8475,3 +8475,72 @@ theorem sc_swapseed_line : ∀ u v,
     RS.SC.Steps u v ∨ RS.SC.Steps v u :=
   sc_forced_family_line scSwapF scSwapChain scSwapF_forced scSwapChain_last
     scSwapChain_ne
+
+-- ## Stage 273: REACHABILITY FROM THE SWAPMILL SEED IS DECIDABLE.
+-- The second certified decision procedure, by the same bounded scan: junk pairs
+-- weigh ten leaves each, so a candidate of `n` leaves can only live in the first
+-- `n` generations.
+
+/-- The junk stack's weight: ten leaves per pair. -/
+theorem scSwapPairs_sum : ∀ r : Nat,
+    ((scSwapPairs r).map SCTerm.leafCount).sum = 10 * r
+  | 0 => rfl
+  | r + 1 => by
+      show 2 + (8 + ((scSwapPairs r).map SCTerm.leafCount).sum) = 10 * (r + 1)
+      rw [scSwapPairs_sum r]
+      omega
+
+/-- The generation size floor: nothing in generation `k` weighs less than `1+10k`. -/
+theorem scSwapGen_size_lb (k : Nat) (u : SCTerm)
+    (hu : u = scSwapF k ∨ u ∈ scSwapChain k) :
+    1 + 10 * k ≤ u.leafCount := by
+  rcases hu with rfl | hu
+  · show 1 + 10 * k ≤ (scAppList (.app (.app (.app .S scSwapA) .C)
+      (scSwapT (2 * (1 + k)) scSwapB)) (scSwapPairs k)).leafCount
+    rw [scAppList_size, scSwapPairs_sum]
+    have := SCTerm.leafCount_pos (.app (.app (.app .S scSwapA) .C)
+      (scSwapT (2 * (1 + k)) scSwapB))
+    omega
+  · have h' : u ∈ (scSwapRevChain (1 + k)).map
+        (scAppList · (scSwapPairs k)) := hu
+    obtain ⟨w, _, rfl⟩ := List.mem_map.mp h'
+    rw [scAppList_size, scSwapPairs_sum]
+    have := SCTerm.leafCount_pos w
+    omega
+
+/-- The reachable set, bounded: only the first `|u|` generations can hold `u`. -/
+theorem sc_swapseed_reach_bounded (u : SCTerm) :
+    RS.SC.Steps (scSwapF 0) u
+      ↔ ∃ k, k < u.leafCount ∧ (u = scSwapF k ∨ u ∈ scSwapChain k) := by
+  rw [sc_swapseed_reach_iff]
+  constructor
+  · rintro ⟨k, hk⟩
+    refine ⟨k, ?_, hk⟩
+    rcases Nat.lt_or_ge k u.leafCount with h | h
+    · exact h
+    · have hb := scSwapGen_size_lb k u hk
+      omega
+  · rintro ⟨k, _, hk⟩
+    exact ⟨k, hk⟩
+
+/-- The decider: scan the first `|u|` generations. -/
+def scSwapReach (u : SCTerm) : Bool :=
+  (List.range u.leafCount).any
+    (fun k => decide (u = scSwapF k) || decide (u ∈ scSwapChain k))
+
+/-- The decider is correct. -/
+theorem scSwapReach_iff (u : SCTerm) :
+    scSwapReach u = true ↔ RS.SC.Steps (scSwapF 0) u := by
+  rw [sc_swapseed_reach_bounded]
+  show ((List.range u.leafCount).any
+    (fun k => decide (u = scSwapF k) || decide (u ∈ scSwapChain k))) = true ↔ _
+  simp [List.any_eq_true, List.mem_range]
+
+/-- **REACHABILITY FROM THE SWAPMILL SEED IS DECIDABLE**: the second certified
+decision procedure, from the same generic pipeline. -/
+instance scSwapReach_decidable (u : SCTerm) :
+    Decidable (RS.SC.Steps (scSwapF 0) u) :=
+  decidable_of_iff (scSwapReach u = true) (scSwapReach_iff u)
+
+#guard scSwapReach .S = false
+#guard scSwapReach (.app .S .C) = false
