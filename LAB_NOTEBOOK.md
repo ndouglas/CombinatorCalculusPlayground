@@ -7111,3 +7111,34 @@ partition as a computable classifier — scope it). (3) d159's snapshot-tape spe
   minimax at n=10** — the discriminating C12 experiment (heavy compute: restrict to
   branch-phase starts, incremental logging, nohup+watcher per the sweep rule).
   (2) The 280 review. (3) d159's snapshot-tape species (third trichotomy).
+
+## 2026-08-11 — Stage 280: the review at 279 (minimax-10 running)
+
+**The session's arc (267–279), consolidated.** The swapmill trichotomy completed at
+full parity (ridden revolution → eternal → forced → family/no-NF/closed form →
+generic LINE → decider → champion anchored: `sc_champ170_no_nf`); the species census
+(motifs repeat, grammars multiply); the floor program run to honest double
+falsification (additive, κ-multiplicative, AND depth-weighted Φ — all killed by
+late-completing S-redexes); the frontier crystallized into one Prop
+(`scLinearExcess`) with its payoff theorem (`sc_c12_decides`); and the C12 landscape
+mapped (flat bulk, median excess zero; rare mountains, all engines, all
+observed-affine).
+
+**Ledger.** 338 pins, 8,674 lines in SCDecidability.lean, 601 commits, zero
+warnings, axiom ceiling [propext, Quot.sound]; 162 consecutive autonomous stages.
+
+**The program's shape, one paragraph.** Decidability of {S,C} reachability =
+`sc_c12_decides` applied to C12. C12's evidence: exhaustive at n≤8 (max excess 23),
+census-exhaustive at n=10 corridors (drops ≤ 211 ≈ affine), sampled at n=12 (same),
+bulk median zero at n=8–10. C12's mechanism-level support: the ten walls (every
+descent is C-fire-funded at bounded minting exchange). C12's known hard core:
+compounding duplication, invisible to static potentials — which is why the tail
+must be handled by structure (C13's engines, each decidable by pipeline), not by a
+uniform formula. The discriminating experiment (exhaustive minimax at n=10) is
+running as of this entry.
+
+**Next arc (ranked).** (1) Read minimax-10 when it lands: if max excess stays ≈3n,
+C12's affine form survives its hardest test yet; if it explodes, C12 needs
+restatement and the tail-structure route becomes primary. (2) d159's snapshot-tape
+species (third trichotomy, pipeline-cheap). (3) The bulk-C12 theorem attempt:
+normalizing terms with bounded excess (the 96%, formally). (4) Ideonomy at ~283.
