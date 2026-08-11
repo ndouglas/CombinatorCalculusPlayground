@@ -1034,3 +1034,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_l3_descent_forced' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_l3_descent_forced
+
+/-- info: 'sc_metro_law' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_metro_law
+
+/-- info: 'sc_metro_eternal' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_metro_eternal

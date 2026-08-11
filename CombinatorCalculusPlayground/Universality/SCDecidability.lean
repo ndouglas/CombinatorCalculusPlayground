@@ -8716,3 +8716,81 @@ theorem sc_l3_descent_forced (w y z : SCTerm)
        (.app (.app w y) z)] := by
   refine ⟨?_, ?_, ?_, ?_, trivial⟩ <;>
     simp [scSwap3L, scSucc, scSuccRoot, hw, hy, hz]
+
+-- ## Stage 284: THE METRONOME — a predicted species with new dynamics.
+-- The C13 grid, asked to predict: seeds synthesized for unseen slots. X = C (C C)
+-- runs eternal as a heavier tower-climber (as predicted); igniting slots branch (as
+-- predicted); and X = C C is a DISCOVERY — a fixed-period oscillator. Its core block
+-- never grows: seventeen forced fires return the core EXACTLY, emitting one junk
+-- pair. Not a mill (no tower, no growing period) — a pump. The first constant-period
+-- eternal engine, found by synthesis before any census ever saw it.
+
+/-- The metronome's slot block (`X = C C`) driver, base, head, and junk. -/
+def scMetroB : SCTerm :=
+  .app (.app .C .C)
+    (.app (.app .C (.app (.app .S scSwapA) (.app .C .C))) (.app .C .C))
+
+def scMetroH : SCTerm := .app (.app .C .C) (.app .C (.app .C scMetroB))
+
+def scMetroJ : SCTerm :=
+  .app (.app .C (.app (.app .S scSwapA) (.app .C .C))) (.app .C .C)
+
+/-- The metronome's core: seventeen fires from here return here. -/
+def scMetroCore : SCTerm :=
+  .app (.app (.app .C scMetroH) scMetroJ) (.app .C scMetroH)
+
+/-- **THE METRONOME LAW**: seventeen fires, the core returns exactly, one junk pair
+emitted — a fixed point modulo emission. -/
+theorem sc_metro_law :
+    RS.SC.StepsN 17 scMetroCore
+      (.app (.app scMetroCore (.app .C .C)) scMetroJ) :=
+    (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))))) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)) (.app .C (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))) (.app .C (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))))))))
+    (RS.StepsN.tail (SCStep.C_red (.app .C (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))))) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))
+    (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))))) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))))))
+    (RS.StepsN.tail (SCStep.C_red (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))
+    (RS.StepsN.tail (SCStep.C_red (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))))
+    (RS.StepsN.tail (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))
+    (RS.StepsN.tail (SCStep.C_red (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C)) (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app (.app .C .S) .C) (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .S .C (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.S_red (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))) .C (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))) (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))))) (.app .C (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))) (.app .C (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))))) (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)))))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C)) (.app (.app .C .C) (.app .C (.app .C (.app (.app .C .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C .C))) (.app .C .C))))))))))
+    (@RS.StepsN.refl RS.SC _))))))))))))))))))
+
+/-- `r` pump cycles' worth of junk pairs. -/
+def scMetroPairs : Nat → List SCTerm
+  | 0 => []
+  | r + 1 => .app .C .C :: scMetroJ :: scMetroPairs r
+
+/-- Uniform pairs slide past one pair. -/
+theorem scMetroPairs_shift : ∀ (r : Nat) (zs : List SCTerm),
+    scMetroPairs r ++ .app .C .C :: scMetroJ :: zs
+      = .app .C .C :: scMetroJ :: (scMetroPairs r ++ zs)
+  | 0, zs => rfl
+  | r + 1, zs => by
+      show .app .C .C :: scMetroJ :: (scMetroPairs r ++ .app .C .C :: scMetroJ :: zs)
+        = .app .C .C :: scMetroJ :: (.app .C .C :: scMetroJ :: (scMetroPairs r ++ zs))
+      rw [scMetroPairs_shift r zs]
+
+/-- **THE METRONOME IS ETERNAL**: constant-period pumping forever, under any riders. -/
+theorem sc_metro_eternal : ∀ (r : Nat) (zs : List SCTerm),
+    RS.SC.Steps (scAppList scMetroCore zs)
+      (scAppList scMetroCore (scMetroPairs r ++ zs))
+  | 0, zs => @RS.Steps.refl RS.SC _
+  | r + 1, zs => by
+      have h1 : RS.SC.Steps (scAppList scMetroCore zs)
+          (scAppList scMetroCore (.app .C .C :: scMetroJ :: zs)) := by
+        have h := scStepsN_appList zs sc_metro_law
+        exact RS.StepsN.toSteps h
+      have h2 := sc_metro_eternal r (.app .C .C :: scMetroJ :: zs)
+      have h := RS.Steps.trans h1 h2
+      rw [show scMetroPairs (r + 1) ++ zs
+          = scMetroPairs r ++ (.app .C .C :: scMetroJ :: zs) from
+        (scMetroPairs_shift r zs).symm]
+      exact h
