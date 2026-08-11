@@ -6990,3 +6990,12 @@ into the forced revolution (SCForced_append × getLastD bookkeeping), define the
 family, and instantiate family-membership, no-normal-form, and the bounded-scan
 decider. Species two will then match species one theorem for theorem — C13's
 strongest form of evidence short of the classification itself.
+
+### Stage 270: THE FORCED REVOLUTION — `sc_swap_rev_forced`
+
+All `4j + 9` fires of the swapmill's revolution are forced, composed from the five
+phase chains with their handoffs. The remaining assembly for the second trichotomy is
+now exactly what Stages 245–248 did for the mill: chain family (revolutions with
+riders), the generic no-NF principle, family membership, size floor, bounded-scan
+decider. Species two's laws needed no new ideas at any point past the probe — C13's
+"one phenomenon, many grammars" reading strengthens with every reused lemma.

@@ -1097,7 +1097,9 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE FORCED SWAPMILL (Stage 269): every phase of
+confluence makes even the trees rejoin. THE FORCED REVOLUTION (Stage 270,
+`sc_swap_rev_forced`): all 4j+9 fires forced, first-try green — the
+second trichotomy's assembly is underway. THE FORCED SWAPMILL (Stage 269): every phase of
 the revolution is the only possible move — the second trichotomy is
 now assembly against the generic 244–248 pipeline, not invention.
 THE SWAPMILL IS ETERNAL (Stage 268,

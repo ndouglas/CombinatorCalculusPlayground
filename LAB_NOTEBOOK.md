@@ -7005,3 +7005,9 @@ convenient). (4) Ideonomy at ~267.
   stages (119–269). Ranking: (1) the forced revolution composition (append the five
   phase chains, track getLastD through them). (2) The swapmill family + no-NF +
   decider (generic instantiation). (3) Ideonomy at ~271.
+
+## 2026-08-10 — Stage 270: the forced revolution
+
+- One hundred fifty-two autonomous stages (119–270). Ranking: (1) the swapmill
+  family + no-NF + reach-iff + decider (the 245–248 replay — one stage if the
+  generic theorems bite cleanly). (2) The champion anchor. (3) Ideonomy (due).
