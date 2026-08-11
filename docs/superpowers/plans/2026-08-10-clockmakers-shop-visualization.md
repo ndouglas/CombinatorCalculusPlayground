@@ -1464,4 +1464,106 @@ The repo is public, so the essay becomes publicly readable the moment this runs.
 
 **Type consistency.** `march` returns `{states, fate, branched}` everywhere. `coords` returns `{width, drop, peak, kind}`; `sampleBatch` flattens it to `{term, phase, width, drop, peak}` — `phase` comes from `screenKind`, `kind` from `coords`, and they are deliberately different names because they are different measurements. `Point` is `{width, drop, phase, constructed, name?}` in both `knownCorridorPoints` and `runAtlas`. `spacetimeRaster` returns `{width, height, pixels}`, consumed by `drawSpacetime` and the tests.
 
-**Known risk carried forward.** The census tolerance in Task 2 may need widening for a different PRNG; the step says to widen only if the observed value is near the recorded census, and to treat a distant value as a porting bug.
+**Known risk carried forward.** The census tolerance in Task 2 may need widening for a different PRNG; the step says to widen only if the observed value is near the recorded census, and to treat a distant value as a porting bug. (Moot as of the postmortem below — the sampler was removed with the atlas.)
+
+---
+
+## Postmortem: the atlas was built, then cut
+
+The plan shipped two figures. Only one survived. The spacetime diagram is sound and
+is what the essay now rests on. **The phase atlas was removed after implementation**,
+because its axis could not support the argument built on it. The findings below cost
+real measurement and are recorded so a future attempt starts from them rather than
+rediscovering them.
+
+### Why the atlas failed
+
+**Absolute drop is not scale-free.** The y-axis was "maximum fall from the running
+peak along a leftmost march". That measure rewards large terms. Measured at a 1,200-fire
+horizon:
+
+```
+term                                fires  peak  maxDrop  ratio@maxDrop  maxRatio
+C S S (S S) (C (S S S) C)  (branchy)  1200  5268      165          1.039     1.333
+the climber (corridor)                1200   491      109          1.285     1.285
+S (S C C) C (S (S C C) (C (C C)))     1200  1603       66          1.045     1.099
+
+for comparison, Stage 243, corridor phase, exhaustive at n=10:
+    max drop 211, MAX RATIO 2.50;  mill asymptotic ratio 3 (peak 31+9m / dip 28+3m)
+```
+
+The branchy term "descends" furthest in absolute leaves while standing only 1.04 above
+its own floor. The twelve-leaf climber falls less and stands 1.29 above. **The quantity
+this programme actually bounds is the ratio** (C12's linear-excess constant, ≤ ~3), not
+the raw fall. Any future figure should plot the ratio, or drop-per-fire — which respects
+`sc_unit_drop`, since no fire loses more than one leaf and descent is therefore metered
+by fire count, not by term size.
+
+**Drop never converges for a corridor.** The climber drops 85 by fire 800, 109 by 1,200,
+121 by 1,400, 145 by 2,000. A corridor is eternal and its peak keeps rising, so the
+deepest fall-back grows without bound with the horizon. A quantity whose value depends
+on how long you looked cannot describe what a term *is*.
+
+**The two families were measured at different horizons, and that was the visible bug.**
+`runAtlas` sampled through `sampleBatch` without forwarding a horizon, so sampled points
+used `DEEP_FIRES = 300` while constructed corridors used 1,200 — plotted on one axis,
+with a caption claiming 1,200 for both. At matched horizons the separation *inverts*:
+branchy 165 vs corridor 109 at 1,200; branchy 55 vs climber 49 at 300. Descent is not
+the discriminator between the regimes.
+
+**The measure was repurposed out of its domain.** Stage 243 introduced peak-to-later-dip
+drop as a screen *within* the corridor phase — hunting a crashing corridor among 7,311
+forced, mutually comparable terms. Using it as a cross-phase axis was the original error.
+The 211 and the 2.50 answer "is there a crasher among these", not "how do storms differ
+from corridors".
+
+**And the regimes may share no descent axis at all.** Drop is phase-bound to the descent
+arc of a revolution. Measured per revolution it is a constant of the family (which is how
+`sc_mill_cycle` states it); measured over a fixed horizon it cuts revolution boundaries
+arbitrarily, hence the non-convergence. Storms have no revolutions to measure per —
+median late forced-fraction 0.00. So the measure that is well-posed for corridors is
+undefined for storms, and vice versa. That is a structural obstruction, not a calibration
+problem, and it is the reason no patch to the axis would have worked.
+
+### What a future attempt should plot instead
+
+- The **ratio** peak/dip, or excess over endpoint — C12's quantity, scale-free, convergent.
+- **Adversarial dig from a peak** (Stage 256: ≤26 from storm peaks of 700–1500) — an upper
+  bound over paths, which is what C14 needs. A leftmost march gives only a lower bound
+  along one arbitrary path, and the calculus is confluent, so leftmost need not witness
+  the deepest available descent.
+- **Per-revolution** descent for corridors, accepting that it does not extend to storms.
+
+### The fourteen found corridors
+
+Found by search over ~37,000 random terms at 8–12 leaves, one per distinct maximum drop
+at horizon 1200. Recorded here because finding them cost a search and they are useful
+specimens for any future corridor work. Format: `drop: source`.
+
+```
+ 0: S (S (S C)) (S (S C)) (S S)          29: S (S C) (S C) (C (C (C C))) (S S C)
+ 1: S (C S) (S S) S (C (S C))            33: S C S C (S (C S)) (S (S C)) C
+ 3: S (S S S) C (C S C) S                34: S S C (C S C) (S C C)
+ 4: C (S S S) (S (C S S) C (S C C))      35: S (S (C (C (S S)) C)) (S C) C
+ 6: S (C S) (S C) S (C (C C (S (C C))))  64: S C C (S (S (C S C) C)) (S C)
+ 7: S (C C) C (C S (C C)) (S S C)        66: S (S C C) C (S (S C C) (C (C C)))
+ 8: C S (C S) (S (C S (C C))) C
+ 9: S S S (C S C) (C C) (S C (S C))
+```
+
+### Process findings worth keeping
+
+- **A test guarding a claim must cover at least what the figure displays.** The emptiness
+  assertion sampled 2,000 while the figure drew 4,000; two terms landed in the region the
+  prose called empty. Structural fix at the time was to export the figure's sample total
+  and have both derive from it.
+- **Green tests cannot see a bad picture.** Three defects shipped past a full green suite
+  and were caught only by rendering the page and looking: the oversized axes (data in the
+  bottom 12.8% of the frame, shaded region 84% of its height), the illegible downscaled
+  canvas labels, and the false emptiness claim.
+- **Green tests cannot check prose against a theorem.** The essay stated that
+  `sc_mill_descent` strips a *tower* layer; the Lean docstring says *counter* layer, and
+  `scMillG a m` puts the counter in the `a` position while the tower grows by wrapping.
+  Only a reviewer reading the Lean beside the English caught it.
+- **Testing `height >= leafCap` cannot detect a capped run**, because `march` checks the
+  cap before pushing and the trace stops one state short. Use the returned fate.
