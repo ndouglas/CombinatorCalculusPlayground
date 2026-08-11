@@ -7149,3 +7149,16 @@ normalizing terms with bounded excess (the 96%, formally). (4) Ideonomy at ~283.
   when done (the discriminating C12 experiment — still sweeping). (2) The generic
   descent law for X-slotted drivers (the ping-pong with X-payload — species 3's
   descent as an instance). (3) Ideonomy at ~283.
+
+## 2026-08-11 — Stage 282: mountain height plateaus at n=10
+
+- The heavy compute paid off: 4.98M starts exhaustively, and the answer (20 < 23) is
+  the best single piece of C12 evidence the program has produced. The witness's
+  70-state mountain is also a gift: small enough to formalize as a pinned f-floor
+  refinement if wanted.
+- One hundred sixty-four autonomous stages (119–282). Ranking: (1) **the generic
+  descent law** for X-slotted drivers (the family's second law; species 3's descent
+  as an instance). (2) Ideonomy at 283 (due): the C13 enumeration axes (slot X ×
+  layer grammar × junk policy) as a formal grid; and what OTHER driver motifs exist
+  (the mill-K family deserves its own family-level law). (3) The n=12 diagonal
+  (sampled, not exhaustive — 5M×many too heavy; targeted at storm-phase starts).

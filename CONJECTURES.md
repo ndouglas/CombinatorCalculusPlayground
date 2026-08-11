@@ -7137,3 +7137,21 @@ pipelines but family-level laws with species as instances. The driver motif's
 universal grammar: pick a slot X, pick a layer grammar for the tower, and the
 turnover, the self-application pattern, and the junk-carries-the-blueprint property
 all come along. The enumeration attack on C13 now has its first axis.
+
+### Stage 282: the discriminating experiment — mountain height plateaus
+
+The exhaustive n=10 minimax landed: over ALL 4,978,688 ten-leaf terms, the maximum
+excess (minimal path-peak minus target size, ten-leaf targets) is **20** — BELOW the
+n=8 value of 23. The witness is a tight little mountain: `S S C (S ((C C)(S S C))) C`
+must climb to 30 leaves before collapsing to a pure-C ten-leaf residue, through a
+reachable set of just 70 states. (Caveats, recorded: the sweep skipped terms whose
+capped reachable sets exceeded 90k states and used a 12-quiet-caps early stop —
+mountains hiding inside heavy storms or with very slow approaches would be missed.)
+The diagonal f-ladder now reads: excess(6)=1, excess(8)=23, excess(10)=20 —
+PLATEAUING, not exploding. Combined with the corridor ladder (excess growing at
+~0.32·|target| along engine structure), everything remains consistent with an affine
+`f(n,m) ≈ m + 3n + c`. C12 has now survived: exhaustive diagonals at three sizes, the
+corridor ladders, two crash screens, and the storm-dig program. The conjecture is as
+strongly supported as probes can make it; what remains is proof, and the proof's
+known shape is regime-by-regime assembly (bulk-normalization + engine-classification
++ the affine tail).
