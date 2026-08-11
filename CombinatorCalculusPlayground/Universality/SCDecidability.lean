@@ -8672,3 +8672,19 @@ theorem sc_c12_decides (h : scLinearExcess) :
   obtain ⟨a, b, c, hf⟩ := h
   intro t u
   exact ⟨sc_decidable_of_bound (fun m n => a * m + b * n + c) hf t u⟩
+
+-- ## Stage 281: THE DRIVER LAW — one turnover for the whole swap-driver family.
+-- d159 decodes as the swap-driver with a heavier third slot (`C (C C)` in place of
+-- `C`) and snapshot junk; the turnover computation never inspects that slot. So the
+-- law generalizes: for ANY third slot `X` and tower `T`, three fires re-emit the
+-- self-application pattern with `X T` as payload. The swapmill's turnover is the
+-- `X = C` instance; d159's is `X = C (C C)`; every species this driver motif powers
+-- inherits the law. C13's classification gains its first family-level theorem.
+
+/-- **THE DRIVER LAW**: the swap-driver's turnover, parametric in the third slot. -/
+theorem sc_driver_law (X T : SCTerm) :
+    RS.SC.StepsN 3 (.app (.app (.app .S scSwapA) X) T)
+      (.app (.app T (.app X T)) (.app .C (.app X T))) :=
+  RS.StepsN.tail (SCStep.S_red scSwapA X T)
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S .C T))
+      (RS.StepsN.tail (SCStep.S_red T .C (.app X T)) (@RS.StepsN.refl RS.SC _)))
