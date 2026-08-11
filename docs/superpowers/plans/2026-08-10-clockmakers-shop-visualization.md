@@ -1483,10 +1483,15 @@ peak along a leftmost march". That measure rewards large terms. Measured at a 1,
 horizon:
 
 ```
-term                                fires  peak  maxDrop  ratio@maxDrop  maxRatio
-C S S (S S) (C (S S S) C)  (branchy)  1200  5268      165          1.039     1.333
-the climber (corridor)                1200   491      109          1.285     1.285
-S (S C C) C (S (S C C) (C (C C)))     1200  1603       66          1.045     1.099
+term                                fires  finalPeak  peak@maxDrop  maxDrop  ratio@maxDrop
+C S S (S S) (C (S S S) C)  (branchy)  1200       5268          4383      165          1.039
+the climber (corridor)                1200        516           491      109          1.285
+S (S C C) C (S (S C C) (C (C C)))     1200       1603          1525       66          1.045
+
+ratio@maxDrop is peak@maxDrop / dip@maxDrop -- the two numbers taken at the same
+moment. finalPeak is where the running maximum ends up by the horizon, which is a
+different and larger number; conflating the two is what made an earlier draft of
+this table wrong.
 
 for comparison, Stage 243, corridor phase, exhaustive at n=10:
     max drop 211, MAX RATIO 2.50;  mill asymptotic ratio 3 (peak 31+9m / dip 28+3m)

@@ -7,10 +7,11 @@ export const CLIMBER = 'C S S (S S) C (S (C S (C C)) C)';
 
 /**
  * The deepest-descending branchy term found while sampling at ten leaves.
- * Cited in the essay: it falls 165 leaves at a 1,200-fire horizon, but from a
- * peak of 5,268 -- standing only 1.04 above its own floor, against the corridor
- * phase's 2.50 and the mill's asymptote of 3. It is why absolute drop was
- * rejected as an axis: the measure flatters large terms.
+ * Cited in the essay: at a 1,200-fire horizon it falls 165 leaves, from 4,383
+ * down to 4,218 -- standing only 1.04 above its own floor, against the corridor
+ * phase's 2.50 and the mill's asymptote of 3. Its running peak reaches 5,268 by
+ * the end of that horizon, which is what the test pins. It is why absolute drop
+ * was rejected as an axis: the measure flatters large terms.
  */
 export const DEEP_BRANCHY = 'C S S (S S) (C (S S S) C)';
 
