@@ -86,11 +86,21 @@ Depends on `sc.js` and a canvas. Two independent entry points.
   happens *inside* spine elements, so the spine carries almost no signal.
 
 **`atlas(canvas, opts)`**
-- Coordinates per term: `x` = median branching width over the last 50 states of a
-  bounded leftmost march (log scale); `y` = maximum drop from running peak.
-- Two-stage classification, mirroring the Lean pipeline: a cheap forcedness screen
-  (still exactly one redex after 30 fires) rejects ~99.8% at ~5 fires per term,
-  then survivors get a deep march.
+Each sampled term gets **two independent measurements**. They answer different
+questions and must not be conflated:
+
+- **Phase** (`screenKind`) — the census reproduction. A cheap forcedness screen
+  (still exactly one redex after 30 fires) rejects ~99.8% of terms at ~5 fires
+  each; survivors get a deep march. Yields halt / branch / corridor at roughly
+  67 / 33 / 0.2. This measures *whether the term ever branches*.
+- **Geometry** (`coords`) — the atlas position. A bounded leftmost march gives
+  `x` = median branching width over the last 50 states (log scale) and
+  `y` = maximum drop from the running peak.
+
+These are genuinely different: under a leftmost march ~96% of terms normalize
+(Stage 252 records 88.2% of BRANCH terms leftmost-normalizing within 1000 fires),
+so the leftmost march does *not* reproduce the 67/33 split and must not be used
+for it. The atlas plots position from `coords` and colour from `screenKind`.
 - Sampling is progressive: `requestAnimationFrame` chunks under a ~12 ms budget,
   points drawn as they land, with a Stop button. A live counter shows the
   halt/branch/corridor split converging.
@@ -141,12 +151,25 @@ inside their own containers; the page body never scrolls horizontally.
 
 `site/sc.test.mjs`, run with `node --test`. Three groups:
 
-1. **Engine agreement with Lean.** Values the Lean already `#guard`s:
-   `scMt5T.leafCount = 12`; `scForcedMarch scMt5T 400` has length 400 (i.e. the
-   climber is forced for 400 fires); the mill's `6(m+1)` fires per revolution; the
-   `141 + 25j` turnover standing over the `117 + 19j` ground state. This is the
-   point of a separate engine file — the page's numbers are checked against the
-   proofs rather than being a parallel implementation nobody audits.
+1. **Engine agreement with Lean.** All four values below were verified against the
+   reference implementation before being written down:
+   - `scMt5T.leafCount = 12`, and the climber is forced for 400 fires
+     (`scForcedMarch scMt5T 400` has length 400). Measured: forced for at least
+     2,000 fires, reaching 624 leaves.
+   - `scMillK` has 9 leaves; `scMillT m` has `9 + 3m`.
+   - **`sc_mill_descent` re-checked from JS**: six fires take
+     `((L x) (C (L x))) y` to `((x (C x)) y` exactly, for arbitrary payloads
+     `x`, `y`. This is a Lean theorem verified by the page's own engine.
+   - The descent generalizes: `scMillG a m` reaches `scMillG 0 m` in exactly
+     `6a` fires (confirmed at `(a,m) = (1,2), (2,3), (3,1), (4,5)`).
+
+   The `141 + 25j` over `117 + 19j` staircase is **not** used as an engine test.
+   It belongs to `scNoNFPeak` / the spiral generations, not to the climber's raw
+   leaf trace, whose peaks are 33, 41, 45, 55, … with a maximum drop of 121 over
+   1,400 fires. Asserting it against a climber march would have been wrong.
+
+   This is the point of a separate engine file — the page's numbers are checked
+   against the proofs rather than being a parallel implementation nobody audits.
 2. **Census reproduction.** At a fixed seed, the sampler's split matches Stage 241
    within tolerance (observed: 67.2% halt / 32.6% branch / 0.20% corridor against
    the recorded 67 / 33 / 0.15).
