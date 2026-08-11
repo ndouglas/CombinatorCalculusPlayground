@@ -8059,3 +8059,100 @@ theorem sc_swap_unbounded (n : Nat) :
   rw [scSwapT_size] at h2
   have h3 : scSwapB.leafCount = 10 := rfl
   omega
+
+-- ## Stage 269: THE FORCED SWAPMILL — every phase is the only move.
+-- SCForced versions of the revolution's phases: towers of C over a normal base are
+-- normal, the ping-pong run is forced at every layer (with the riders swapping), and
+-- the four concrete phases (turnover, reseed, trigger, rebirth) are forced given
+-- normal payloads. The generic pipeline (family membership, no-normal-form,
+-- decidability) is already proved once and for all — these are its inputs.
+
+/-- Towers over a normal base are normal. -/
+theorem scSwapT_succ_nil {f : SCTerm} (hf : scSucc f = []) :
+    ∀ k, scSucc (scSwapT k f) = []
+  | 0 => hf
+  | k + 1 => by
+      show scSuccRoot (.app .C (scSwapT k f))
+        ++ (scSucc .C).map (fun f' => .app f' (scSwapT k f))
+        ++ (scSucc (scSwapT k f)).map (fun x' => .app .C x') = []
+      rw [scSwapT_succ_nil hf k]
+      rfl
+
+/-- The base and the junk block are inert. -/
+theorem scSwapB_succ_nil : scSucc scSwapB = [] := rfl
+theorem scSwapJ1_succ_nil : scSucc scSwapJ1 = [] := rfl
+
+/-- The ping-pong run's states: one swap per layer, riders alternating. -/
+def scSwapRunChain : (d : Nat) → SCTerm → SCTerm → SCTerm → List SCTerm
+  | 0, _, _, _ => []
+  | d + 1, f, y, z =>
+      (.app (.app (scSwapT d f) z) y) :: scSwapRunChain d f z y
+
+/-- **The run is forced**: at every layer, the swap is the only move. -/
+theorem scSwapRun_forced : ∀ (d : Nat) (f y z : SCTerm),
+    scSucc f = [] → scSucc y = [] → scSucc z = [] →
+    SCForced (.app (.app (scSwapT d f) y) z) (scSwapRunChain d f y z)
+  | 0, _, _, _ => fun _ _ _ => trivial
+  | d + 1, f, y, z => by
+      intro hf hy hz
+      refine ⟨?_, scSwapRun_forced d f z y hf hz hy⟩
+      show scSucc (.app (.app (.app .C (scSwapT d f)) y) z)
+        = [.app (.app (scSwapT d f) z) y]
+      simp [scSucc, scSuccRoot, scSwapT_succ_nil hf, hy, hz]
+
+/-- The run chain is never empty for positive height. -/
+theorem scSwapRunChain_ne (d : Nat) (f y z : SCTerm) :
+    scSwapRunChain (d + 1) f y z ≠ [] := by
+  show _ :: _ ≠ []
+  simp
+
+/-- A positive even run ends at the base with riders home. -/
+theorem scSwapRunChain_last : ∀ (j : Nat) (f y z dflt : SCTerm), 1 ≤ j →
+    (scSwapRunChain (2 * j) f y z).getLastD dflt = .app (.app f y) z := by
+  intro j
+  induction j with
+  | zero => intro _ _ _ _ h; omega
+  | succ j ih =>
+      intro f y z dflt _
+      show ((.app (.app (scSwapT (2 * j + 1) f) z) y)
+        :: (.app (.app (scSwapT (2 * j) f) y) z)
+        :: scSwapRunChain (2 * j) f y z).getLastD dflt = .app (.app f y) z
+      rw [List.getLastD_cons, List.getLastD_cons]
+      cases j with
+      | zero => rfl
+      | succ j' => exact ih f y z _ (by omega)
+
+/-- **The turnover is forced**: with a normal tower, each of its three fires is the
+only possible fire. -/
+theorem sc_swap_turnover_forced (T : SCTerm) (hT : scSucc T = []) :
+    SCForced (.app (.app (.app .S scSwapA) .C) T)
+      [(.app (.app scSwapA T) (.app .C T)),
+       (.app (.app (.app .S T) .C) (.app .C T)),
+       (.app (.app T (.app .C T)) (.app .C (.app .C T)))] := by
+  refine ⟨?_, ?_, ?_, trivial⟩ <;>
+    simp [scSucc, scSuccRoot, scSwapA, hT]
+
+/-- **The reseed is forced**: with normal riders, both fires are the only moves. -/
+theorem sc_swap_reseed_forced (y z : SCTerm)
+    (hy : scSucc y = []) (hz : scSucc z = []) :
+    SCForced (.app (.app scSwapB y) z)
+      [(.app (.app (.app .C y) scSwapJ1) z),
+       (.app (.app y z) scSwapJ1)] := by
+  refine ⟨?_, ?_, trivial⟩ <;>
+    simp [scSucc, scSuccRoot, scSwapB, scSwapJ1, scSwapA, hy, hz]
+
+/-- **The trigger is forced.** -/
+theorem sc_swap_trigger_forced (T z : SCTerm)
+    (hT : scSucc T = []) (hz : scSucc z = []) :
+    SCForced (.app (.app (.app .C T) z) scSwapJ1)
+      [(.app (.app T scSwapJ1) z)] := by
+  refine ⟨?_, trivial⟩
+  simp [scSucc, scSuccRoot, scSwapJ1, scSwapA, hT, hz]
+
+/-- **The rebirth is forced.** -/
+theorem sc_swap_rebirth_forced (w z : SCTerm)
+    (hw : scSucc w = []) (hz : scSucc z = []) :
+    SCForced (.app (.app scSwapJ1 w) z)
+      [(.app (.app (.app (.app (.app .S scSwapA) .C) w) (.app .C .C)) z)] := by
+  refine ⟨?_, trivial⟩
+  simp [scSucc, scSuccRoot, scSwapJ1, scSwapA, hw, hz]
