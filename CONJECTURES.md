@@ -7013,3 +7013,12 @@ run the pipeline. Remaining for full parity: THE LINE, flatness, and the bounded
 decider for the seed (all mechanical), plus the champion anchor connecting scChamp170
 to the pure engine. The G-machine picture after two species: driver + tower + junk
 that is a parked copy of the driver — a shape begging to be enumerated.
+
+### Stage 272: THE LINE, GENERIC
+
+Total order is not a fact about the mill — it is a property of forced chain families,
+and now a generic theorem (`sc_forced_family_line`). The swapmill's line came as a
+one-line instance. The generic pipeline now contains: forcedness transport (riders,
+carriers, stacks), family membership, no-normal-form, total order — every structural
+theorem the first trichotomy needed, engine-independent. The per-engine residue is
+exactly: the phase laws, the size ledger, and the decider's bounded scan.

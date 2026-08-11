@@ -7019,3 +7019,10 @@ convenient). (4) Ideonomy at ~267.
   champion anchor (scChamp170 decide-march into the swapmill family — connects the
   census's wild term to the pure engine). (3) Ideonomy (overdue): the enumeration of
   driver+tower+self-junk shapes as a C13 attack. (4) The copy-tracking floor (C14).
+
+## 2026-08-11 — Stage 272: the line, generic
+
+- One hundred fifty-four autonomous stages (119–272). Ranking: (1) the swapmill
+  decider (second certified reachability decision procedure; size floor from the
+  pairs ledger). (2) The champion anchor. (3) Ideonomy: enumerate driver+tower+
+  self-junk shapes (C13 attack). (4) Copy-tracking floor (C14).
