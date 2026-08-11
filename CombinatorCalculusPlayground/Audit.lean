@@ -1040,3 +1040,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_metro_eternal' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_metro_eternal
+
+/-- info: 'sc_metro_no_nf' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_metro_no_nf
+
+/-- info: 'sc_metro_reach_iff' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_metro_reach_iff
+
+/-- info: 'scMetroReach_decidable' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scMetroReach_decidable

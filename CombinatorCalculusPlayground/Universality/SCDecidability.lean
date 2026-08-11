@@ -8794,3 +8794,150 @@ theorem sc_metro_eternal : ∀ (r : Nat) (zs : List SCTerm),
           = scMetroPairs r ++ (.app .C .C :: scMetroJ :: zs) from
         (scMetroPairs_shift r zs).symm]
       exact h
+
+-- ## Stage 286: THE METRONOME'S TRICHOTOMY — the cheapest portrait yet.
+-- Constant chains make everything decide-powered: the forced march IS the chain,
+-- its last state and nonemptiness are kernel computations, and the family is pure
+-- pairs. Third complete portrait; first for the pumping regime.
+
+/-- A Bool spine-3 check, for decide-powered membership sweeps. -/
+def scSpine3b : SCTerm → Bool
+  | .app (.app (.app _ _) _) _ => true
+  | _ => false
+
+theorem scSpine3b_sound : ∀ {u : SCTerm}, scSpine3b u = true → SCSpine3 u
+  | .app (.app (.app p q) g) x, _ => ⟨p, q, g, x, rfl⟩
+  | .S, h => Bool.noConfusion h
+  | .C, h => Bool.noConfusion h
+  | .app .S _, h => Bool.noConfusion h
+  | .app .C _, h => Bool.noConfusion h
+  | .app (.app .S _) _, h => Bool.noConfusion h
+  | .app (.app .C _) _, h => Bool.noConfusion h
+
+/-- The metronome family: the core over `r` cycles of junk pairs. -/
+def scMetroF (r : Nat) : SCTerm := scAppList scMetroCore (scMetroPairs r)
+
+/-- Its chains: the ridden seventeen-fire march. -/
+def scMetroChain (r : Nat) : List SCTerm :=
+  (scForcedMarch scMetroCore 17).map (scAppList · (scMetroPairs r))
+
+/-- The pairs are inert. -/
+theorem scMetroPairs_succ_nil : ∀ (r : Nat), ∀ z ∈ scMetroPairs r, scSucc z = []
+  | 0 => by intro z hz; exact absurd hz List.not_mem_nil
+  | r + 1 => by
+      intro z hz
+      rcases List.mem_cons.mp hz with rfl | hz
+      · rfl
+      · rcases List.mem_cons.mp hz with rfl | hz
+        · rfl
+        · exact scMetroPairs_succ_nil r z hz
+
+/-- Every generation is forced. -/
+theorem scMetroF_forced (r : Nat) : SCForced (scMetroF r) (scMetroChain r) := by
+  refine sc_forced_riders _ (scMetroPairs_succ_nil r) ?_
+    (scForcedMarch_forced 17 scMetroCore)
+  intro u hu
+  rcases List.mem_cons.mp hu with rfl | hu
+  · exact ⟨_, _, _, _, rfl⟩
+  · exact scSpine3b_sound
+      (List.all_eq_true.mp (by decide :
+        (scForcedMarch scMetroCore 17).all scSpine3b = true) u hu)
+
+/-- Chain ends meet generation starts. -/
+theorem scMetroChain_last (r : Nat) :
+    (scMetroChain r).getLastD (scMetroF r) = scMetroF (r + 1) := by
+  have h1 : (scMetroChain r).getLastD (scAppList scMetroCore (scMetroPairs r))
+      = scAppList ((scForcedMarch scMetroCore 17).getLastD scMetroCore)
+          (scMetroPairs r) :=
+    List.getLastD_map
+  rw [show scMetroF r = scAppList scMetroCore (scMetroPairs r) from rfl, h1,
+    show (scForcedMarch scMetroCore 17).getLastD scMetroCore
+      = .app (.app scMetroCore (.app .C .C)) scMetroJ from by decide]
+  rfl
+
+/-- Chains are nonempty. -/
+theorem scMetroChain_ne (r : Nat) : scMetroChain r ≠ [] := by
+  intro h
+  exact (by decide : scForcedMarch scMetroCore 17 ≠ [])
+    (List.map_eq_nil_iff.mp h)
+
+/-- **THE METRONOME NEVER RESTS.** -/
+theorem sc_metro_no_nf :
+    ∀ u, RS.SC.Steps (scMetroF 0) u → ∃ v, RS.SC.step u v :=
+  sc_forced_forever_no_nf scMetroF scMetroChain scMetroF_forced scMetroChain_last
+    scMetroChain_ne
+
+/-- **THE THIRD CORRIDOR, EXACTLY.** -/
+theorem sc_metro_reach_iff (u : SCTerm) :
+    RS.SC.Steps (scMetroF 0) u ↔ ∃ k, u = scMetroF k ∨ u ∈ scMetroChain k := by
+  constructor
+  · exact sc_forced_family_mem scMetroF scMetroChain scMetroF_forced
+      scMetroChain_last scMetroChain_ne u
+  · rintro ⟨k, rfl | hu⟩
+    · have h := sc_forced_family_steps_from scMetroF scMetroChain scMetroF_forced
+        scMetroChain_last 0 k
+      rw [Nat.zero_add] at h
+      exact h
+    · have h := sc_forced_family_steps_from scMetroF scMetroChain scMetroF_forced
+        scMetroChain_last 0 k
+      rw [Nat.zero_add] at h
+      exact RS.Steps.trans h
+        (scChained_steps _ _ _ (scForced_chained _ _ (scMetroF_forced k))
+          (List.mem_cons_of_mem _ hu))
+
+/-- The pairs' weight: eleven leaves per cycle. -/
+theorem scMetroPairs_sum : ∀ r : Nat,
+    ((scMetroPairs r).map SCTerm.leafCount).sum = 11 * r
+  | 0 => rfl
+  | r + 1 => by
+      show 2 + (9 + ((scMetroPairs r).map SCTerm.leafCount).sum) = 11 * (r + 1)
+      rw [scMetroPairs_sum r]
+      omega
+
+/-- The generation size floor. -/
+theorem scMetroGen_size_lb (k : Nat) (u : SCTerm)
+    (hu : u = scMetroF k ∨ u ∈ scMetroChain k) :
+    1 + 11 * k ≤ u.leafCount := by
+  rcases hu with rfl | hu
+  · show 1 + 11 * k ≤ (scAppList scMetroCore (scMetroPairs k)).leafCount
+    rw [scAppList_size, scMetroPairs_sum]
+    have := SCTerm.leafCount_pos scMetroCore
+    omega
+  · have h' : u ∈ (scForcedMarch scMetroCore 17).map
+        (scAppList · (scMetroPairs k)) := hu
+    obtain ⟨w, _, rfl⟩ := List.mem_map.mp h'
+    rw [scAppList_size, scMetroPairs_sum]
+    have := SCTerm.leafCount_pos w
+    omega
+
+/-- Bounded scan. -/
+theorem sc_metro_reach_bounded (u : SCTerm) :
+    RS.SC.Steps (scMetroF 0) u
+      ↔ ∃ k, k < u.leafCount ∧ (u = scMetroF k ∨ u ∈ scMetroChain k) := by
+  rw [sc_metro_reach_iff]
+  constructor
+  · rintro ⟨k, hk⟩
+    refine ⟨k, ?_, hk⟩
+    rcases Nat.lt_or_ge k u.leafCount with h | h
+    · exact h
+    · have hb := scMetroGen_size_lb k u hk
+      omega
+  · rintro ⟨k, _, hk⟩
+    exact ⟨k, hk⟩
+
+/-- The decider. -/
+def scMetroReach (u : SCTerm) : Bool :=
+  (List.range u.leafCount).any
+    (fun k => decide (u = scMetroF k) || decide (u ∈ scMetroChain k))
+
+theorem scMetroReach_iff (u : SCTerm) :
+    scMetroReach u = true ↔ RS.SC.Steps (scMetroF 0) u := by
+  rw [sc_metro_reach_bounded]
+  show ((List.range u.leafCount).any
+    (fun k => decide (u = scMetroF k) || decide (u ∈ scMetroChain k))) = true ↔ _
+  simp [List.any_eq_true, List.mem_range]
+
+/-- **REACHABILITY FROM THE METRONOME IS DECIDABLE** — the third certified decider. -/
+instance scMetroReach_decidable (u : SCTerm) :
+    Decidable (RS.SC.Steps (scMetroF 0) u) :=
+  decidable_of_iff (scMetroReach u = true) (scMetroReach_iff u)
