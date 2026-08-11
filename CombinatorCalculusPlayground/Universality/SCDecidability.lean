@@ -8688,3 +8688,31 @@ theorem sc_driver_law (X T : SCTerm) :
   RS.StepsN.tail (SCStep.S_red scSwapA X T)
     (RS.StepsN.tail (SCStep.appL (SCStep.C_red .S .C T))
       (RS.StepsN.tail (SCStep.S_red T .C (.app X T)) (@RS.StepsN.refl RS.SC _)))
+
+-- ## Stage 283: the species-3 descent — four fires per layer, riders home.
+-- d159's tower runs on the layer `L₃ x = (C (C C)) (C x)`: four C-fires strip one
+-- layer and return both riders to their places (no ping-pong parity). With the
+-- family driver law, species 3's core is two laws deep — the C13 grid takes shape:
+-- slot X × layer grammar × junk policy.
+
+/-- The species-3 layer. -/
+def scSwap3L (x : SCTerm) : SCTerm := .app (.app .C (.app .C .C)) (.app .C x)
+
+/-- **THE SPECIES-3 DESCENT**: four fires strip a layer, riders home. -/
+theorem sc_l3_descent (w y z : SCTerm) :
+    RS.SC.StepsN 4 (.app (.app (scSwap3L w) y) z) (.app (.app w y) z) :=
+  RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .C .C) (.app .C w) y))
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red .C y (.app .C w)))
+      (RS.StepsN.tail (SCStep.C_red (.app .C w) y z)
+        (RS.StepsN.tail (SCStep.C_red w z y) (@RS.StepsN.refl RS.SC _))))
+
+/-- The species-3 descent is forced with inert payloads. -/
+theorem sc_l3_descent_forced (w y z : SCTerm)
+    (hw : scSucc w = []) (hy : scSucc y = []) (hz : scSucc z = []) :
+    SCForced (.app (.app (scSwap3L w) y) z)
+      [(.app (.app (.app (.app .C .C) y) (.app .C w)) z),
+       (.app (.app (.app .C (.app .C w)) y) z),
+       (.app (.app (.app .C w) z) y),
+       (.app (.app w y) z)] := by
+  refine ⟨?_, ?_, ?_, ?_, trivial⟩ <;>
+    simp [scSwap3L, scSucc, scSuccRoot, hw, hy, hz]
