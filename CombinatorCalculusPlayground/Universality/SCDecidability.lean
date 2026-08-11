@@ -8156,3 +8156,80 @@ theorem sc_swap_rebirth_forced (w z : SCTerm)
       [(.app (.app (.app (.app (.app .S scSwapA) .C) w) (.app .C .C)) z)] := by
   refine ⟨?_, trivial⟩
   simp [scSucc, scSuccRoot, scSwapJ1, scSwapA, hw, hz]
+
+-- ## Stage 270: THE FORCED REVOLUTION — the swapmill's whole cycle admits no choice.
+-- The five phase chains, appended: turnover, first run, reseed, trigger, second run,
+-- second reseed, rebirth — `4j + 9` states, every one the only possible successor.
+
+/-- The revolution's full state chain from the driver over tower `2j`. -/
+def scSwapRevChain (j : Nat) : List SCTerm :=
+  [(.app (.app scSwapA (scSwapT (2 * j) scSwapB))
+      (.app .C (scSwapT (2 * j) scSwapB))),
+   (.app (.app (.app .S (scSwapT (2 * j) scSwapB)) .C)
+      (.app .C (scSwapT (2 * j) scSwapB))),
+   (.app (.app (scSwapT (2 * j) scSwapB) (.app .C (scSwapT (2 * j) scSwapB)))
+      (.app .C (.app .C (scSwapT (2 * j) scSwapB))))]
+  ++ (scSwapRunChain (2 * j) scSwapB (.app .C (scSwapT (2 * j) scSwapB))
+        (.app .C (.app .C (scSwapT (2 * j) scSwapB)))
+  ++ ([(.app (.app (.app .C (.app .C (scSwapT (2 * j) scSwapB))) scSwapJ1)
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))),
+       (.app (.app (.app .C (scSwapT (2 * j) scSwapB))
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))) scSwapJ1)]
+  ++ ([(.app (.app (scSwapT (2 * j) scSwapB) scSwapJ1)
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB))))]
+  ++ (scSwapRunChain (2 * j) scSwapB scSwapJ1
+        (.app .C (.app .C (scSwapT (2 * j) scSwapB)))
+  ++ ([(.app (.app (.app .C scSwapJ1) scSwapJ1)
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))),
+       (.app (.app scSwapJ1 (.app .C (.app .C (scSwapT (2 * j) scSwapB))))
+          scSwapJ1)]
+  ++ [(.app (.app (.app (.app (.app .S scSwapA) .C)
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))) (.app .C .C))
+          scSwapJ1)])))))
+
+/-- **THE FORCED REVOLUTION**: from the driver over a positive even tower, all
+`4j + 9` fires of the revolution are the only possible fires. -/
+theorem sc_swap_rev_forced (j : Nat) (hj : 1 ≤ j) :
+    SCForced (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * j) scSwapB))
+      (scSwapRevChain j) := by
+  have hB := scSwapB_succ_nil
+  have hT := scSwapT_succ_nil hB (2 * j)
+  have hCT : scSucc (.app .C (scSwapT (2 * j) scSwapB)) = [] :=
+    scSwapT_succ_nil hB (2 * j + 1)
+  have hCCT : scSucc (.app .C (.app .C (scSwapT (2 * j) scSwapB))) = [] :=
+    scSwapT_succ_nil hB (2 * j + 2)
+  have hJ := scSwapJ1_succ_nil
+  refine SCForced_append (sc_swap_turnover_forced _ hT) ?_
+  rw [show ([(.app (.app scSwapA (scSwapT (2 * j) scSwapB))
+      (.app .C (scSwapT (2 * j) scSwapB))),
+     (.app (.app (.app .S (scSwapT (2 * j) scSwapB)) .C)
+      (.app .C (scSwapT (2 * j) scSwapB))),
+     (.app (.app (scSwapT (2 * j) scSwapB) (.app .C (scSwapT (2 * j) scSwapB)))
+      (.app .C (.app .C (scSwapT (2 * j) scSwapB))))] : List SCTerm).getLastD _
+      = (.app (.app (scSwapT (2 * j) scSwapB)
+          (.app .C (scSwapT (2 * j) scSwapB)))
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))) from rfl]
+  refine SCForced_append (scSwapRun_forced (2 * j) scSwapB _ _ hB hCT hCCT) ?_
+  rw [scSwapRunChain_last j scSwapB _ _ _ hj]
+  refine SCForced_append (sc_swap_reseed_forced _ _ hCT hCCT) ?_
+  rw [show ([(.app (.app (.app .C (.app .C (scSwapT (2 * j) scSwapB))) scSwapJ1)
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))),
+       (.app (.app (.app .C (scSwapT (2 * j) scSwapB))
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))) scSwapJ1)] : List SCTerm).getLastD _
+      = (.app (.app (.app .C (scSwapT (2 * j) scSwapB))
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))) scSwapJ1) from rfl]
+  refine SCForced_append (sc_swap_trigger_forced _ _ hT hCCT) ?_
+  rw [show ([(.app (.app (scSwapT (2 * j) scSwapB) scSwapJ1)
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB))))] : List SCTerm).getLastD _
+      = (.app (.app (scSwapT (2 * j) scSwapB) scSwapJ1)
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))) from rfl]
+  refine SCForced_append (scSwapRun_forced (2 * j) scSwapB _ _ hB hJ hCCT) ?_
+  rw [scSwapRunChain_last j scSwapB _ _ _ hj]
+  refine SCForced_append (sc_swap_reseed_forced _ _ hJ hCCT) ?_
+  rw [show ([(.app (.app (.app .C scSwapJ1) scSwapJ1)
+          (.app .C (.app .C (scSwapT (2 * j) scSwapB)))),
+       (.app (.app scSwapJ1 (.app .C (.app .C (scSwapT (2 * j) scSwapB))))
+          scSwapJ1)] : List SCTerm).getLastD _
+      = (.app (.app scSwapJ1 (.app .C (.app .C (scSwapT (2 * j) scSwapB))))
+          scSwapJ1) from rfl]
+  exact sc_swap_rebirth_forced _ _ hCCT hJ

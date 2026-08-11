@@ -995,3 +995,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_swap_rebirth_forced' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_swap_rebirth_forced
+
+/-- info: 'sc_swap_rev_forced' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_swap_rev_forced
