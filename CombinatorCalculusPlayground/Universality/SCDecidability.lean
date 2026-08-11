@@ -8544,3 +8544,109 @@ instance scSwapReach_decidable (u : SCTerm) :
 
 #guard scSwapReach .S = false
 #guard scSwapReach (.app .S .C) = false
+
+-- ## Stage 274: THE CHAMPION ANCHOR — scChamp170 joins the swapmill family.
+-- The census's fifth drop-champion reaches the swapmill engine in thirteen fires
+-- (driver over the bare base, one junk rider) and completes its first even-tower
+-- valley at fire twenty-two. The family, generalized over any inert base stack,
+-- then carries it forever: the champion has no reachable normal form.
+
+/-- The swapmill family over an arbitrary inert base stack. -/
+def scSwapFam (zs : List SCTerm) (r : Nat) : SCTerm :=
+  scAppList (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * (1 + r)) scSwapB))
+    (scSwapPairs r ++ zs)
+
+/-- Its chains: the ridden revolutions. -/
+def scSwapFamChain (zs : List SCTerm) (r : Nat) : List SCTerm :=
+  (scSwapRevChain (1 + r)).map (scAppList · (scSwapPairs r ++ zs))
+
+/-- Forced, for any inert base stack. -/
+theorem scSwapFam_forced (zs : List SCTerm) (hzs : ∀ z ∈ zs, scSucc z = [])
+    (r : Nat) : SCForced (scSwapFam zs r) (scSwapFamChain zs r) := by
+  refine sc_forced_riders _ ?_ ?_ (sc_swap_rev_forced (1 + r) (by omega))
+  · intro z hz
+    rcases List.mem_append.mp hz with h | h
+    · exact scSwapPairs_succ_nil r z h
+    · exact hzs z h
+  · intro u hu
+    rcases List.mem_cons.mp hu with rfl | hu
+    · exact scSwapDriver_spine3 (1 + r)
+    · exact scSwapRevChain_spine3 (1 + r) u hu
+
+/-- Chain ends meet generation starts. -/
+theorem scSwapFamChain_last (zs : List SCTerm) (r : Nat) :
+    (scSwapFamChain zs r).getLastD (scSwapFam zs r) = scSwapFam zs (r + 1) := by
+  have h1 : (scSwapFamChain zs r).getLastD
+      (scAppList (.app (.app (.app .S scSwapA) .C)
+        (scSwapT (2 * (1 + r)) scSwapB)) (scSwapPairs r ++ zs))
+      = scAppList ((scSwapRevChain (1 + r)).getLastD
+          (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * (1 + r)) scSwapB)))
+          (scSwapPairs r ++ zs) :=
+    List.getLastD_map
+  rw [show scSwapFam zs r = scAppList (.app (.app (.app .S scSwapA) .C)
+      (scSwapT (2 * (1 + r)) scSwapB)) (scSwapPairs r ++ zs) from rfl, h1,
+    scSwapRevChain_last]
+  show scAppList (scAppList (.app (.app (.app .S scSwapA) .C)
+      (.app .C (.app .C (scSwapT (2 * (1 + r)) scSwapB))))
+      [.app .C .C, scSwapJ1]) (scSwapPairs r ++ zs) = _
+  rw [← scAppList_append]
+  show scAppList (.app (.app (.app .S scSwapA) .C)
+      (scSwapT (2 * (1 + r) + 2) scSwapB))
+      (.app .C .C :: scSwapJ1 :: (scSwapPairs r ++ zs)) = _
+  rw [show 2 * (1 + r) + 2 = 2 * (1 + (r + 1)) from by omega]
+  rfl
+
+/-- Chains are nonempty. -/
+theorem scSwapFamChain_ne (zs : List SCTerm) (r : Nat) :
+    scSwapFamChain zs r ≠ [] := by
+  intro h
+  exact scSwapRevChain_ne (1 + r) (List.map_eq_nil_iff.mp h)
+
+/-- The champion's base stack after its transient. -/
+def scChampStack : List SCTerm := [.app .C .C, scSwapJ1, scSwapJ1]
+
+/-- The champion's stack is inert. -/
+theorem scChampStack_nil : ∀ z ∈ scChampStack, scSucc z = [] := by
+  intro z hz
+  rcases List.mem_cons.mp hz with rfl | hz
+  · rfl
+  rcases List.mem_cons.mp hz with rfl | hz
+  · rfl
+  rcases List.mem_cons.mp hz with rfl | hz
+  · rfl
+  · exact absurd hz List.not_mem_nil
+
+/-- **THE ANCHOR**: twenty-two forced fires take the champion into the family. -/
+theorem sc_champ170_anchor :
+    (scForcedMarch scChamp170 22).getLastD scChamp170
+      = scSwapFam scChampStack 0 := by decide
+
+/-- The champion's shifted family: itself, then the swapmill generations. -/
+def scChampF : Nat → SCTerm
+  | 0 => scChamp170
+  | r + 1 => scSwapFam scChampStack r
+
+def scChampChain : Nat → List SCTerm
+  | 0 => scForcedMarch scChamp170 22
+  | r + 1 => scSwapFamChain scChampStack r
+
+theorem scChampF_forced : ∀ r, SCForced (scChampF r) (scChampChain r)
+  | 0 => scForcedMarch_forced 22 scChamp170
+  | r + 1 => scSwapFam_forced scChampStack scChampStack_nil r
+
+theorem scChampChain_last : ∀ r,
+    (scChampChain r).getLastD (scChampF r) = scChampF (r + 1)
+  | 0 => sc_champ170_anchor
+  | r + 1 => scSwapFamChain_last scChampStack r
+
+theorem scChampChain_ne : ∀ r, scChampChain r ≠ []
+  | 0 => fun h =>
+      absurd (h : scForcedMarch scChamp170 22 = []) (by decide)
+  | r + 1 => scSwapFamChain_ne scChampStack r
+
+/-- **THE CHAMPION NEVER RESTS**: the census's fifth drop-champion — a wild
+twelve-leaf term — has no reachable normal form. -/
+theorem sc_champ170_no_nf :
+    ∀ u, RS.SC.Steps scChamp170 u → ∃ v, RS.SC.step u v :=
+  sc_forced_forever_no_nf scChampF scChampChain scChampF_forced scChampChain_last
+    scChampChain_ne

@@ -1016,3 +1016,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scSwapReach_decidable' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scSwapReach_decidable
+
+/-- info: 'sc_champ170_anchor' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_champ170_anchor
+
+/-- info: 'sc_champ170_no_nf' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_champ170_no_nf
