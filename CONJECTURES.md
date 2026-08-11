@@ -7218,3 +7218,17 @@ yielding the full portrait by the generic pipeline. The enumeration of {S,C}'s
 eternal machines has become a two-parameter family study — which is about as far
 from "wild, unclassifiable behavior" as a rewriting system can get, and is exactly
 the structural rigidity the decidability case rests on.
+
+### Stage 288: the grid census — engines live exactly at pure-C slots
+
+All twenty-two slots of at most three leaves, over both family cores, forty-four
+synthesized seeds: SIX run eternal (swap: C, C C, C (C C); mill: C, C C, C (C C)),
+every slot containing an S ignites into the branch phase, and the metronome
+(swap × C C) is the ONLY pump in the entire grid. A new engine surfaced as a
+by-product: the light mill (mill core × C slot, period +2 per revolution — leaner
+than the original mill's +6). **C13 sub-conjecture (the purity law), registered**:
+these families' eternal engines are exactly their pure-C slots — S in a slot always
+eventually ignites. If the purity law holds, the engine space is indexed by binary
+trees (Catalan-countable), each slot yielding its climber (or, at exactly one known
+point, a pump), each engine decidable by the pipeline. The corridor phase would then
+be, in the strongest sense, a CATALOG.

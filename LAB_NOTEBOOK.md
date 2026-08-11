@@ -7223,3 +7223,10 @@ bounded excess, formally (the assembly's largest missing piece).
   scale (all small slots for BOTH cores — count species, hunt for a third motif).
   (2) The mill-family instances: decode d211/d209/d206/d205's slots via the family
   law. (3) Bulk-C12 formal scoping. (4) The 289 review.
+
+## 2026-08-11 — Stage 288: the grid census — the purity law
+
+- One hundred seventy autonomous stages (119–288). Ranking: (1) the purity law
+  probe at depth (4-leaf slots, longer marches — does any S-slot survive, does any
+  new pump appear?). (2) The light mill's laws (mill × C — likely the cheapest
+  climber). (3) Bulk-C12 formal scoping. (4) The 290 review.
