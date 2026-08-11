@@ -7093,3 +7093,14 @@ partition as a computable classifier — scope it). (3) d159's snapshot-tape spe
   minting law's proof skeleton weights cleanly). (2) The assembly scoping under
   C12-original (bounded intermediates ⇒ decidability — formalize the reduction as a
   theorem sketch: StepsLe machinery already exists at line ~200). (3) d159 species.
+
+## 2026-08-11 — Stage 278: the frontier in one Prop
+
+- One hundred sixty autonomous stages (119–278). The session's arc: second
+  trichotomy complete (267–274), species census (275), floor program run to honest
+  falsification (276–277), frontier crystallized (278). Ranking: (1) **the C12
+  attack**: the confluence route — in a confluent system, t →* u iff they meet at a
+  common reduct; leftmost-normalization plus the drop data may bound the MEETING
+  path rather than arbitrary paths (the crash screens measured leftmost — exactly
+  the right quantity for this route). Probe: do witness paths found by search ever
+  need to exceed the leftmost-path peak? (2) d159 species. (3) The 280 review.

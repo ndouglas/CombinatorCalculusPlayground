@@ -7093,3 +7093,17 @@ state size — the storm floor is real as a PHENOMENON; what fell is only the si
 formula for it. The walls (unit drop, cold, minting) all survive untouched; they were
 never strong enough to imply the constant floor, which is exactly why the probe could
 falsify it without contradicting anything pinned.
+
+### Stage 278: Φ falls too — and C12 becomes the single named gap
+
+The depth-weighted potential died on the same state as the κ-floor: the fatal
+duplications come from S-redexes that only COMPLETE later (an S waiting for its third
+argument), invisible to any static count over the current term. This is not a defeat
+so much as a clarification — the static-potential program was always a bid to prove
+C12 locally, and its failure modes now map exactly onto why C12 is genuinely global.
+Formal state of the endgame, now pinned: `scLinearExcess` (C12 as a Prop: some affine
+endpoint-size bound covers some path between any reachable pair) and `sc_c12_decides`
+(C12 ⟹ reachability decidable, via Stage 132's backbone). Everything the program has
+measured supports C12 with small constants: crash screens (no drop past 211 at two
+sizes), corridor ledgers (exact linear excess), storm digs (~5% of size). The
+program's central question is, formally and precisely, C12's truth.

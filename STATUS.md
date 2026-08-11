@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE κ-FLOOR FALSIFIED (Stage 277): duplication
+confluence makes even the trees rejoin. C12, STATED (Stage 278, `scLinearExcess` +
+`sc_c12_decides`): the central question is now formally one
+quantitative law away — C12 implies decidability via Stage 132's
+backbone; every measurement supports C12 with small constants.
+THE κ-FLOOR FALSIFIED (Stage 277): duplication
 compounds — digs reach 4.4× inventory at n=12; C14 restated as a
 depth-weighted potential (or retreat to C12's bounded-intermediates
 form, which suffices for decidability). The walls survive untouched.
