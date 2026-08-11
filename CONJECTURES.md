@@ -7193,3 +7193,15 @@ tick faster and clocks that tick steadily, and the grid found the steady one bef
 any census did. C13's classification now has: two driver families, three layer
 grammars, two junk policies, two period regimes — and a demonstrated ability to
 enumerate its own unknown corners.
+
+### Stage 286: the metronome's trichotomy — three portraits, three regimes
+
+The third complete portrait (no normal form, closed-form reachable set, certified
+decider), first-try green, one block — for a machine that did not exist in any
+census and was found by asking the grid what lives at `X = C C`. The pipeline's
+maturity is now measurable in stage-counts: mill nine stages, swapmill five,
+metronome ONE. Portraits by period regime: climbing (mill, swapmill) and pumping
+(metronome) both fall to the same generic theorems, which is evidence that the
+pipeline axis of C13 (every corridor engine yields family/no-NF/decider) is
+regime-independent. The classification's remaining empirical frontier: the mill-K
+driver family (four undecoded champions) and the grid sweep at scale.

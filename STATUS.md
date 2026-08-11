@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE METRONOME (Stage 284, `sc_metro_law` +
+confluence makes even the trees rejoin. THE THIRD PORTRAIT (Stage 286): the metronome's
+full trichotomy in ONE stage, first-try green — pipeline stage-counts
+per portrait: 9 → 5 → 1; the pipeline is regime-independent.
+THE METRONOME (Stage 284, `sc_metro_law` +
 `sc_metro_eternal`, both AXIOM-FREE): the grid predicted, synthesis
 delivered — a fixed-period oscillator (core returns exactly every 17
 fires), the first constant-period eternal engine and the first whose
