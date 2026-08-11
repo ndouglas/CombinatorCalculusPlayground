@@ -974,3 +974,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_minting_run' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_minting_run
+
+/-- info: 'sc_swap_rebirth' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_swap_rebirth
+
+/-- info: 'sc_swap_revolution' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_swap_revolution

@@ -7925,3 +7925,65 @@ theorem sc_minting_run : ∀ {n : Nat} {t u : SCTerm}, RS.SC.StepsN n t u →
   · intro m a b c s rest ih
     have h1 := sc_minting_law s
     omega
+
+-- ## Stage 267: THE RIDDEN REVOLUTION — the swapmill's full cycle, generic riders.
+-- The revolution decomposes into seven phases, five already pinned: the cycle
+-- (turnover + first descent), the reseed, a one-fire trigger, the SECOND descent
+-- (the same run law), a second reseed, and the one-fire REBIRTH — where the junk
+-- block `J₁ = (C driver)(C C)` reveals itself as a parked copy of the driver, and
+-- the twice-wrapped old tower `C (C T)` becomes the new tower. Growth by wrapping,
+-- rebirth by unparking: the engine's whole biography in `4j + 9` fires, and the law
+-- is fully generic in the rider stack — the junk pairs `(C C, J₁)` are emitted in
+-- front and nothing behind them is ever touched.
+
+/-- The swapmill's junk block: the driver, C-parked over `C C` — the reseed's gift. -/
+def scSwapJ1 : SCTerm :=
+  .app (.app .C (.app (.app .S scSwapA) .C)) (.app .C .C)
+
+/-- **THE TRIGGER**: one fire hands the fresh junk to the tower. -/
+theorem sc_swap_trigger (T z : SCTerm) :
+    RS.SC.StepsN 1
+      (.app (.app (.app .C T) z) scSwapJ1)
+      (.app (.app T scSwapJ1) z) :=
+  RS.StepsN.tail (SCStep.C_red T z scSwapJ1) (@RS.StepsN.refl RS.SC _)
+
+/-- **THE REBIRTH**: one fire unparks the driver from the junk block, and the
+twice-wrapped tower rides into place. -/
+theorem sc_swap_rebirth (w z : SCTerm) :
+    RS.SC.StepsN 1
+      (.app (.app scSwapJ1 w) z)
+      (.app (.app (.app (.app (.app .S scSwapA) .C) w) (.app .C .C)) z) :=
+  RS.StepsN.tail
+    (SCStep.appL (SCStep.C_red (.app (.app .S scSwapA) .C) (.app .C .C) w))
+    (@RS.StepsN.refl RS.SC _)
+
+/-- **THE RIDDEN REVOLUTION**: from the driver over an even tower, under ANY rider
+stack, `4j + 9` fires reach the driver over the tower-plus-two, with the junk pair
+`(C C, J₁)` emitted in front of the untouched stack. -/
+theorem sc_swap_revolution (j : Nat) (zs : List SCTerm) :
+    RS.SC.StepsN (4 * j + 9)
+      (scAppList (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * j) scSwapB)) zs)
+      (scAppList (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * j + 2) scSwapB))
+        (.app .C .C :: scSwapJ1 :: zs)) := by
+  have core : RS.SC.StepsN (4 * j + 9)
+      (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * j) scSwapB))
+      (scAppList (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * j + 2) scSwapB))
+        [.app .C .C, scSwapJ1]) := by
+    have h1 := sc_swap_cycle j scSwapB
+    have h2 := sc_swap_reseed (.app .C (scSwapT (2 * j) scSwapB))
+      (.app .C (.app .C (scSwapT (2 * j) scSwapB)))
+    have h3 := sc_swap_trigger (scSwapT (2 * j) scSwapB)
+      (.app .C (.app .C (scSwapT (2 * j) scSwapB)))
+    have h4 := sc_swap_run j scSwapB scSwapJ1
+      (.app .C (.app .C (scSwapT (2 * j) scSwapB)))
+    have h5 := sc_swap_reseed scSwapJ1
+      (.app .C (.app .C (scSwapT (2 * j) scSwapB)))
+    have h6 := sc_swap_rebirth
+      (.app .C (.app .C (scSwapT (2 * j) scSwapB))) scSwapJ1
+    have hcomp := RS.StepsN.trans h1 (RS.StepsN.trans h2 (RS.StepsN.trans h3
+      (RS.StepsN.trans h4 (RS.StepsN.trans h5 h6))))
+    rw [show 3 + 2 * j + (2 + (1 + (2 * j + (2 + 1)))) = 4 * j + 9 from by omega] at hcomp
+    exact hcomp
+  have lifted := scStepsN_appList zs core
+  rw [← scAppList_append] at lifted
+  exact lifted
