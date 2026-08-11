@@ -7125,3 +7125,15 @@ by C13's classification — decidability would then assemble regime by regime wi
 ever needing a uniform static potential. The missing heavy compute: exhaustive
 minimax at n=10 to pin f(10,10) (the 6→8 jump was 1→23; corridor theory predicts
 ~3n ≈ 30–40, explosive growth would predict ≫100 — a discriminating experiment).
+
+### Stage 281: THE DRIVER LAW — the first family-level theorem
+
+`sc_driver_law` (axiom-free): the swap-driver's three-fire turnover is parametric in
+its third slot — `S ((C S) C) X T ⟶³ (T (X T)) (C (X T))` for ANY `X`. The swapmill
+is `X = C`; d159 (decoded: heavier slot `C (C C)`, +4-leaf layers, snapshot junk
+that carries the driver motif in its base, revolution periods +4) is `X = C (C C)`.
+This is what C13's classification should look like at maturity: not per-species
+pipelines but family-level laws with species as instances. The driver motif's
+universal grammar: pick a slot X, pick a layer grammar for the tower, and the
+turnover, the self-application pattern, and the junk-carries-the-blueprint property
+all come along. The enumeration attack on C13 now has its first axis.

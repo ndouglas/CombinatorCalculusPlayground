@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE C12 LANDSCAPE (Stage 279): median excess
+confluence makes even the trees rejoin. THE DRIVER LAW (Stage 281, `sc_driver_law`,
+axiom-free): the swap-driver's turnover parametric in its third slot —
+species as instances of family-level laws; C13's enumeration has its
+first axis. THE C12 LANDSCAPE (Stage 279): median excess
 ZERO over 548 random pairs — a flat plain with rare mountains, every
 mountain an engine; refined attack = C12-on-the-bulk + C13-on-the-
 tail, assembled regime by regime. C12, STATED (Stage 278, `scLinearExcess` +

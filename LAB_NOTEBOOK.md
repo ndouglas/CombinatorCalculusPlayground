@@ -7142,3 +7142,10 @@ C12's affine form survives its hardest test yet; if it explodes, C12 needs
 restatement and the tail-structure route becomes primary. (2) d159's snapshot-tape
 species (third trichotomy, pipeline-cheap). (3) The bulk-C12 theorem attempt:
 normalizing terms with bounded excess (the 96%, formally). (4) Ideonomy at ~283.
+
+## 2026-08-11 — Stage 281: the driver law — species as instances
+
+- One hundred sixty-three autonomous stages (119–281). Ranking: (1) read minimax-10
+  when done (the discriminating C12 experiment — still sweeping). (2) The generic
+  descent law for X-slotted drivers (the ping-pong with X-payload — species 3's
+  descent as an instance). (3) Ideonomy at ~283.
