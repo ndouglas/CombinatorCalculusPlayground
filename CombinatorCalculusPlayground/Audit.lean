@@ -1049,3 +1049,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scMetroReach_decidable' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scMetroReach_decidable
+
+/-- info: 'sc_millfam_law' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_millfam_law

@@ -8941,3 +8941,30 @@ theorem scMetroReach_iff (u : SCTerm) :
 instance scMetroReach_decidable (u : SCTerm) :
     Decidable (RS.SC.Steps (scMetroF 0) u) :=
   decidable_of_iff (scMetroReach u = true) (scMetroReach_iff u)
+
+-- ## Stage 287: THE MILL FAMILY LAW — the second driver motif, slot-parametric.
+-- The mill's six-fire turnover, hand-retraced, never inspects its layer block: for
+-- ANY slot `z`, the core `K_z = (C (S C))((S ((C S) z)) C)` turns over to the
+-- self-application pattern with layer `z (C M)` and junk `(C K_z)((S ((C S) z)) C)`.
+-- The mill is the `z = C C` instance (kernel-checked against the pinned turnover).
+-- Both driver motifs now have family-level laws: C13's enumeration is two axes of
+-- slots over two cores.
+
+/-- The mill-family core at slot `z`. -/
+def scMillFamK (z : SCTerm) : SCTerm :=
+  .app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) z)) .C)
+
+/-- **THE MILL FAMILY LAW**: six fires, any slot — layer `z (C M)`, junk carries the
+core. -/
+theorem sc_millfam_law (z M : SCTerm) :
+    RS.SC.StepsN 6
+      (.app (.app (scMillFamK z) (.app .C (scMillFamK z))) M)
+      (.app (.app (.app M (.app .C M)) (.app z (.app .C M)))
+        (.app (.app .C (scMillFamK z)) (.app (.app .S (.app (.app .C .S) z)) .C))) :=
+    (RS.StepsN.tail (SCStep.appL (SCStep.C_red (.app .S .C) (.app (.app .S (.app (.app .C .S) z)) .C) (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) z)) .C)))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.S_red .C (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) z)) .C))) (.app (.app .S (.app (.app .C .S) z)) .C)))
+    (RS.StepsN.tail (SCStep.C_red (.app (.app .S (.app (.app .C .S) z)) .C) (.app (.app .C (.app (.app .C (.app .S .C)) (.app (.app .S (.app (.app .C .S) z)) .C))) (.app (.app .S (.app (.app .C .S) z)) .C)) M)
+    (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app (.app .C .S) z) .C M))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .S z M)))
+    (RS.StepsN.tail (SCStep.appL (SCStep.S_red M z (.app .C M)))
+    (@RS.StepsN.refl RS.SC _)))))))
