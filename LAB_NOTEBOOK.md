@@ -6997,3 +6997,11 @@ convenient). (4) Ideonomy at ~267.
   applies verbatim; then family → no-NF → the second trichotomy). (2) The champion
   anchor (scChamp170 decide-march into valley form — connects the wild term to the
   pure engine). (3) Ideonomy at ~270.
+
+## 2026-08-10 — Stage 269: the forced swapmill
+
+- Pin-before-reading almost struck again (assumed Quot.sound; the phases only need
+  propext) — the guard caught it, as designed. One hundred fifty-one autonomous
+  stages (119–269). Ranking: (1) the forced revolution composition (append the five
+  phase chains, track getLastD through them). (2) The swapmill family + no-NF +
+  decider (generic instantiation). (3) Ideonomy at ~271.

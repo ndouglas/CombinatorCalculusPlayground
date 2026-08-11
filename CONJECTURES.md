@@ -6978,3 +6978,15 @@ leaves per revolution of `4j+9` fires from a 15-leaf pure seed whose junk is its
 driver. C13's evidence is now two complete engine cores. Remaining for the second
 trichotomy: the forced version of the revolution (spine-3 argument — every swapmill
 state is left-deep, same as the mill's), the chain family, and the champion anchor.
+
+### Stage 269: THE FORCED SWAPMILL — the phases admit no alternatives
+
+Every phase of the ridden revolution is now SCForced: the ping-pong run at every
+layer (`scSwapRun_forced` — the alternating-rider chain with its last/ne plumbing),
+and the four concrete phases each by one simp. Axiom footprint dropped to bare
+[propext] for the phase lemmas. What remains for the second trichotomy is pure
+assembly against generic theorems proved once at 244–248: compose the forced phases
+into the forced revolution (SCForced_append × getLastD bookkeeping), define the
+family, and instantiate family-membership, no-normal-form, and the bounded-scan
+decider. Species two will then match species one theorem for theorem — C13's
+strongest form of evidence short of the classification itself.
