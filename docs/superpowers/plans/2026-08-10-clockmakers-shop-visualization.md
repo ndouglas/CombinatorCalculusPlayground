@@ -11,6 +11,7 @@
 ## Global Constraints
 
 - **No dependencies.** No npm packages, no CDN links, no build step. The repo is deliberately dependency-free (no Mathlib, no Batteries); the site matches that.
+- **Module setup:** exactly one `site/package.json` containing `{"type": "module"}` and nothing else — no name, no version, no dependencies, no scripts, and no lockfile. It exists solely so Node treats `site/*.js` as ES modules; without it `import { eq } from './sc.js'` fails with `Named export 'eq' not found`. It must stay scoped to `site/`: a root-level `package.json` would declare the whole Lean repository an ES-module package. Browsers ignore it. (Ruled by the human during Task 1, after the constraint proved unsatisfiable as first written.)
 - **Term representation:** nested two-element JS arrays; atoms are the strings `'S'` and `'C'`. `[a, b]` means application. Never classes, never objects.
 - **Step order must mirror Lean's `SCStep`:** root redex first, then `appL` successors, then `appR`. Verified output for `C S S (C S S S) C` is exactly `['S (C S S S) S C', 'C S S (S S S) C']` in that order.
 - **Surface syntax:** left-associative application, atoms `S`/`C`, parentheses. `C (S C C) S` is the notebook's style and the parser/printer must round-trip it.
