@@ -42,6 +42,27 @@ test('depth mode is independent of the atom', () => {
   assert.deepEqual(Array.from(a.pixels), Array.from(b.pixels));
 });
 
+test('depth mode actually varies with depth, not just with atom', () => {
+  // C (S C) has leaves at two distinct depths: [C@1, S@2, C@2]
+  const r = spacetimeRaster(parse('C (S C)'), { fires: 0, mode: 'depth' });
+  assert.equal(r.width, 1);
+  assert.equal(r.height, 3);
+
+  const shallow = px(r, 0, 0);   // depth 1
+  const deep1 = px(r, 0, 1);     // depth 2
+  const deep2 = px(r, 0, 2);     // depth 2
+
+  // A constant-colour depth mode would fail this:
+  assert.notDeepEqual(shallow, deep1,
+    'leaves at different depths must get different colours');
+  // Equal depths must agree:
+  assert.deepEqual(deep1, deep2,
+    'leaves at the same depth must get the same colour');
+  // Pin the actual ramp values so a silent palette change is caught:
+  assert.deepEqual(shallow, [33, 145, 140, 255]);
+  assert.deepEqual(deep1, [253, 231, 37, 255]);
+});
+
 test('the leaf cap bounds the raster for a runaway term', () => {
   const r = spacetimeRaster(climber, { fires: 2000, mode: 'atom', leafCap: 200 });
   assert.ok(r.height <= 200);
