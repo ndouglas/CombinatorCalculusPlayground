@@ -50,7 +50,7 @@ const AXIS = 'rgba(128,134,148,0.95)';
 const AXIS_FAINT = 'rgba(128,134,148,0.26)';
 
 function drawAxes(ctx, box) {
-  ctx.font = '12px ui-monospace, Menlo, monospace';
+  ctx.font = '19px ui-monospace, Menlo, monospace';
   ctx.lineWidth = 1;
   ctx.strokeStyle = AXIS;
   ctx.fillStyle = AXIS;
@@ -68,10 +68,10 @@ function drawAxes(ctx, box) {
     const y = box.y + box.h - (d / box.maxDrop) * box.h;
     ctx.strokeStyle = AXIS;
     ctx.beginPath();
-    ctx.moveTo(box.x - 4, y);
+    ctx.moveTo(box.x - 6, y);
     ctx.lineTo(box.x, y);
     ctx.stroke();
-    ctx.fillText(String(d), box.x - 8, y);
+    ctx.fillText(String(d), box.x - 12, y);
     if (d > 0) {
       ctx.strokeStyle = AXIS_FAINT;
       ctx.beginPath();
@@ -89,14 +89,14 @@ function drawAxes(ctx, box) {
     const x = box.x + (Math.log(Math.max(1, w)) / Math.log(box.maxWidth)) * box.w;
     ctx.beginPath();
     ctx.moveTo(x, box.y + box.h);
-    ctx.lineTo(x, box.y + box.h + 4);
+    ctx.lineTo(x, box.y + box.h + 6);
     ctx.stroke();
-    ctx.fillText(String(w), x, box.y + box.h + 8);
+    ctx.fillText(String(w), x, box.y + box.h + 12);
   }
 
-  ctx.fillText('median late branching width  (log scale)', box.x + box.w / 2, box.y + box.h + 28);
+  ctx.fillText('median late branching width  (log scale)', box.x + box.w / 2, box.y + box.h + 40);
   ctx.save();
-  ctx.translate(box.x - 42, box.y + box.h / 2);
+  ctx.translate(box.x - 58, box.y + box.h / 2);
   ctx.rotate(-Math.PI / 2);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'bottom';
@@ -106,7 +106,7 @@ function drawAxes(ctx, box) {
 
 export function drawAtlas(canvas, points, opts = {}) {
   const ctx = canvas.getContext('2d');
-  const padL = 62, padR = 24, padT = 24, padB = 66;
+  const padL = 84, padR = 28, padT = 28, padB = 84;
   const box = {
     x: padL, y: padT,
     w: canvas.width - padL - padR,
@@ -129,10 +129,10 @@ export function drawAtlas(canvas, points, opts = {}) {
   ctx.setLineDash([]);
 
   ctx.fillStyle = 'rgba(220,60,60,0.85)';
-  ctx.font = '12px ui-monospace, Menlo, monospace';
+  ctx.font = '18px ui-monospace, Menlo, monospace';
   ctx.textAlign = 'right';
   ctx.textBaseline = 'top';
-  ctx.fillText('branching AND descending: empty', box.x + box.w - 8, q.y + 8);
+  ctx.fillText('branching AND descending: empty', box.x + box.w - 8, q.y + 12);
 
   for (const p of points) {
     const { x, y } = project(p, box);
