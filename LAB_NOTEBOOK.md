@@ -6987,3 +6987,13 @@ convenient). (4) Ideonomy at ~267.
   cheap, the sc_mill_eternal analog). (2) The swapmill forced revolution (the
   SCForced version — spine-3 style; then family/no-NF/decider). (3) The champion
   anchor (decide-march scChamp170 into valley form). (4) Ideonomy at ~270.
+
+## 2026-08-10 — Stage 268: the swapmill is eternal
+
+- One hundred fifty autonomous stages (119–268). A round number worth marking: the
+  program has now pinned TWO eternal engines, TEN walls, ONE complete trichotomy, and
+  ONE certified reachability decider, all axiom-clean. Ranking: (1) the swapmill
+  forced revolution (SCForced version of the seven phases — the spine-3 machinery
+  applies verbatim; then family → no-NF → the second trichotomy). (2) The champion
+  anchor (scChamp170 decide-march into valley form — connects the wild term to the
+  pure engine). (3) Ideonomy at ~270.

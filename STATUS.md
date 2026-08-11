@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE RIDDEN REVOLUTION (Stage 267,
+confluence makes even the trees rejoin. THE SWAPMILL IS ETERNAL (Stage 268,
+`sc_swap_eternal`/`sc_swap_unbounded`): the second engine runs
+forever — a fifteen-leaf pure seed with unbounded reachable set; two
+complete engine cores now pinned. THE RIDDEN REVOLUTION (Stage 267,
 `sc_swap_revolution`): the swapmill's full cycle under any rider
 stack — 4j+9 fires, tower +2, junk pair emitted, stack untouched;
 the junk block is a PARKED COPY OF THE DRIVER (rebirth by unparking).

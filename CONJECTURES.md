@@ -6967,3 +6967,14 @@ self-seeding junk," a shape one could plausibly ENUMERATE. The trichotomy pipeli
 (forced → family → no-NF → decider) now has everything it needs at the swapmill's
 core level; the remaining work is the anchor from scChamp170 and the forced/family
 assembly — mill-1's Stages 242–248, replayed on species two.
+
+### Stage 268: THE SWAPMILL IS ETERNAL — `sc_swap_eternal`, `sc_swap_unbounded`
+
+The second engine's eternity, pinned: every revolution count is realized from any
+tower height under any rider stack, and the fifteen-leaf pure seed has an unbounded
+reachable set. Species comparison, now fully formal on both sides: the mill grows 3
+leaves per layer at 6 fires each from a 12-leaf wild seed; the swapmill grows 2
+leaves per revolution of `4j+9` fires from a 15-leaf pure seed whose junk is its own
+driver. C13's evidence is now two complete engine cores. Remaining for the second
+trichotomy: the forced version of the revolution (spine-3 argument — every swapmill
+state is left-deep, same as the mill's), the chain family, and the champion anchor.
