@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE SPECIES CENSUS (Stage 275): the remaining
+confluence makes even the trees rejoin. THE FLOOR PROBE (Stage 276): dig = Cinv EXACTLY
+in 12/15 storm states — the inventory is the realized dig; outliers
+(≤ 2×) localize C14's last gap to the boundary mints, and either an
+S-guard or a κ-multiplicative floor closes it. THE SPECIES CENSUS (Stage 275): the remaining
 champions decompose into the SAME two motifs (swap-driver and mill-K)
 under varied layer grammars — C13 becomes: enumerate motif
 compositions. THE CHAMPION NEVER RESTS (Stage 274,

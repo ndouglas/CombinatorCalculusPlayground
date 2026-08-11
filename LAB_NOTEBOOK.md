@@ -7069,3 +7069,15 @@ decidability case. (2) The assembly statement (what exactly "storms decidable" n
 beyond the floor: normalization-decidability for the 96%, and the three-regime
 partition as a computable classifier — scope it). (3) d159's snapshot-tape species
 (third trichotomy, cheap by pipeline). (4) Ideonomy.
+
+## 2026-08-11 — Stage 276: the floor probe — margin zero, mostly
+
+- The zero margins are the discovery: dig = Cinv exactly in 12/15 cases means the
+  adversary's whole craft is spending the standing stock — nothing more is available.
+  The doubling outliers localize the remaining hardness to boundary mints.
+- One hundred fifty-eight autonomous stages (119–276). Ranking: (1) **the κ-floor
+  attempt**: formalize dig-accounting against duplication-charging — target theorem
+  shape: over any StepsN path, leaf-drop ≤ Cinv(start) + Cinv-spent-in-copies, with
+  copies charged to their gains; start by probing whether ANY state's dig exceeds
+  2·Cinv + 2 (falsification sweep at scale). (2) The assembly scoping (what "storms
+  decidable" needs end to end). (3) d159's snapshot-tape species. (4) Ideonomy.
