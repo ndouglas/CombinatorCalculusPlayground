@@ -1200,9 +1200,21 @@ Create `site/index.html`. The prose below is the deliverable — do not paraphra
   <dt class="tier-probed">Probed (measured, not proved)</dt>
   <dd>
     Storm digs ≤ 26 from peaks of 700–1,500. Median late forced-fraction 0.00 for
-    storms. Dig budget tracking C-redex inventory, median 9. The phase census
-    (≈67% halt, ≈33% branch, ≈0.15% corridor), which the figure above recomputes
-    live in your browser.
+    storms. Dig budget tracking C-redex inventory, median 9.
+  </dd>
+  <dd>
+    The phase census was measured <em>exhaustively</em> at ten leaves — all
+    4,978,688 terms, 800-fire horizon: <strong>67.1%</strong> reach a normal form,
+    <strong>32.8%</strong> branch, <strong>0.147%</strong> (7,311 terms) are
+    corridors. The atlas above does not reproduce that measurement; it runs a
+    cheaper analogue in your browser and lands nearby, at about 66.3 / 33.6 / 0.20.
+    Two honest differences: it samples at random rather than enumerating, and its
+    sampler is not uniform over term shapes (it splits leaf counts evenly, where
+    uniformity over binary trees would weight the split by Catalan numbers); and
+    its horizon is 330 fires rather than 800, so a term that stays forced through
+    330 and branches at 500 counts as a corridor here and did not there. That
+    second difference inflates the corridor column, which is the direction the
+    numbers actually differ.
   </dd>
   <dt class="tier-open">Open</dt>
   <dd>
