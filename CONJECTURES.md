@@ -7328,3 +7328,20 @@ where the stepped component must be joined against arbitrary inner futures — t
 strip lemma's job, and it is already pinned in SCConfluence. The conservation
 theorem, which two stages ago was "the program's next major formalization target,"
 is now one induction away.
+
+### Stage 296: shape stability, and the conservation route sharpened by failure
+
+`sc_steps_S2`/`sc_steps_C2` (axiom-free): two-spines are shape-stable componentwise.
+And an honest accounting: pushing the expansion induction (`step t u → SN u → SN t`)
+through the congruence cases exposed the classical regress — SN does not pull back
+along joins, so "the contractum of a raced-ahead reduct is a reduct of what the
+stepped side sees" gives SN in the WRONG direction. This is precisely why textbook
+conservation goes through residual projection. The analysis bought two things: (a)
+the route is now EXACTLY scoped — project an infinite path over the expansion step,
+with stalls bounded by finite developments; and (b) a decisive simplification found
+on the way: in {S,C}, the residuals of a SINGLE redex remain PAIRWISE DISJOINT
+(descendants of one occurrence never nest — duplication makes siblings), so
+contracting one residual never duplicates another, the residual count strictly
+decreases, and FINITE DEVELOPMENTS IS TRIVIAL for the family the proof needs. The
+remaining machinery is honest but elementary: positions, one-redex residual
+tracking, and the single-step projection lemma. Next-arc scale, cleanly bounded.

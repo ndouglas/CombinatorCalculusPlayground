@@ -7292,3 +7292,15 @@ bounded excess, formally (the assembly's largest missing piece).
   strip lemma (join the stepped component with inner futures, lift contracta along
   the join). Then WN ⟹ SN falls by walking the WN witness backwards from the
   normal form. (2) The 296 review. (3) The assembly statement.
+
+## 2026-08-12 — Stage 296: shape stability; the regress named
+
+- The 3-attempt rule paid off in analysis rather than code: the naive expansion
+  induction fails for the classical reason (SN doesn't pull back), and the failure
+  localized the entire remaining difficulty into one elementary residual argument
+  (disjoint residuals ⟹ trivially finite developments).
+- One hundred seventy-eight autonomous stages (119–296). Ranking: (1) **the residual
+  arc**: positions for SCTerm, one-redex residual tracking across a step, the
+  single-step projection lemma, then sc_sn_expand and WN ⟹ SN. Multi-stage; plan
+  the position representation first (paths as List Bool vs a zipper). (2) The 297
+  review. (3) The assembly statement draft.

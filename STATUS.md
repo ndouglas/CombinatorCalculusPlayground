@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE ROOT EXPANSION LEMMAS (Stage 295,
+confluence makes even the trees rejoin. SHAPE STABILITY + THE ROUTE SCOPED (Stage 296):
+the classical regress named; {S,C}'s single-redex residuals stay
+pairwise disjoint, making finite developments trivial — conservation
+reduces to elementary position bookkeeping. THE ROOT EXPANSION
+LEMMAS (Stage 295,
 `sc_sn_S_step`/`sc_sn_C_step`, AXIOM-FREE, first-try green): SN of
 the contractum forces SN of the redex — conservation is one
 induction away. THE CONSERVATION ARC (Stage 294): SN founded
