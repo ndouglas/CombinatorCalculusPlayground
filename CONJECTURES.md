@@ -7357,3 +7357,18 @@ pinned, evidence exhaustive at n≤10). Every regime now has its decidability
 mechanism formally in place. The program's remaining mathematical content is exactly
 two hypotheses: conservation (elementary, scoped, next arc) and C12-on-storms (hard,
 affine-supported, the prize's true core).
+
+### Stage 299: the finite-development kernel — derivations as data
+
+The conservation proof's last structural need is a MEASURE of remaining development
+work, and Props can't carry measures — so `SCParD` is `SCPar`'s Type-level twin,
+with the FD weight `mu` (duplicating slots count double), the weightless identity,
+step-derivations behind `Nonempty`, and the canonical complete-development
+derivation `toDev`. The battle plan, recorded for the assembly: (1) the dichotomy —
+a step aligned with a derivation strictly decreases `mu` (the aligned constructions
+are written out in the Stage-299 planning notes: contracting a root S-redex converts
+`1 + f + g + 2x` into `f + g + 2x`); an escaping step joins via the triangle at a
+properly-advanced target; (2) `P(u) := every par-predecessor of every subterm of u
+is SN`, by step-accessibility of `u` outer, dichotomy-measure inner, with the
+subterm-jump closed by congruence-lifting the step to `u` itself; (3) `sc_sn_expand`
+from P, then WN ⟹ SN by walking the witness backwards. Three lemmas, all scoped.

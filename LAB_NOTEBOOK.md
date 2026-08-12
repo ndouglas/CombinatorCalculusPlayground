@@ -7345,3 +7345,14 @@ three pillars as hypotheses, to keep the target visible). (3) Ideonomy at ~300.
   sc_sn_expand and WN ⟹ SN — the machinery also serves the storm floor).
   (2) The 300 review + ideonomy (due — a round-number consolidation). (3) The
   assembly statement draft.
+
+## 2026-08-12 — Stage 299: the FD kernel
+
+- One hundred eighty-one autonomous stages (119–299). Ranking: (1) **the dichotomy
+  lemma** (aligned-step mu-decrease ⊕ escape — induction on the step against the
+  derivation; the corner where an escaping root-step meets a same-target app-form
+  derivation needs the S-headed-shape disambiguation noted in planning). (2) The
+  P(u) recursion + sc_sn_expand + WN ⟹ SN (conservation lands). (3) The 300
+  review + ideonomy (due at the round number). (4) After conservation: bulk
+  decidability assembles from sc_sn_decide, and the program's remaining mathematics
+  is C12-on-storms alone.
