@@ -1082,3 +1082,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_steps_C2' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_steps_C2
+
+/-- info: 'sc_sn_decide' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_sn_decide

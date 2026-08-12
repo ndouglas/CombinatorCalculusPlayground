@@ -9319,3 +9319,56 @@ theorem sc_steps_C2 : ∀ {t u : SCTerm}, RS.SC.Steps t u →
     | @appR _ _ g₁ h' =>
         obtain ⟨f', g', hb, hf, hg⟩ := ih f g₁ rfl
         exact ⟨f', g', hb, hf, RS.Steps.tail h' hg⟩
+
+-- ## Stage 298: THE SN-CLASS DECIDER — reachability from any SN term is decidable.
+-- Pillar one, completed modulo conservation itself: strong normalization makes the
+-- reachable set searchable by well-founded recursion over the successor lists. Once
+-- WN ⟹ SN lands, every normalizing term inherits this decider.
+
+/-- Reachability unfolds one step. -/
+theorem scSteps_head_cases {t u : SCTerm} (h : RS.SC.Steps t u) :
+    u = t ∨ ∃ v, SCStep t v ∧ RS.SC.Steps v u := by
+  refine h.rec (motive := fun (a b : SCTerm) _ =>
+    b = a ∨ ∃ v, SCStep a v ∧ RS.SC.Steps v b) ?_ ?_
+  · intro a
+    exact .inl rfl
+  · intro a b c s rest _
+    exact .inr ⟨b, s, rest⟩
+
+/-- Membership-dependent bounded existential decision. -/
+def scDecideBEx : (l : List SCTerm) → (P : SCTerm → Prop) →
+    (∀ v ∈ l, Decidable (P v)) → Decidable (∃ v ∈ l, P v)
+  | [], _, _ => isFalse (by rintro ⟨v, hv, _⟩; exact absurd hv List.not_mem_nil)
+  | v :: rest, P, hd =>
+      match hd v List.mem_cons_self with
+      | isTrue h => isTrue ⟨v, List.mem_cons_self, h⟩
+      | isFalse hn =>
+          match scDecideBEx rest P
+              (fun w hw => hd w (List.mem_cons_of_mem v hw)) with
+          | isTrue hex => isTrue (by
+              obtain ⟨w, hw, hp⟩ := hex
+              exact ⟨w, List.mem_cons_of_mem v hw, hp⟩)
+          | isFalse hn2 => isFalse (by
+              rintro ⟨w, hw, hp⟩
+              rcases List.mem_cons.mp hw with rfl | hw'
+              · exact hn hp
+              · exact hn2 ⟨w, hw', hp⟩)
+
+/-- **Reachability from a strongly normalizing term is decidable.** -/
+def sc_sn_decide (t : SCTerm) (h : SCSN t) : ∀ u, Decidable (RS.SC.Steps t u) :=
+  h.rec (motive := fun t _ => ∀ u, Decidable (RS.SC.Steps t u))
+    (fun t _ ih u =>
+      match (inferInstanceAs (DecidableEq SCTerm)) u t with
+      | isTrue hut =>
+          isTrue (by subst hut; exact @RS.Steps.refl RS.SC u)
+      | isFalse hut =>
+          match scDecideBEx (scSucc t) (fun v => RS.SC.Steps v u)
+              (fun v hv => ih v (scSucc_sound hv) u) with
+          | isTrue hex => isTrue (by
+              obtain ⟨v, hv, hs⟩ := hex
+              exact RS.Steps.tail (scSucc_sound hv) hs)
+          | isFalse hn => isFalse (by
+              intro hs
+              rcases scSteps_head_cases hs with rfl | ⟨v, hv, hs'⟩
+              · exact hut rfl
+              · exact hn ⟨v, scSucc_complete hv, hs'⟩))
