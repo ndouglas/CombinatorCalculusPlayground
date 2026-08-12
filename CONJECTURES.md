@@ -7290,3 +7290,13 @@ only. **The conservation theorem for {S,C} is hereby the program's next major
 formalization target** — the SCPar machinery in SCConfluence.lean (parallel
 reduction, triangle, diamond) is exactly the classical toolbox for it, and its
 payoff is the single largest piece of the decidability assembly.
+
+### Stage 293: THE CLIMB PRINCIPLE — four theorems cover the corridor phase
+
+`sc_climb_eternal`: the pump principle's growing twin — a graded fixed point modulo
+emission climbs forever. The swapmill re-derives in one line. Final count for the
+corridor phase's dynamics: TWO principles (pump, climb) over TWO family laws (swap
+driver, mill core). Every eternal machine found or predicted — mill, swapmill,
+metronome, tenstroke, d159, the light mill, the heavy climbers — is an instance of
+four generic theorems. C13's mature statement is within sight: every corridor is a
+climb-or-pump instance of a slot-parametric core family.

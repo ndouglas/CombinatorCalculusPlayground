@@ -7269,3 +7269,10 @@ bounded excess, formally (the assembly's largest missing piece).
   non-erasing conservation; multi-stage — plan first: uniform-normalization/
   perpetuality route vs. Church's λI route). (2) The 293 review. (3) Purity v2
   decidable shape-check. (4) The climb principle.
+
+## 2026-08-12 — Stage 293: the climb principle — four theorems, one phase
+
+- One hundred seventy-five autonomous stages (119–293). Ranking: (1) **the
+  conservation arc** (WN ⟹ SN via SCPar — the assembly's largest piece; plan the
+  route first: perpetuality vs λI-conservation). (2) The 294 review. (3) Purity v2
+  decidable shape-check. (4) Mill-family eternal via the climb principle (instance).
