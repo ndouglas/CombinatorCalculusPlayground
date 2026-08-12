@@ -7317,3 +7317,14 @@ built from SN parts whose interactions are again root fires of smaller standing 
 suggesting an induction on a measure mixing `Acc` on parts with redex counts. Route
 (c) is chosen FIRST (walls available, no new theory; fall back to (b) if the
 critical lemma resists — 3-attempt rule applies).
+
+### Stage 295: THE ROOT EXPANSION LEMMAS — conservation's heart, first-try green
+
+`sc_sn_S_step` and `sc_sn_C_step`, axiom-free: SN of the contractum forces SN of the
+redex. The route-(c) insight held exactly as designed — inner phases die inside SN
+components, and any root fire lands on a reduct of the contractum. What remains for
+WN ⟹ SN is the congruence expansion (`step a a'` with `SN (a'·b)` ⟹ `SN (a·b)`),
+where the stepped component must be joined against arbitrary inner futures — the
+strip lemma's job, and it is already pinned in SCConfluence. The conservation
+theorem, which two stages ago was "the program's next major formalization target,"
+is now one induction away.

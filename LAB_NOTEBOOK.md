@@ -7283,3 +7283,12 @@ bounded excess, formally (the assembly's largest missing piece).
   lemma probe: is there a small counterexample shape to "SN parts + SN contractum ⟹
   SN whole"? (probe reduction graphs of app-compositions of SN terms); then attempt
   the lemma. (2) The 295 review. (3) Purity v2 shape-check.
+
+## 2026-08-12 — Stage 295: the expansion lemmas — one induction from conservation
+
+- One hundred seventy-seven autonomous stages (119–295). Ranking: (1) **the
+  expansion induction**: step t u → SN u → SN t, by induction on the step; root
+  cases are the new lemmas; appL/appR cases need a generic app-SN lemma fed by the
+  strip lemma (join the stepped component with inner futures, lift contracta along
+  the join). Then WN ⟹ SN falls by walking the WN witness backwards from the
+  normal form. (2) The 296 review. (3) The assembly statement.
