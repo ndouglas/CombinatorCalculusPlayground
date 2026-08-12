@@ -9085,3 +9085,53 @@ theorem sc_swap_eternal' : ∀ (r k : Nat) (zs : List SCTerm),
       rw [show 2 * k + 2 = 2 * (k + 1) from by omega] at h2
       exact h2) r k zs
   exact h
+
+-- ## Stage 294: THE CONSERVATION ARC OPENS — strong normalization, founded.
+-- WN = SN for {S,C} (the non-erasing conservation theorem) is the assembly's
+-- largest remaining piece. Foundations first: SN as accessibility, its subterm
+-- laws, and SN ⟹ WN. The route decision is recorded in the ledger.
+
+/-- Strong normalization: every reduction from `t` terminates. -/
+def SCSN (t : SCTerm) : Prop := Acc (fun u v => SCStep v u) t
+
+/-- Atoms are strongly normalizing. -/
+theorem scSN_S : SCSN .S := Acc.intro _ (fun _ h => nomatch h)
+theorem scSN_C : SCSN .C := Acc.intro _ (fun _ h => nomatch h)
+
+/-- SN passes to the function part. -/
+theorem scSN_appL : ∀ {t : SCTerm}, SCSN t → ∀ a b, t = .app a b → SCSN a := by
+  intro t ht
+  induction ht with
+  | intro x hx ih =>
+      intro a b hx'
+      subst hx'
+      exact Acc.intro a (fun a' ha' =>
+        ih (.app a' b) (SCStep.appL ha') a' b rfl)
+
+/-- SN passes to the argument part. -/
+theorem scSN_appR : ∀ {t : SCTerm}, SCSN t → ∀ a b, t = .app a b → SCSN b := by
+  intro t ht
+  induction ht with
+  | intro x hx ih =>
+      intro a b hx'
+      subst hx'
+      exact Acc.intro b (fun b' hb' =>
+        ih (.app a b') (SCStep.appR hb') a b' rfl)
+
+/-- Strong normalization yields a normal form. -/
+theorem scSN_wn : ∀ {t : SCTerm}, SCSN t →
+    ∃ n, RS.SC.Steps t n ∧ ∀ v, ¬ RS.SC.step n v := by
+  intro t ht
+  induction ht with
+  | intro x hx ih =>
+      cases hc : scSucc x with
+      | nil =>
+          refine ⟨x, @RS.Steps.refl RS.SC x, ?_⟩
+          intro v hv
+          have hm := scSucc_complete hv
+          rw [hc] at hm
+          exact absurd hm List.not_mem_nil
+      | cons u rest =>
+          have hstep : SCStep x u := scSucc_sound (by rw [hc]; exact List.mem_cons_self)
+          obtain ⟨n, hn, hnf⟩ := ih u hstep
+          exact ⟨n, RS.Steps.tail hstep hn, hnf⟩
