@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE GRID CENSUS (Stage 288): 44 synthesized
+confluence makes even the trees rejoin. PURITY V2 + THE PUMP FAMILY (Stage 289):
+left-heavy pure-C slots ignite (completable spines), starved S-slots
+survive, and TWO new pumps surfaced (periods ~8 and ~19) — fixed-
+period engines are a family. THE GRID CENSUS (Stage 288): 44 synthesized
 seeds — eternal engines exist EXACTLY at pure-C slots (six engines,
 five climbers, one pump); the purity law registered; the corridor
 phase looks like a Catalan-indexed CATALOG. THE MILL FAMILY LAW (Stage 287,

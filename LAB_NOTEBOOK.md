@@ -7230,3 +7230,13 @@ bounded excess, formally (the assembly's largest missing piece).
   probe at depth (4-leaf slots, longer marches — does any S-slot survive, does any
   new pump appear?). (2) The light mill's laws (mill × C — likely the cheapest
   climber). (3) Bulk-C12 formal scoping. (4) The 290 review.
+
+## 2026-08-12 — Stage 289: purity v2; the pump family
+
+- Falsification is the program's best tool again: v1's failures are themselves
+  lawful (completable spines ignite; starved S's survive) — the classification
+  gains precision with each broken guess.
+- One hundred seventy-one autonomous stages (119–289). Ranking: (1) **the fast pump**
+  (swap × C((CC)C), p~8): verify its core fixed point and pin it — if the metronome
+  method transfers, pumps are a pipeline class of their own. (2) The 290 review.
+  (3) Bulk-C12 formal scoping. (4) Purity v2 as a decidable shape-check (probe).

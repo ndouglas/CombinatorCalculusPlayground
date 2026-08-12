@@ -7232,3 +7232,20 @@ eventually ignites. If the purity law holds, the engine space is indexed by bina
 trees (Catalan-countable), each slot yielding its climber (or, at exactly one known
 point, a pump), each engine decidable by the pipeline. The corridor phase would then
 be, in the strongest sense, a CATALOG.
+
+### Stage 289: the purity law falsified both ways — and the pump family opens
+
+The 4-leaf sweep (160 seeds) broke the purity law in both directions, instructively.
+Pure-C slots that BRANCH: exactly the left-heavy ones (`(C C)(C C)`, `((C (C C)) C)`,
+`(((C C) C) C)`) — they are completable spines (a C-headed two-spine slot fires the
+moment the protocol applies it: `scIsC3` again, now as an ignition criterion).
+S-slots that RUN: several, including a +4 climber and a fast-grower — an S survives
+if the protocol never feeds it a third argument (argument starvation). **Purity law
+v2, registered**: slot compatibility is SHAPE-based — the slot must never complete a
+redex in any position the protocol places it (applied to the tower: needs
+`scIsC3 X = 0` and not an S-two-spine; as payload: needs its applications to stay
+starved). And the discovery: TWO NEW PUMPS — swap × `C ((C C) C)` at period ~8 (twice
+as fast as the metronome) and swap × `C (C (C C))` at period ~19. The pump class is a
+FAMILY, not a point; fixed-period eternal machines populate the grid. Also: a new
+heavy climber (mill × `C (C (C C))`, +10/revolution). The catalog grows, the
+classifying criteria sharpen, and every new engine is pipeline-decidable on arrival.
