@@ -7262,3 +7262,14 @@ fixed-point-modulo-emission shape — `StepsN p CORE (CORE · junk)` — which i
 the easiest possible input to the trichotomy pipeline. The corridor catalog now
 holds: three fully-portraited engines, two family laws covering two driver motifs,
 two pinned pumps, and a purity-v2 shape criterion under test.
+
+### Stage 291: THE PUMP PRINCIPLE — the class closes
+
+`sc_pump_eternal` ([propext] only): any core with a fixed-point-modulo-emission law
+pumps forever — the tenstroke's eternity followed in one line, and every future pump
+inherits it. The pump class is now methodologically CLOSED: grid prediction finds
+them, core extraction + mechanical emission pins them, the principle makes them
+eternal, and the metronome-style trichotomy (Stage 286's one-stage pattern) gives
+each its full portrait on demand. Between the two family laws (climbers) and the
+pump principle (pumps), the corridor phase's known dynamics are covered by exactly
+THREE generic theorems — which is the shape C13 needed to be true in.

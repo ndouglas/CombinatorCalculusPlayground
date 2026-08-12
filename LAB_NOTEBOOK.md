@@ -7249,3 +7249,11 @@ bounded excess, formally (the assembly's largest missing piece).
   (3) Purity v2 as a decidable shape-check. (4) The pump-family fixed-point theorem
   (generic: any core with StepsN p CORE (CORE·zs) pumps forever — one lemma, all
   pumps eternal).
+
+## 2026-08-12 — Stage 291: the pump principle
+
+- One hundred seventy-three autonomous stages (119–291). Ranking: (1) the 292
+  review. (2) Bulk-C12 formal scoping (the assembly's largest missing piece).
+  (3) Purity v2 as a decidable shape-check. (4) The climb principle (the analog of
+  the pump principle for tower-growing cores — one theorem for all climbers, from
+  the two family laws).

@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE TENSTROKE (Stage 290, `sc_ten_law`,
+confluence makes even the trees rejoin. THE PUMP PRINCIPLE (Stage 291,
+`sc_pump_eternal`, [propext]): one theorem makes every pump eternal —
+the corridor phase's known dynamics are covered by THREE generic
+theorems. THE TENSTROKE (Stage 290, `sc_ten_law`,
 axiom-free): the second pump pinned — period ten, four riders per
 stroke; the metronome method is a production process. PURITY V2 +
 THE PUMP FAMILY (Stage 289):
