@@ -9042,3 +9042,46 @@ theorem sc_ten_eternal : ∀ (r : Nat) (zs : List SCTerm),
     RS.SC.Steps (scAppList scTenCore zs)
       (scAppList scTenCore (scRep r [.C, .C, scTenJ, .app .C .C] ++ zs)) :=
   sc_pump_eternal scTenCore 10 [.C, .C, scTenJ, .app .C .C] sc_ten_law
+
+-- ## Stage 293: THE CLIMB PRINCIPLE — one theorem, every climber eternal.
+-- The pump principle's growing twin: a family of cores, each reaching the next with
+-- a fixed emission, climbs forever under any riders. The mill and the swapmill
+-- become instances of ONE statement; the corridor phase's known dynamics are now
+-- two principles over two family laws.
+
+/-- **THE CLIMB PRINCIPLE**: a graded fixed point modulo emission climbs forever. -/
+theorem sc_climb_eternal (core : Nat → SCTerm) (p : Nat → Nat) (em : List SCTerm)
+    (hlaw : ∀ k, RS.SC.StepsN (p k) (core k) (scAppList (core (k + 1)) em)) :
+    ∀ (r k : Nat) (zs : List SCTerm),
+      RS.SC.Steps (scAppList (core k) zs)
+        (scAppList (core (k + r)) (scRep r em ++ zs))
+  | 0, k, zs => @RS.Steps.refl RS.SC _
+  | r + 1, k, zs => by
+      have h1 : RS.SC.StepsN (p k) (scAppList (core k) zs)
+          (scAppList (core (k + 1)) (em ++ zs)) := by
+        have h := scStepsN_appList zs (hlaw k)
+        rw [← scAppList_append] at h
+        exact h
+      have h2 := sc_climb_eternal core p em hlaw r (k + 1) (em ++ zs)
+      have h := RS.Steps.trans (RS.StepsN.toSteps h1) h2
+      rw [show k + 1 + r = k + (r + 1) from by omega] at h
+      rw [show scRep (r + 1) em ++ zs = scRep r em ++ (em ++ zs) from by
+        show (em ++ scRep r em) ++ zs = scRep r em ++ (em ++ zs)
+        rw [scRep_shift r em zs, ← List.append_assoc]]
+      exact h
+
+/-- **THE SWAPMILL CLIMBS, by the principle** — one line. -/
+theorem sc_swap_eternal' : ∀ (r k : Nat) (zs : List SCTerm),
+    RS.SC.Steps
+      (scAppList (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * k) scSwapB)) zs)
+      (scAppList (.app (.app (.app .S scSwapA) .C) (scSwapT (2 * (k + r)) scSwapB))
+        (scRep r [.app .C .C, scSwapJ1] ++ zs)) := by
+  intro r k zs
+  have h := sc_climb_eternal
+    (fun k => .app (.app (.app .S scSwapA) .C) (scSwapT (2 * k) scSwapB))
+    (fun k => 4 * k + 9) [.app .C .C, scSwapJ1]
+    (fun k => by
+      have h2 := sc_swap_revolution k []
+      rw [show 2 * k + 2 = 2 * (k + 1) from by omega] at h2
+      exact h2) r k zs
+  exact h

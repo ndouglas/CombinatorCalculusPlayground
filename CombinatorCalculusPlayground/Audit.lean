@@ -1061,3 +1061,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_ten_eternal' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_ten_eternal
+
+/-- info: 'sc_climb_eternal' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_climb_eternal
