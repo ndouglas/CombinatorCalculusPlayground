@@ -7249,3 +7249,16 @@ as fast as the metronome) and swap × `C (C (C C))` at period ~19. The pump clas
 FAMILY, not a point; fixed-period eternal machines populate the grid. Also: a new
 heavy climber (mill × `C (C (C C))`, +10/revolution). The catalog grows, the
 classifying criteria sharpen, and every new engine is pipeline-decidable on arrival.
+
+### Stage 290: THE TENSTROKE — pumps are a pinnable class
+
+`sc_ten_law` (axiom-free): the second fixed-period engine — a twenty-six-leaf core
+returning exactly every TEN forced fires, emitting four riders per stroke. The
+metronome method (locate the recurring core, verify the bare fixed point, emit
+mechanically) transferred without modification: pumps are now a CLASS with a
+production process, not curiosities. Taxonomy note: pump periods (10, 17, ~19) and
+emission signatures (pairs vs quadruples) vary freely; what unifies them is the
+fixed-point-modulo-emission shape — `StepsN p CORE (CORE · junk)` — which is also
+the easiest possible input to the trichotomy pipeline. The corridor catalog now
+holds: three fully-portraited engines, two family laws covering two driver motifs,
+two pinned pumps, and a purity-v2 shape criterion under test.

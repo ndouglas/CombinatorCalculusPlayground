@@ -7240,3 +7240,12 @@ bounded excess, formally (the assembly's largest missing piece).
   (swap × C((CC)C), p~8): verify its core fixed point and pin it — if the metronome
   method transfers, pumps are a pipeline class of their own. (2) The 290 review.
   (3) Bulk-C12 formal scoping. (4) Purity v2 as a decidable shape-check (probe).
+
+## 2026-08-12 — Stage 290: the tenstroke
+
+- One hundred seventy-two autonomous stages (119–290). Ranking: (1) the 291 review
+  (session cadence). (2) Bulk-C12 formal scoping (the assembly's largest missing
+  piece — what exactly does "the normalizing 96% has bounded excess" need?).
+  (3) Purity v2 as a decidable shape-check. (4) The pump-family fixed-point theorem
+  (generic: any core with StepsN p CORE (CORE·zs) pumps forever — one lemma, all
+  pumps eternal).
