@@ -7337,3 +7337,11 @@ tracking across one step, the projection lemma; then sc_sn_expand, then WN ⟹ S
 note the SAME machinery is the storm floor's copy-tracking — build it once, spend it
 twice. (2) The assembly statement draft (the final theorem's exact shape, with the
 three pillars as hypotheses, to keep the target visible). (3) Ideonomy at ~300.
+
+## 2026-08-12 — Stage 298: the SN-class decider
+
+- One hundred eighty autonomous stages (119–298). Ranking: (1) **the residual arc**
+  (positions as List Bool, descendants across one step, projection; then
+  sc_sn_expand and WN ⟹ SN — the machinery also serves the storm floor).
+  (2) The 300 review + ideonomy (due — a round-number consolidation). (3) The
+  assembly statement draft.

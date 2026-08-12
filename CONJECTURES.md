@@ -7345,3 +7345,15 @@ contracting one residual never duplicates another, the residual count strictly
 decreases, and FINITE DEVELOPMENTS IS TRIVIAL for the family the proof needs. The
 remaining machinery is honest but elementary: positions, one-redex residual
 tracking, and the single-step projection lemma. Next-arc scale, cleanly bounded.
+
+### Stage 298: THE SN-CLASS DECIDER — every regime has its mechanism
+
+`sc_sn_decide`: reachability from any strongly normalizing term is decidable, by
+well-founded recursion over the successor lists. The assembly's formal state, in one
+line each: BULK — decidable modulo conservation (WN ⟹ SN, one residual argument
+out); CORRIDORS — decidable outright (three portraits, two family laws, two
+principles, prediction-capable grid); STORMS — decidable modulo C12 (`sc_c12_decides`
+pinned, evidence exhaustive at n≤10). Every regime now has its decidability
+mechanism formally in place. The program's remaining mathematical content is exactly
+two hypotheses: conservation (elementary, scoped, next arc) and C12-on-storms (hard,
+affine-supported, the prize's true core).

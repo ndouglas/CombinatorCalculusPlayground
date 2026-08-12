@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. SHAPE STABILITY + THE ROUTE SCOPED (Stage 296):
+confluence makes even the trees rejoin. THE SN-CLASS DECIDER (Stage 298,
+`sc_sn_decide`): reachability from any SN term is decidable — every
+regime now has its mechanism formally in place; the program's
+remaining mathematics is exactly two hypotheses (conservation, C12).
+SHAPE STABILITY + THE ROUTE SCOPED (Stage 296):
 the classical regress named; {S,C}'s single-redex residuals stay
 pairwise disjoint, making finite developments trivial — conservation
 reduces to elementary position bookkeeping. THE ROOT EXPANSION
