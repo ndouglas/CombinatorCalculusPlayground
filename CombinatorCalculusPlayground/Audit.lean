@@ -1076,3 +1076,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_sn_C_step' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_sn_C_step
+
+/-- info: 'sc_steps_S2' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_steps_S2
+
+/-- info: 'sc_steps_C2' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_steps_C2

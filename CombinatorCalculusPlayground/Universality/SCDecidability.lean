@@ -9270,3 +9270,52 @@ theorem sc_sn_C_step (f g x : SCTerm)
   · intro f' g' x' hf' hg' hx'
     exact scSN_steps h
       (scSteps_congApp (scSteps_congApp hf' hx') hg')
+
+-- ## Stage 296: SHAPE STABILITY — two-spines stay two-spines, componentwise.
+-- Needed by every conservation route: a two-spine's reducts are two-spines with the
+-- same head and componentwise-reduced parts, so a contractum-of-reducts is always a
+-- reduct of the contractum.
+
+/-- Reducts of an S-two-spine are S-two-spines, componentwise. -/
+theorem sc_steps_S2 : ∀ {t u : SCTerm}, RS.SC.Steps t u →
+    ∀ f g, t = .app (.app .S f) g →
+    ∃ f' g', u = .app (.app .S f') g' ∧ RS.SC.Steps f f' ∧ RS.SC.Steps g g' := by
+  intro t u h
+  refine h.rec (motive := fun (a b : SCTerm) _ => ∀ f g, a = .app (.app .S f) g →
+    ∃ f' g', b = .app (.app .S f') g' ∧ RS.SC.Steps f f' ∧ RS.SC.Steps g g') ?_ ?_
+  · intro a f g rfl
+    exact ⟨f, g, rfl, @RS.Steps.refl RS.SC f, @RS.Steps.refl RS.SC g⟩
+  · intro a b c s _ ih f g ha
+    subst ha
+    cases s with
+    | appL h' =>
+        cases h' with
+        | appL h'' => cases h''
+        | @appR _ _ f₁ h'' =>
+            obtain ⟨f', g', hb, hf, hg⟩ := ih f₁ g rfl
+            exact ⟨f', g', hb, RS.Steps.tail h'' hf, hg⟩
+    | @appR _ _ g₁ h' =>
+        obtain ⟨f', g', hb, hf, hg⟩ := ih f g₁ rfl
+        exact ⟨f', g', hb, hf, RS.Steps.tail h' hg⟩
+
+/-- Reducts of a C-two-spine are C-two-spines, componentwise. -/
+theorem sc_steps_C2 : ∀ {t u : SCTerm}, RS.SC.Steps t u →
+    ∀ f g, t = .app (.app .C f) g →
+    ∃ f' g', u = .app (.app .C f') g' ∧ RS.SC.Steps f f' ∧ RS.SC.Steps g g' := by
+  intro t u h
+  refine h.rec (motive := fun (a b : SCTerm) _ => ∀ f g, a = .app (.app .C f) g →
+    ∃ f' g', b = .app (.app .C f') g' ∧ RS.SC.Steps f f' ∧ RS.SC.Steps g g') ?_ ?_
+  · intro a f g rfl
+    exact ⟨f, g, rfl, @RS.Steps.refl RS.SC f, @RS.Steps.refl RS.SC g⟩
+  · intro a b c s _ ih f g ha
+    subst ha
+    cases s with
+    | appL h' =>
+        cases h' with
+        | appL h'' => cases h''
+        | @appR _ _ f₁ h'' =>
+            obtain ⟨f', g', hb, hf, hg⟩ := ih f₁ g rfl
+            exact ⟨f', g', hb, RS.Steps.tail h'' hf, hg⟩
+    | @appR _ _ g₁ h' =>
+        obtain ⟨f', g', hb, hf, hg⟩ := ih f g₁ rfl
+        exact ⟨f', g', hb, hf, RS.Steps.tail h' hg⟩
