@@ -1070,3 +1070,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scSN_wn' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scSN_wn
+
+/-- info: 'sc_sn_S_step' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_sn_S_step
+
+/-- info: 'sc_sn_C_step' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_sn_C_step

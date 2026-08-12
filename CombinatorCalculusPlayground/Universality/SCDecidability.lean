@@ -9135,3 +9135,138 @@ theorem scSN_wn : ∀ {t : SCTerm}, SCSN t →
           have hstep : SCStep x u := scSucc_sound (by rw [hc]; exact List.mem_cons_self)
           obtain ⟨n, hn, hnf⟩ := ih u hstep
           exact ⟨n, RS.Steps.tail hstep hn, hnf⟩
+
+-- ## Stage 295: THE ROOT EXPANSION LEMMAS — conservation's heart.
+-- An infinite path from a root redex either stays inside the components forever
+-- (impossible when they are SN) or eventually fires the root — landing on a REDUCT
+-- of the contractum, since the components only stepped in the meantime. So strong
+-- normalization of the contractum forces strong normalization of the redex. These
+-- are the {S,C} analogs of the λI conservation kernel.
+
+/-- SN is preserved by one step. -/
+theorem scSN_step {t u : SCTerm} (h : SCSN t) (s : SCStep t u) : SCSN u :=
+  h.inv s
+
+/-- SN is preserved along reductions. -/
+theorem scSN_steps : ∀ {t u : SCTerm}, SCSN t → RS.SC.Steps t u → SCSN u := by
+  intro t u ht h
+  refine h.rec (motive := fun (a b : SCTerm) _ => SCSN a → SCSN b) ?_ ?_ ht
+  · intro _ h
+    exact h
+  · intro a b c s _ ih ha
+    exact ih (scSN_step ha s)
+
+/-- One step embeds into a reduction. -/
+theorem scStep_toSteps {t u : SCTerm} (s : SCStep t u) : RS.SC.Steps t u :=
+  RS.Steps.tail s (@RS.Steps.refl RS.SC u)
+
+/-- **THE S-EXPANSION CORE**: SN components whose every joint future contractum is
+SN make the S-redex SN. -/
+theorem sc_sn_S_crit : ∀ (f g x : SCTerm),
+    SCSN f → SCSN g → SCSN x →
+    (∀ f' g' x', RS.SC.Steps f f' → RS.SC.Steps g g' → RS.SC.Steps x x' →
+      SCSN (.app (.app f' x') (.app g' x'))) →
+    SCSN (.app (.app (.app .S f) g) x) := by
+  intro f g x hf
+  induction hf generalizing g x with
+  | intro f hfacc ihf =>
+      intro hg
+      induction hg generalizing x with
+      | intro g hgacc ihg =>
+          intro hx
+          induction hx with
+          | intro x hxacc ihx =>
+              intro hcon
+              refine Acc.intro _ (fun u hu => ?_)
+              cases hu with
+              | S_red _ _ _ =>
+                  exact hcon f g x (@RS.Steps.refl RS.SC f)
+                    (@RS.Steps.refl RS.SC g) (@RS.Steps.refl RS.SC x)
+              | appL h' =>
+                  cases h' with
+                  | appL h'' =>
+                      cases h'' with
+                      | appL h3 => cases h3
+                      | appR h3 =>
+                          exact ihf _ h3 g x (Acc.intro g hgacc)
+                            (Acc.intro x hxacc)
+                            (fun f' g' x' hf' hg' hx' =>
+                              hcon f' g' x'
+                                (RS.Steps.tail h3 hf') hg' hx')
+                  | appR h'' =>
+                      exact ihg _ h'' x (Acc.intro x hxacc)
+                        (fun f' g' x' hf' hg' hx' =>
+                          hcon f' g' x' hf'
+                            (RS.Steps.tail h'' hg') hx')
+              | appR h' =>
+                  exact ihx _ h'
+                    (fun f' g' x' hf' hg' hx' =>
+                      hcon f' g' x' hf' hg'
+                        (RS.Steps.tail h' hx'))
+
+/-- **THE C-EXPANSION CORE.** -/
+theorem sc_sn_C_crit : ∀ (f g x : SCTerm),
+    SCSN f → SCSN g → SCSN x →
+    (∀ f' g' x', RS.SC.Steps f f' → RS.SC.Steps g g' → RS.SC.Steps x x' →
+      SCSN (.app (.app f' x') g')) →
+    SCSN (.app (.app (.app .C f) g) x) := by
+  intro f g x hf
+  induction hf generalizing g x with
+  | intro f hfacc ihf =>
+      intro hg
+      induction hg generalizing x with
+      | intro g hgacc ihg =>
+          intro hx
+          induction hx with
+          | intro x hxacc ihx =>
+              intro hcon
+              refine Acc.intro _ (fun u hu => ?_)
+              cases hu with
+              | C_red _ _ _ =>
+                  exact hcon f g x (@RS.Steps.refl RS.SC f)
+                    (@RS.Steps.refl RS.SC g) (@RS.Steps.refl RS.SC x)
+              | appL h' =>
+                  cases h' with
+                  | appL h'' =>
+                      cases h'' with
+                      | appL h3 => cases h3
+                      | appR h3 =>
+                          exact ihf _ h3 g x (Acc.intro g hgacc)
+                            (Acc.intro x hxacc)
+                            (fun f' g' x' hf' hg' hx' =>
+                              hcon f' g' x'
+                                (RS.Steps.tail h3 hf') hg' hx')
+                  | appR h'' =>
+                      exact ihg _ h'' x (Acc.intro x hxacc)
+                        (fun f' g' x' hf' hg' hx' =>
+                          hcon f' g' x' hf'
+                            (RS.Steps.tail h'' hg') hx')
+              | appR h' =>
+                  exact ihx _ h'
+                    (fun f' g' x' hf' hg' hx' =>
+                      hcon f' g' x' hf' hg'
+                        (RS.Steps.tail h' hx'))
+
+/-- **S-EXPANSION**: SN of the contractum forces SN of the redex. -/
+theorem sc_sn_S_step (f g x : SCTerm)
+    (h : SCSN (.app (.app f x) (.app g x))) :
+    SCSN (.app (.app (.app .S f) g) x) := by
+  refine sc_sn_S_crit f g x ?_ ?_ ?_ ?_
+  · exact scSN_appL (scSN_appL h _ _ rfl) f x rfl
+  · exact scSN_appL (scSN_appR h _ _ rfl) g x rfl
+  · exact scSN_appR (scSN_appL h _ _ rfl) f x rfl
+  · intro f' g' x' hf' hg' hx'
+    exact scSN_steps h
+      (scSteps_congApp (scSteps_congApp hf' hx') (scSteps_congApp hg' hx'))
+
+/-- **C-EXPANSION**: SN of the contractum forces SN of the redex. -/
+theorem sc_sn_C_step (f g x : SCTerm)
+    (h : SCSN (.app (.app f x) g)) :
+    SCSN (.app (.app (.app .C f) g) x) := by
+  refine sc_sn_C_crit f g x ?_ ?_ ?_ ?_
+  · exact scSN_appL (scSN_appL h _ _ rfl) f x rfl
+  · exact scSN_appR h _ _ rfl
+  · exact scSN_appR (scSN_appL h _ _ rfl) f x rfl
+  · intro f' g' x' hf' hg' hx'
+    exact scSN_steps h
+      (scSteps_congApp (scSteps_congApp hf' hx') hg')
