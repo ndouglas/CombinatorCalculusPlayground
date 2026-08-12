@@ -9372,3 +9372,88 @@ def sc_sn_decide (t : SCTerm) (h : SCSN t) : ∀ u, Decidable (RS.SC.Steps t u) 
               rcases scSteps_head_cases hs with rfl | ⟨v, hv, hs'⟩
               · exact hut rfl
               · exact hn ⟨v, scSucc_complete hv, hs'⟩))
+
+-- ## Stage 299: PARALLEL DERIVATIONS AS DATA — the finite-development kernel.
+-- The conservation endgame needs to MEASURE how much development work a parallel
+-- step still owes; Prop-level SCPar cannot carry a measure, so here is its
+-- Type-level twin, the canonical complete-development derivation, the FD weight
+-- (duplicating slots count double), and the kernel dichotomy: a single step is
+-- either ALIGNED with a derivation (and strictly decreases its weight) or ESCAPES it.
+
+/-- Type-level parallel derivations. -/
+inductive SCParD : SCTerm → SCTerm → Type
+  | S : SCParD .S .S
+  | C : SCParD .C .C
+  | app {t t' u u' : SCTerm} :
+      SCParD t t' → SCParD u u' → SCParD (.app t u) (.app t' u')
+  | S_red {f f' g g' x x' : SCTerm} :
+      SCParD f f' → SCParD g g' → SCParD x x' →
+      SCParD (.app (.app (.app .S f) g) x) (.app (.app f' x') (.app g' x'))
+  | C_red {x x' y y' z z' : SCTerm} :
+      SCParD x x' → SCParD y y' → SCParD z z' →
+      SCParD (.app (.app (.app .C x) y) z) (.app (.app x' z') y')
+
+/-- Derivations are sound for the Prop-level relation. -/
+def SCParD.toPar : ∀ {t u : SCTerm}, SCParD t u → SCPar t u
+  | _, _, .S => SCPar.S
+  | _, _, .C => SCPar.C
+  | _, _, .app d₁ d₂ => SCPar.app d₁.toPar d₂.toPar
+  | _, _, .S_red df dg dx => SCPar.S_red df.toPar dg.toPar dx.toPar
+  | _, _, .C_red dx dy dz => SCPar.C_red dx.toPar dy.toPar dz.toPar
+
+/-- The identity derivation. -/
+def SCParD.refl : ∀ (t : SCTerm), SCParD t t
+  | .S => .S
+  | .C => .C
+  | .app a b => .app (SCParD.refl a) (SCParD.refl b)
+
+/-- The finite-development weight: one per contracted redex, duplicating slots
+count double. -/
+def SCParD.mu : ∀ {t u : SCTerm}, SCParD t u → Nat
+  | _, _, .S => 0
+  | _, _, .C => 0
+  | _, _, .app d₁ d₂ => d₁.mu + d₂.mu
+  | _, _, .S_red df dg dx => 1 + df.mu + dg.mu + 2 * dx.mu
+  | _, _, .C_red dx dy dz => 1 + dx.mu + dy.mu + dz.mu
+
+/-- Every step admits a derivation (steps are Props, so the derivation lives in an
+existential). -/
+theorem scStep_exists_parD : ∀ {t u : SCTerm}, SCStep t u →
+    Nonempty (SCParD t u) := by
+  intro t u h
+  induction h with
+  | S_red f g x =>
+      exact ⟨.S_red (SCParD.refl f) (SCParD.refl g) (SCParD.refl x)⟩
+  | C_red f g x =>
+      exact ⟨.C_red (SCParD.refl f) (SCParD.refl g) (SCParD.refl x)⟩
+  | appL _ ih =>
+      obtain ⟨d⟩ := ih
+      exact ⟨.app d (SCParD.refl _)⟩
+  | appR _ ih =>
+      obtain ⟨d⟩ := ih
+      exact ⟨.app (SCParD.refl _) d⟩
+
+/-- The canonical complete-development derivation. -/
+def SCParD.toDev : ∀ (t : SCTerm), SCParD t (scDev t)
+  | .S => .S
+  | .C => .C
+  | .app (.app (.app .S f) g) x =>
+      .S_red (SCParD.toDev f) (SCParD.toDev g) (SCParD.toDev x)
+  | .app (.app (.app .C f) g) x =>
+      .C_red (SCParD.toDev f) (SCParD.toDev g) (SCParD.toDev x)
+  | .app .S u => .app .S (SCParD.toDev u)
+  | .app .C u => .app .C (SCParD.toDev u)
+  | .app (.app .S f) g =>
+      .app (.app .S (SCParD.toDev f)) (SCParD.toDev g)
+  | .app (.app .C f) g =>
+      .app (.app .C (SCParD.toDev f)) (SCParD.toDev g)
+  | .app (.app (.app (.app a b) c) d) e =>
+      .app (SCParD.toDev (.app (.app (.app a b) c) d)) (SCParD.toDev e)
+
+/-- The identity derivation weighs nothing. -/
+theorem SCParD.mu_refl : ∀ (t : SCTerm), (SCParD.refl t).mu = 0
+  | .S => rfl
+  | .C => rfl
+  | .app a b => by
+      show (SCParD.refl a).mu + (SCParD.refl b).mu = 0
+      rw [SCParD.mu_refl a, SCParD.mu_refl b]

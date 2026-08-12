@@ -1085,3 +1085,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_sn_decide' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_sn_decide
+
+/-- info: 'SCParD.toDev' depends on axioms: [propext] -/
+#guard_msgs in #print axioms SCParD.toDev
+
+/-- info: 'scStep_exists_parD' does not depend on any axioms -/
+#guard_msgs in #print axioms scStep_exists_parD
