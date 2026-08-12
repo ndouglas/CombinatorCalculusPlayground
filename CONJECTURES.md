@@ -7300,3 +7300,20 @@ driver, mill core). Every eternal machine found or predicted — mill, swapmill,
 metronome, tenstroke, d159, the light mill, the heavy climbers — is an instance of
 four generic theorems. C13's mature statement is within sight: every corridor is a
 climb-or-pump instance of a slot-parametric core family.
+
+### Stage 294: the conservation arc opens — foundations and the route decision
+
+SN founded (`SCSN` via accessibility; subterm laws axiom-free; SN ⟹ WN). **The route
+decision, recorded.** Three candidate proofs of WN ⟹ SN were weighed: (a) full
+residual/projection theory (Lévy–Huet; the classical orthogonal-systems route) —
+most general, heaviest to formalize; (b) perpetual-strategy (an effective strategy F
+with "t non-SN ⟹ F(t) non-SN"; conservation follows by running F on a WN term) —
+medium weight, needs a perpetuality proof with duplication bookkeeping; (c) the
+{S,C}-SPECIFIC route: prove SN by structural induction using the walls — the
+conjecture-shaped kernel is a CRITICAL LEMMA: if `a`, `b`, and (for redex roots) the
+contracted result are SN, then `app a b` is SN — i.e., root fires cannot manufacture
+divergence from SN parts. In non-erasing {S,C} the S-fire's result `(f x)(g x)` is
+built from SN parts whose interactions are again root fires of smaller standing —
+suggesting an induction on a measure mixing `Acc` on parts with redex counts. Route
+(c) is chosen FIRST (walls available, no new theory; fall back to (b) if the
+critical lemma resists — 3-attempt rule applies).

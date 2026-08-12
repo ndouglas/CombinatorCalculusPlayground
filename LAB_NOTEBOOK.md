@@ -7276,3 +7276,10 @@ bounded excess, formally (the assembly's largest missing piece).
   conservation arc** (WN ⟹ SN via SCPar — the assembly's largest piece; plan the
   route first: perpetuality vs λI-conservation). (2) The 294 review. (3) Purity v2
   decidable shape-check. (4) Mill-family eternal via the climb principle (instance).
+
+## 2026-08-12 — Stage 294: SN founded; route (c) chosen
+
+- One hundred seventy-six autonomous stages (119–294). Ranking: (1) the critical
+  lemma probe: is there a small counterexample shape to "SN parts + SN contractum ⟹
+  SN whole"? (probe reduction graphs of app-compositions of SN terms); then attempt
+  the lemma. (2) The 295 review. (3) Purity v2 shape-check.

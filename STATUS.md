@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE CLIMB PRINCIPLE (Stage 293,
+confluence makes even the trees rejoin. THE CONSERVATION ARC (Stage 294): SN founded
+(accessibility; subterm laws axiom-free; SN ⟹ WN pinned); route
+chosen — the {S,C}-specific critical lemma first, walls in hand.
+THE CLIMB PRINCIPLE (Stage 293,
 `sc_climb_eternal`): pump + climb over two family laws — FOUR generic
 theorems cover every eternal machine ever found or predicted.
 CONSERVATION (Stage 292): {S,C} is non-erasing,
