@@ -7304,3 +7304,36 @@ bounded excess, formally (the assembly's largest missing piece).
   single-step projection lemma, then sc_sn_expand and WN ⟹ SN. Multi-stage; plan
   the position representation first (paths as List Bool vs a zipper). (2) The 297
   review. (3) The assembly statement draft.
+
+## 2026-08-12 — Stage 297: the review at 296
+
+**The session (289–296), consolidated.** Purity v2 (falsified productively — ignition
+is a shape criterion; starved S-slots survive) → the tenstroke pinned + THE PUMP
+PRINCIPLE (the pump class closed methodologically) → CONSERVATION realized (non-
+erasure ⟹ WN = SN classically; probed 300/300; the assembly restructured into three
+pillars) → THE CLIMB PRINCIPLE (four generic theorems now cover every eternal
+machine) → the conservation arc opened: SN founded, THE ROOT EXPANSION LEMMAS proved
+axiom-free first-try, shape stability pinned, and the remaining difficulty localized
+by honest failure into one elementary residual argument (disjoint single-redex
+residuals ⟹ trivial finite developments).
+
+**Ledger.** 357 pins, 9,321 lines in SCDecidability.lean, 653 commits, zero
+warnings; 179 consecutive autonomous stages (119–297). Axiom-free this session:
+pump principle core laws, climb instances, both expansion lemmas, both shape
+stability lemmas.
+
+**The assembly, as it stands.**
+- Pillar 1 (the bulk): conservation. SN founded; expansion lemmas done for root
+  steps; congruence cases await the residual arc (scoped, elementary).
+- Pillar 2 (corridors): DONE in structure — two family laws, two principles, three
+  full portraits, three certified deciders, a prediction-capable grid.
+- Pillar 3 (storms): C12 restricted to the residue; per-step ledger closed (ten
+  walls); the exhaustive n=10 diagonal supports affine f; the formal gap is the
+  copy-tracking integration, sibling of the residual machinery pillar 1 needs —
+  ONE formalism (positions/descendants) likely serves both.
+
+**Next arc (ranked).** (1) The residual arc: positions (List Bool paths), descendant
+tracking across one step, the projection lemma; then sc_sn_expand, then WN ⟹ SN;
+note the SAME machinery is the storm floor's copy-tracking — build it once, spend it
+twice. (2) The assembly statement draft (the final theorem's exact shape, with the
+three pillars as hypotheses, to keep the target visible). (3) Ideonomy at ~300.
