@@ -8968,3 +8968,34 @@ theorem sc_millfam_law (z M : SCTerm) :
     (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .S z M)))
     (RS.StepsN.tail (SCStep.appL (SCStep.S_red M z (.app .C M)))
     (@RS.StepsN.refl RS.SC _)))))))
+
+-- ## Stage 290: THE TENSTROKE — the second pump, pinned.
+-- The grid's period-8-flagged engine resolves at period TEN: a twenty-six-leaf core
+-- returns exactly every ten forced fires, emitting FOUR riders per stroke
+-- (C, C, a twenty-leaf junk block, C C). Pumps are a family with varied periods and
+-- emission signatures; each is a fixed point modulo emission, each pinnable by one
+-- mechanical emission.
+
+/-- The tenstroke's core. -/
+def scTenCore : SCTerm :=
+  (.app (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C))))
+
+/-- Its twenty-leaf junk block. -/
+def scTenJ : SCTerm :=
+  (.app .C (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)))))
+
+/-- **THE TENSTROKE LAW**: ten fires, the core returns, four riders emitted. -/
+theorem sc_ten_law :
+    RS.SC.StepsN 10 scTenCore
+      (.app (.app (.app (.app scTenCore .C) .C) scTenJ) (.app .C .C)) :=
+    (RS.StepsN.tail (SCStep.C_red (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C))) (.app .C .C) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app (.app .C .S) .C) (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red .S .C (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.S_red (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C))) .C (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) .C) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C .C (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C))))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)))) .C (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C .C) .C) (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C))) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C .C (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)))))))
+    (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)) .C (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)))))))
+    (@RS.StepsN.refl RS.SC _)))))))))))
