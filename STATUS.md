@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE PUMP PRINCIPLE (Stage 291,
+confluence makes even the trees rejoin. CONSERVATION (Stage 292): {S,C} is non-erasing,
+so WN = SN classically — probed 300/300 (greedy-grow always
+terminates on normalizers) — the 96% needs NO C12, only finite
+search; the assembly is three pillars: conservation + engine theorems
++ C12-on-storms. THE PUMP PRINCIPLE (Stage 291,
 `sc_pump_eternal`, [propext]): one theorem makes every pump eternal —
 the corridor phase's known dynamics are covered by THREE generic
 theorems. THE TENSTROKE (Stage 290, `sc_ten_law`,

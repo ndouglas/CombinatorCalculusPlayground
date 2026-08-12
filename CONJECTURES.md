@@ -7273,3 +7273,20 @@ eternal, and the metronome-style trichotomy (Stage 286's one-stage pattern) give
 each its full portrait on demand. Between the two family laws (climbers) and the
 pump principle (pumps), the corridor phase's known dynamics are covered by exactly
 THREE generic theorems — which is the shape C13 needed to be true in.
+
+### Stage 292: CONSERVATION — the bulk may not need C12 at all
+
+A structural realization with probe corroboration. {S,C} is NON-ERASING (C permutes,
+S duplicates; no rule discards a subterm), and for non-erasing orthogonal systems the
+classical conservation theorem gives WN = SN: a term with any path to normal form
+has NO infinite paths. Probe: the greedy-grow strategy (always take the LARGEST
+successor — the anti-normalizing adversary) terminated on 300 of 300 sampled
+normalizers, longest run eighteen fires, peaks at most start+19. Consequences for
+the assembly, restructured: (a) normalizing terms are strongly normalizing, hence
+have FINITE reduction graphs, hence decidable reachability by exhaustive search — no
+C12 needed for the 96%; (b) corridors are engines, decidable by pipeline (three
+generic theorems); (c) C12's burden shrinks to reachability FROM the storm residue
+only. **The conservation theorem for {S,C} is hereby the program's next major
+formalization target** — the SCPar machinery in SCConfluence.lean (parallel
+reduction, triangle, diamond) is exactly the classical toolbox for it, and its
+payoff is the single largest piece of the decidability assembly.

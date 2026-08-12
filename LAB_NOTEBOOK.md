@@ -7257,3 +7257,15 @@ bounded excess, formally (the assembly's largest missing piece).
   (3) Purity v2 as a decidable shape-check. (4) The climb principle (the analog of
   the pump principle for tower-growing cores — one theorem for all climbers, from
   the two family laws).
+
+## 2026-08-12 — Stage 292: conservation — WN = SN, probed 300/300
+
+- The insight was sitting in the no-erasure wall all along: non-erasing systems
+  conserve work, so normalizers cannot host divergence. The assembly's shape is now
+  three clean pillars: conservation (bulk), the three engine theorems (corridors),
+  C12-on-storms (residue).
+- One hundred seventy-four autonomous stages (119–292). Ranking: (1) **the
+  conservation arc**: formalize WN ⟹ SN for {S,C} via SCPar (classical
+  non-erasing conservation; multi-stage — plan first: uniform-normalization/
+  perpetuality route vs. Church's λI route). (2) The 293 review. (3) Purity v2
+  decidable shape-check. (4) The climb principle.
