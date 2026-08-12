@@ -8999,3 +8999,46 @@ theorem sc_ten_law :
     (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red .C .C (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)))))))
     (RS.StepsN.tail (SCStep.appL (SCStep.appL (SCStep.appL (SCStep.C_red (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)) .C (.app (.app .C (.app (.app .C .C) .C)) (.app (.app .C (.app (.app .S (.app (.app .C .S) .C)) (.app .C (.app (.app .C .C) .C)))) (.app .C .C)))))))
     (@RS.StepsN.refl RS.SC _)))))))))))
+
+-- ## Stage 291: THE PUMP PRINCIPLE — one theorem, every pump eternal.
+-- Any core satisfying a fixed-point-modulo-emission law pumps forever under any
+-- riders. The metronome and the tenstroke become instances; so will every pump the
+-- grid ever finds.
+
+/-- `r` repetitions of an emission block. -/
+def scRep : Nat → List SCTerm → List SCTerm
+  | 0, _ => []
+  | r + 1, em => em ++ scRep r em
+
+/-- Repetitions slide past one block. -/
+theorem scRep_shift : ∀ (r : Nat) (em zs : List SCTerm),
+    scRep r em ++ (em ++ zs) = em ++ (scRep r em ++ zs)
+  | 0, _, _ => rfl
+  | r + 1, em, zs => by
+      show (em ++ scRep r em) ++ (em ++ zs) = em ++ ((em ++ scRep r em) ++ zs)
+      rw [List.append_assoc, scRep_shift r em zs, List.append_assoc]
+
+/-- **THE PUMP PRINCIPLE**: a fixed point modulo emission pumps forever. -/
+theorem sc_pump_eternal (core : SCTerm) (p : Nat) (em : List SCTerm)
+    (hlaw : RS.SC.StepsN p core (scAppList core em)) :
+    ∀ (r : Nat) (zs : List SCTerm),
+      RS.SC.Steps (scAppList core zs) (scAppList core (scRep r em ++ zs))
+  | 0, zs => @RS.Steps.refl RS.SC _
+  | r + 1, zs => by
+      have h1 : RS.SC.StepsN p (scAppList core zs)
+          (scAppList core (em ++ zs)) := by
+        have h := scStepsN_appList zs hlaw
+        rw [← scAppList_append] at h
+        exact h
+      have h2 := sc_pump_eternal core p em hlaw r (em ++ zs)
+      have h := RS.Steps.trans (RS.StepsN.toSteps h1) h2
+      rw [show scRep (r + 1) em ++ zs = scRep r em ++ (em ++ zs) from by
+        show (em ++ scRep r em) ++ zs = scRep r em ++ (em ++ zs)
+        rw [scRep_shift r em zs, ← List.append_assoc]]
+      exact h
+
+/-- **THE TENSTROKE IS ETERNAL** — by the principle, in one line. -/
+theorem sc_ten_eternal : ∀ (r : Nat) (zs : List SCTerm),
+    RS.SC.Steps (scAppList scTenCore zs)
+      (scAppList scTenCore (scRep r [.C, .C, scTenJ, .app .C .C] ++ zs)) :=
+  sc_pump_eternal scTenCore 10 [.C, .C, scTenJ, .app .C .C] sc_ten_law
