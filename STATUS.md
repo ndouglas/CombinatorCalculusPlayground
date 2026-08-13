@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE PROJECTION METHOD (Stage 300): conservation
+confluence makes even the trees rejoin. CONSERVATION (Stage 302, `sc_wn_sn` +
+`sc_wn_decide`): WN = SN in {S,C}, and reachability from any
+normalizing term is DECIDABLE — pillar one complete, proved by the
+projection method in three stages; ONE conjecture (C12-on-storms)
+stands between the program and full decidability. THE PROJECTION
+METHOD (Stage 300): conservation
 without residuals — innermost occurrences are disjoint, frozen, and
 absent from their own contracta; collapse-and-count replaces the
 whole residual apparatus; two lemmas from WN = SN. THE FD KERNEL (Stage 299, `SCParD` + `mu` +

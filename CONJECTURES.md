@@ -7399,3 +7399,22 @@ inequality's slack (the doubled occurrences only strengthen the right side), and
 freshly-assembled occurrences at contractum boundaries land in the image branch with
 their own fire appended. Two lemmas remain for WN = SN: the SN-transfer (lexicographic
 on the image's accessibility and the count) and the backward walk along a witness.
+
+### Stage 302: CONSERVATION — WN = SN, and the bulk is decidable
+
+The program's largest single theorem: `sc_wn_sn` — in {S,C}, a term with any path to
+normal form has no infinite paths. Non-erasure, made formal at last, by the
+projection method invented three stages ago: fix an innermost redex, collapse its
+occurrences, account every step (stalls consume the count, real moves descend the
+image, assembled occurrences pay their own way), and walk any witness backward. The
+corollary the assembly wanted: `sc_wn_decide` — reachability from ANY weakly
+normalizing term is decidable. The three-pillar map of the central question now
+reads: PILLAR ONE (the normalizing bulk, ~96% of terms): **decidable, proved**.
+PILLAR TWO (corridors): decidable, proved, classified (two family laws, two
+principles, three portraits, prediction-capable grid). PILLAR THREE (storms):
+decidable conditional on `scLinearExcess` (C12), the one remaining law, with
+exhaustive evidence at every feasible size and a closed per-step ledger. One
+conjecture stands between this program and the decidability of {S,C} reachability.
+A methodological note for the record: the audit caught a Classical.choice leak
+(omega discharging non-arithmetic goals classically) — the axiom discipline is not
+ceremony; it found a real contamination the same hour it appeared.
