@@ -7368,3 +7368,8 @@ three pillars as hypotheses, to keep the target visible). (3) Ideonomy at ~300.
   occurrence at the root lands in the image-branch with the root-fire appended —
   worked out in planning). (2) The SN-transfer + WN ⟹ SN (conservation lands).
   (3) The assembly celebration + ideonomy.
+
+## 2026-08-13 — Stage 301: the ledger lands
+
+- One hundred eighty-three autonomous stages (119–301). Ranking: (1) the
+  SN-transfer + WN ⟹ SN (conservation LANDS). (2) The celebration review.

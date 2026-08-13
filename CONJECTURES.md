@@ -7389,3 +7389,13 @@ induction on the witness length, since projecting a normalizing reduction shorte
 it by at least the occurrence count. No positions, no residuals, no derivation
 measures — counting and recursion. Stage 300 of the program; the round number
 landed on the right stage.
+
+### Stage 301: THE PROJECTION LEDGER — conservation's hardest lemma, done
+
+`sc_proj_ledger`: every step, accounted against a fixed innermost redex — stalls
+drop the count by one; real steps project to at least one image step with assembled
+occurrences paid by the count. The S-fire's duplication is absorbed by the
+inequality's slack (the doubled occurrences only strengthen the right side), and
+freshly-assembled occurrences at contractum boundaries land in the image branch with
+their own fire appended. Two lemmas remain for WN = SN: the SN-transfer (lexicographic
+on the image's accessibility and the count) and the backward walk along a witness.
