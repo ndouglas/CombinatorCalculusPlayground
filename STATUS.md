@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE FD KERNEL (Stage 299, `SCParD` + `mu` +
+confluence makes even the trees rejoin. THE PROJECTION METHOD (Stage 300): conservation
+without residuals — innermost occurrences are disjoint, frozen, and
+absent from their own contracta; collapse-and-count replaces the
+whole residual apparatus; two lemmas from WN = SN. THE FD KERNEL (Stage 299, `SCParD` + `mu` +
 `toDev`): parallel derivations as data with the finite-development
 weight — conservation's remaining pieces are three scoped lemmas.
 THE SN-CLASS DECIDER (Stage 298,

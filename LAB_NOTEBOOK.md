@@ -7356,3 +7356,15 @@ three pillars as hypotheses, to keep the target visible). (3) Ideonomy at ~300.
   review + ideonomy (due at the round number). (4) After conservation: bulk
   decidability assembles from sc_sn_decide, and the program's remaining mathematics
   is C12-on-storms alone.
+
+## 2026-08-13 — Stage 300: the projection method (the round-number review folds in)
+
+- The program at 300: 366 pins, ~9,700 lines, zero warnings, axiom ceiling
+  [propext, Quot.sound]; 182 consecutive autonomous stages. The three-pillar
+  assembly stands with conservation now TWO lemmas out (the ledger, the transfer);
+  corridors fully classified and decidable; storms walled and C12-scoped.
+- Ranking: (1) **the per-step projection ledger** (the beast: induction on the step
+  with top-match splits; the branch where an inside-contraction completes a fresh
+  occurrence at the root lands in the image-branch with the root-fire appended —
+  worked out in planning). (2) The SN-transfer + WN ⟹ SN (conservation lands).
+  (3) The assembly celebration + ideonomy.

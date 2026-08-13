@@ -7372,3 +7372,20 @@ properly-advanced target; (2) `P(u) := every par-predecessor of every subterm of
 is SN`, by step-accessibility of `u` outer, dichotomy-measure inner, with the
 subterm-jump closed by congruence-lifting the step to `u` itself; (3) `sc_sn_expand`
 from P, then WN ⟹ SN by walking the witness backwards. Three lemmas, all scoped.
+
+### Stage 300: THE PROJECTION METHOD — the residual-free route, founded
+
+The conservation proof reorganized itself overnight into something far better than
+the planned residual machinery. Fix an innermost redex σ (arguments normal): its
+occurrences in ANY term are pairwise disjoint, nothing ever fires inside one, and it
+never occurs in its own contractum (the S-case is structural, not size-based —
+contracta can be larger). Collapse all occurrences with one recursive function
+(`scProj`), count them with another (`scCount`). The per-step ledger (next stage):
+any step either contracts an occurrence — the projection stalls and the count drops
+by exactly one — or projects to at least one real step, with any freshly-assembled
+occurrences paid for by the count. From the ledger: SN transfers back from the
+projection (lexicographic on (Acc of the image, count)), and WN ⟹ SN falls by strong
+induction on the witness length, since projecting a normalizing reduction shortens
+it by at least the occurrence count. No positions, no residuals, no derivation
+measures — counting and recursion. Stage 300 of the program; the round number
+landed on the right stage.
