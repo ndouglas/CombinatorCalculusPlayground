@@ -10040,3 +10040,122 @@ theorem sc_proj_ledger {σ r : SCTerm} (h : SCInnerRedex σ r) :
             exact scStepsN_appR (scProj σ r a) hsteps
           · rw [hNt, hNs]
             omega
+
+-- ## Stage 302: CONSERVATION — weak normalization is strong normalization.
+-- The assembly: accessibility transfers through the projection (stalls consume the
+-- count, real moves descend the image), the ledger chains along any witness, and
+-- the witness's length strictly dominates its own projection. {S,C} is non-erasing,
+-- and now, formally: a term with any path to normal form has no infinite paths.
+
+/-- Normal terms are strongly normalizing. -/
+theorem scSN_of_normal {t : SCTerm} (hn : scSucc t = []) : SCSN t :=
+  Acc.intro _ (fun _ hu =>
+    absurd (scSucc_complete hu) (by rw [hn]; exact List.not_mem_nil))
+
+/-- Counted reductions of length zero are identities. -/
+theorem scStepsN_zero {t u : SCTerm} (h : RS.SC.StepsN 0 t u) : t = u := by
+  refine h.rec (motive := fun n a b _ => n = 0 → a = b) ?_ ?_ rfl
+  · intro _ _
+    rfl
+  · intro n a b c _ _ _ h0
+    exact absurd h0 (Nat.succ_ne_zero n)
+
+/-- Counted reductions decompose at the head. -/
+theorem scStepsN_head {j : Nat} {t u : SCTerm} (h : RS.SC.StepsN j t u) :
+    (j = 0 ∧ t = u) ∨ ∃ m b, j = m + 1 ∧ SCStep t b ∧ RS.SC.StepsN m b u := by
+  refine h.rec (motive := fun n a c _ =>
+    (n = 0 ∧ a = c) ∨ ∃ m b, n = m + 1 ∧ SCStep a b ∧ RS.SC.StepsN m b c) ?_ ?_
+  · intro a
+    exact .inl ⟨rfl, rfl⟩
+  · intro n a b c s rest _
+    exact .inr ⟨n, b, rfl, s, rest⟩
+
+/-- Accessibility under single steps gives accessibility under positive chains. -/
+theorem scSN_acc_plus {p : SCTerm} (h : SCSN p) :
+    Acc (fun z q => ∃ j, 1 ≤ j ∧ RS.SC.StepsN j q z) p := by
+  induction h with
+  | intro p _ ih =>
+      refine Acc.intro _ (fun z hz => ?_)
+      obtain ⟨j, hj, hchain⟩ := hz
+      rcases scStepsN_head hchain with ⟨h0, _⟩ | ⟨m, b, _, s, rest⟩
+      · exact absurd (h0 ▸ hj) (by omega)
+      · rcases Nat.eq_zero_or_pos m with rfl | hm
+        · have hzb : b = z := scStepsN_zero rest
+          rw [hzb] at s
+          exact ih z s
+        · exact (ih b s).inv ⟨m, hm, rest⟩
+
+/-- **THE SN TRANSFER**: strong normalization pulls back through the projection. -/
+theorem sc_sn_proj {σ r : SCTerm} (h : SCInnerRedex σ r) :
+    ∀ {t : SCTerm}, SCSN (scProj σ r t) → SCSN t := by
+  suffices H : ∀ p, Acc (fun z q => ∃ j, 1 ≤ j ∧ RS.SC.StepsN j q z) p →
+      ∀ B t, scProj σ r t = p → scCount σ t ≤ B → SCSN t by
+    intro t hp
+    exact H _ (scSN_acc_plus hp) (scCount σ t) t rfl (Nat.le_refl _)
+  intro p hp
+  induction hp with
+  | intro p _ ihp =>
+      intro B
+      induction B with
+      | zero =>
+          intro t hpe hce
+          refine Acc.intro _ (fun s hs => ?_)
+          rcases sc_proj_ledger h hs with ⟨_, hc⟩ | ⟨j, hj1, hsteps, _⟩
+          · exact absurd hc (by omega)
+          · rw [hpe] at hsteps
+            exact ihp (scProj σ r s) ⟨j, hj1, hsteps⟩ (scCount σ s) s rfl
+              (Nat.le_refl _)
+      | succ B ihB =>
+          intro t hpe hce
+          refine Acc.intro _ (fun s hs => ?_)
+          rcases sc_proj_ledger h hs with ⟨hpe', hc⟩ | ⟨j, hj1, hsteps, _⟩
+          · exact ihB s (by rw [← hpe', hpe]) (by omega)
+          · rw [hpe] at hsteps
+            exact ihp (scProj σ r s) ⟨j, hj1, hsteps⟩ (scCount σ s) s rfl
+              (Nat.le_refl _)
+
+/-- The ledger, chained along a counted reduction. -/
+theorem sc_ledger_chain {σ r : SCTerm} (h : SCInnerRedex σ r) :
+    ∀ {ℓ : Nat} {t u : SCTerm}, RS.SC.StepsN ℓ t u →
+    ∃ j, RS.SC.StepsN j (scProj σ r t) (scProj σ r u)
+      ∧ j + scCount σ t ≤ ℓ + scCount σ u := by
+  intro ℓ t u hch
+  refine hch.rec (motive := fun n a b _ =>
+    ∃ j, RS.SC.StepsN j (scProj σ r a) (scProj σ r b)
+      ∧ j + scCount σ a ≤ n + scCount σ b) ?_ ?_
+  · intro a
+    exact ⟨0, @RS.StepsN.refl RS.SC _, Nat.le_refl _⟩
+  · intro n a b c s _ ih
+    obtain ⟨j', hch', hled'⟩ := ih
+    rcases sc_proj_ledger h s with ⟨hpe, hc⟩ | ⟨j₁, _, hsteps, hled₁⟩
+    · exact ⟨j', by rw [hpe]; exact hch', by omega⟩
+    · refine ⟨j₁ + j', RS.StepsN.trans hsteps hch', by omega⟩
+
+/-- **CONSERVATION**: a term with a path to normal form has no infinite paths —
+weak normalization is strong normalization in {S,C}. -/
+theorem sc_wn_sn : ∀ (B ℓ : Nat) (t n : SCTerm), ℓ ≤ B →
+    RS.SC.StepsN ℓ t n → scSucc n = [] → SCSN t := by
+  intro B
+  induction B with
+  | zero =>
+      intro ℓ t n hB hch hn
+      have h0 : ℓ = 0 := by omega
+      subst h0
+      rw [scStepsN_zero hch]
+      exact scSN_of_normal hn
+  | succ B ihB =>
+      intro ℓ t n hB hch hn
+      by_cases ht : scSucc t = []
+      · exact scSN_of_normal ht
+      · obtain ⟨σ, r, hinner, hcount⟩ := sc_inner_exists ht
+        obtain ⟨j, hjch, hled⟩ := sc_ledger_chain hinner hch
+        rw [scProj_normal hinner hn] at hjch
+        have hcn : scCount σ n = 0 := scCount_normal hinner hn
+        exact sc_sn_proj hinner
+          (ihB j (scProj σ r t) n (by omega) hjch hn)
+
+/-- **THE BULK IS DECIDABLE**: reachability from any weakly normalizing term is
+decidable — conservation plus the SN-class decider. -/
+def sc_wn_decide {ℓ : Nat} {t n : SCTerm} (hch : RS.SC.StepsN ℓ t n)
+    (hn : scSucc n = []) : ∀ u, Decidable (RS.SC.Steps t u) :=
+  sc_sn_decide t (sc_wn_sn ℓ ℓ t n (Nat.le_refl ℓ) hch hn)

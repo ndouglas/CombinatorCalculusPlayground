@@ -1100,3 +1100,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_proj_ledger' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_proj_ledger
+
+/-- info: 'sc_sn_proj' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_sn_proj
+
+/-- info: 'sc_wn_sn' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_wn_sn
+
+/-- info: 'sc_wn_decide' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_wn_decide
