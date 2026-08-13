@@ -9660,3 +9660,383 @@ theorem sc_inner_exists : ∀ {t : SCTerm}, scSucc t ≠ [] →
           exact ⟨σ, r, hi, scCount_pos_right hi a hc⟩
       · obtain ⟨σ, r, hi, hc⟩ := sc_inner_exists ha
         exact ⟨σ, r, hi, scCount_pos_left hi b hc⟩
+
+-- ## Stage 301: THE PROJECTION LEDGER — every step, accounted.
+-- Helpers, then the beast: a step either contracts an occurrence (projection
+-- stalls, count drops by one) or projects to at least one step, creations paid.
+
+/-- Occurrence-free terms project to themselves. -/
+theorem scProj_of_count_zero {σ r : SCTerm} :
+    ∀ {t : SCTerm}, scCount σ t = 0 → scProj σ r t = t
+  | .S, _ => rfl
+  | .C, _ => rfl
+  | .app a b, hc => by
+      have hne : SCTerm.app a b ≠ σ := by
+        intro he
+        rw [show scCount σ (.app a b) = 1 from by
+          show (if SCTerm.app a b = σ then 1 else _) = 1
+          rw [if_pos he]] at hc
+        exact absurd hc (by omega)
+      have hc' : scCount σ a + scCount σ b = 0 := by
+        have : scCount σ (.app a b) = scCount σ a + scCount σ b := by
+          show (if SCTerm.app a b = σ then 1 else _) = _
+          rw [if_neg hne]
+        omega
+      show (if SCTerm.app a b = σ then r
+        else .app (scProj σ r a) (scProj σ r b)) = .app a b
+      rw [if_neg hne, scProj_of_count_zero (by omega : scCount σ a = 0),
+        scProj_of_count_zero (by omega : scCount σ b = 0)]
+
+/-- The innermost redex fires to its contractum. -/
+theorem scInner_step {σ r : SCTerm} (h : SCInnerRedex σ r) : SCStep σ r := by
+  rcases h with ⟨f, g, x, _, _, _, rfl, rfl⟩ | ⟨f, g, x, _, _, _, rfl, rfl⟩
+  · exact SCStep.S_red f g x
+  · exact SCStep.C_red f g x
+
+/-- Normal terms take no step. -/
+theorem scNormal_no_step {t u : SCTerm} (hn : scSucc t = []) (hs : SCStep t u) :
+    False := by
+  have hm := scSucc_complete hs
+  rw [hn] at hm
+  exact absurd hm List.not_mem_nil
+
+/-- One-apps with atom heads are not the redex. -/
+theorem scInner_ne1 {σ r : SCTerm} (h : SCInnerRedex σ r)
+    {A : SCTerm} (hA : A = .S ∨ A = .C) (u : SCTerm) :
+    SCTerm.app A u ≠ σ := by
+  rcases h with ⟨f, g, x, _, _, _, rfl, _⟩ | ⟨f, g, x, _, _, _, rfl, _⟩ <;>
+    (intro he
+     rcases SCTerm.app.injEq .. ▸ he with ⟨h1, _⟩
+     rcases hA with rfl | rfl <;> exact SCTerm.noConfusion h1)
+
+/-- Two-spines with atom heads are not the redex. -/
+theorem scInner_ne2 {σ r : SCTerm} (h : SCInnerRedex σ r)
+    {A : SCTerm} (hA : A = .S ∨ A = .C) (u v : SCTerm) :
+    SCTerm.app (.app A u) v ≠ σ := by
+  rcases h with ⟨f, g, x, _, _, _, rfl, _⟩ | ⟨f, g, x, _, _, _, rfl, _⟩ <;>
+    (intro he
+     rcases SCTerm.app.injEq .. ▸ he with ⟨h1, _⟩
+     rcases SCTerm.app.injEq .. ▸ h1 with ⟨h2, _⟩
+     rcases hA with rfl | rfl <;> exact SCTerm.noConfusion h2)
+
+/-- Two-spines over normal parts are normal. -/
+theorem scSucc_2spine_nil {A f g : SCTerm} (hA : A = .S ∨ A = .C)
+    (hf : scSucc f = []) (hg : scSucc g = []) :
+    scSucc (.app (.app A f) g) = [] := by
+  have h1 : scSucc (.app A f) = [] := by
+    show scSuccRoot (.app A f) ++ (scSucc A).map _ ++ (scSucc f).map _ = []
+    rcases hA with rfl | rfl <;> (rw [hf]; rfl)
+  show scSuccRoot (.app (.app A f) g)
+    ++ (scSucc (.app A f)).map _ ++ (scSucc g).map _ = []
+  rw [h1, hg]
+  rcases hA with rfl | rfl <;> rfl
+
+/-- If the redex appears as an application, its two components are normal. -/
+theorem scInner_components {σ r a b : SCTerm} (h : SCInnerRedex σ r)
+    (he : σ = .app a b) : scSucc a = [] ∧ scSucc b = [] := by
+  rcases h with ⟨f, g, x, hf, hg, hx, hσ, _⟩ | ⟨f, g, x, hf, hg, hx, hσ, _⟩
+  · rw [hσ] at he
+    rcases SCTerm.app.injEq .. ▸ he.symm with ⟨h1, h2⟩
+    subst h1
+    subst h2
+    exact ⟨scSucc_2spine_nil (.inl rfl) hf hg, hx⟩
+  · rw [hσ] at he
+    rcases SCTerm.app.injEq .. ▸ he.symm with ⟨h1, h2⟩
+    subst h1
+    subst h2
+    exact ⟨scSucc_2spine_nil (.inr rfl) hf hg, hx⟩
+
+/-- Count at a matched node. -/
+theorem scCount_self {σ a b : SCTerm} (h : SCTerm.app a b = σ) :
+    scCount σ (.app a b) = 1 := by
+  show (if SCTerm.app a b = σ then 1 else _) = 1
+  rw [if_pos h]
+
+/-- Count at an unmatched node. -/
+theorem scCount_app_ne {σ a b : SCTerm} (h : SCTerm.app a b ≠ σ) :
+    scCount σ (.app a b) = scCount σ a + scCount σ b := by
+  show (if SCTerm.app a b = σ then 1 else _) = _
+  rw [if_neg h]
+
+/-- Projection at a matched node. -/
+theorem scProj_self {σ r a b : SCTerm} (h : SCTerm.app a b = σ) :
+    scProj σ r (.app a b) = r := by
+  show (if SCTerm.app a b = σ then r else _) = r
+  rw [if_pos h]
+
+/-- Projection at an unmatched node. -/
+theorem scProj_app_ne {σ r a b : SCTerm} (h : SCTerm.app a b ≠ σ) :
+    scProj σ r (.app a b) = .app (scProj σ r a) (scProj σ r b) := by
+  show (if SCTerm.app a b = σ then r else _) = _
+  rw [if_neg h]
+
+/-- The ledger's conclusion, named. -/
+def SCLedger (σ r t s : SCTerm) : Prop :=
+  (scProj σ r t = scProj σ r s ∧ scCount σ s + 1 = scCount σ t) ∨
+  (∃ j, 1 ≤ j ∧ RS.SC.StepsN j (scProj σ r t) (scProj σ r s) ∧
+    j + scCount σ t ≤ 1 + scCount σ s)
+
+/-- The S-fire ledger. -/
+theorem sc_ledger_S {σ r : SCTerm} (h : SCInnerRedex σ r) (f g x : SCTerm) :
+    SCLedger σ r (.app (.app (.app .S f) g) x) (.app (.app f x) (.app g x)) := by
+  by_cases ht : SCTerm.app (.app (.app .S f) g) x = σ
+  · -- the step contracts the occurrence itself
+    rcases h with ⟨f₀, g₀, x₀, hf, hg, hx, hσ, hr⟩ | ⟨f₀, g₀, x₀, hf, hg, hx, hσ, hr⟩
+    · rw [hσ] at ht
+      rcases SCTerm.app.injEq .. ▸ ht with ⟨h1, h2⟩
+      rcases SCTerm.app.injEq .. ▸ h1 with ⟨h3, h4⟩
+      rcases SCTerm.app.injEq .. ▸ h3 with ⟨_, h5⟩
+      subst h2; subst h4; subst h5
+      subst hσ; subst hr
+      have hinner : SCInnerRedex (.app (.app (.app .S f) g) x)
+          (.app (.app f x) (.app g x)) :=
+        .inl ⟨f, g, x, hf, hg, hx, rfl, rfl⟩
+      refine .inl ⟨?_, ?_⟩
+      · rw [scProj_self rfl, scProj_of_count_zero (scCount_contractum hinner)]
+      · rw [scCount_self rfl, scCount_contractum hinner]
+    · rw [hσ] at ht
+      rcases SCTerm.app.injEq .. ▸ ht with ⟨h1, _⟩
+      rcases SCTerm.app.injEq .. ▸ h1 with ⟨h3, _⟩
+      rcases SCTerm.app.injEq .. ▸ h3 with ⟨h5, _⟩
+      exact absurd h5 (fun hh => SCTerm.noConfusion hh)
+  · -- the occurrence survives; the step projects
+    have hP : scProj σ r (.app (.app (.app .S f) g) x)
+        = .app (.app (.app .S (scProj σ r f)) (scProj σ r g)) (scProj σ r x) := by
+      rw [scProj_app_ne ht, scProj_app_ne (scInner_ne2 h (.inl rfl) f g),
+        scProj_app_ne (scInner_ne1 h (.inl rfl) f)]
+      rfl
+    have hN : scCount σ (.app (.app (.app .S f) g) x)
+        = scCount σ f + scCount σ g + scCount σ x := by
+      rw [scCount_app_ne ht, scCount_app_ne (scInner_ne2 h (.inl rfl) f g),
+        scCount_app_ne (scInner_ne1 h (.inl rfl) f)]
+      show 0 + scCount σ f + scCount σ g + scCount σ x = _
+      omega
+    by_cases hs : SCTerm.app (.app f x) (.app g x) = σ
+    · -- the fire ASSEMBLES the occurrence at the root
+      obtain ⟨hfx, hgx⟩ := scInner_components h hs.symm
+      obtain ⟨_, hfn, hxn⟩ := scSucc_app_nil hfx
+      obtain ⟨_, hgn, _⟩ := scSucc_app_nil hgx
+      have hPf := scProj_normal h hfn (σ := σ) (r := r)
+      have hPg := scProj_normal h hgn (σ := σ) (r := r)
+      have hPx := scProj_normal h hxn (σ := σ) (r := r)
+      refine .inr ⟨2, by omega, ?_, ?_⟩
+      · rw [hP, hPf, hPg, hPx, scProj_self hs]
+        exact RS.StepsN.tail (SCStep.S_red f g x)
+          (RS.StepsN.tail (by rw [hs]; exact scInner_step h)
+            (@RS.StepsN.refl RS.SC r))
+      · rw [hN, scCount_self hs, scCount_normal h hfn, scCount_normal h hgn,
+          scCount_normal h hxn]
+        omega
+    · -- no assembly at the root; check the two fresh nodes
+      have hPs : scProj σ r (.app (.app f x) (.app g x))
+          = .app (scProj σ r (.app f x)) (scProj σ r (.app g x)) :=
+        scProj_app_ne hs
+      have hNs : scCount σ (.app (.app f x) (.app g x))
+          = scCount σ (.app f x) + scCount σ (.app g x) :=
+        scCount_app_ne hs
+      by_cases h1 : SCTerm.app f x = σ <;> by_cases h2 : SCTerm.app g x = σ
+      · -- both assembled
+        obtain ⟨hfn, hxn⟩ := scInner_components h h1.symm
+        obtain ⟨hgn, _⟩ := scInner_components h h2.symm
+        refine .inr ⟨3, by omega, ?_, ?_⟩
+        · rw [hP, hPs, scProj_normal h hfn, scProj_normal h hgn,
+            scProj_normal h hxn, scProj_self h1, scProj_self h2]
+          exact RS.StepsN.tail (SCStep.S_red f g x)
+            (RS.StepsN.tail (SCStep.appL (by rw [h1]; exact scInner_step h))
+              (RS.StepsN.tail (SCStep.appR (by rw [h2]; exact scInner_step h))
+                (@RS.StepsN.refl RS.SC _)))
+        · rw [hN, hNs, scCount_self h1, scCount_self h2,
+            scCount_normal h hfn, scCount_normal h hgn, scCount_normal h hxn]
+          omega
+      · -- left assembled only
+        obtain ⟨hfn, hxn⟩ := scInner_components h h1.symm
+        refine .inr ⟨2, by omega, ?_, ?_⟩
+        · rw [hP, hPs, scProj_normal h hfn, scProj_normal h hxn,
+            scProj_self h1, scProj_app_ne h2, scProj_normal h hxn]
+          exact RS.StepsN.tail (SCStep.S_red f (scProj σ r g) x)
+            (RS.StepsN.tail (SCStep.appL (by rw [h1]; exact scInner_step h))
+              (@RS.StepsN.refl RS.SC _))
+        · rw [hN, hNs, scCount_self h1, scCount_app_ne h2,
+            scCount_normal h hfn, scCount_normal h hxn]
+          omega
+      · -- right assembled only
+        obtain ⟨hgn, hxn⟩ := scInner_components h h2.symm
+        refine .inr ⟨2, by omega, ?_, ?_⟩
+        · rw [hP, hPs, scProj_normal h hgn, scProj_normal h hxn,
+            scProj_self h2, scProj_app_ne h1, scProj_normal h hxn]
+          exact RS.StepsN.tail (SCStep.S_red (scProj σ r f) g x)
+            (RS.StepsN.tail (SCStep.appR (by rw [h2]; exact scInner_step h))
+              (@RS.StepsN.refl RS.SC _))
+        · rw [hN, hNs, scCount_self h2, scCount_app_ne h1,
+            scCount_normal h hgn, scCount_normal h hxn]
+          omega
+      · -- neither
+        refine .inr ⟨1, by omega, ?_, ?_⟩
+        · rw [hP, hPs, scProj_app_ne h1, scProj_app_ne h2]
+          exact RS.StepsN.tail
+            (SCStep.S_red (scProj σ r f) (scProj σ r g) (scProj σ r x))
+            (@RS.StepsN.refl RS.SC _)
+        · rw [hN, hNs, scCount_app_ne h1, scCount_app_ne h2]
+          omega
+
+/-- The C-fire ledger. -/
+theorem sc_ledger_C {σ r : SCTerm} (h : SCInnerRedex σ r) (f g x : SCTerm) :
+    SCLedger σ r (.app (.app (.app .C f) g) x) (.app (.app f x) g) := by
+  by_cases ht : SCTerm.app (.app (.app .C f) g) x = σ
+  · rcases h with ⟨f₀, g₀, x₀, hf, hg, hx, hσ, hr⟩ | ⟨f₀, g₀, x₀, hf, hg, hx, hσ, hr⟩
+    · rw [hσ] at ht
+      rcases SCTerm.app.injEq .. ▸ ht with ⟨h1, _⟩
+      rcases SCTerm.app.injEq .. ▸ h1 with ⟨h3, _⟩
+      rcases SCTerm.app.injEq .. ▸ h3 with ⟨h5, _⟩
+      exact absurd h5 (fun hh => SCTerm.noConfusion hh)
+    · rw [hσ] at ht
+      rcases SCTerm.app.injEq .. ▸ ht with ⟨h1, h2⟩
+      rcases SCTerm.app.injEq .. ▸ h1 with ⟨h3, h4⟩
+      rcases SCTerm.app.injEq .. ▸ h3 with ⟨_, h5⟩
+      subst h2; subst h4; subst h5
+      subst hσ; subst hr
+      have hinner : SCInnerRedex (.app (.app (.app .C f) g) x)
+          (.app (.app f x) g) :=
+        .inr ⟨f, g, x, hf, hg, hx, rfl, rfl⟩
+      refine .inl ⟨?_, ?_⟩
+      · rw [scProj_self rfl, scProj_of_count_zero (scCount_contractum hinner)]
+      · rw [scCount_self rfl, scCount_contractum hinner]
+  · have hP : scProj σ r (.app (.app (.app .C f) g) x)
+        = .app (.app (.app .C (scProj σ r f)) (scProj σ r g)) (scProj σ r x) := by
+      rw [scProj_app_ne ht, scProj_app_ne (scInner_ne2 h (.inr rfl) f g),
+        scProj_app_ne (scInner_ne1 h (.inr rfl) f)]
+      rfl
+    have hN : scCount σ (.app (.app (.app .C f) g) x)
+        = scCount σ f + scCount σ g + scCount σ x := by
+      rw [scCount_app_ne ht, scCount_app_ne (scInner_ne2 h (.inr rfl) f g),
+        scCount_app_ne (scInner_ne1 h (.inr rfl) f)]
+      show 0 + scCount σ f + scCount σ g + scCount σ x = _
+      omega
+    by_cases hs : SCTerm.app (.app f x) g = σ
+    · obtain ⟨hfx, hgn⟩ := scInner_components h hs.symm
+      obtain ⟨_, hfn, hxn⟩ := scSucc_app_nil hfx
+      refine .inr ⟨2, by omega, ?_, ?_⟩
+      · rw [hP, scProj_normal h hfn, scProj_normal h hgn,
+          scProj_normal h hxn, scProj_self hs]
+        exact RS.StepsN.tail (SCStep.C_red f g x)
+          (RS.StepsN.tail (by rw [hs]; exact scInner_step h)
+            (@RS.StepsN.refl RS.SC r))
+      · rw [hN, scCount_self hs, scCount_normal h hfn, scCount_normal h hgn,
+          scCount_normal h hxn]
+        omega
+    · have hPs : scProj σ r (.app (.app f x) g)
+          = .app (scProj σ r (.app f x)) (scProj σ r g) :=
+        scProj_app_ne hs
+      have hNs : scCount σ (.app (.app f x) g)
+          = scCount σ (.app f x) + scCount σ g :=
+        scCount_app_ne hs
+      by_cases h1 : SCTerm.app f x = σ
+      · obtain ⟨hfn, hxn⟩ := scInner_components h h1.symm
+        refine .inr ⟨2, by omega, ?_, ?_⟩
+        · rw [hP, hPs, scProj_normal h hfn, scProj_normal h hxn,
+            scProj_self h1]
+          exact RS.StepsN.tail (SCStep.C_red f (scProj σ r g) x)
+            (RS.StepsN.tail (SCStep.appL (by rw [h1]; exact scInner_step h))
+              (@RS.StepsN.refl RS.SC _))
+        · rw [hN, hNs, scCount_self h1,
+            scCount_normal h hfn, scCount_normal h hxn]
+          omega
+      · refine .inr ⟨1, by omega, ?_, ?_⟩
+        · rw [hP, hPs, scProj_app_ne h1]
+          exact RS.StepsN.tail
+            (SCStep.C_red (scProj σ r f) (scProj σ r g) (scProj σ r x))
+            (@RS.StepsN.refl RS.SC _)
+        · rw [hN, hNs, scCount_app_ne h1]
+          omega
+
+/-- **THE PROJECTION LEDGER**: every step either contracts an occurrence (the
+projection stalls, the count drops by one) or projects to at least one step, with
+any assembled occurrences paid for by the count. -/
+theorem sc_proj_ledger {σ r : SCTerm} (h : SCInnerRedex σ r) :
+    ∀ {t s : SCTerm}, SCStep t s → SCLedger σ r t s := by
+  intro t s hstep
+  induction hstep with
+  | S_red f g x => exact sc_ledger_S h f g x
+  | C_red f g x => exact sc_ledger_C h f g x
+  | @appL a a' b h' ih =>
+      have ht : SCTerm.app a b ≠ σ := by
+        intro he
+        obtain ⟨han, _⟩ := scInner_components h he.symm
+        exact scNormal_no_step han h'
+      have hPt : scProj σ r (.app a b)
+          = .app (scProj σ r a) (scProj σ r b) := scProj_app_ne ht
+      have hNt : scCount σ (.app a b)
+          = scCount σ a + scCount σ b := scCount_app_ne ht
+      by_cases hs : SCTerm.app a' b = σ
+      · obtain ⟨ha'n, hbn⟩ := scInner_components h hs.symm
+        have hca' : scCount σ a' = 0 := scCount_normal h ha'n
+        rcases ih with ⟨hpe, hce⟩ | ⟨j, hj1, hsteps, hled⟩
+        · refine .inr ⟨1, by omega, ?_, ?_⟩
+          · rw [hPt, scProj_self hs, hpe, scProj_normal h ha'n,
+              scProj_normal h hbn]
+            exact RS.StepsN.tail (by rw [hs]; exact scInner_step h)
+              (@RS.StepsN.refl RS.SC r)
+          · rw [hNt, scCount_self hs, scCount_normal h hbn]
+            omega
+        · refine .inr ⟨j + 1, by omega, ?_, ?_⟩
+          · rw [hPt, scProj_self hs]
+            have hch := scStepsN_appL (scProj σ r b) hsteps
+            have hfin : SCStep (.app (scProj σ r a') (scProj σ r b)) r := by
+              rw [scProj_normal h ha'n, scProj_normal h hbn, hs]
+              exact scInner_step h
+            exact RS.StepsN.trans hch
+              (RS.StepsN.tail hfin (@RS.StepsN.refl RS.SC r))
+          · rw [hNt, scCount_self hs, scCount_normal h hbn]
+            omega
+      · have hPs : scProj σ r (.app a' b)
+            = .app (scProj σ r a') (scProj σ r b) := scProj_app_ne hs
+        have hNs : scCount σ (.app a' b)
+            = scCount σ a' + scCount σ b := scCount_app_ne hs
+        rcases ih with ⟨hpe, hce⟩ | ⟨j, hj1, hsteps, hled⟩
+        · exact .inl ⟨by rw [hPt, hPs, hpe], by rw [hNt, hNs]; omega⟩
+        · refine .inr ⟨j, hj1, ?_, ?_⟩
+          · rw [hPt, hPs]
+            exact scStepsN_appL (scProj σ r b) hsteps
+          · rw [hNt, hNs]
+            omega
+  | @appR a b b' h' ih =>
+      have ht : SCTerm.app a b ≠ σ := by
+        intro he
+        obtain ⟨_, hbn⟩ := scInner_components h he.symm
+        exact scNormal_no_step hbn h'
+      have hPt : scProj σ r (.app a b)
+          = .app (scProj σ r a) (scProj σ r b) := scProj_app_ne ht
+      have hNt : scCount σ (.app a b)
+          = scCount σ a + scCount σ b := scCount_app_ne ht
+      by_cases hs : SCTerm.app a b' = σ
+      · obtain ⟨han, hb'n⟩ := scInner_components h hs.symm
+        have hcb' : scCount σ b' = 0 := scCount_normal h hb'n
+        rcases ih with ⟨hpe, hce⟩ | ⟨j, hj1, hsteps, hled⟩
+        · refine .inr ⟨1, by omega, ?_, ?_⟩
+          · rw [hPt, scProj_self hs, hpe, scProj_normal h hb'n,
+              scProj_normal h han]
+            exact RS.StepsN.tail (by rw [hs]; exact scInner_step h)
+              (@RS.StepsN.refl RS.SC r)
+          · rw [hNt, scCount_self hs, scCount_normal h han]
+            omega
+        · refine .inr ⟨j + 1, by omega, ?_, ?_⟩
+          · rw [hPt, scProj_self hs]
+            have hch := scStepsN_appR (scProj σ r a) hsteps
+            have hfin : SCStep (.app (scProj σ r a) (scProj σ r b')) r := by
+              rw [scProj_normal h han, scProj_normal h hb'n, hs]
+              exact scInner_step h
+            exact RS.StepsN.trans hch
+              (RS.StepsN.tail hfin (@RS.StepsN.refl RS.SC r))
+          · rw [hNt, scCount_self hs, scCount_normal h han]
+            omega
+      · have hPs : scProj σ r (.app a b')
+            = .app (scProj σ r a) (scProj σ r b') := scProj_app_ne hs
+        have hNs : scCount σ (.app a b')
+            = scCount σ a + scCount σ b' := scCount_app_ne hs
+        rcases ih with ⟨hpe, hce⟩ | ⟨j, hj1, hsteps, hled⟩
+        · exact .inl ⟨by rw [hPt, hPs, hpe], by rw [hNt, hNs]; omega⟩
+        · refine .inr ⟨j, hj1, ?_, ?_⟩
+          · rw [hPt, hPs]
+            exact scStepsN_appR (scProj σ r a) hsteps
+          · rw [hNt, hNs]
+            omega

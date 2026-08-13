@@ -1097,3 +1097,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_inner_exists' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_inner_exists
+
+/-- info: 'sc_proj_ledger' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_proj_ledger
