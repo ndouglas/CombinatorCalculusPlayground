@@ -9457,3 +9457,206 @@ theorem SCParD.mu_refl : ∀ (t : SCTerm), (SCParD.refl t).mu = 0
   | .app a b => by
       show (SCParD.refl a).mu + (SCParD.refl b).mu = 0
       rw [SCParD.mu_refl a, SCParD.mu_refl b]
+
+-- ## Stage 300: THE PROJECTION METHOD — conservation without residuals.
+-- The breakthrough route: fix an INNERMOST redex σ (a redex whose arguments are
+-- normal — its occurrences in any term are pairwise disjoint, nothing ever fires
+-- inside one, and it never occurs in its own contractum). Collapse every occurrence
+-- at once with a simple recursive function. The per-step ledger (next stage) then
+-- says: a step either contracts an occurrence (projection stalls, count drops by
+-- one) or projects to at least one real step with creations paid for by the count.
+-- No positions, no residuals, no derivation measures — counting and recursion.
+
+/-- An innermost redex with its contractum: arguments normal, both rule shapes. -/
+def SCInnerRedex (σ r : SCTerm) : Prop :=
+  (∃ f g x, scSucc f = [] ∧ scSucc g = [] ∧ scSucc x = [] ∧
+    σ = .app (.app (.app .S f) g) x ∧ r = .app (.app f x) (.app g x)) ∨
+  (∃ f g x, scSucc f = [] ∧ scSucc g = [] ∧ scSucc x = [] ∧
+    σ = .app (.app (.app .C f) g) x ∧ r = .app (.app f x) g)
+
+/-- Occurrence count of a fixed subterm. -/
+def scCount (σ : SCTerm) : SCTerm → Nat
+  | .app a b => if .app a b = σ then 1 else scCount σ a + scCount σ b
+  | _ => 0
+
+/-- Collapse every occurrence of `σ` to `r`. -/
+def scProj (σ r : SCTerm) : SCTerm → SCTerm
+  | .app a b => if .app a b = σ then r else .app (scProj σ r a) (scProj σ r b)
+  | .S => .S
+  | .C => .C
+
+/-- Normal applications decompose. -/
+theorem scSucc_app_nil {a b : SCTerm} (h : scSucc (.app a b) = []) :
+    scSuccRoot (.app a b) = [] ∧ scSucc a = [] ∧ scSucc b = [] := by
+  have h' : scSuccRoot (.app a b)
+      ++ (scSucc a).map (fun f' => .app f' b)
+      ++ (scSucc b).map (fun x' => .app a x') = [] := h
+  rcases List.append_eq_nil_iff.mp h' with ⟨h12, h3⟩
+  rcases List.append_eq_nil_iff.mp h12 with ⟨h1, h2⟩
+  exact ⟨h1, List.map_eq_nil_iff.mp h2, List.map_eq_nil_iff.mp h3⟩
+
+/-- The innermost redex is not normal. -/
+theorem scInner_not_normal {σ r : SCTerm} (h : SCInnerRedex σ r) :
+    ¬ scSucc σ = [] := by
+  rcases h with ⟨f, g, x, _, _, _, rfl, _⟩ | ⟨f, g, x, _, _, _, rfl, _⟩ <;>
+    (intro hn
+     have h1 := (scSucc_app_nil hn).1
+     exact absurd h1 (by simp [scSuccRoot]))
+
+/-- Normal terms hold no occurrences. -/
+theorem scCount_normal {σ r : SCTerm} (h : SCInnerRedex σ r) :
+    ∀ {t : SCTerm}, scSucc t = [] → scCount σ t = 0
+  | .S, _ => rfl
+  | .C, _ => rfl
+  | .app a b, hn => by
+      obtain ⟨_, ha, hb⟩ := scSucc_app_nil hn
+      show (if .app a b = σ then 1 else scCount σ a + scCount σ b) = 0
+      rw [if_neg (fun hσ => scInner_not_normal h (by rw [← hσ]; exact hn))]
+      rw [scCount_normal h ha, scCount_normal h hb]
+
+/-- Projection fixes normal terms. -/
+theorem scProj_normal {σ r : SCTerm} (h : SCInnerRedex σ r) :
+    ∀ {t : SCTerm}, scSucc t = [] → scProj σ r t = t
+  | .S, _ => rfl
+  | .C, _ => rfl
+  | .app a b, hn => by
+      obtain ⟨_, ha, hb⟩ := scSucc_app_nil hn
+      show (if .app a b = σ then r else .app (scProj σ r a) (scProj σ r b))
+        = .app a b
+      rw [if_neg (fun hσ => scInner_not_normal h (by rw [← hσ]; exact hn))]
+      rw [scProj_normal h ha, scProj_normal h hb]
+
+/-- The redex never occurs in its own contractum. -/
+theorem scCount_contractum {σ r : SCTerm} (h : SCInnerRedex σ r) :
+    scCount σ r = 0 := by
+  rcases h with ⟨f, g, x, hf, hg, hx, hσ, hr⟩ | ⟨f, g, x, hf, hg, hx, hσ, hr⟩
+  · have hinner : SCInnerRedex σ r := .inl ⟨f, g, x, hf, hg, hx, hσ, hr⟩
+    subst hσ hr
+    have e1 : SCTerm.app (.app f x) (.app g x)
+        ≠ SCTerm.app (.app (.app .S f) g) x := by
+      intro he
+      have h2 : (SCTerm.app (.app f x) (.app g x)).leafCount
+          = (SCTerm.app (.app (.app .S f) g) x).leafCount := by rw [he]
+      have h3 : f.leafCount + x.leafCount + (g.leafCount + x.leafCount)
+          = 1 + f.leafCount + g.leafCount + x.leafCount := h2
+      have h5 := SCTerm.leafCount_pos x
+      have h6 := congrArg (fun t => match t with
+        | SCTerm.app _ b => b.leafCount | _ => 0) he
+      have h7 : g.leafCount + x.leafCount = x.leafCount := h6
+      have h8 := SCTerm.leafCount_pos g
+      omega
+    have e2 : SCTerm.app f x ≠ SCTerm.app (.app (.app .S f) g) x := by
+      intro he
+      have h2 : (SCTerm.app f x).leafCount
+          = (SCTerm.app (.app (.app .S f) g) x).leafCount := by rw [he]
+      have h3 : f.leafCount + x.leafCount
+          = 1 + f.leafCount + g.leafCount + x.leafCount := h2
+      have h5 := SCTerm.leafCount_pos g
+      omega
+    have e3 : SCTerm.app g x ≠ SCTerm.app (.app (.app .S f) g) x := by
+      intro he
+      have h2 : (SCTerm.app g x).leafCount
+          = (SCTerm.app (.app (.app .S f) g) x).leafCount := by rw [he]
+      have h3 : g.leafCount + x.leafCount
+          = 1 + f.leafCount + g.leafCount + x.leafCount := h2
+      have h5 := SCTerm.leafCount_pos f
+      omega
+    show (if SCTerm.app (.app f x) (.app g x)
+        = SCTerm.app (.app (.app .S f) g) x then 1
+      else scCount _ (.app f x) + scCount _ (.app g x)) = 0
+    rw [if_neg e1]
+    show (if SCTerm.app f x = SCTerm.app (.app (.app .S f) g) x then 1
+        else scCount _ f + scCount _ x)
+      + ((if SCTerm.app g x = SCTerm.app (.app (.app .S f) g) x then 1
+        else scCount _ g + scCount _ x)) = 0
+    rw [if_neg e2, if_neg e3, scCount_normal hinner hf, scCount_normal hinner hg,
+      scCount_normal hinner hx]
+  · have hinner : SCInnerRedex σ r := .inr ⟨f, g, x, hf, hg, hx, hσ, hr⟩
+    subst hσ hr
+    have e1 : SCTerm.app (.app f x) g
+        ≠ SCTerm.app (.app (.app .C f) g) x := by
+      intro he
+      have h2 : (SCTerm.app (.app f x) g).leafCount
+          = (SCTerm.app (.app (.app .C f) g) x).leafCount := by rw [he]
+      have h3 : f.leafCount + x.leafCount + g.leafCount
+          = 1 + f.leafCount + g.leafCount + x.leafCount := h2
+      omega
+    have e2 : SCTerm.app f x ≠ SCTerm.app (.app (.app .C f) g) x := by
+      intro he
+      have h2 : (SCTerm.app f x).leafCount
+          = (SCTerm.app (.app (.app .C f) g) x).leafCount := by rw [he]
+      have h3 : f.leafCount + x.leafCount
+          = 1 + f.leafCount + g.leafCount + x.leafCount := h2
+      have h5 := SCTerm.leafCount_pos g
+      omega
+    show (if SCTerm.app (.app f x) g
+        = SCTerm.app (.app (.app .C f) g) x then 1
+      else scCount _ (.app f x) + scCount _ g) = 0
+    rw [if_neg e1]
+    show (if SCTerm.app f x = SCTerm.app (.app (.app .C f) g) x then 1
+        else scCount _ f + scCount _ x) + scCount _ g = 0
+    rw [if_neg e2, scCount_normal hinner hf, scCount_normal hinner hg,
+      scCount_normal hinner hx]
+
+/-- A positive count survives to the enclosing application. -/
+theorem scCount_pos_left {σ r : SCTerm} (_ : SCInnerRedex σ r) {a : SCTerm}
+    (b : SCTerm) (ha : 1 ≤ scCount σ a) : 1 ≤ scCount σ (.app a b) := by
+  show 1 ≤ if SCTerm.app a b = σ then 1 else scCount σ a + scCount σ b
+  by_cases he : SCTerm.app a b = σ
+  · rw [if_pos he]
+    exact Nat.le_refl 1
+  · rw [if_neg he]
+    omega
+
+/-- A positive count survives to the enclosing application (right). -/
+theorem scCount_pos_right {σ r : SCTerm} (_ : SCInnerRedex σ r) (a : SCTerm)
+    {b : SCTerm} (hb : 1 ≤ scCount σ b) : 1 ≤ scCount σ (.app a b) := by
+  show 1 ≤ if SCTerm.app a b = σ then 1 else scCount σ a + scCount σ b
+  by_cases he : SCTerm.app a b = σ
+  · rw [if_pos he]
+    exact Nat.le_refl 1
+  · rw [if_neg he]
+    omega
+
+/-- **Innermost existence**: every non-normal term holds an innermost occurrence. -/
+theorem sc_inner_exists : ∀ {t : SCTerm}, scSucc t ≠ [] →
+    ∃ σ r, SCInnerRedex σ r ∧ 1 ≤ scCount σ t
+  | .S, h => absurd rfl h
+  | .C, h => absurd rfl h
+  | .app a b, h => by
+      by_cases ha : scSucc a = []
+      · by_cases hb : scSucc b = []
+        · -- components normal: the root must be the redex
+          have hroot : scSuccRoot (.app a b) ≠ [] := by
+            intro hr
+            apply h
+            show scSuccRoot (.app a b)
+              ++ (scSucc a).map (fun f' => .app f' b)
+              ++ (scSucc b).map (fun x' => .app a x') = []
+            rw [hr, ha, hb]
+            rfl
+          -- extract the 3-spine shape
+          rcases a with _ | _ | ⟨(_ | _ | ⟨(_ | _ | ⟨p, q⟩), g0⟩), f0⟩
+          · exact absurd rfl hroot
+          · exact absurd rfl hroot
+          · exact absurd rfl hroot
+          · exact absurd rfl hroot
+          · obtain ⟨_, ha1, ha2⟩ := scSucc_app_nil ha
+            obtain ⟨_, ha3, ha4⟩ := scSucc_app_nil ha1
+            refine ⟨_, _, .inl ⟨g0, f0, b, ha4, ha2, hb, rfl, rfl⟩, ?_⟩
+            show 1 ≤ if SCTerm.app (.app (.app .S g0) f0) b
+              = SCTerm.app (.app (.app .S g0) f0) b then 1 else _
+            rw [if_pos rfl]
+            exact Nat.le_refl 1
+          · obtain ⟨_, ha1, ha2⟩ := scSucc_app_nil ha
+            obtain ⟨_, ha3, ha4⟩ := scSucc_app_nil ha1
+            refine ⟨_, _, .inr ⟨g0, f0, b, ha4, ha2, hb, rfl, rfl⟩, ?_⟩
+            show 1 ≤ if SCTerm.app (.app (.app .C g0) f0) b
+              = SCTerm.app (.app (.app .C g0) f0) b then 1 else _
+            rw [if_pos rfl]
+            exact Nat.le_refl 1
+          · exact absurd rfl hroot
+        · obtain ⟨σ, r, hi, hc⟩ := sc_inner_exists hb
+          exact ⟨σ, r, hi, scCount_pos_right hi a hc⟩
+      · obtain ⟨σ, r, hi, hc⟩ := sc_inner_exists ha
+        exact ⟨σ, r, hi, scCount_pos_left hi b hc⟩

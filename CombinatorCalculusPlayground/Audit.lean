@@ -1091,3 +1091,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scStep_exists_parD' does not depend on any axioms -/
 #guard_msgs in #print axioms scStep_exists_parD
+
+/-- info: 'scCount_contractum' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scCount_contractum
+
+/-- info: 'sc_inner_exists' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_inner_exists
