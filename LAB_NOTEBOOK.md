@@ -7444,3 +7444,25 @@ recorded).
   path-transformation toolkit — probe whether Takahashi-projecting a wandering path
   against a low path keeps it low (the strip lemma as a steering wheel); (3) the
   306+ review cadence.
+
+## 2026-08-14 — Stage 306: the steering target, scoped
+
+**The next formal objective, precisely.** THE DEV-TOWER IS COFINAL: for every
+reachable `u`, some iterate `scDev^k t` lies ahead of `u` (`Steps t u → ∃ k,
+SCPars u (devIter k t)`). Proof shape: head-induction on the reduction, pushing
+with the triangle; the one missing lemma is DEV-MONOTONICITY (`SCPar a b →
+SCPar (scDev a) (scDev b)`) — a standard Takahashi fact, provable by structural
+induction on the parallel derivation with shape-inversion case grind (~80 lines;
+the S_red-vs-b's-root-shape cases are the fiddly part). Why it matters for C12:
+cofinality gives every reachable term a CANONICAL rendezvous line — reachability
+questions factor through the tower, and the tower's geometry (sizes of scDev^k t)
+is a computable object per term. If the minimal-peak path can be shown to hug the
+tower's valleys (the steering conjecture), C12 reduces to tower geometry. This is
+the sharpest formal foothold the steering angle has produced.
+
+**Session state.** The n=9 normalization-length resolution sweep still runs
+(task bi5sdy2ye; read its log next session). One hundred eighty-eight autonomous
+stages (119–306). Ranking: (1) dev-monotonicity + cofinality (the scoped grind);
+(2) read the sweep; (3) the steering probe against the pinned tower (do minimal-
+peak paths hug dev-tower valleys? — empirical, cheap once cofinality's objects
+are computable); (4) the 308 review.
