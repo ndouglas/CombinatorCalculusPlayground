@@ -10159,3 +10159,32 @@ decidable — conservation plus the SN-class decider. -/
 def sc_wn_decide {ℓ : Nat} {t n : SCTerm} (hch : RS.SC.StepsN ℓ t n)
     (hn : scSucc n = []) : ∀ u, Decidable (RS.SC.Steps t u) :=
   sc_sn_decide t (sc_wn_sn ℓ ℓ t n (Nat.le_refl ℓ) hch hn)
+
+-- ## Stage 303: THE PHASE BOUNDARY IS ABSOLUTE — storms only reach storms.
+-- With conservation, the map's boundary is a wall: a term with no path to normal
+-- form can never reach a term that has one; the normalizing bulk is unreachable
+-- from outside. Reachability questions never cross the boundary inward.
+
+/-- Weak normalization, as a predicate. -/
+def SCWN (t : SCTerm) : Prop :=
+  ∃ n, RS.SC.Steps t n ∧ scSucc n = []
+
+/-- WN pulls back along reachability. -/
+theorem scWN_of_steps {t u : SCTerm} (h : RS.SC.Steps t u) (hu : SCWN u) :
+    SCWN t := by
+  obtain ⟨n, hn, hnf⟩ := hu
+  exact ⟨n, RS.Steps.trans h hn, hnf⟩
+
+/-- **Storms only reach storms**: non-normalizing terms never reach normalizing
+ones. -/
+theorem sc_storm_closed {t u : SCTerm} (h : RS.SC.Steps t u) (ht : ¬ SCWN t) :
+    ¬ SCWN u :=
+  fun hu => ht (scWN_of_steps h hu)
+
+/-- Every reduct of a strongly normalizing term is strongly normalizing — and by
+conservation, every reduct of a NORMALIZING term is strongly normalizing. -/
+theorem scSN_of_wn_reduct {t u : SCTerm} (h : RS.SC.Steps t u) (ht : SCWN t) :
+    SCSN u := by
+  obtain ⟨n, hn, hnf⟩ := ht
+  obtain ⟨ℓ, hch⟩ := RS.Steps.toStepsN hn
+  exact scSN_steps (sc_wn_sn ℓ ℓ t n (Nat.le_refl ℓ) hch hnf) h
