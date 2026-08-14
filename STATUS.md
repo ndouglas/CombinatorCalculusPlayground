@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE DEV TOWER IS COFINAL (Stage 307,
+confluence makes even the trees rejoin. THE n=9 BUSY BEAVER (Stage 309): maximum
+normalization length at nine leaves is 15,044 steps — the length
+curve goes vertical (4, 15, 150, 15044) while minimal peaks stay flat
+(1, 23, 20); C12's tame peak curve is the program's most valuable
+empirical fact. THE DEV TOWER IS COFINAL (Stage 307,
 `sc_dev_cofinal`, [propext]): every reachable term rejoins one
 computable line per term — dev-monotonicity fell to a double
 triangle; reachability now factors through tower geometry.

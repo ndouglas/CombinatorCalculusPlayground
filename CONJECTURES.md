@@ -7462,3 +7462,20 @@ storms grows monotonically (no C12 problem: deciding u ∈ tower-ancestry is a s
 bounded check against a growing line)... the subtlety is that u may rejoin AHEAD of
 where it left. Next: formalize the rejoin bound via the strip lemma and test whether
 tower-factored reachability is already a decision procedure for a subclass.
+
+### Stage 309: the length curve goes vertical — 15,044 steps at nine leaves
+
+The n=9 resolution sweep: 59 late normalizers hid beyond the fuel-300 cap, and the
+true maximum leftmost normalization length at NINE leaves is **15,044 steps** (fuel
+20,000, size cap 1,500; 14,898 persistent non-normalizers ≈ 2% of the 732k terms).
+The two-curves picture is now four orders of magnitude wide: normalization LENGTH
+runs 4, 15, 150, 15044 (n = 6..9) while minimal reachability PEAKS run 1, 23, 20
+(n = 6, 8, 10). Consequences: (a) any decision procedure routed through
+normalization-length bounds needs a function growing at busy-beaver-like empirical
+rates — such L(n) exists (conservation makes every WN length finite) but its
+computability is exactly the open question in yet another coat; (b) C12's
+peak-bounded search is the only route whose bounding function looks TAME — the flat
+peak curve is the program's most valuable empirical fact; (c) a nine-leaf term that
+works for fifteen thousand steps before settling is a magnificent specimen — the
+n=9 busy beaver of {S,C} — and deserves identification and a pinned certificate
+next session (its identity is recoverable by re-running the sweep with logging).

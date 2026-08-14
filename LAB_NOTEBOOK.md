@@ -7493,3 +7493,10 @@ are computable); (4) the 308 review.
   the theorem itself on the best-supported special case — storm-to-storm
   reachability along MONOTONE paths (never-descending witnesses), where the walls
   may already suffice.
+
+## 2026-08-14 — Stage 309: the n=9 busy beaver — 15,044 steps
+
+- One hundred ninety-one autonomous stages (119–309). Ranking: (1) identify and
+  certify the 15,044-step nine-leaf busy beaver (re-run with logging; pin its
+  march-prefix certificate and its normal form); (2) the 310 review; (3) C12 on
+  monotone storm-to-storm witnesses (as previously ranked).
