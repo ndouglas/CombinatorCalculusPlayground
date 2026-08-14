@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. CONSERVATION (Stage 302, `sc_wn_sn` +
+confluence makes even the trees rejoin. THE PHASE BOUNDARY (Stage 303,
+`sc_storm_closed`, [propext]): storms only reach storms — the open
+territory is exactly storm-to-storm reachability; C12's content is
+the computability of the (existing) minimal-peak function.
+CONSERVATION (Stage 302, `sc_wn_sn` +
 `sc_wn_decide`): WN = SN in {S,C}, and reachability from any
 normalizing term is DECIDABLE — pillar one complete, proved by the
 projection method in three stages; ONE conjecture (C12-on-storms)

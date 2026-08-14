@@ -7418,3 +7418,15 @@ conjecture stands between this program and the decidability of {S,C} reachabilit
 A methodological note for the record: the audit caught a Classical.choice leak
 (omega discharging non-arithmetic goals classically) — the axiom discipline is not
 ceremony; it found a real contamination the same hour it appeared.
+
+### Stage 303: the phase boundary is absolute
+
+`sc_storm_closed`: storms only reach storms — with conservation, the map's phase
+boundary is a wall crossed in one direction only, and the open territory is exactly
+storm-to-storm reachability. The frontier's sharpest formal statement, recorded:
+the function f(n) := the maximum over reachable pairs of size ≤ n of the minimal
+path-peak EXISTS (each pair's minimum is finite, pairs are finite) — C12's content
+is precisely that f is COMPUTABLE, and any computable bound whatsoever (affine or
+not) feeds the Stage-132 backbone. Equivalently: deciding SCWN itself is the open
+question in another coat (a normalization bound for WN terms would decide WN; C12
+would supply one). One question, many coats — all of them storm-shaped.

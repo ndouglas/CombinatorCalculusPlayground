@@ -7386,3 +7386,9 @@ three pillars as hypotheses, to keep the target visible). (3) Ideonomy at ~300.
   DecidablePred reachability, assembled across the three pillars — requires a
   computable phase-classifier or a cleaner uniform statement; scope it). (2)
   Ideonomy. (3) C12-on-storms: the last conjecture standing.
+
+## 2026-08-14 — Stage 303: the boundary is a wall
+
+- One hundred eighty-five autonomous stages (119–303). Ranking: (1) the celebration
+  review + ideonomy at 304. (2) The worst-dig growth-rate probe (n = 8..13,
+  adversarial — the discriminating C12 curve). (3) C12 itself: the last conjecture.
