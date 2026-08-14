@@ -10188,3 +10188,22 @@ theorem scSN_of_wn_reduct {t u : SCTerm} (h : RS.SC.Steps t u) (ht : SCWN t) :
   obtain ⟨n, hn, hnf⟩ := ht
   obtain ⟨ℓ, hch⟩ := RS.Steps.toStepsN hn
   exact scSN_steps (sc_wn_sn ℓ ℓ t n (Nat.le_refl ℓ) hch hnf) h
+
+-- ## Stage 305: THE PROJECTION IS A REDUCT — the tower fact.
+-- Completing the projection API: collapsing every occurrence of an innermost redex
+-- is itself a reduction, so `t →* P t →* P² t →* …` is a canonical reduction tower
+-- (the innermost-parallel strategy, factored through the conservation machinery).
+
+/-- Collapsing all occurrences is a reduction. -/
+theorem scSteps_to_proj {σ r : SCTerm} (h : SCInnerRedex σ r) :
+    ∀ (t : SCTerm), RS.SC.Steps t (scProj σ r t)
+  | .S => @RS.Steps.refl RS.SC .S
+  | .C => @RS.Steps.refl RS.SC .C
+  | .app a b => by
+      by_cases he : SCTerm.app a b = σ
+      · rw [scProj_self he]
+        exact RS.Steps.tail
+          (show SCStep (.app a b) r from by rw [he]; exact scInner_step h)
+          (@RS.Steps.refl RS.SC r)
+      · rw [scProj_app_ne he]
+        exact scSteps_congApp (scSteps_to_proj h a) (scSteps_to_proj h b)

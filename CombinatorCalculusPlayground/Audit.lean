@@ -1115,3 +1115,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scSN_of_wn_reduct' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms scSN_of_wn_reduct
+
+/-- info: 'scSteps_to_proj' depends on axioms: [propext] -/
+#guard_msgs in #print axioms scSteps_to_proj
