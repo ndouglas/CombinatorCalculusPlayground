@@ -7477,3 +7477,19 @@ are computable); (4) the 308 review.
   bound (strip-based: quantify k and the rejoin path's peaks in terms of the
   original path — the tower-factored decidability skeleton). (2) Read the n=9
   sweep. (3) The 308 review.
+
+## 2026-08-14 — Stage 308: the rejoin caveat (analysis note)
+
+- Pushing the tower-factored decidability skeleton one step exposed the gap before
+  any code was written: par-reaching the tower is NECESSARY for reachability but
+  not sufficient (any term joinable with t rejoins t's tower — the tower factors
+  JOINABILITY; reachability needs direction on top). The tower remains valuable as
+  the canonical rendezvous object, but the decision procedure needs the directional
+  ingredient — which is, once again, C12-shaped. Recorded before implementation
+  rather than after: the 3-attempt rule's cheapest possible invocation.
+- One hundred ninety autonomous stages (119–308). Ranking: (1) read the n=9 sweep
+  (still running, task bi5sdy2ye); (2) the 309 review; (3) C12 direct: with
+  steering, towers, walls, and ledgers all mapped, the next session should attempt
+  the theorem itself on the best-supported special case — storm-to-storm
+  reachability along MONOTONE paths (never-descending witnesses), where the walls
+  may already suffice.
