@@ -10207,3 +10207,47 @@ theorem scSteps_to_proj {σ r : SCTerm} (h : SCInnerRedex σ r) :
           (@RS.Steps.refl RS.SC r)
       · rw [scProj_app_ne he]
         exact scSteps_congApp (scSteps_to_proj h a) (scSteps_to_proj h b)
+
+-- ## Stage 307: THE DEV TOWER IS COFINAL — every road rejoins the canonical line.
+-- Dev-monotonicity falls to a DOUBLE TRIANGLE (no case analysis: parallel steps
+-- from `b` land at `scDev b`, and `b` par-reaches `scDev a`, so `scDev a` par-
+-- reaches `scDev b`). Iterating: the development tower t, dev t, dev² t, … absorbs
+-- every reachable term — reachability factors through one computable line per term.
+
+/-- Dev-monotonicity, by double triangle. -/
+theorem SCPar.dev_mono {a b : SCTerm} (h : SCPar a b) :
+    SCPar (scDev a) (scDev b) :=
+  SCPar.triangle (SCPar.triangle h)
+
+/-- The development tower. -/
+def scDevIter : Nat → SCTerm → SCTerm
+  | 0, t => t
+  | k + 1, t => scDevIter k (scDev t)
+
+/-- Tower monotonicity. -/
+theorem scDevIter_mono : ∀ (k : Nat) {a b : SCTerm}, SCPar a b →
+    SCPar (scDevIter k a) (scDevIter k b)
+  | 0, _, _, h => h
+  | k + 1, _, _, h => scDevIter_mono k (SCPar.dev_mono h)
+
+/-- Parallel chains extend at the tail. -/
+theorem SCPars.snoc : ∀ {t u v : SCTerm}, SCPars t u → SCPar u v → SCPars t v := by
+  intro t u v h hp
+  induction h with
+  | refl => exact SCPars.tail hp (SCPars.refl _)
+  | tail h1 _ ih => exact SCPars.tail h1 (ih hp)
+
+/-- **THE DEV TOWER IS COFINAL**: every reachable term par-reaches some tower
+iterate — one computable rendezvous line per term. -/
+theorem sc_dev_cofinal : ∀ {t u : SCTerm}, RS.SC.Steps t u →
+    ∃ k, SCPars u (scDevIter k t) := by
+  intro t u h
+  refine h.rec (motive := fun (a b : SCTerm) _ =>
+    ∃ k, SCPars b (scDevIter k a)) ?_ ?_
+  · intro a
+    exact ⟨0, SCPars.refl a⟩
+  · intro a b c s _ ih
+    obtain ⟨k, hk⟩ := ih
+    refine ⟨k + 1, ?_⟩
+    show SCPars c (scDevIter k (scDev a))
+    exact hk.snoc (scDevIter_mono k (SCPar.triangle (SCPar.of_step s)))

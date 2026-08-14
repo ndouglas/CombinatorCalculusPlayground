@@ -1118,3 +1118,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'scSteps_to_proj' depends on axioms: [propext] -/
 #guard_msgs in #print axioms scSteps_to_proj
+
+/-- info: 'SCPar.dev_mono' depends on axioms: [propext] -/
+#guard_msgs in #print axioms SCPar.dev_mono
+
+/-- info: 'sc_dev_cofinal' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_dev_cofinal
