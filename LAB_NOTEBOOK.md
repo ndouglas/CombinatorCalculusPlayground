@@ -7392,3 +7392,46 @@ three pillars as hypotheses, to keep the target visible). (3) Ideonomy at ~300.
 - One hundred eighty-five autonomous stages (119–303). Ranking: (1) the celebration
   review + ideonomy at 304. (2) The worst-dig growth-rate probe (n = 8..13,
   adversarial — the discriminating C12 curve). (3) C12 itself: the last conjecture.
+
+## 2026-08-14 — Stage 304: the review at 303 — the conservation arc, complete
+
+**What was proved, in plain terms.** {S,C} conserves work: nothing is ever erased,
+so a term that can settle must settle — no term both reaches a normal form and hosts
+an infinite computation (`sc_wn_sn`). Consequences pinned alongside: reachability
+from every normalizing term is decidable (`sc_wn_decide`); every reduct of a
+normalizing term is itself strongly normalizing; and the phase boundary is absolute
+(`sc_storm_closed`). The proof method (the projection: collapse all occurrences of
+one innermost redex; account every step) was invented in-program after the standard
+routes failed honestly, and it is elementary end to end.
+
+**Ledger.** 368 pins, 10,190 lines in SCDecidability.lean, 666 commits, zero
+warnings, axiom ceiling [propext, Quot.sound] (one Classical.choice intrusion
+caught by the audit and purged); 186 consecutive autonomous stages (119–304).
+
+**The program, one paragraph.** Question: is {S,C} reachability decidable (and hence
+no universal computer)? Map: three phases. Bulk (~96%): DECIDABLE, PROVED. Corridors
+(~0.15%): DECIDABLE, PROVED, CLASSIFIED (two driver families as one-law theorems,
+climb+pump principles, three full portraits, a grid that predicts new species).
+Storms (~3.5%): decidable conditional on ONE law — bounded intermediates (C12 in any
+computable form), supported by exhaustive diagonals (excess 1, 23, 20 at n = 6, 8,
+10), two crash screens, ten walls, and a closed per-step ledger; obstructed by
+compounding duplication, which defeats every static potential tried (all failures
+recorded).
+
+**Ideonomy pass — C12 endgame angles, ranked by novelty × tractability.**
+(a) THE PROJECTION, AGAIN: conservation fell to "collapse one innermost redex."
+    Storms have no innermost NORMAL-ARG redexes?? — false, they do (that's how
+    digs happen). Can the projection method bound storm digs: project a storm's
+    reduction over its innermost redex; the ledger says image-digs ≥ real-digs −
+    count... iterate: dig(t) ≤ Σ counts over the projection tower — the tower
+    terminates (each projection strictly reduces... what?). PROBE FIRST: compute
+    projection towers of storm states; if tower height × counts is affine, this is
+    the C12 proof shape. NOVEL and cheap to probe — rank 1.
+(b) The worst-dig growth curve (n = 8..13 adversarial) — the discriminating data.
+(c) The u-side induction: decide Steps t u by induction on |u| (small targets need
+    deep digs which cost inventory; the ledger in reverse). Half-formed.
+(d) WN-decidability as the equivalent coat: a normalization-length bound L(n) for
+    WN terms of size n would decide WN and (with the boundary wall) simplify the
+    remaining question. The diagonal data suggests L is small; L's computability is
+    again C12-shaped. Probe: measure max normalization length vs n exhaustively.
+**Next arc**: (a)'s probe, then (b), then whichever bites.
