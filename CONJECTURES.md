@@ -7446,3 +7446,19 @@ planning and honestly demoted — creations re-enter through the same compoundin
 that killed the static potentials. C12 remains the last conjecture, now with its
 shape precisely mapped: a path-STEERING theorem (why can a wanderer always be
 replaced by a low road?), not a path-existence bound.
+
+### Stage 307: THE DEV TOWER IS COFINAL — and the double triangle
+
+`sc_dev_cofinal` ([propext] only): every reachable term par-reaches some iterate of
+the development tower — one computable rendezvous line per term. The scoped
+eighty-line dev-monotonicity grind collapsed to a single line: `triangle (triangle
+h)`. What this gives the C12 program: reachability t →* u now FACTORS — u rejoins
+the tower at some level k, so deciding reachability reduces to (a) the tower's
+geometry (computable per term: sizes of dev^k t) and (b) the rejoin distance (how
+far u must reduce to hit the tower, and at what peak). The steering conjecture,
+sharpened: the rejoin is cheap (the strip lemma bounds it by u's own par-distance
+from t), so the remaining question localizes in the TOWER's profile — which for
+storms grows monotonically (no C12 problem: deciding u ∈ tower-ancestry is a size-
+bounded check against a growing line)... the subtlety is that u may rejoin AHEAD of
+where it left. Next: formalize the rejoin bound via the strip lemma and test whether
+tower-factored reachability is already a decision procedure for a subclass.

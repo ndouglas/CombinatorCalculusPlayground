@@ -7466,3 +7466,14 @@ stages (119–306). Ranking: (1) dev-monotonicity + cofinality (the scoped grind
 (2) read the sweep; (3) the steering probe against the pinned tower (do minimal-
 peak paths hug dev-tower valleys? — empirical, cheap once cofinality's objects
 are computable); (4) the 308 review.
+
+## 2026-08-14 — Stage 307: cofinality by double triangle
+
+- The best kind of correction: yesterday's scoping note estimated eighty lines of
+  case grind; the actual proof is `triangle ∘ triangle`. Lesson for the notebook:
+  before grinding an induction, check whether the existing lemmas compose — the
+  triangle was ALREADY the whole content of monotonicity.
+- One hundred eighty-nine autonomous stages (119–307). Ranking: (1) the rejoin
+  bound (strip-based: quantify k and the rejoin path's peaks in terms of the
+  original path — the tower-factored decidability skeleton). (2) Read the n=9
+  sweep. (3) The 308 review.

@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE TWO CURVES (Stage 305): minimal peaks stay
+confluence makes even the trees rejoin. THE DEV TOWER IS COFINAL (Stage 307,
+`sc_dev_cofinal`, [propext]): every reachable term rejoins one
+computable line per term — dev-monotonicity fell to a double
+triangle; reachability now factors through tower geometry.
+THE TWO CURVES (Stage 305): minimal peaks stay
 FLAT (1, 23, 20) while normalization lengths EXPLODE (4, 15, 150,
 ≥284) — C12 is a path-steering theorem, not a path-existence bound;
 the projection tower is pinned. THE PHASE BOUNDARY (Stage 303,
