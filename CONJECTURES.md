@@ -7430,3 +7430,19 @@ is precisely that f is COMPUTABLE, and any computable bound whatsoever (affine o
 not) feeds the Stage-132 backbone. Equivalently: deciding SCWN itself is the open
 question in another coat (a normalization bound for WN terms would decide WN; C12
 would supply one). One question, many coats — all of them storm-shaped.
+
+### Stage 305: the two curves — peaks stay flat, lengths explode
+
+The session's discriminating data, exhaustively at n ≤ 8 (n = 9 lower bounds, full
+resolution running): the MINIMAL-PEAK curve (what decidability needs) stays flat —
+excess 1, 23, 20 at n = 6, 8, 10 — while the NORMALIZATION-LENGTH curve explodes:
+max leftmost lengths 4, 15, 150, ≥ 284, with WN-path peak excesses 4, 34, 98, ≥ 182.
+Reading: leftmost reductions take wild detours (the length curve is the busy-beaver
+shadow of the calculus), but SOME path stays low — exactly C12's claim, and the two
+curves' divergence is the cleanest evidence yet that the claim is about path CHOICE,
+not path existence. Also this stage: `scSteps_to_proj` pins the projection tower
+(t →* P t →* P² t …); the ideonomy's tower angle for proving C12 was probed in
+planning and honestly demoted — creations re-enter through the same compounding door
+that killed the static potentials. C12 remains the last conjecture, now with its
+shape precisely mapped: a path-STEERING theorem (why can a wanderer always be
+replaced by a low road?), not a path-existence bound.

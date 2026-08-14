@@ -7435,3 +7435,12 @@ recorded).
     remaining question. The diagonal data suggests L is small; L's computability is
     again C12-shaped. Probe: measure max normalization length vs n exhaustively.
 **Next arc**: (a)'s probe, then (b), then whichever bites.
+
+## 2026-08-14 — Stage 305: peaks flat, lengths exploding
+
+- One hundred eighty-seven autonomous stages (119–305). The n=9 length-resolution
+  sweep runs in background (log: task bi5sdy2ye). Ranking: (1) read the sweep;
+  (2) C12 as path-steering: the confluence machinery (SCPar, triangle) is the
+  path-transformation toolkit — probe whether Takahashi-projecting a wandering path
+  against a low path keeps it low (the strip lemma as a steering wheel); (3) the
+  306+ review cadence.

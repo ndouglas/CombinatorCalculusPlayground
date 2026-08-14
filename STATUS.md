@@ -1097,7 +1097,10 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE PHASE BOUNDARY (Stage 303,
+confluence makes even the trees rejoin. THE TWO CURVES (Stage 305): minimal peaks stay
+FLAT (1, 23, 20) while normalization lengths EXPLODE (4, 15, 150,
+≥284) — C12 is a path-steering theorem, not a path-existence bound;
+the projection tower is pinned. THE PHASE BOUNDARY (Stage 303,
 `sc_storm_closed`, [propext]): storms only reach storms — the open
 territory is exactly storm-to-storm reachability; C12's content is
 the computability of the (existing) minimal-peak function.
