@@ -7551,3 +7551,25 @@ ledgers AND the diagonal). (4) Ideonomy at ~314.
   (2) Re-run the n=10 diagonal WITHOUT skip heuristics on the suspect subset (the
   blown/early-stopped terms only). (3) Ideonomy at 315: what mechanism makes a
   nine-leaf storm need a 350-leaf transient — and is it an engine after all?
+
+## 2026-08-17 — Stage 314: the discriminating hunt launched; ideonomy at 315
+
+**The hunt.** beaverpeak.py runs in background (hash-compressed capped BFS, caps
+60–116 stepping 4, 30M-state budget, incremental log at scratchpad/beaverpeak.log).
+Its output is the single most important number the program currently lacks: the
+beaver pair's minimal peak, which discriminates C12-affine (≈6n would put it near
+60–70) from C12-hard (forced-high near 357).
+
+**Ideonomy (due).** The beaver's mechanism question — what makes a nine-leaf storm
+need a ≥60-leaf transient to reach a nine-leaf normal form — generates the arc's
+leads: (a) ANATOMY: profile the beaver's leftmost run for engine signatures
+(periodic segments, junk emission, tower shapes) — 11.5k shrink-fires in a storm
+suggests a long C-inventory-consuming phase: where did the inventory come from?
+(b) THE TRANSIENT-ENGINE HYPOTHESIS: mountains = engines built, run, dismantled;
+if the beaver's transient IS a recognizable engine (mill/swapmill/pump species),
+C13's catalog explains mountains and C12's excess = the engine catalog's transient
+sizes — a genuinely provable shape. (c) MICRO-BEAVERS: the n=7 (len 15) and n=8
+(len 150) beavers are small enough for EXACT minimal-peak computation — pin the
+whole exact diagonal at n ≤ 8 including these, no heuristics. (d) The n=10 suspect
+subset re-run. Ranking: (c) first (exact and cheap), then read the hunt, then (a).
+- One hundred ninety-six autonomous stages (119–314).
