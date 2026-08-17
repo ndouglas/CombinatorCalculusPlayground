@@ -7500,3 +7500,33 @@ are computable); (4) the 308 review.
   certify the 15,044-step nine-leaf busy beaver (re-run with logging; pin its
   march-prefix certificate and its normal form); (2) the 310 review; (3) C12 on
   monotone storm-to-storm witnesses (as previously ranked).
+
+## 2026-08-17 — Stage 311: the review at 310 (beaver hunt running)
+
+**The steering arc (303–309), consolidated.** The phase boundary made absolute
+(storms only reach storms) → the review-and-ideonomy that spawned four C12 angles →
+two honestly demoted before implementation (projection tower for digs; tower-
+factored reachability — necessary-not-sufficient) → THE DEV TOWER IS COFINAL
+(dev-monotonicity by double triangle, the program's cheapest big theorem) → the
+two-curves discovery, culminating in the n=9 busy beaver: normalization lengths
+4, 15, 150, 15044 against minimal peaks 1, 23, 20. The program's empirical center
+of gravity is now the FLATNESS of the peak curve.
+
+**Ledger.** 371 pins, 10,253 lines in SCDecidability.lean, 674 commits, zero
+warnings, axiom ceiling [propext, Quot.sound]; 193 consecutive autonomous stages
+(119–311). Since the check-in at 266: conservation proved (WN = SN), the bulk
+decider, the phase wall, three engine portraits → the classification grid → two
+family laws → cofinality — the roadmap's "15–25 stages to the assembled case" has
+consumed 45 stages and delivered two of three pillars WHOLE, with the third
+reduced to one precisely-shaped law.
+
+**Next arc (ranked).** (1) Certify the beaver when the hunt lands (march-prefix
++ NF pins — kernel cost check first: 15k-step decide may need the maxRecDepth
+pattern or a StepsLe-based certificate). (2) C12 on monotone witnesses: define
+never-descending reachability (StepsMono), prove it decidable OUTRIGHT (peaks =
+endpoint sizes! monotone paths have no excess by definition — the decidability is
+free via the capped decider; the QUESTION is which reachability facts admit
+monotone witnesses — probe: what fraction of storm-to-storm facts are monotone-
+witnessed?). (3) The C12-statement refinement the two curves suggest: excess as a
+function of |u| alone (peaks ≤ |u| + g(|t|) with g flat-ish — matches corridor
+ledgers AND the diagonal). (4) Ideonomy at ~314.
