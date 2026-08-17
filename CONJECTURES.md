@@ -7479,3 +7479,16 @@ peak curve is the program's most valuable empirical fact; (c) a nine-leaf term t
 works for fifteen thousand steps before settling is a magnificent specimen — the
 n=9 busy beaver of {S,C} — and deserves identification and a pinned certificate
 next session (its identity is recoverable by re-running the sweep with logging).
+
+### Stage 312: the monotone majority — most storm facts need no detour at all
+
+The witness-shape probe: of 60 storm-to-storm reachable pairs (random walks,
+n=10 sources), **34 admit witnesses whose peaks never exceed the target's own
+size**, 10 more need one leaf of slack, 2 more need two — 77% within `|u| + 2`.
+The remaining quarter need deeper detours (bounded by the C12 evidence, unknown
+exactly here). Reading: the storm phase's reachability is MOSTLY monotone — paths
+that only build — and the detour-needing minority is where C12's content
+concentrates. Refined statement suggested by all curves together (corridor
+ledgers, the flat diagonal, this probe): peaks ≤ |u| + g(|t|) with g flat-to-affine
+— the excess lives on the SOURCE side, as transient machinery that gets built,
+used, and dismantled (the mountains are engines; engines are transients).

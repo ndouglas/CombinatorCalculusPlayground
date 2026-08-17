@@ -7530,3 +7530,10 @@ monotone witnesses — probe: what fraction of storm-to-storm facts are monotone
 witnessed?). (3) The C12-statement refinement the two curves suggest: excess as a
 function of |u| alone (peaks ≤ |u| + g(|t|) with g flat-ish — matches corridor
 ledgers AND the diagonal). (4) Ideonomy at ~314.
+
+## 2026-08-17 — Stage 312: the monotone majority
+
+- One hundred ninety-four autonomous stages (119–312). Ranking: (1) the beaver
+  certificate (hunt still running). (2) The g-form probe: measure needed-slack as a
+  function of |t| with |u| controlled (isolate the source-side excess). (3)
+  Ideonomy at 314.
