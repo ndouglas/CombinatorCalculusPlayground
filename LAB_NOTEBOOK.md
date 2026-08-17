@@ -7580,3 +7580,18 @@ subset re-run. Ranking: (c) first (exact and cheap), then read the hunt, then (a
   n=9 hunt (running); (2) anatomy of the n=8 beaver (1,723 steps is probe-sized:
   is its transient an engine? the transient-engine hypothesis's first exact test);
   (3) the 317 review.
+
+## 2026-08-17 — Stage 316: the beaver's anatomy — a slow burn, not a clean engine
+
+- The n=8 beaver climbs to 203 in 149 fires, then descends for 1,574 steps of
+  mostly-unit drips with irregular bumps — no clean period, no recognizable
+  corridor grammar. The transient-engine hypothesis (mountains = engines) takes
+  its first hit: this mountain looks more like a slowly-draining reservoir of
+  C-inventory than a machine. Either the engine notion needs widening (noisy
+  engines) or mountains have a second mechanism — the wide-descent storm.
+- One hundred ninety-eight autonomous stages (119–316). The n=9 minimal-peak hunt
+  continues in background (excess > 59 and counting; log at
+  scratchpad/beaverpeak.log). Ranking: (1) read the hunt; (2) the 317 review;
+  (3) the reservoir model: is descent length ≈ accumulated C-inventory at peak?
+  (probe: Cinv at the beaver's peak vs its 1,574-step descent — the walls say
+  drops ≤ C-fires; is the inventory-at-peak ≈ 1574/11543-scaled?).
