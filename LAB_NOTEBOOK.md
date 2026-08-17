@@ -7573,3 +7573,10 @@ sizes — a genuinely provable shape. (c) MICRO-BEAVERS: the n=7 (len 15) and n=
 whole exact diagonal at n ≤ 8 including these, no heuristics. (d) The n=10 suspect
 subset re-run. Ranking: (c) first (exact and cheap), then read the hunt, then (a).
 - One hundred ninety-six autonomous stages (119–314).
+
+## 2026-08-17 — Stage 315: the micro-beavers, exact
+
+- One hundred ninety-seven autonomous stages (119–315). Ranking: (1) read the
+  n=9 hunt (running); (2) anatomy of the n=8 beaver (1,723 steps is probe-sized:
+  is its transient an engine? the transient-engine hypothesis's first exact test);
+  (3) the 317 review.

@@ -7512,3 +7512,19 @@ exhausted 4M states below peak 200 without finding the target, so the true value
 may sit high). The program's empirical center of gravity shifts: from "peaks are
 flat" to "peaks grow slowly and path-choice is combinatorially deep" — C12 is
 alive but harder than the plateau made it look.
+
+### Stage 315: the micro-beavers, exact — and a second heuristic blind spot
+
+Exact computations, no heuristics, and each one teaches. The n=7 beaver
+(`S (S (S S)) S S S`, 15 steps) is a terminating GROWER: its normal form has 40
+leaves and its exact minimal peak is 40 — zero excess over the target, perfectly
+monotone. The n=8 beaver (`S S C (S (S S) S) C`) corrects the record twice: its
+true length is **1,723 steps** (the earlier "150" was an artifact of the size-400
+cap — second heuristic blind spot exposed this arc), and its EXACT minimal peak is
+**61** against endpoint sizes (8, 22): excess 39. Corrected curves: lengths 4, 15,
+1723, 15044 (n = 6..9); beaver-pair excesses (over max endpoint): 0, 39, > 50.
+The excess function is genuinely growing and pair-class-sensitive; C12-affine
+remains compatible (39–50 at n = 8–9 fits slopes ~5n) but the margin is thin, and
+the n=9 exact value (hunt running) now discriminates sharply. Methodological law,
+twice-bought this arc: EVERY capped sweep must report its truncation set — silent
+caps manufacture plateaus.
