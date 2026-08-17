@@ -7492,3 +7492,23 @@ concentrates. Refined statement suggested by all curves together (corridor
 ledgers, the flat diagonal, this probe): peaks ≤ |u| + g(|t|) with g flat-to-affine
 — the excess lives on the SOURCE side, as transient machinery that gets built,
 used, and dismantled (the mountains are engines; engines are transients).
+
+### Stage 313: THE BEAVER'S CORRECTION — the diagonal plateau is dead
+
+The n=9 busy beaver, fully profiled, and the correction it forces. The specimen:
+`S C C (S ((C C) C)) (S S)` — nine leaves, 15,044 leftmost steps to a nine-leaf
+normal form, leftmost peak 357, and a pure STORM throughout (15,029 of its steps
+are branch-points, width up to 33 — not a corridor). Exhaustive capped BFS proves
+its pair needs **minimal peak > 59: diagonal excess ≥ 51 at n=9**, versus 23 at
+n=8. **Stage 282's "mountain height plateaus" is hereby RETRACTED**: the n=10
+sweep's blow-up skips and early-stop heuristics evidently hid exactly the beaver-
+class pairs; the honest diagonal is 1 (n=6), 23 (n=8), ≥ 51 (n=9), with n=10
+unknown. What survives, corrected: the peak curve GROWS but remains four orders of
+magnitude below the length curve (≥51 vs 15,044 at the same n); C12's affine form
+is still compatible (the three points sit near ~6n) but is no longer
+probe-favored over faster growth — the discriminating measurement is now the
+beaver pair's EXACT minimal peak (known range (59, 357]; best-first search
+exhausted 4M states below peak 200 without finding the target, so the true value
+may sit high). The program's empirical center of gravity shifts: from "peaks are
+flat" to "peaks grow slowly and path-choice is combinatorially deep" — C12 is
+alive but harder than the plateau made it look.

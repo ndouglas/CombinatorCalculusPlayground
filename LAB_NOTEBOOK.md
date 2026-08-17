@@ -7537,3 +7537,17 @@ ledgers AND the diagonal). (4) Ideonomy at ~314.
   certificate (hunt still running). (2) The g-form probe: measure needed-slack as a
   function of |t| with |u| controlled (isolate the source-side excess). (3)
   Ideonomy at 314.
+
+## 2026-08-17 — Stage 313: the beaver's correction
+
+- The best falsification of the whole program: a routine certification stage
+  (identify the beaver) overturned a headline empirical claim (the plateau) by
+  exposing the earlier sweep's heuristic blind spot. Corrections cascade honestly:
+  282's plateau retracted; 305/309's "flat peaks" restated as "slow-growing peaks";
+  the two-curves gap (the REAL finding) survives at four orders of magnitude.
+- One hundred ninety-five autonomous stages (119–313). Ranking: (1) the beaver
+  pair's exact minimal peak (the discriminating number: smarter search — bidirectional,
+  or peak-bisection with memory-bounded BFS; possibly heavy compute via nohup).
+  (2) Re-run the n=10 diagonal WITHOUT skip heuristics on the suspect subset (the
+  blown/early-stopped terms only). (3) Ideonomy at 315: what mechanism makes a
+  nine-leaf storm need a 350-leaf transient — and is it an engine after all?
