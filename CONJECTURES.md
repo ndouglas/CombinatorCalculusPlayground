@@ -7528,3 +7528,21 @@ remains compatible (39–50 at n = 8–9 fits slopes ~5n) but the margin is thin
 the n=9 exact value (hunt running) now discriminates sharply. Methodological law,
 twice-bought this arc: EVERY capped sweep must report its truncation set — silent
 caps manufacture plateaus.
+
+### Stage 317: the hunt's verdict — the peak curve is steep
+
+The background hunt exhausted its 30M-state budget: the n=9 beaver pair is
+unreachable at cap 92 (28.1M states explored) — **minimal peak > 92, excess > 83**,
+known range (92, 357]. The beaver-pair excess sequence now reads: ~0 (n=7), 39
+exact (n=8), > 83 (n=9) — roughly DOUBLING per leaf, not affine. Honest restatement
+of the frontier: **C12's affine form (`scLinearExcess` as literally stated) is now
+probe-DISFAVORED**; what remains supported is the general computable-bound form
+(any computable f feeds the Stage-132 backbone — `sc_decidable_of_bound` never
+needed affinity), for which the evidence is existence-shaped rather than
+growth-shaped. The two-curves gap narrows to two orders of magnitude (>83 vs
+15,044) — real but no longer astronomical. The corrected empirical picture, three
+sessions of falsification deep: normalization lengths explode super-exponentially;
+minimal peaks grow fast (possibly exponentially); the decidability question rides
+entirely on whether the peak function — which provably exists — is computable, and
+no probe can settle computability. The program's empirical phase on this question
+has likely reached its natural limit; what remains is mathematics.

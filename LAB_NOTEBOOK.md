@@ -7595,3 +7595,32 @@ subset re-run. Ranking: (c) first (exact and cheap), then read the hunt, then (a
   (3) the reservoir model: is descent length ≈ accumulated C-inventory at peak?
   (probe: Cinv at the beaver's peak vs its 1,574-step descent — the walls say
   drops ≤ C-fires; is the inventory-at-peak ≈ 1574/11543-scaled?).
+
+## 2026-08-17 — Stage 317: the review at 316 — the empirical limit, reached honestly
+
+**The beaver arc (309–317), consolidated.** One specimen — nine leaves — retracted
+a headline claim (the plateau), exposed two silent-cap artifacts, forced exact
+recomputation of the micro-diagonal (0, 39, >83), disfavored C12's affine form,
+and dented the transient-engine hypothesis (its mountain is a reservoir, not a
+machine). This is what a good instrument does when pointed at the right object.
+
+**The program's state, plainly.** Bulk: decidable, proved. Corridors: decidable,
+proved, classified. Storms: decidable iff SOME computable intermediate-bound
+exists — the bound provably exists as a function; its computability is the open
+question; probes cannot settle computability and have now said everything they
+can. The remaining work is pure mathematics: either construct a computable bound
+(the walls + a new idea), or prove none exists (which would require embedding
+computation in storms — the universality direction the whole map argues against).
+
+**Ledger.** 371 pins, 10,253+ lines, 199 consecutive autonomous stages (119–317),
+zero warnings, axiom ceiling [propext, Quot.sound].
+
+**Next arc (ranked).** (1) The reservoir model (walls-side: descent ≤ C-fires;
+probe inventory-at-peak vs descent-length on the beavers — if descents are
+inventory-bounded, peak-bounds reduce to inventory-bounds, a NEW wall-shaped
+target). (2) The n=9 exact peak via smarter search (bidirectional meet-in-middle
+on hashes; or accept the range). (3) The universality direction taken seriously
+for one stage: what would a storm-embedded counter machine need, and do the walls
+forbid it? (the anti-C12 sanity check — if walls forbid embeddings, that's
+evidence FOR computable bounds; if a plausible embedding sketch survives the
+walls, the program's lean flips). (4) The 320 review.
