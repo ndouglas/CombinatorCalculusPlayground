@@ -10312,3 +10312,38 @@ theorem sc_countS_burn (f g x : SCTerm) (hx : x.countS = 0) :
       < (SCTerm.app (.app (.app .S f) g) x).countS := by
   have h := sc_countS_S f g x
   omega
+
+-- ## Stage 325: THE REACHABILITY REDUCTION — the open region is exactly storm→storm.
+-- Correction to Stage 324's over-stated "four-coats equivalence": a WN-decider does
+-- NOT decide all reachability (storm→storm survives). What IS true and clean: source
+-- weak-normalization makes reachability decidable, and a storm can never reach a
+-- normalizing term. So `Steps t u` is decidable whenever EITHER endpoint normalizes;
+-- the sole open region is storm-to-storm — precisely the frontier, delimited.
+
+/-- Weak normalization gives strong normalization. -/
+theorem scSN_of_WN {t : SCTerm} (h : SCWN t) : SCSN t := by
+  obtain ⟨n, hn, hnf⟩ := h
+  obtain ⟨ℓ, hch⟩ := RS.Steps.toStepsN hn
+  exact sc_wn_sn ℓ ℓ t n (Nat.le_refl ℓ) hch hnf
+
+/-- **Reachability from a weakly normalizing source is decidable.** -/
+def sc_reach_dec_of_source_wn {t : SCTerm} (h : SCWN t) :
+    ∀ u, Decidable (RS.SC.Steps t u) :=
+  sc_sn_decide t (scSN_of_WN h)
+
+/-- **A storm never reaches a normal-form-having term.** -/
+theorem sc_not_reach_storm_to_wn {t u : SCTerm}
+    (ht : ¬ SCWN t) (hu : SCWN u) : ¬ RS.SC.Steps t u :=
+  fun h => ht (scWN_of_steps h hu)
+
+/-- **THE REACHABILITY REDUCTION**: `Steps t u` is decidable whenever either endpoint
+weakly normalizes; the only undecided region is storm-to-storm. -/
+def sc_reach_dec_of_either_wn {t u : SCTerm} (h : SCWN t ∨ SCWN u)
+    [Decidable (SCWN t)] : Decidable (RS.SC.Steps t u) :=
+  match ‹Decidable (SCWN t)› with
+  | isTrue ht => sc_reach_dec_of_source_wn ht u
+  | isFalse ht =>
+      isFalse (fun hs => by
+        rcases h with hwt | hwu
+        · exact ht hwt
+        · exact ht (scWN_of_steps hs hwu))

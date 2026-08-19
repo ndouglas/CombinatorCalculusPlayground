@@ -1136,3 +1136,12 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_countS_burn' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_countS_burn
+
+/-- info: 'sc_reach_dec_of_source_wn' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_reach_dec_of_source_wn
+
+/-- info: 'sc_not_reach_storm_to_wn' depends on axioms: [propext] -/
+#guard_msgs in #print axioms sc_not_reach_storm_to_wn
+
+/-- info: 'sc_reach_dec_of_either_wn' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_reach_dec_of_either_wn
