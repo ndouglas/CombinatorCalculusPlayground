@@ -7713,3 +7713,13 @@ walls, the program's lean flips). (4) The 320 review.
   a remark. (2) The 326 review + the honest status writeup (the program's central
   deliverable is the reduction, and it should be stated as such). (3) Only then, if
   warranted, the machine construction.
+
+## 2026-08-19 — Stage 325: the reduction pinned; 324 corrected
+
+- Two hundred and seven autonomous stages (119–325). Second correction this session
+  (both caught by attempting to FORMALIZE the claim — the surest overreach detector
+  the program has). The deliverable is now a theorem: decidability everywhere but
+  storm→storm. Ranking: (1) the 326 review + honest status writeup (the reduction is
+  the headline; state it plainly). (2) storm→storm: the decidability of `SCWN` on
+  storms, attacked either by the burn-tax construction or by a normalization-measure
+  theorem. (3) Ideonomy at ~328.

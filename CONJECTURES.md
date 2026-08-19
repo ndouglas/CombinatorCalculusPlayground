@@ -7701,3 +7701,17 @@ halting-hard. The program has, in effect, REDUCED the Wolfram-adjacent question 
 the decidability of weak normalization for {S,C} — a single, sharp, classical
 property — and proved every OTHER phase decidable. That reduction is the program's
 headline result, independent of which way WN-decidability finally goes.
+
+### Stage 325: the reachability reduction — Stage 324's equivalence, corrected
+
+Building the reduction as a theorem exposed Stage 324's overreach: a WN-decider
+settles the bulk and the storm→WN direction but NOT storm→storm, so "four coats of
+one question" was too strong. The corrected, pinned truth: `sc_reach_dec_of_either_wn`
+— `Steps t u` is decidable whenever either endpoint weakly normalizes; the sole
+undecided region is storm-to-storm. That is the program's precise deliverable, and
+it is sharper than an equivalence: reachability is decided EVERYWHERE except one
+explicitly-delimited phase, and the residual open question is the decidability of
+reachability among non-normalizing terms — where the burn-tax data (Stage 324) says
+garbage collection is possible but S-density-constrained, keeping both outcomes live.
+The Wolfram-adjacent question is thereby reduced to a single, named, phase-local
+problem, with everything around it proved.

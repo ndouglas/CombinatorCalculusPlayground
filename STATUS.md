@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE BURN-TAX + THE EQUIVALENCE (Stage 324):
+confluence makes even the trees rejoin. THE REACHABILITY REDUCTION (Stage 325,
+`sc_reach_dec_of_either_wn`): reachability is decidable whenever
+EITHER endpoint weakly normalizes — the sole open region is
+storm-to-storm, delimited by theorem; the Wolfram-adjacent question
+is reduced to one named phase-local problem. (Corrects Stage 324's
+over-stated equivalence.) THE BURN-TAX (Stage 324):
 erasability is an S-density property (S/C-mixed branches net-erase to
 a constant; pure-S resist) — the embedding window exists but its
 sufficiency is a construction question no probe settles. The program
