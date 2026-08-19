@@ -7723,3 +7723,34 @@ walls, the program's lean flips). (4) The 320 review.
   the headline; state it plainly). (2) storm→storm: the decidability of `SCWN` on
   storms, attacked either by the burn-tax construction or by a normalization-measure
   theorem. (3) Ideonomy at ~328.
+
+## 2026-08-19 — Stage 326: the review at 325 — the reduction is the headline
+
+**Where the program stands, honestly.** The Wolfram-adjacent question ("is {S,C}
+reachability decidable / can it host a universal machine?") has been REDUCED, with
+full Lean verification, to a single phase-local problem: reachability among
+non-normalizing ("storm") terms. Everything else is proved:
+- BULK (weakly-normalizing sources): decidable (`sc_wn_decide`), via conservation
+  (WN = SN, `sc_wn_sn`) + the SN-class search (`sc_sn_decide`).
+- CORRIDORS: decidable and CLASSIFIED — two slot-parametric driver families
+  (`sc_millfam_law`, `sc_driver_law`), climb+pump principles, three full portraits
+  (mill/swapmill/metronome) with certified deciders, a prediction-capable grid.
+- BOUNDARY: absolute (`sc_storm_closed`); storms reach only storms.
+- REDUCTION: `sc_reach_dec_of_either_wn` — decidable whenever either endpoint
+  weakly normalizes; open region = storm→storm exactly.
+
+**The frontier's true status.** Storm→storm decidability is equivalent to deciding
+storm weak-normalization, which the embedding audit (319–324) showed is genuinely
+two-sided: the machine-shop parts exist (counters, call/return, dispatch, burnable
+garbage) but the burn-tax is S-density-constrained, and no probe can settle whether
+the constraint admits a full instruction set. This is the honest research frontier;
+the program's DELIVERABLE is the reduction, not a resolution.
+
+**Ledger.** 378 pins, 10,349 lines in SCDecidability.lean, 299 feat commits / 692
+total, zero warnings, axiom ceiling [propext, Quot.sound]; 208 consecutive
+autonomous stages (119–326).
+
+**Next arc (ranked).** (1) The status ARTIFACT (this milestone warrants a shareable
+visual map — built this stage). (2) Genuine decidable slices of storm→storm
+(tower-membership; bounded-orbit storms) — incremental but real. (3) The construction
+attempt (large; only if a slice suggests the window is wide). (4) Ideonomy at ~329.
