@@ -7686,3 +7686,16 @@ walls, the program's lean flips). (4) The 320 review.
   position and drive it down; if found, measure the ignition tax). (2) If ignition
   is impossible/taxed-linearly: formalize C15 (persistence) → the decidability
   mechanism. (3) The 324 review.
+
+## 2026-08-19 — Stage 323: correction — S-count is manufactured
+
+- Two hundred and five autonomous stages (119–323). A model correction: the
+  disciplined refusal to pin a false-flavored theorem (caught the non-conservation
+  in the S-rule's duplication before running the build) turned a would-be error into
+  the exact delta law. The embedding frontier is now honestly wide open, with the
+  "burn requires duplicate requires grow" self-defeating loop as the key tension.
+- Ranking: (1) THE BURN-TAX PROBE: to erase a branch of S-count s, must the schedule
+  grow the term by ~(what it duplicates)? measure net size after fully burning an
+  S-bearing branch in head position. If burn always costs ≥ its own erasure in
+  growth elsewhere, the halt-config obstruction survives in amortized form. (2) The
+  325 review. (3) The two-counter gadget attempt if the tax looks payable.

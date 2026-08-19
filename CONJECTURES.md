@@ -7657,3 +7657,24 @@ own head-atom pays for it. Formalizing C15 makes "branch-garbage is inert unless
 deliberately ignited" a theorem, and the embedding's fate turns on whether the
 machine can afford the ignition tax on every branch. This is the sharpest the
 frontier has ever been posed.
+
+### Stage 323: the S-count delta law, and a correction to C15
+
+Correction stage. The Stage-322 intuition ("erasable = C-only; active = needs S,
+which is conserved and so blocks erasure") over-reached: **S-count is not conserved**
+— the S-rule duplicates its third argument, so `countS` GROWS by `countS x − 1` per
+S-fire (`sc_countS_S`, pinned). C-fires preserve it; S-fires on S-free arguments burn
+one S (`sc_countS_burn`). So the erasure asymmetry the ignition probe found (C-chains
+burn in head position, S-chains grow) is REAL empirically but is not witnessed by any
+linear conserved quantity — duplication is a genuine S-source. C15 (the persistence
+wall) is accordingly WEAKENED to a conjecture about ARGUMENT-position inertness only
+(a normal subterm that never reaches head/spine position persists), which the
+Stage-322 min-size data supports but which no longer implies an erasure obstruction
+to embedding (branches CAN be ignited in head position). Net: the embedding question
+is MORE open than Stage 322 suggested — the undecidability side lost its cleanest
+obstruction. The honest frontier: build the if-zero-with-burn gadget and see whether
+the burn tax (S-fires needed to erase a branch) can be paid within a bounded-size
+schedule, or whether paying it re-grows the term (the duplication that burns S also
+copies whatever the S was applied to). That self-defeating loop — burn requires
+duplicate requires grow — is the undecidability side's next obstacle and the
+decidability side's next hope.

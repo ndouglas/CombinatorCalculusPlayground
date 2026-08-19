@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE ERASURE OBSTRUCTION (Stage 322): a normal
+confluence makes even the trees rejoin. THE S-COUNT DELTA LAW (Stage 323, correction):
+S-count is NOT conserved — the S-rule duplicates (sc_countS_S: grows
+by countS x − 1 per S-fire); the erasure asymmetry is real but not a
+linear invariant, C15 weakened to argument-position inertness, and
+the embedding question is wider open than Stage 322 suggested. Key
+tension: burn-requires-duplicate-requires-grow. THE ERASURE OBSTRUCTION (Stage 322): a normal
 argument is NEVER shrunk (min size of (E W) = |W|+1 over all small E)
 — non-erasure blocks true if-zero, so branch-garbage accumulates and
 halt-configs encode history; the frontier reduces to ONE question —
