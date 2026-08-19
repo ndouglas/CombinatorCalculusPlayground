@@ -7731,3 +7731,30 @@ peak bound (≥83 at n=9), so the PEAK formulation remains the only tame-looking
 — exactly where the program already stood. No new slice; a confirmation that the
 frontier's formal handles are complete and the open content is purely the existence
 of a computable bound.
+
+### Stage 328: the gadgets compose — the crux is history-encoding branch garbage
+
+The construction probe, and it advances the undecidability side concretely. The
+decrement-and-zero-test gadget works cleanly: a bare descent of a C-tower `C^k B` fed
+two riders is FORCED (deterministic), settles in 2–3 fires with peak = size + 3
+(bounded per-step garbage), and its terminal head atom DISTINGUISHES the counter's
+zero-ness — `C` at k=0, `S` at k>0 — a usable if-zero. Combined with the swapmill
+(increment, one uniform junk pair per revolution — O(1) per step) and the
+countdown-call (procedure call, Stage 321), the machine-shop parts all exhibit
+BOUNDED per-step garbage.
+
+**The crux, now isolated to one property.** A run's total garbage is O(N) (linear —
+the expected shape of a computation's tape), which is fine; undecidability breaks only
+if the garbage is UN-COMPUTABLE from the final counters. Uniform garbage (swapmill
+pairs, metronome pairs) carries only a count → computable → halt config computable →
+would give undecidability. The sole obstruction is that an if-zero test leaves the
+UNTAKEN BRANCH as garbage, and successive tests take different branches → NON-UNIFORM,
+history-encoding garbage. **C16 (THE UNIFORM-GARBAGE CONJECTURE), registered:**
+storm-to-storm reachability is decidable iff every {S,C}-realizable machine's garbage
+is computable from its halting counters — equivalently, iff branch-garbage can always
+be made uniform (or burned to canonical residue). The burn-tax data (324) says
+low-S-density branches CAN be burned; whether a full instruction set fits in the
+burnable-branch window is the last open question, and it is a CONSTRUCTION question —
+resolvable only by building the machine or proving the window empty. The empirical
+program has reached the point where the next step is a formal construction attempt or
+a genuinely new theorem, not another probe.

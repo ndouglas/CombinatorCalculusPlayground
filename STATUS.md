@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE HANDLES ARE COMPLETE (Stage 327): both
+confluence makes even the trees rejoin. THE GADGETS COMPOSE (Stage 328): decrement +
+zero-test built and measured — forced, bounded per-step garbage,
+terminal head distinguishes k=0 (C) from k>0 (S). Every machine-shop
+part now exists with O(1)-per-step garbage; the sole crux is C16
+(uniform-garbage): can branch-not-taken garbage always be made
+computable-from-counters? A construction question, not a probe.
+THE HANDLES ARE COMPLETE (Stage 327): both
 decidable-given-a-bound formulations are already pinned — PEAK bound
 (Stage 132 backbone) and LENGTH bound (Stage 121); the length bound
 grows busy-beaver-fast, so the peak formulation stays the only tame
