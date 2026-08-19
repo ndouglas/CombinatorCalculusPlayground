@@ -7614,3 +7614,17 @@ construction is the ranked next arc. If it succeeds: {S,C} reachability is
 undecidable, universal computation lives in the storm phase, and C12 is false. If
 it fails against a wall: that wall is the decidability proof's missing piece. Either
 way, the program wins.
+
+### Stage 321: THE COUNTDOWN-CALL LAW — universal components, pinned
+
+`sc_call_law` and `sc_park_law` (both axiom-free): the swapmill's reseed and rebirth
+were never about the swapmill — they are `scCall P` (base holding any payload P,
+applies riders then leaves P) and its inverse (unpark any parked P). The machine
+shop now has its first two universal parts, and `scSwapB = scCall scSwapJ1` exhibits
+the swapmill as the SELF-referential instance (P = the driver's own parked copy).
+The construction path forward: a program is a chain of parked payloads
+`(C P₁)((C P₂)(…))`; the countdown consumes a tower, calls P₁, which either loops
+(re-parks itself, climbing) or dispatches to P₂ (the zero-branch) — a two-instruction
+control flow, realized. Next: THE STATE-SWITCH — a payload that calls DIFFERENT
+successors depending on whether its tower is empty (the if-zero the whole embedding
+needs), built from scCall + the descent's head-dispatch.

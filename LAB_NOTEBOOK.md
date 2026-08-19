@@ -7664,3 +7664,12 @@ walls, the program's lean flips). (4) The 320 review.
   end-to-end forced trajectory — the first synthetic machine. (3) The burn-phase
   probe: can a junk pile be DELIBERATELY burned to canonical residue by a driver
   (vs the beaver's accidental burn)? (4) The 322 review.
+
+## 2026-08-19 — Stage 321: the first universal parts
+
+- Two hundred and three autonomous stages (119–321). The undecidability construction
+  advances by REINTERPRETATION more than new proof: the pinned swapmill laws already
+  ARE the call/return primitives; abstracting the payload is a one-line generalization
+  each. Ranking: (1) THE STATE-SWITCH probe+law (if-zero dispatch as a payload — the
+  keystone gadget; verify in engine that a payload can branch on tower-emptiness).
+  (2) The 323 review. (3) The counter-increment gadget (turnover as +1).
