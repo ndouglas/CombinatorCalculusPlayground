@@ -7754,3 +7754,11 @@ autonomous stages (119–326).
 visual map — built this stage). (2) Genuine decidable slices of storm→storm
 (tower-membership; bounded-orbit storms) — incremental but real. (3) The construction
 attempt (large; only if a slice suggests the window is wide). (4) Ideonomy at ~329.
+
+## 2026-08-19 — Stage 326 (cont.): the status artifact published
+
+- Phase-map summary published: https://claude.ai/code/artifact/4105ae61-94ff-4870-97d1-7bef3d888355
+  (private; monospace-display/serif-body, the order→chaos cool→hot phase palette,
+  both themes). States the reduction as headline, the three-regime census bar, the
+  proved ledger with theorem names, and the honest storm frontier. A milestone
+  deliverable, not a research step — the cadence resumes at storm→storm next.
