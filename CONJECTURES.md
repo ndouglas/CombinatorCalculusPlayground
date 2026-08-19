@@ -7678,3 +7678,26 @@ schedule, or whether paying it re-grows the term (the duplication that burns S a
 copies whatever the S was applied to). That self-defeating loop — burn requires
 duplicate requires grow — is the undecidability side's next obstacle and the
 decidability side's next hope.
+
+### Stage 324: the burn-tax — erasability is an S-density property
+
+The deciding probe, and it keeps the embedding door open. Feeding a branch blob three
+atoms in head position: pure S-chains do NOT net-erase (min-size ≈ countS + 4 — the
+S's fire but duplication regrows), while S/C-MIXED blobs DO net-erase to a CONSTANT
+(size 5, independent of blob length for length ≥ 7). So garbage collection is
+possible — but only for code of bounded S-density; high-S-density code is
+burn-resistant. The embedding constraint is now quantitative: branch payloads must be
+C-heavy enough to be collectable yet carry enough S to compute. Whether that window
+is nonempty for a full instruction set is the open question, and no single probe will
+close it.
+
+**The equivalence, stated (the frontier's true shape).** These are the same question
+in four coats: (i) {S,C} reachability is decidable; (ii) {S,C} weak normalization
+(`SCWN`) is decidable; (iii) no Minsky machine embeds with halting = normalization;
+(iv) no universal computation lives in the storm phase. (i)⟺(ii): reachability
+decides WN (reach a normal form?) and — via `sc_wn_decide` — WN-with-witness decides
+reachability; the gap is only the witness, which an embedding would make
+halting-hard. The program has, in effect, REDUCED the Wolfram-adjacent question to
+the decidability of weak normalization for {S,C} — a single, sharp, classical
+property — and proved every OTHER phase decidable. That reduction is the program's
+headline result, independent of which way WN-decidability finally goes.

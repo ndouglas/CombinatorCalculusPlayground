@@ -7699,3 +7699,17 @@ walls, the program's lean flips). (4) The 320 review.
   S-bearing branch in head position. If burn always costs ≥ its own erasure in
   growth elsewhere, the halt-config obstruction survives in amortized form. (2) The
   325 review. (3) The two-counter gadget attempt if the tax looks payable.
+
+## 2026-08-19 — Stage 324: the burn-tax; the four-coats equivalence
+
+- Two hundred and six autonomous stages (119–324). The probe phase on the embedding
+  has reached its natural limit (same signature as the peak-curve hunt at 317): the
+  data now maps the question precisely but cannot settle it — erasability windows
+  exist but their sufficiency for a full instruction set is a construction question.
+  The valuable move is the EQUIVALENCE: the program has reduced everything to
+  "is SCWN decidable?", with all other phases proved decidable. Ranking: (1) pin the
+  provable half of the equivalence — `SCWN`-decidability ⟹ reachability-decidability
+  (via sc_wn_decide + a WN-decider hypothesis) — making the reduction a THEOREM, not
+  a remark. (2) The 326 review + the honest status writeup (the program's central
+  deliverable is the reduction, and it should be stated as such). (3) Only then, if
+  warranted, the machine construction.

@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE S-COUNT DELTA LAW (Stage 323, correction):
+confluence makes even the trees rejoin. THE BURN-TAX + THE EQUIVALENCE (Stage 324):
+erasability is an S-density property (S/C-mixed branches net-erase to
+a constant; pure-S resist) — the embedding window exists but its
+sufficiency is a construction question no probe settles. The program
+has REDUCED the whole frontier to one classical property: is {S,C}
+weak normalization decidable? — every other phase proved decidable.
+THE S-COUNT DELTA LAW (Stage 323, correction):
 S-count is NOT conserved — the S-rule duplicates (sc_countS_S: grows
 by countS x − 1 per S-fire); the erasure asymmetry is real but not a
 linear invariant, C15 weakened to argument-position inertness, and
