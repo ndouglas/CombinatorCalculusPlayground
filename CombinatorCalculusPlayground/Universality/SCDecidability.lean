@@ -10347,3 +10347,4 @@ def sc_reach_dec_of_either_wn {t u : SCTerm} (h : SCWN t ∨ SCWN u)
         rcases h with hwt | hwu
         · exact ht hwt
         · exact ht (scWN_of_steps hs hwu))
+

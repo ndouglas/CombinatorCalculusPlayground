@@ -7762,3 +7762,16 @@ attempt (large; only if a slice suggests the window is wide). (4) Ideonomy at ~3
   both themes). States the reduction as headline, the three-regime census bar, the
   proved ledger with theorem names, and the honest storm frontier. A milestone
   deliverable, not a research step — the cadence resumes at storm→storm next.
+
+## 2026-08-19 — Stage 327: duplication caught; the handles are complete
+
+- Two hundred and nine autonomous stages (119–327). A grep-before-build would have
+  caught the scReachWithin duplication; the lesson (re-)recorded: before pinning a
+  "new" slice on a mature 10k-line file, grep the target name. The stage's value is
+  negative-space: it confirms no cheap slice remains — both bound-formulations are
+  already pinned, and the open question is irreducibly the existence of a computable
+  bound (peak or length). Ranking: (1) the construction probe (the only move that
+  can RESOLVE rather than restate — attempt a composable DEC-and-zero-test gadget in
+  the engine, measure garbage growth). (2) If the gadget composes with bounded
+  garbage: pursue undecidability; if garbage is unbounded-per-instruction: that is
+  the decidability mechanism. (3) The 329 review + ideonomy.

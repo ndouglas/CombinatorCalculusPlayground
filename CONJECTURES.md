@@ -7715,3 +7715,19 @@ reachability among non-normalizing terms — where the burn-tax data (Stage 324)
 garbage collection is possible but S-density-constrained, keeping both outcomes live.
 The Wolfram-adjacent question is thereby reduced to a single, named, phase-local
 problem, with everything around it proved.
+
+### Stage 327: the length handle was already in hand — a duplication caught
+
+A slice attempt that the file itself corrected: bounded-length reachability
+(`∃ k ≤ n, StepsN k t u`) is decidable — but this was already pinned at Stage 121 as
+`scReachWithin_decidable` (via the `scReachFrom` enumerator). The re-derivation was
+reverted to keep the file free of redundant cruft. The recognition is the content:
+the frontier has TWO decidable-given-a-computable-bound handles, both already
+established — the PEAK bound (`sc_decidable_of_bound`, Stage 132, the backbone) and
+the LENGTH bound (Stage 121). Storm reachability is decidable iff EITHER a computable
+peak bound or a computable length bound exists; the two-curves data (Stage 305/313)
+shows the length bound grows far faster (busy-beaver-like, ≥15,044 at n=9) than the
+peak bound (≥83 at n=9), so the PEAK formulation remains the only tame-looking route
+— exactly where the program already stood. No new slice; a confirmation that the
+frontier's formal handles are complete and the open content is purely the existence
+of a computable bound.

@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE REACHABILITY REDUCTION (Stage 325,
+confluence makes even the trees rejoin. THE HANDLES ARE COMPLETE (Stage 327): both
+decidable-given-a-bound formulations are already pinned — PEAK bound
+(Stage 132 backbone) and LENGTH bound (Stage 121); the length bound
+grows busy-beaver-fast, so the peak formulation stays the only tame
+route. No cheap slice remains; the open content is irreducibly the
+existence of a computable bound. THE REACHABILITY REDUCTION (Stage 325,
 `sc_reach_dec_of_either_wn`): reachability is decidable whenever
 EITHER endpoint weakly normalizes — the sole open region is
 storm-to-storm, delimited by theorem; the Wolfram-adjacent question
