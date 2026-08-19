@@ -7633,3 +7633,16 @@ walls, the program's lean flips). (4) The 320 review.
   drivers; audit what a two-counter Minsky embedding needs and what obstructs it).
   (2) The 320 review. (3) If the embedding analysis survives its obstructions:
   attempt the construction; if not: the obstruction is the new wall.
+
+## 2026-08-19 — Stage 319: the embedding audit — two-sided at last
+
+- The audit's surprise: three of four Minsky ingredients are DEMONSTRATED by pinned
+  engine theorems; the sole load-bearing obstruction is the halt-configuration/
+  garbage problem — and the metronome's periodic emission shows garbage CAN be
+  computable. The program's central lean (decidable, no computer) now rests on
+  whether Minsky-style dispatch can be made garbage-predictable. Two hundred and
+  one autonomous stages (119–319). Ranking: (1) THE DECIDING PROBE: hand-build a
+  minimal two-state, one-counter machine from engine parts (driver + tower +
+  dispatch) in the Python engine; run it; inspect whether its garbage is
+  periodic-computable or run-entangled. This single experiment points the entire
+  program. (2) The 320 review. (3) Whichever way the probe points: formalize.

@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE HUNT'S VERDICT (Stage 317): n=9 beaver-pair
+confluence makes even the trees rejoin. THE EMBEDDING AUDIT (Stage 319): the question is
+TWO-SIDED for the first time since Stage 253 — writable counters,
+zero-test dispatch, and looping control are all demonstrated by
+pinned engine theorems; the decidability lean rests solely on the
+halt-configuration/garbage obstruction, and the metronome shows
+garbage can be computable. THE HUNT'S VERDICT (Stage 317): n=9 beaver-pair
 excess > 83 (range (92, 357]); the beaver-pair excess sequence ~0,
 39, >83 roughly doubles per leaf — C12's AFFINE form is disfavored;
 the general computable-bound form remains open and is now a purely

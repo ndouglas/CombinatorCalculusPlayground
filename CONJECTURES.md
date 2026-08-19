@@ -7560,3 +7560,34 @@ drops by standing inventory can exist; descents are genuine long computations
 (structure converted to drips through a mint-burn cycle), and the beaver is a
 nine-leaf term performing a fifteen-thousand-step computation. The universality
 direction is now LIVE, not a sanity check.
+
+### Stage 319: THE EMBEDDING AUDIT — universality, taken seriously at last
+
+Stage 200-era walls said "no computer here"; the engines and the beaver force a
+re-audit, ingredient by Minsky ingredient. WRITABLE COUNTERS: exist — the engine
+towers (`C^k B`, `L^k K`) are written by turnovers, one layer per cycle. ZERO-TEST
+DISPATCH: exists — descent from `C^{k+1} B` fires the chain's head; from `C^0 B`
+fires B's own head; DIFFERENT redexes, DIFFERENT continuations (the swapmill's
+reseed is literally an if-zero branch). LOOPING CONTROL: exists — the drivers.
+CODE-AS-DATA: exists — junk-carries-the-blueprint (rebirth by unparking). This is
+uncomfortably close to a two-counter machine skeleton, and the honest ledger says
+so. THE IDENTIFIED OBSTRUCTIONS, in order of depth: (1) THE HALT-CONFIGURATION
+PROBLEM: reachability is exact-term; no-erasure means consumed program-states pile
+up as garbage riders whose exact shape encodes the run — so the target term u
+cannot be computed from the machine without predicting the run, breaking the
+undecidability reduction. Not airtight (C-fires do consume head-atoms; size is not
+history), but no known encoding evades it. (2) CONFLUENCE: all branching converges,
+so encoded computation must be deterministic-per-configuration — fine for Minsky,
+but it means dispatch must be positional, not chosen. (3) The numeral walls
+(numerals-are-sources) block only LITERAL `C^k S` counters — engine towers evade
+them, so these walls do NOT obstruct. VERDICT: the program's lean survives on
+obstruction (1) alone, and the next arc must resolve it one way or the other:
+either prove THE HISTORY WALL (a formal statement that any reduction's target
+determines its garbage — e.g., a conserved/monotone trace quantity making halt
+configurations run-length-dependent), or find the encoding trick that launders
+garbage into a computable target (e.g., machines whose garbage is
+self-normalizing into a predictable shape — the metronome's uniform pairs show
+PERIODIC garbage is predictable!!). The metronome observation cuts AGAINST the
+obstruction: engines with regular emission have COMPUTABLE garbage. A Minsky
+machine built from metronome-regular components might have predictable-enough
+traces. The question is genuinely two-sided for the first time since Stage 253.
