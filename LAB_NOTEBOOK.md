@@ -7673,3 +7673,16 @@ walls, the program's lean flips). (4) The 320 review.
   each. Ranking: (1) THE STATE-SWITCH probe+law (if-zero dispatch as a payload — the
   keystone gadget; verify in engine that a payload can branch on tower-emptiness).
   (2) The 323 review. (3) The counter-increment gadget (turnover as +1).
+
+## 2026-08-19 — Stage 322: the erasure obstruction; C15 registered
+
+- Two hundred and four autonomous stages (119–322). The probe that was meant to
+  BUILD the if-zero instead found why it's hard — and the "why" is non-erasure, the
+  program's oldest structural fact, now revealed as the load-bearing obstruction to
+  universality. The frontier is a single crisp question: can a branch be ignited-
+  and-burned (undecidable) or only parked-as-garbage (decidable)?
+- Ranking: (1) THE IGNITION PROBE — can a fixed context take inert W to a
+  self-burning cascade ending below |W|? (search contexts that place W in spine
+  position and drive it down; if found, measure the ignition tax). (2) If ignition
+  is impossible/taxed-linearly: formalize C15 (persistence) → the decidability
+  mechanism. (3) The 324 review.

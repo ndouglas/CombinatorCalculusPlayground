@@ -7628,3 +7628,32 @@ The construction path forward: a program is a chain of parked payloads
 control flow, realized. Next: THE STATE-SWITCH — a payload that calls DIFFERENT
 successors depending on whether its tower is empty (the if-zero the whole embedding
 needs), built from scCall + the descent's head-dispatch.
+
+### Stage 322: THE ERASURE OBSTRUCTION — non-erasure blocks true if-zero
+
+The keystone probe, and it cuts back toward decidability with a mechanism. Two facts:
+(1) DISTINGUISHING is trivial — 984 small (z0,z1) pairs route to different normal
+forms through a fixed context. (2) ERASING is impossible — over all contexts E ≤ 3
+leaves, the minimum reachable size of `(E W)` for an inert blob W is exactly |W|+1:
+a normal argument is NEVER shrunk. A true if-then-else must DISCARD the untaken
+branch; {S,C} cannot discard, so every if-zero test leaves its untaken branch in the
+term as garbage. Over an N-step machine run, branch-garbage ACCUMULATES — the halt
+configuration encodes the entire branch history, exactly the Stage-319 obstruction,
+now with a proof-shaped cause (non-erasure, the same property that gave conservation).
+
+**THE COUNTERPOINT, held honestly:** the beaver burns 357→9, so garbage CAN shrink —
+but only ACTIVE garbage (redexes firing their own heads away). Inert code (a parked
+branch payload) cannot be burned from outside; it burns only if IGNITED (placed in a
+spine position where an enclosing fire exposes its redexes). So the embedding question
+sharpens to one point: **can dispatch route control to KA while IGNITING KB into a
+self-burning cascade?** If yes → true (garbage-collecting) if-zero → undecidable. If
+no → branch-garbage is inert → accumulates → halt-config encodes history → the
+reduction is not history-independent → decidability lean RESTORED, now mechanistic.
+
+**Registered: C15 (THE PERSISTENCE WALL)** — a normal subterm in argument position
+has its leaf count as a lower bound on every reduct until it is IGNITED (moved to
+spine position by an enclosing fire); and ignition requires an enclosing redex whose
+own head-atom pays for it. Formalizing C15 makes "branch-garbage is inert unless
+deliberately ignited" a theorem, and the embedding's fate turns on whether the
+machine can afford the ignition tax on every branch. This is the sharpest the
+frontier has ever been posed.

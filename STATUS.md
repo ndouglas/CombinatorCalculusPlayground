@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE MACHINE SHOP OPENS (Stage 321, `sc_call_law`
+confluence makes even the trees rejoin. THE ERASURE OBSTRUCTION (Stage 322): a normal
+argument is NEVER shrunk (min size of (E W) = |W|+1 over all small E)
+— non-erasure blocks true if-zero, so branch-garbage accumulates and
+halt-configs encode history; the frontier reduces to ONE question —
+can a branch be ignited-and-burned (undecidable) or only parked
+(decidable)? C15 (persistence wall) registered. THE MACHINE SHOP OPENS (Stage 321, `sc_call_law`
 + `sc_park_law`, axiom-free): the swapmill's reseed/rebirth abstract
 to call-with-any-payload and unpark-any-payload — the procedure-call
 and return primitives; scSwapB is the self-call instance. THE PIVOT (Stage 320): the program's lean is
