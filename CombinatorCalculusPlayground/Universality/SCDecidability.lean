@@ -10279,3 +10279,36 @@ theorem sc_park_law (P w z : SCTerm) :
       (.app (.app (.app P w) (.app .C .C)) z) :=
   RS.StepsN.tail (SCStep.appL (SCStep.C_red P (.app .C .C) w))
     (@RS.StepsN.refl RS.SC _)
+
+
+-- ## Stage 323: THE S-COUNT DELTA LAW — duplication is the only S-source.
+-- Correction stage: an earlier draft assumed S-count conserved; it is NOT — the
+-- S-rule DUPLICATES its third argument, manufacturing S-material. The exact law:
+-- a C-fire preserves the S-count; an S-fire replaces the head S and one copy of x's
+-- S-count with TWO copies, so `result + 1 = redex + countS x`. Consequence: an
+-- S-fire on an S-FREE argument strictly burns one S; that is the only S-count sink,
+-- and duplication the only source. The erasure asymmetry (C-code burns, S-code
+-- grows) is thus real but NOT a linear invariant — the embedding question stays open.
+
+/-- **THE S-COUNT DELTA (S-fire)**: the head S is spent, the third argument doubled. -/
+theorem sc_countS_S (f g x : SCTerm) :
+    (SCTerm.app (.app f x) (.app g x)).countS + 1
+      = (SCTerm.app (.app (.app .S f) g) x).countS + x.countS := by
+  show (f.countS + x.countS) + (g.countS + x.countS) + 1
+    = ((1 + f.countS) + g.countS) + x.countS + x.countS
+  omega
+
+/-- **THE S-COUNT DELTA (C-fire)**: the S-count is preserved. -/
+theorem sc_countS_C (f g x : SCTerm) :
+    (SCTerm.app (.app f x) g).countS
+      = (SCTerm.app (.app (.app .C f) g) x).countS := by
+  show (f.countS + x.countS) + g.countS
+    = ((0 + f.countS) + g.countS) + x.countS
+  omega
+
+/-- An S-fire on an S-free argument strictly decreases the S-count. -/
+theorem sc_countS_burn (f g x : SCTerm) (hx : x.countS = 0) :
+    (SCTerm.app (.app f x) (.app g x)).countS
+      < (SCTerm.app (.app (.app .S f) g) x).countS := by
+  have h := sc_countS_S f g x
+  omega

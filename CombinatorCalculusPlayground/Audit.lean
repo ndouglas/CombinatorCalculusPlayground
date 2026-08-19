@@ -1130,3 +1130,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_park_law' does not depend on any axioms -/
 #guard_msgs in #print axioms sc_park_law
+
+/-- info: 'sc_countS_S' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_countS_S
+
+/-- info: 'sc_countS_burn' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_countS_burn
