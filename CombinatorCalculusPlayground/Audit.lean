@@ -1124,3 +1124,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_dev_cofinal' depends on axioms: [propext] -/
 #guard_msgs in #print axioms sc_dev_cofinal
+
+/-- info: 'sc_call_law' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_call_law
+
+/-- info: 'sc_park_law' does not depend on any axioms -/
+#guard_msgs in #print axioms sc_park_law

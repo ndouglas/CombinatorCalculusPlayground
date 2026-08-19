@@ -10251,3 +10251,31 @@ theorem sc_dev_cofinal : ∀ {t u : SCTerm}, RS.SC.Steps t u →
     refine ⟨k + 1, ?_⟩
     show SCPars c (scDevIter k (scDev a))
     exact hk.snoc (scDevIter_mono k (SCPar.triangle (SCPar.of_step s)))
+
+-- ## Stage 321: THE COUNTDOWN-CALL LAW — the machine shop's first universal part.
+-- The swapmill's base is `(C C) P` with P a parked payload; its reseed never
+-- inspects P. Abstracted: `scCall P` swaps its two riders and hands them to any
+-- payload, then leaves P in the tail — countdown-reaches-base-then-calls-P, the
+-- procedure-call primitive. scSwapB is the P = J₁ (self) instance.
+
+/-- The call gadget: base holding payload `P`. -/
+def scCall (P : SCTerm) : SCTerm := .app (.app .C .C) P
+
+/-- **THE COUNTDOWN-CALL LAW**: reaching the base applies the two riders and leaves
+the payload in the tail — for ANY payload. -/
+theorem sc_call_law (P y z : SCTerm) :
+    RS.SC.StepsN 2 (.app (.app (scCall P) y) z) (.app (.app y z) P) :=
+  RS.StepsN.tail (SCStep.appL (SCStep.C_red .C P y))
+    (RS.StepsN.tail (SCStep.C_red y P z) (@RS.StepsN.refl RS.SC _))
+
+/-- The swapmill's base is the self-call instance. -/
+theorem scSwapB_is_call : scSwapB = scCall scSwapJ1 := rfl
+
+/-- **THE GENERIC REBIRTH**: any C-parked payload `(C P)(C C)` unparks `P` and hands
+it the two riders (swapped) — the return-from-call primitive. -/
+theorem sc_park_law (P w z : SCTerm) :
+    RS.SC.StepsN 1
+      (.app (.app (.app (.app .C P) (.app .C .C)) w) z)
+      (.app (.app (.app P w) (.app .C .C)) z) :=
+  RS.StepsN.tail (SCStep.appL (SCStep.C_red P (.app .C .C) w))
+    (@RS.StepsN.refl RS.SC _)
