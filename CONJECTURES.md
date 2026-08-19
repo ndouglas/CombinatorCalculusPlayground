@@ -7546,3 +7546,17 @@ minimal peaks grow fast (possibly exponentially); the decidability question ride
 entirely on whether the peak function — which provably exists — is computable, and
 no probe can settle computability. The program's empirical phase on this question
 has likely reached its natural limit; what remains is mathematics.
+
+### Stage 318: the reservoir falsified — minting is the engine of descents
+
+The walls-side hope died on exact data: the n=9 beaver's peak holds THIRTY-THREE
+C-redexes, yet its descent performs 11,543 drop-fires (n=8: inventory 10, drops
+1,088). The standing inventory is two orders too small; the descent is funded by
+CONTINUOUS RE-MINTING — roughly 300 interleaved S-fires duplicate C-rich subterms
+whose heads are then burned, over and over. The C14-era reading inverts: the
+minting law's "+2 boundary terms and duplication" — measured median-zero in random
+storms — are the dominant mechanism in long descents. Consequence: no wall bounding
+drops by standing inventory can exist; descents are genuine long computations
+(structure converted to drips through a mint-burn cycle), and the beaver is a
+nine-leaf term performing a fifteen-thousand-step computation. The universality
+direction is now LIVE, not a sanity check.

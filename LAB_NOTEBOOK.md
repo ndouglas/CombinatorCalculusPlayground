@@ -7624,3 +7624,12 @@ for one stage: what would a storm-embedded counter machine need, and do the wall
 forbid it? (the anti-C12 sanity check — if walls forbid embeddings, that's
 evidence FOR computable bounds; if a plausible embedding sketch survives the
 walls, the program's lean flips). (4) The 320 review.
+
+## 2026-08-19 — Stage 318: the reservoir falsified; the mint-burn cycle
+
+- One hundred ninety-nine → two hundred autonomous stages imminent. Ranking:
+  (1) the embedding analysis (rank-3 promoted: take universality seriously — the
+  engines already exhibit writable counters, zero-test dispatch, and looping
+  drivers; audit what a two-counter Minsky embedding needs and what obstructs it).
+  (2) The 320 review. (3) If the embedding analysis survives its obstructions:
+  attempt the construction; if not: the obstruction is the new wall.
