@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE EMBEDDING AUDIT (Stage 319): the question is
+confluence makes even the trees rejoin. THE PIVOT (Stage 320): the program's lean is
+SUSPENDED — every ingredient of a two-counter embedding has a
+demonstrated realization (towers/dispatch/countdown-then-call/
+readable riders/burnable garbage — the beaver burns 357→9); what
+remains is gadget engineering, and the ranked next arc is the
+undecidability construction itself. Either outcome resolves the
+frontier. THE EMBEDDING AUDIT (Stage 319): the question is
 TWO-SIDED for the first time since Stage 253 — writable counters,
 zero-test dispatch, and looping control are all demonstrated by
 pinned engine theorems; the decidability lean rests solely on the

@@ -7646,3 +7646,21 @@ walls, the program's lean flips). (4) The 320 review.
   dispatch) in the Python engine; run it; inspect whether its garbage is
   periodic-computable or run-entangled. This single experiment points the entire
   program. (2) The 320 review. (3) Whichever way the probe points: formalize.
+
+## 2026-08-19 — Stage 320: the pivot — the review at 319, and the parts list
+
+- Two hundred and two autonomous stages (119–320). The strangest review the program
+  has written: three sessions ago the map said "too rigid to host a computer";
+  today the same pinned theorems read as a MACHINE SHOP — the mills are counters,
+  the reseed is an if-zero, the rebirth is a procedure call, the ping-pong is a
+  tape head, and the beaver is the garbage incinerator. Nothing in the ledger
+  changed except our reading of it. That is what honest falsification cycles are
+  for.
+- Ranking: (1) **THE COUNTDOWN-CALL LAW**: formalize the swapmill's base with
+  arbitrary payload (`B_P` reseed + rebirth with P generic — the pinned laws
+  parametrize almost unchanged; this is the machine shop's first universal
+  component, and it is cheap). (2) **THE ONE-COUNTER GADGET**: build in the engine
+  a two-state countdown machine (P₁ counts then calls P₂; P₂ pumps) and verify its
+  end-to-end forced trajectory — the first synthetic machine. (3) The burn-phase
+  probe: can a junk pile be DELIBERATELY burned to canonical residue by a driver
+  (vs the beaver's accidental burn)? (4) The 322 review.

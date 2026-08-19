@@ -7591,3 +7591,26 @@ PERIODIC garbage is predictable!!). The metronome observation cuts AGAINST the
 obstruction: engines with regular emission have COMPUTABLE garbage. A Minsky
 machine built from metronome-regular components might have predictable-enough
 traces. The question is genuinely two-sided for the first time since Stage 253.
+
+### Stage 320: THE PIVOT — the undecidability side acquires a full parts list
+
+The deciding analysis, run to completion, and the ledger must say it plainly: every
+ingredient of a two-counter machine embedding now has a demonstrated {S,C}
+realization. (1) COUNTERS: engine towers, written by turnovers. (2) ZERO-TEST
+DISPATCH: chain-head vs base-head firing (the reseed). (3) STATE-CHAINING: the
+swapmill architecture is literally COUNTDOWN-THEN-CALL — its base `B_P = (C C)((C
+P)(C C))` unparks an ARBITRARY payload P and hands it the tower; P can be another
+driver. (4) READABLE MEMORY: the ping-pong descent engages its first riders every
+cycle — junk is a tape, not just ash. (5) BURNABLE GARBAGE: the halt-configuration
+obstruction (Stage 319's load-bearing hope) falls to the beaver itself, which burns
+357 leaves to 9 — garbage can be whittled to small residue by routing heads into
+fires, so a machine that ends by burning its trace can have a COMPUTABLE halt
+configuration. What stands between the parts list and undecidability is
+ENGINEERING: composing the gadgets so they do not interfere (confluence forces the
+encoded machine to be reduction-faithful; the burn phase must not ignite early; the
+dispatch must be exact). The program's lean is hereby suspended: the question is
+genuinely open in both directions, and for the first time the UNDECIDABILITY
+construction is the ranked next arc. If it succeeds: {S,C} reachability is
+undecidable, universal computation lives in the storm phase, and C12 is false. If
+it fails against a wall: that wall is the decidability proof's missing piece. Either
+way, the program wins.
