@@ -7758,3 +7758,26 @@ burnable-branch window is the last open question, and it is a CONSTRUCTION quest
 resolvable only by building the machine or proving the window empty. The empirical
 program has reached the point where the next step is a formal construction attempt or
 a genuinely new theorem, not another probe.
+
+### Stage 329: the complementarity — erasable code cannot compute
+
+The construction sprint's decisive finding, and it swings the lean back toward
+decidability with a mechanism. Concretely: a dispatch keeps BOTH branches (non-
+erasure), and the untaken branch is collectable ONLY if S-free (C-chains burn in head
+position; S-flags explode). Formally: `sc_sfree_SN` — S-free terms strongly normalize
+in ≤ leafCount steps (every fire is a C-fire dropping one leaf). So pure C is
+permutation, not computation. **C17 (THE COMPLEMENTARITY), registered:** no {S,C}
+subterm is simultaneously (a) collectable-as-garbage-in-context and (b)
+computationally nontrivial — erasability requires S-freeness, S-freeness forces
+strong normalization. If C17 can be lifted from "a branch payload" to "the untaken
+branch of an embedded machine's dispatch", it PROVES no universal machine embeds with
+computable garbage: every S-bearing (computing) instruction dispatched-away-from
+leaves un-collectable garbage, so halt configurations encode the S-bearing execution
+trace, un-computably → the embedding's reduction fails → storm reachability decidable.
+The gap between C17-for-payloads (proved) and C17-for-embeddings (needed) is the whole
+remaining frontier: indirection tricks (S-heavy instructions referenced by S-free
+pointers, dereferenced elsewhere) might route the S-material out of the garbage. So
+the final question is sharp: **can {S,C} express computation through S-free
+indirection?** — and the pinned SN of pure C says the indirection layer itself cannot
+compute, only point. This is the strongest decidability argument the program has, one
+lifting-theorem short of a proof.

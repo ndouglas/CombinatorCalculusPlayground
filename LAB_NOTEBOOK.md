@@ -7788,3 +7788,16 @@ attempt (large; only if a slice suggests the window is wide). (4) Ideonomy at ~3
   1-counter loop end-to-end in the engine and inspect its garbage uniformity — the
   smallest experiment that could confirm-or-refute C16 for a real (if tiny) machine.
   (3) Only then the Lean formalization of whichever way it points.
+
+## 2026-08-20 — Stage 329: the complementarity; C17; the lean swings back
+
+- Two hundred and eleven autonomous stages (119–329). The construction sprint did its
+  job: it did NOT build a working machine, and the reason it couldn't is a theorem
+  (S-free code is SN, so erasable garbage is trivial). The program's lean, suspended
+  at Stage 320, swings back toward DECIDABILITY — now with a precise mechanism (the
+  complementarity) and a precise remaining gap (C17-for-embeddings vs S-free
+  indirection). Ranking: (1) THE INDIRECTION PROBE — can an S-free "pointer" term
+  select-and-invoke an S-heavy target without duplicating it into garbage? (test:
+  does any S-free selector applied to a table of S-heavy entries yield one entry
+  active and the rest collectable?). If NO → C17 lifts → decidability. (2) The
+  ideonomy pass on lifting C17. (3) The 331 review.

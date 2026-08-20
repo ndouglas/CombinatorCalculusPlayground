@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE GADGETS COMPOSE (Stage 328): decrement +
+confluence makes even the trees rejoin. THE COMPLEMENTARITY (Stage 329, `sc_sfree_SN`):
+the construction sprint could NOT build a machine, and the reason is a
+theorem — erasable garbage must be S-free, S-free code strongly
+normalizes (pure C = permutation, not computation). The lean swings
+back toward DECIDABILITY; C17 registered; the sole gap is whether
+computation can route through S-free indirection. THE GADGETS COMPOSE (Stage 328): decrement +
 zero-test built and measured — forced, bounded per-step garbage,
 terminal head distinguishes k=0 (C) from k>0 (S). Every machine-shop
 part now exists with O(1)-per-step garbage; the sole crux is C16
