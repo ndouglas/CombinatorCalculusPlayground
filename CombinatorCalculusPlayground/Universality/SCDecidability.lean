@@ -10348,3 +10348,55 @@ def sc_reach_dec_of_either_wn {t u : SCTerm} (h : SCWN t ∨ SCWN u)
         · exact ht hwt
         · exact ht (scWN_of_steps hs hwu))
 
+
+-- ## Stage 329: THE ERASABILITY–COMPUTATION COMPLEMENTARITY — S-free code is trivial.
+-- The construction sprint's finding: in a dispatch BOTH branches always survive
+-- (non-erasure, concrete), and the untaken branch is collectable iff it is S-FREE
+-- (a C-chain in head position burns to a constant; an S-bearing flag explodes). But
+-- S-free code CANNOT compute — every fire in an S-free term is a C-fire dropping
+-- exactly one leaf, so it strongly normalizes in at most `leafCount` steps: pure C is
+-- permutation, not computation. Erasable ⟹ trivial. This is the sharpest argument the
+-- undecidability investigation has produced, and it points back toward DECIDABILITY.
+
+/-- A step out of an S-free term is S-free and drops exactly one leaf. -/
+theorem scStep_sfree : ∀ {t u : SCTerm}, t.countS = 0 → SCStep t u →
+    u.countS = 0 ∧ u.leafCount + 1 = t.leafCount := by
+  intro t u h0 hstep
+  induction hstep with
+  | S_red f g x =>
+      exact absurd h0 (by
+        show ((1 + f.countS) + g.countS) + x.countS ≠ 0
+        omega)
+  | C_red f g x =>
+      refine ⟨?_, ?_⟩
+      · rw [sc_countS_C f g x]; exact h0
+      · simp only [SCTerm.leafCount]; omega
+  | @appL a a' b h' ih =>
+      simp only [SCTerm.countS] at h0
+      have ha : a.countS = 0 := by omega
+      obtain ⟨hc, hl⟩ := ih ha
+      refine ⟨by simp only [SCTerm.countS]; omega, ?_⟩
+      simp only [SCTerm.leafCount]; omega
+  | @appR a b b' h' ih =>
+      simp only [SCTerm.countS] at h0
+      have hb : b.countS = 0 := by omega
+      obtain ⟨hc, hl⟩ := ih hb
+      refine ⟨by simp only [SCTerm.countS]; omega, ?_⟩
+      simp only [SCTerm.leafCount]; omega
+
+/-- **S-FREE TERMS STRONGLY NORMALIZE**: erasable (S-free) code cannot compute — it
+settles in at most `leafCount` steps. Pure C is permutation, not computation. -/
+theorem sc_sfree_SN : ∀ (n : Nat) (t : SCTerm), t.countS = 0 → t.leafCount ≤ n →
+    SCSN t := by
+  intro n
+  induction n with
+  | zero =>
+      intro t _ hle
+      exact absurd hle (by
+        have := SCTerm.leafCount_pos t
+        omega)
+  | succ n ih =>
+      intro t h0 hle
+      refine Acc.intro _ (fun u hu => ?_)
+      obtain ⟨hc, hl⟩ := scStep_sfree h0 hu
+      exact ih u hc (by omega)

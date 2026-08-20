@@ -1145,3 +1145,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_reach_dec_of_either_wn' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_reach_dec_of_either_wn
+
+/-- info: 'scStep_sfree' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms scStep_sfree
+
+/-- info: 'sc_sfree_SN' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_sfree_SN
