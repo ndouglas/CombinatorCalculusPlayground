@@ -10400,3 +10400,39 @@ theorem sc_sfree_SN : ∀ (n : Nat) (t : SCTerm), t.countS = 0 → t.leafCount �
       refine Acc.intro _ (fun u hu => ?_)
       obtain ⟨hc, hl⟩ := scStep_sfree h0 hu
       exact ih u hc (by omega)
+
+-- ## Stage 330: THE S-EROSION LIMIT — S-material can only be run off, never dropped.
+-- The indirection probe confirmed the complementarity extends: a C-selector routing
+-- one entry leaves the non-selected S-heavy entries with their S-count intact — no
+-- indirection collects them. The formal capture: S-count drops by at most one per
+-- fire (the S-analog of the leaf unit-drop), so erasing `s` S's costs at least `s`
+-- fires, and each requires an actual S-redex to fire — S-material erodes only by
+-- being executed, never freely discarded.
+
+/-- **THE S-EROSION LIMIT (per step)**: a fire lowers the S-count by at most one. -/
+theorem sc_countS_drop : ∀ {t u : SCTerm}, SCStep t u → t.countS ≤ u.countS + 1 := by
+  intro t u h
+  induction h with
+  | S_red f g x =>
+      have := sc_countS_S f g x
+      omega
+  | C_red f g x =>
+      have := sc_countS_C f g x
+      omega
+  | @appL a a' b _ ih =>
+      show a.countS + b.countS ≤ (a'.countS + b.countS) + 1
+      omega
+  | @appR a b b' _ ih =>
+      show a.countS + b.countS ≤ (a.countS + b'.countS) + 1
+      omega
+
+/-- **THE S-EROSION LIMIT (integrated)**: over `n` fires, at most `n` S's are lost —
+erasing S-material requires proportionally many executed fires. -/
+theorem sc_countS_erosion : ∀ {n : Nat} {t u : SCTerm}, RS.SC.StepsN n t u →
+    t.countS ≤ u.countS + n := by
+  intro n t u h
+  refine h.rec (motive := fun n a b _ => SCTerm.countS a ≤ SCTerm.countS b + n) ?_ ?_
+  · intro a; exact Nat.le_add_right _ _
+  · intro m a b c s _ ih
+    have h1 := sc_countS_drop s
+    omega

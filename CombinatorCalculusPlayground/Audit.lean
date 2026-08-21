@@ -1151,3 +1151,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_sfree_SN' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_sfree_SN
+
+/-- info: 'sc_countS_drop' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_countS_drop
+
+/-- info: 'sc_countS_erosion' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_countS_erosion
