@@ -1157,3 +1157,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_countS_erosion' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_countS_erosion
+
+/-- info: 'sc_burn_cost' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_burn_cost

@@ -10436,3 +10436,15 @@ theorem sc_countS_erosion : ∀ {n : Nat} {t u : SCTerm}, RS.SC.StepsN n t u →
   · intro m a b c s _ ih
     have h1 := sc_countS_drop s
     omega
+
+-- ## Stage 331: THE BURN COST — clearing S-material is proportional to it.
+-- A corollary of the erosion limit, and the vise's quantitative form: reaching any
+-- S-free term from `t` costs at least `countS t` executed fires. Since S-free code is
+-- SN (Stage 329), "collecting" S-garbage is never free and never faster than running
+-- its S's off one at a time.
+
+/-- **THE BURN COST**: reaching an S-free term takes at least `countS t` fires. -/
+theorem sc_burn_cost {n : Nat} {t u : SCTerm} (h : RS.SC.StepsN n t u)
+    (hu : u.countS = 0) : t.countS ≤ n := by
+  have := sc_countS_erosion h
+  omega
