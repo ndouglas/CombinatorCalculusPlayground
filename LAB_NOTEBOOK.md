@@ -7814,3 +7814,45 @@ attempt (large; only if a slice suggests the window is wide). (4) Ideonomy at ~3
   in every reduct until an S of it fires" (occurrence-persistence lemma — the
   provable core of the trace-garbage argument). (3) ideonomy on threading the horns
   (the honest devil's-advocate: what WOULD a WN-only amortized machine look like?).
+
+## 2026-08-21 — Stage 331: the review at 330 — the undecidability arc consolidated
+
+**The undecidability arc (319–331), consolidated.** After the peak-curve hunt closed
+the empirical phase on C12 (317), the program turned the frontier over and took the
+UNIVERSALITY side seriously for the first time since Stage 253:
+- 319–320 THE PIVOT: every Minsky ingredient found a realization; lean suspended.
+- 321 the call/return primitives (sc_call_law, sc_park_law).
+- 322 the erasure obstruction (min-size of (E W) = |W|+1); C15.
+- 323 CORRECTION: S-count is manufactured, not conserved (sc_countS_S); C15 weakened.
+- 324 the burn-tax: erasability is an S-density property.
+- 325 CORRECTION: no clean four-coats equivalence; the reduction is decidable-except-
+  storm→storm (sc_reach_dec_of_either_wn) — the program's precise deliverable.
+- 326 the phase-map artifact.
+- 327 duplication caught (length handle already pinned at 121).
+- 328 the gadgets compose with bounded per-step garbage; C16.
+- 329 THE COMPLEMENTARITY: erasable ⟹ S-free ⟹ SN (sc_sfree_SN); C17; lean swings back.
+- 330 THE S-EROSION LIMIT: S drops ≤1/fire; discard = run (sc_countS_erosion).
+- 331 THE BURN COST: clearing s S's costs ≥ s fires (sc_burn_cost).
+
+**Verdict of the arc.** The machine shop is complete but cannot assemble: the vise
+(discard-requires-run, run-requires-execute-or-diverge) blocks constant-cost
+selection, and every concrete gadget confirms it. The lean returned to DECIDABLE,
+now backed by a mechanism (the complementarity) and five new S-arithmetic walls.
+
+**Ledger.** 383 pins, 10,450 lines, 701 commits, zero warnings, axiom ceiling
+[propext, Quot.sound]; 213 consecutive autonomous stages (119–331).
+
+**The program's standing, plainly stated.** Two deliverables, both machine-checked:
+(1) THE REDUCTION — {S,C} reachability is decidable whenever either endpoint weakly
+normalizes; the sole open region is storm→storm. (2) THE COMPLEMENTARITY CASE — no
+{S,C} term is both erasable-in-context and computationally nontrivial, so the storm
+phase resists hosting a universal machine; the considered lean is that reachability
+is fully decidable. What is NOT done: a proof for storm→storm (the genuine open
+problem, equivalent to a normalization-bound existence question).
+
+**Next arc (ranked).** (1) The devil's-advocate probe: what would a WN-only amortized
+machine (every instruction normalizing, branches run rather than parked) look like,
+and does the busy-beaver cost of running discarded branches admit ANY bounded
+schedule? — the last honest crack for undecidability. (2) If that closes: write the
+complementarity up as the program's structural theorem-sketch for decidability.
+(3) Ideonomy at ~334.
