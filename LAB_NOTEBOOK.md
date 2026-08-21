@@ -7868,3 +7868,18 @@ complementarity up as the program's structural theorem-sketch for decidability.
   theorem-sketch (what a full proof of storm→storm decidability would need, given the
   walls; the honest map from here to a closed proof). (2) update the status artifact
   to reflect the swung-and-settled lean. (3) The 334 review + ideonomy.
+
+## 2026-08-21 — Stage 333: the decidability case written; artifact refreshed
+
+- Two hundred fifteen autonomous stages (119–333). The complementarity case is written
+  as an honest three-lemma theorem-sketch (L1 storm-structure OPEN = C13 generalized,
+  L2 no-hidden-compute WALLED, L3 assembly MECHANICAL); the status artifact refreshed
+  in place (same URL) with the settled lean — decidable, no universal machine, one
+  structural conjecture (engine-plus-bounded-transient) between case and proof.
+- The undecidability investigation (319–333) is complete and consolidated. The program
+  has two machine-checked deliverables (the reduction; the complementarity walls) and
+  one named open problem (L1). Ranking: (1) L1 attack — the reachable-set structure
+  theorem for a restricted storm class (e.g. bounded-branching-width storms) as a first
+  provable slice of C13-generalized. (2) The 335 review + ideonomy. (3) Consolidation
+  pass on the S-arithmetic walls (unit-drop, cold, minting, erosion, burn-cost) into a
+  single "S-calculus" section for the eventual writeup.
