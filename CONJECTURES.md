@@ -7781,3 +7781,31 @@ the final question is sharp: **can {S,C} express computation through S-free
 indirection?** — and the pinned SN of pure C says the indirection layer itself cannot
 compute, only point. This is the strongest decidability argument the program has, one
 lifting-theorem short of a proof.
+
+### Stage 330: the S-erosion limit — the complementarity, quantified
+
+The indirection probe confirmed the predicted answer: routing one entry of a table
+with a C-selector leaves the non-selected S-heavy entries with their full S-count
+(no indirection collects them). Quantified by `sc_countS_erosion`: over n fires at
+most n S's erode, and each erosion requires an executed S-redex. Joined to
+`sc_sfree_SN` (S-free code is SN/trivial), the picture is now a tight vise:
+- To DISCARD an S-heavy branch you must erode its S's → you must RUN it (fire its
+  S-redexes), at ≥ one fire per S.
+- Running a branch is executing it — the opposite of discarding it — and if the
+  branch is a storm, running it never terminates.
+- So constant-cost if-then-else (take one branch, drop the other cheaply) is
+  IMPOSSIBLE; every discarded branch must be run to completion, at its own
+  (busy-beaver-unbounded) cost.
+
+**The frontier, at its sharpest.** An embedded machine cannot have bounded per-step
+cost: each dispatch either leaves the untaken branch as permanent S-garbage
+(halt-config encodes the trace, un-computable → reduction fails → decidable) or runs
+it to collect it (per-step cost unbounded, and divergent if any instruction is a
+storm → machine ill-defined). Neither horn yields a clean undecidability reduction.
+This is not yet a proof of decidability — a sufficiently clever encoding might thread
+between the horns (WN-only instructions with amortized branch-running) — but every
+concrete gadget and every pinned wall now points one way. The program's considered
+lean, after taking the undecidability side as seriously as it could (Stages 319–330):
+**{S,C} reachability is very likely decidable, and the obstruction to universality is
+the erasability-computation complementarity** — a term cannot both be thrown away and
+do work.

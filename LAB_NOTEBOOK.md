@@ -7801,3 +7801,16 @@ attempt (large; only if a slice suggests the window is wide). (4) Ideonomy at ~3
   does any S-free selector applied to a table of S-heavy entries yield one entry
   active and the rest collectable?). If NO → C17 lifts → decidability. (2) The
   ideonomy pass on lifting C17. (3) The 331 review.
+
+## 2026-08-21 — Stage 330: the S-erosion limit; the vise closes
+
+- Two hundred and twelve autonomous stages (119–330). The undecidability
+  investigation (319–330) has run its course: every machine part exists but the
+  complementarity + erosion limit form a vise (discard = run; run = execute or
+  diverge) that no concrete construction escapes. The lean is back to decidable,
+  now mechanistic. Ranking: (1) THE 331 REVIEW — consolidate the undecidability arc
+  and restate the program's standing (the reduction theorem + the complementarity
+  case). (2) attempt to formalize one horn: "a dispatch's untaken branch persists
+  in every reduct until an S of it fires" (occurrence-persistence lemma — the
+  provable core of the trace-garbage argument). (3) ideonomy on threading the horns
+  (the honest devil's-advocate: what WOULD a WN-only amortized machine look like?).

@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE COMPLEMENTARITY (Stage 329, `sc_sfree_SN`):
+confluence makes even the trees rejoin. THE S-EROSION LIMIT + THE VISE (Stage 330,
+`sc_countS_erosion`): indirection confirmed not to collect S-heavy
+branches; S-count drops <=1/fire, so discarding an S-heavy branch
+requires RUNNING it (>=1 fire per S) — discard=run, run=execute-or-
+diverge. Constant-cost if-then-else is impossible; the program's
+considered lean is DECIDABLE, obstruction = the complementarity.
+THE COMPLEMENTARITY (Stage 329, `sc_sfree_SN`):
 the construction sprint could NOT build a machine, and the reason is a
 theorem — erasable garbage must be S-free, S-free code strongly
 normalizes (pure C = permutation, not computation). The lean swings
