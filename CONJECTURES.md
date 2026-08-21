@@ -7832,3 +7832,34 @@ machine; the obstruction is that a term cannot be both thrown away and made to
 compute.** This remains a considered case, not a closed proof — the storm→storm
 decidability theorem is the honest open problem — but every avenue the undecidability
 investigation opened (319–332) has been closed by a pinned wall.
+
+### Stage 333: the decidability case — an honest theorem-sketch for storm→storm
+
+What a full proof of storm→storm decidability would need, and where the program's
+pinned results sit against it. The one sufficient target is unchanged since Stage 132:
+a COMPUTABLE intermediate bound `f` with `t →* u ⟹ StepsLe f(|t|,|u|) t u`
+(`sc_decidable_of_bound`, pinned, closes everything). The complementarity arc reduces
+the plausibility of the alternative (undecidability) to near zero but does NOT yet
+build `f`. The honest decomposition, three lemmas, status marked:
+
+  (L1) STORM STRUCTURE [OPEN]. Every storm's reachable set is "engine + bounded
+       transient": eventually a forced corridor (climb/pump) modulo a bounded-size
+       branching prefix. Supported by the census (all wild census terms are corridors
+       or reach them) and the classification (two driver families, prediction grid);
+       NOT proved in general — the genuine open core.
+  (L2) NO HIDDEN COMPUTE [ESSENTIALLY PROVED, as a case]. A storm cannot compress
+       unbounded reachability information into bounded terms, because erasing/
+       rewriting S-material costs ≥ its count in executed fires (sc_countS_erosion,
+       sc_burn_cost) and erasable code is trivial (sc_sfree_SN). Formal walls exist;
+       lifting them to "reachable-set membership is size-bounded-checkable" is the
+       remaining formal step.
+  (L3) BOUND ASSEMBLY [MECHANICAL given L1+L2]. From engine-structure (L1) + no-hidden-
+       compute (L2), the minimal path-peak for a reachable pair is bounded by a
+       computable function of the endpoints (engine periods + transient sizes), feeding
+       the Stage-132 backbone.
+
+So the program stands at: L3 mechanical, L2 walled (case-strong), L1 the true open
+problem — and L1 is exactly C13 (every corridor is a G-machine) generalized to storms.
+The Wolfram-adjacent question is thereby reduced, with full verification of everything
+around it, to ONE structural conjecture: the reachable set of any {S,C} term is an
+engine-plus-bounded-transient. That is the program's final, honest frontier.
