@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE S-EROSION LIMIT + THE VISE (Stage 330,
+confluence makes even the trees rejoin. THE DEVIL'S ADVOCATE DEFEATED (Stage 332): the
+last crack — a WN-only machine running discarded branches — fails,
+because collecting a branch by running it costs a BUSY BEAVER per
+instruction (4/15/1723/15044 at n=6..9), unbounded and non-uniform.
+Both horns closed; lean firm: DECIDABLE, no universal machine,
+obstruction = the complementarity. THE S-EROSION LIMIT + THE VISE (Stage 330,
 `sc_countS_erosion`): indirection confirmed not to collect S-heavy
 branches; S-count drops <=1/fire, so discarding an S-heavy branch
 requires RUNNING it (>=1 fire per S) — discard=run, run=execute-or-

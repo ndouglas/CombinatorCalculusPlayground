@@ -7809,3 +7809,26 @@ lean, after taking the undecidability side as seriously as it could (Stages 319�
 **{S,C} reachability is very likely decidable, and the obstruction to universality is
 the erasability-computation complementarity** — a term cannot both be thrown away and
 do work.
+
+### Stage 332: the devil's advocate defeated — running branches costs a busy beaver
+
+The last honest crack for undecidability: a WN-only machine that RUNS (rather than
+parks) each discarded branch, collecting it by normalization. Measured: the worst-case
+cost of collecting a discarded S-bearing WN instruction of size n is the BUSY-BEAVER
+curve — 4, 15, 1723, 15044 leftmost fires at n = 6, 7, 8, 9 (peaks 10, 41, 203, 357).
+So per-instruction collection cost is unbounded AND non-uniform (each instruction's
+run length is its own busy-beaver value). Consequences:
+- A machine that collects branches by running them has per-step cost that scales as a
+  busy-beaver function of instruction complexity — no bounded (finite-control)
+  schedule exists, so it is not a finite-state machine in any usable sense.
+- The run lengths are non-uniform, so the accumulated timing still encodes which
+  branch ran when — the history leaks back in through the collection cost itself.
+Both horns of the vise are now closed against a clean undecidability reduction:
+PARK the branch → permanent S-garbage encodes the trace; RUN the branch →
+busy-beaver, non-uniform, unbounded per-step cost that also encodes the trace. No
+{S,C} machine escapes the erasability-computation complementarity. The program's
+lean is now firm: **{S,C} reachability is decidable; the calculus hosts no universal
+machine; the obstruction is that a term cannot be both thrown away and made to
+compute.** This remains a considered case, not a closed proof — the storm→storm
+decidability theorem is the honest open problem — but every avenue the undecidability
+investigation opened (319–332) has been closed by a pinned wall.

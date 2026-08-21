@@ -7856,3 +7856,15 @@ and does the busy-beaver cost of running discarded branches admit ANY bounded
 schedule? — the last honest crack for undecidability. (2) If that closes: write the
 complementarity up as the program's structural theorem-sketch for decidability.
 (3) Ideonomy at ~334.
+
+## 2026-08-21 — Stage 332: the devil's advocate defeated
+
+- Two hundred and fourteen autonomous stages (119–332). The WN-only amortized machine
+  (the last crack) fails: collecting discarded branches by running them costs a busy
+  beaver per instruction (4/15/1723/15044) — unbounded, non-uniform, history-leaking.
+  Both horns closed. The undecidability investigation is complete; it found no
+  embedding and, more valuably, WHY none exists (the complementarity + its five walls).
+- Ranking: (1) the complementarity WRITE-UP — the structural decidability case as a
+  theorem-sketch (what a full proof of storm→storm decidability would need, given the
+  walls; the honest map from here to a closed proof). (2) update the status artifact
+  to reflect the swung-and-settled lean. (3) The 334 review + ideonomy.
