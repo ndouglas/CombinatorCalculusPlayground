@@ -7883,3 +7883,13 @@ complementarity up as the program's structural theorem-sketch for decidability.
   provable slice of C13-generalized. (2) The 335 review + ideonomy. (3) Consolidation
   pass on the S-arithmetic walls (unit-drop, cold, minting, erosion, burn-cost) into a
   single "S-calculus" section for the eventual writeup.
+
+## 2026-08-22 — Stage 334: bounded-orbit decidability
+
+- Two hundred sixteen autonomous stages (119–334). A genuine L1 slice pinned: bounded-
+  orbit storms are decidable. The frontier is stratified and L1 is now sharply posed:
+  "every unbounded-orbit term is eventually a climb/pump engine." Ranking: (1) the
+  eventually-corridor GENERAL theorem (generalize the champion anchor: t forced-into a
+  decidable family ⟹ decidable — lift scChamp170's construction to arbitrary forced
+  prefixes + families). (2) the 336 review. (3) ideonomy on L1 (what invariant could
+  force "unbounded ⟹ eventually forced"?).

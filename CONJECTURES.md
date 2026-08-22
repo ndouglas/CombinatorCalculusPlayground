@@ -7863,3 +7863,17 @@ problem — and L1 is exactly C13 (every corridor is a G-machine) generalized to
 The Wolfram-adjacent question is thereby reduced, with full verification of everything
 around it, to ONE structural conjecture: the reachable set of any {S,C} term is an
 engine-plus-bounded-transient. That is the program's final, honest frontier.
+
+### Stage 334: bounded-orbit decidability — L1's first storm slice
+
+`sc_bounded_orbit_decide`: a term whose entire orbit stays within a size cap has
+decidable reachability, even if it branches and cycles forever. This is the first
+concrete decidability result for a class that is neither the SN bulk nor the forced
+corridors — a genuine (if degenerate) storm slice, and L1's engine-plus-bounded-
+transient specialized to "the whole orbit is the transient." The decidability
+frontier is now stratified: SN (proved) ⊂ bounded-orbit (proved, Stage 334) ⊂
+eventually-corridor (the champion anchor, Stage 274) ⊂ ??? ⊂ all storms (L1, open).
+The gap that remains open is exactly UNBOUNDED-orbit storms that are not corridors —
+which, if the classification (C13-generalized) holds, do not exist: every unbounded
+storm would be eventually-engine. So L1 = "every unbounded-orbit term is eventually a
+climb/pump engine," and the proved slices bracket it from below.

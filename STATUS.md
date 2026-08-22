@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE DEVIL'S ADVOCATE DEFEATED (Stage 332): the
+confluence makes even the trees rejoin. BOUNDED-ORBIT DECIDABILITY (Stage 334,
+`sc_bounded_orbit_decide`): first storm slice of L1 — any term whose
+orbit stays within a size cap is decidable, even if it branches/cycles
+forever. The frontier is stratified (SN ⊂ bounded-orbit ⊂ eventually-
+corridor ⊂ … ⊂ all storms); L1 sharpens to "every unbounded-orbit
+term is eventually a climb/pump engine." THE DEVIL'S ADVOCATE DEFEATED (Stage 332): the
 last crack — a WN-only machine running discarded branches — fails,
 because collecting a branch by running it costs a BUSY BEAVER per
 instruction (4/15/1723/15044 at n=6..9), unbounded and non-uniform.
