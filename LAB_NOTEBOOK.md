@@ -7893,3 +7893,15 @@ complementarity up as the program's structural theorem-sketch for decidability.
   decidable family ⟹ decidable — lift scChamp170's construction to arbitrary forced
   prefixes + families). (2) the 336 review. (3) ideonomy on L1 (what invariant could
   force "unbounded ⟹ eventually forced"?).
+
+## 2026-08-22 — Stage 335: the eventually-corridor theorem
+
+- Two hundred seventeen autonomous stages (119–335). The champion anchor is now a
+  general theorem; the proved bracket covers every term-class the program has
+  exhibited. Instance-synthesis note (re-)recorded: SCTerm vs RS.SC.Carrier defeats
+  list-membership instance search — build explicit deciders (scMemDec) when u arrives
+  typed as Carrier. Ranking: (1) the 337 review + ideonomy on L1's residue (does a
+  branching-unbounded-never-forced term exist? — targeted search at n=11-13 for
+  storms that neither plateau nor become forced within a large budget). (2) consolidate
+  the decidability bracket into a single documented theorem-chain. (3) the S-calculus
+  walls consolidation.

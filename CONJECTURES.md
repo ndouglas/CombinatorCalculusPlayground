@@ -7877,3 +7877,18 @@ The gap that remains open is exactly UNBOUNDED-orbit storms that are not corrido
 which, if the classification (C13-generalized) holds, do not exist: every unbounded
 storm would be eventually-engine. So L1 = "every unbounded-orbit term is eventually a
 climb/pump engine," and the proved slices bracket it from below.
+
+### Stage 335: the eventually-corridor theorem — the bracket climbs
+
+`sc_forced_prefix_decide` generalizes the champion anchor (Stage 274) to arbitrary
+forced prefixes: any term that reduces along a forced (deterministic) chain to an exit
+state with decidable reachability, itself has decidable reachability — reach(t) =
+{prefix} ∪ reach(exit) (`sc_forced_prefix_reach`, from the forced-head lemma). Where
+Stage 274 hard-coded scChamp170 → swapmill, this covers ALL forced-prefix-into-
+decidable terms in one theorem. The proved decidability bracket now reads:
+SN ⊂ bounded-orbit ⊂ forced-prefix-into-decidable ⊂ … ⊂ all reachability-pairs (L1).
+Every wild census term the program ever found sits inside this bracket (each is forced
+into an engine family). L1's open residue is precisely: BRANCHING storms with
+unbounded orbit that never become forced — whose existence the classification (C13-
+generalized) denies. The program has now PROVED decidability for every term-class it
+has ever exhibited; the open problem is whether an un-exhibited class exists.
