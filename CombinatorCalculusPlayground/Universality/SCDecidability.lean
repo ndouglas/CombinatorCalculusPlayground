@@ -10480,3 +10480,82 @@ def sc_bounded_orbit_decide {c : Nat} {t : SCTerm} (hc : t.leafCount ≤ c)
     scStepsLe_decidable c t u hc
   refine decidable_of_iff (RS.StepsLe RS.SC SCTerm.leafCount c t u)
     ⟨RS.StepsLe.toSteps, fun h => scSteps_toStepsLe hb h⟩
+
+-- ## Stage 335: THE EVENTUALLY-CORRIDOR THEOREM — forced prefix into a decider.
+-- The champion anchor (Stage 274) hard-coded scChamp170's prefix and the swapmill
+-- family. Here it is general: a term forced along a finite chain to an EXIT state `s`
+-- has reachable set = {prefix states} ∪ reach(s), so if `s` has decidable
+-- reachability, so does the original term. This lifts the proved bracket one layer:
+-- SN ⊂ bounded-orbit ⊂ forced-prefix-into-decidable.
+
+/-- A forced state's reducts stay put or pass through the unique successor. -/
+theorem scSteps_forced_head {t v u : SCTerm} (hf : scSucc t = [v])
+    (h : RS.SC.Steps t u) : u = t ∨ RS.SC.Steps v u := by
+  rcases scSteps_head_cases h with rfl | ⟨w, s, rest⟩
+  · exact .inl rfl
+  · have hm := scSucc_complete s
+    rw [hf] at hm
+    have hwv : w = v := by simpa using hm
+    exact .inr (hwv ▸ rest)
+
+/-- **THE FORCED-PREFIX REACH CHARACTERIZATION**: along a forced chain to exit `s`,
+reachability splits into on-the-prefix or reachable-from-`s`. -/
+theorem sc_forced_prefix_reach : ∀ (l : List SCTerm) (t u : SCTerm),
+    SCForced t l → (RS.SC.Steps t u ↔ (u ∈ t :: l ∨ RS.SC.Steps (l.getLastD t) u)) := by
+  intro l
+  induction l with
+  | nil =>
+      intro t u _
+      constructor
+      · intro h; exact .inr h
+      · rintro (hu | h)
+        · rcases List.mem_cons.mp hu with rfl | hu'
+          · exact @RS.Steps.refl RS.SC u
+          · exact absurd hu' List.not_mem_nil
+        · exact h
+  | cons v rest ih =>
+      intro t u hf
+      have hfv : scSucc t = [v] := hf.1
+      have hrest : SCForced v rest := hf.2
+      rw [List.getLastD_cons]
+      constructor
+      · intro h
+        rcases scSteps_forced_head hfv h with rfl | hv
+        · exact .inl List.mem_cons_self
+        · rcases (ih v u hrest).mp hv with hmem | hlast
+          · exact .inl (List.mem_cons_of_mem t hmem)
+          · exact .inr hlast
+      · rintro (hu | hlast)
+        · rcases List.mem_cons.mp hu with rfl | hu'
+          · exact @RS.Steps.refl RS.SC u
+          · exact RS.Steps.tail (scSucc_sound (by rw [hfv]; exact List.mem_cons_self))
+              ((ih v u hrest).mpr (.inl hu'))
+        · exact RS.Steps.tail (scSucc_sound (by rw [hfv]; exact List.mem_cons_self))
+            ((ih v u hrest).mpr (.inr hlast))
+
+/-- Explicit decidable membership for `SCTerm` lists (sidesteps Carrier/SCTerm
+instance mismatch). -/
+def scMemDec : (u : SCTerm) → (l : List SCTerm) → Decidable (u ∈ l)
+  | _, [] => isFalse (by simp)
+  | u, v :: rest =>
+      match (inferInstanceAs (DecidableEq SCTerm)) u v with
+      | isTrue h => isTrue (by rw [h]; exact List.mem_cons_self)
+      | isFalse hne =>
+          match scMemDec u rest with
+          | isTrue h => isTrue (List.mem_cons_of_mem v h)
+          | isFalse hn => isFalse (by
+              intro hm
+              rcases List.mem_cons.mp hm with rfl | h'
+              · exact hne rfl
+              · exact hn h')
+
+/-- **EVENTUALLY-CORRIDOR DECIDABILITY**: a term forced along a finite chain to an
+exit whose reachability is decidable, has decidable reachability. -/
+def sc_forced_prefix_decide (l : List SCTerm) (t : SCTerm) (hf : SCForced t l)
+    (dexit : ∀ u, Decidable (RS.SC.Steps (l.getLastD t) u)) :
+    ∀ u, Decidable (RS.SC.Steps t u) := by
+  intro u
+  letI : Decidable (RS.SC.Steps (l.getLastD t) u) := dexit u
+  letI : Decidable (u ∈ t :: l) := scMemDec u (t :: l)
+  exact decidable_of_iff (u ∈ t :: l ∨ RS.SC.Steps (l.getLastD t) u)
+    (sc_forced_prefix_reach l t u hf).symm

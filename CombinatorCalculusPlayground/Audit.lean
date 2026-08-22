@@ -1166,3 +1166,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_bounded_orbit_decide' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_bounded_orbit_decide
+
+/-- info: 'sc_forced_prefix_reach' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_forced_prefix_reach
+
+/-- info: 'sc_forced_prefix_decide' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_forced_prefix_decide
