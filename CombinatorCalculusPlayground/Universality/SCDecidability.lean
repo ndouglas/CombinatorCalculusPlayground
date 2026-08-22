@@ -10448,3 +10448,35 @@ theorem sc_burn_cost {n : Nat} {t u : SCTerm} (h : RS.SC.StepsN n t u)
     (hu : u.countS = 0) : t.countS ≤ n := by
   have := sc_countS_erosion h
   omega
+
+-- ## Stage 334: BOUNDED-ORBIT DECIDABILITY — the first storm slice of L1.
+-- A genuine decidable class beyond the SN bulk and the forced corridors: terms whose
+-- ENTIRE ORBIT stays within a size cap. Such a term may branch freely and cycle
+-- forever (a real storm, not normalizing, not forced) — yet if it never outgrows a
+-- bound, its reachable set is finite and reachability from it is decidable. This is
+-- L1's engine-plus-bounded-transient in its degenerate case (the whole orbit is the
+-- bounded transient), and the first concrete storm-class decidability result.
+
+/-- A reduction whose every state is reachable-and-bounded is a bounded path. -/
+theorem scSteps_toStepsLe {c : Nat} {t u : SCTerm}
+    (hb : ∀ w, RS.SC.Steps t w → w.leafCount ≤ c)
+    (h : RS.SC.Steps t u) : RS.StepsLe RS.SC SCTerm.leafCount c t u := by
+  refine (h.rec (motive := fun (x y : SCTerm) _ =>
+    RS.SC.Steps t x → RS.StepsLe RS.SC SCTerm.leafCount c x y) ?_ ?_) (@RS.Steps.refl RS.SC t)
+  · intro x hx
+    exact RS.StepsLe.refl x (hb x hx)
+  · intro x y d s _ ih hx
+    refine RS.StepsLe.tail s (hb x hx) (ih ?_)
+    exact RS.Steps.trans hx (RS.Steps.tail s (@RS.Steps.refl RS.SC y))
+
+/-- **BOUNDED-ORBIT DECIDABILITY**: if `t`'s whole orbit stays within a size cap,
+reachability from `t` is decidable — a storm may branch and cycle forever, but if it
+never outgrows a bound its reachable set is finite. -/
+def sc_bounded_orbit_decide {c : Nat} {t : SCTerm} (hc : t.leafCount ≤ c)
+    (hb : ∀ w, RS.SC.Steps t w → w.leafCount ≤ c) :
+    ∀ u, Decidable (RS.SC.Steps t u) := by
+  intro u
+  have hd : Decidable (RS.StepsLe RS.SC SCTerm.leafCount c t u) :=
+    scStepsLe_decidable c t u hc
+  refine decidable_of_iff (RS.StepsLe RS.SC SCTerm.leafCount c t u)
+    ⟨RS.StepsLe.toSteps, fun h => scSteps_toStepsLe hb h⟩
