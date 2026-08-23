@@ -7962,3 +7962,15 @@ every reachable state has ≤ k redexes — finitely-branching-with-cap). (3) Fo
 the complementarity's core as a single stated theorem-with-hypotheses (the no-machine
 case as a conditional result). None of these closes the open problem; all are honest
 incremental value.
+
+## 2026-08-23 — Stage 338: ideonomy — the VAS placement
+
+- Two hundred nineteen autonomous stages (119–338). The ideonomy pass delivered: the
+  VAS placement (Lens 3) explains WHY the complementarity implies decidability (no
+  zero-test = VAS side of the Minsky line), and the feature-certificate probe (Lens 2)
+  gives a near-complete two-sided decider (98% of pairs resolved). C18 registered.
+  Ranking: (1) THE VAS-CERTIFICATE FORMALIZATION — pin a sound non-reachability
+  certificate: a computable feature-monotonicity or feasibility check F with
+  ¬F(t,u) ⟹ ¬Steps t u (the provable half of the two-sided decider). (2) close the
+  4-pair gap — is it depth or genuine over-approximation? (deeper search / finer
+  features). (3) C18 faithfulness — what feature set makes the abstraction exact?

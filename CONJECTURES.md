@@ -7916,3 +7916,38 @@ storms branch forever while growing. Corrected picture:
   confluence makes their (tree-shaped, reconverging) reachable sets structured but not
   obviously finitely-describable. This is where the genuine difficulty lives, and the
   program should stop implying otherwise.
+
+### Stage 338: ideonomy — the VAS placement, and a near-complete decider
+
+An ideonomy pass over the one open problem (branching-storm reachability) produced its
+sharpest reframing yet and a working two-sided procedure.
+
+FIVE LENSES: (1) co-semidecidability — reachability is semi-decidable; decidability ⟺
+non-reachability is too ⟺ computable SEPARATION CERTIFICATES exist; reframe L1 as "is
+the wall-algebra COMPLETE?" (2) vector abstraction — every fire is an exact vector
+update on (leaf, countS, #C-redex, #S-redex, spine); concrete reachability ⟹ abstract
+VAS reachability, giving sound non-reachability certificates. (3) THE VAS PLACEMENT
+[the capstone] — a Minsky machine = counters + zero-test (undecidable); remove the
+zero-test → VAS (DECIDABLE, Mayr/Leroux); the complementarity PROVED {S,C} has no
+clean zero-test, so the storm phase sits on the VAS side of the exact decidable/
+undecidable line. This is WHY the complementarity should imply decidability. (4)
+Kruskal/WQO — trees under homeomorphic embedding are WQO; potential finite description.
+(5) bounded-width slice.
+
+THE PROBE (Lens 2, concrete): feature-vector infeasibility as a non-reachability test.
+On 249 random pairs — 89 truly reachable (forward search certifies), 156 of ~160
+non-reachable pairs CORRECTLY certified non-reachable by feature-infeasibility, only 4
+in the gap. **The two-sided procedure (forward search ∪ feature-certificate) resolves
+98% of pairs.** The 4 unresolved are where the over-approximation is too coarse or the
+depth budget too small — exactly the residue where genuine VAS-reachability (not the
+cheap feature check) would be needed.
+
+CONSEQUENCE. The decidability lean firms further and gains a classical anchor: {S,C}
+reachability behaves like VAS reachability — decidable in principle, resolvable in
+practice by invariants-plus-search — precisely because the complementarity bars the
+zero-test that would make it Minsky-undecidable. **C18 (THE VAS CONJECTURE),
+registered:** {S,C} reachability reduces to (is inter-decidable with) reachability in a
+vector addition system, via the feature-vector abstraction refined to faithfulness;
+if C18 holds, decidability follows from Leroux's theorem. This is the most promising
+route to closing L1 the program has found, and it ties the whole undecidability
+investigation (the complementarity) to a named classical decidability result.

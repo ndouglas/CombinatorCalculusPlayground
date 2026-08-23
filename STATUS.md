@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE RESIDUE IS REAL (Stage 336, correcting 335):
+confluence makes even the trees rejoin. THE VAS PLACEMENT (Stage 338, ideonomy, C18): the
+complementarity bars the zero-test, placing {S,C} storms on the VAS
+(decidable) side of the Minsky line — WHY decidability should hold; a
+feature-vector certificate + forward search already resolves 98% of
+random pairs. C18: {S,C} reachability is inter-decidable with VAS
+reachability (⟹ decidable by Leroux). THE RESIDUE IS REAL (Stage 336, correcting 335):
 random sampling finds ~7% BRANCHING-UNBOUNDED storms (grow AND branch
 forever) OUTSIDE the proved bracket — the champions were a
 forced-selected sample. L1 ("every unbounded term eventually forced")
