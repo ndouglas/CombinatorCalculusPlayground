@@ -1172,3 +1172,9 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_forced_prefix_decide' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_forced_prefix_decide
+
+/-- info: 'sc_sfree_not_reach' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_sfree_not_reach
+
+/-- info: 'sc_cfree_not_reach' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_cfree_not_reach

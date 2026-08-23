@@ -10559,3 +10559,59 @@ def sc_forced_prefix_decide (l : List SCTerm) (t : SCTerm) (hf : SCForced t l)
   letI : Decidable (u ∈ t :: l) := scMemDec u (t :: l)
   exact decidable_of_iff (u ∈ t :: l ∨ RS.SC.Steps (l.getLastD t) u)
     (sc_forced_prefix_reach l t u hf).symm
+
+-- ## Stage 339: NON-REACHABILITY CERTIFICATES — the co-semidecider's provable core.
+-- Ideonomy (Stage 338) reframed decidability as the existence of computable
+-- separation certificates. The first clean ones: S-free-ness and C-free-ness are
+-- preserved along reduction, so a source lacking an atom can never reach a target
+-- containing it. These are the provable half of the two-sided decider (search
+-- certifies reachability; these certify non-reachability), and the first instances
+-- of the certificate algebra whose completeness is the open L1.
+
+/-- S-freeness is preserved along reductions. -/
+theorem scSteps_sfree_pres {t u : SCTerm} (h0 : t.countS = 0)
+    (h : RS.SC.Steps t u) : u.countS = 0 := by
+  refine h.rec (motive := fun (a b : SCTerm) _ => a.countS = 0 → b.countS = 0)
+    ?_ ?_ h0
+  · intro a ha; exact ha
+  · intro a b c s _ ih ha
+    exact ih (scStep_sfree ha s).1
+
+/-- **S-CERTIFICATE**: an S-free source cannot reach an S-bearing target. -/
+theorem sc_sfree_not_reach {t u : SCTerm} (ht : t.countS = 0) (hu : 0 < u.countS) :
+    ¬ RS.SC.Steps t u :=
+  fun h => by have := scSteps_sfree_pres ht h; omega
+
+/-- A step out of a C-free term is C-free. -/
+theorem scStep_cfree : ∀ {t u : SCTerm}, t.countC = 0 → SCStep t u → u.countC = 0 := by
+  intro t u h0 hstep
+  induction hstep with
+  | S_red f g x =>
+      simp only [SCTerm.countC] at h0 ⊢
+      omega
+  | C_red f g x =>
+      exact absurd h0 (by simp only [SCTerm.countC]; omega)
+  | @appL a a' b _ ih =>
+      simp only [SCTerm.countC] at h0 ⊢
+      have : a.countC = 0 := by omega
+      have hb : b.countC = 0 := by omega
+      rw [ih this]; omega
+  | @appR a b b' _ ih =>
+      simp only [SCTerm.countC] at h0 ⊢
+      have ha : a.countC = 0 := by omega
+      have : b.countC = 0 := by omega
+      rw [ih this]; omega
+
+/-- C-freeness is preserved along reductions. -/
+theorem scSteps_cfree_pres {t u : SCTerm} (h0 : t.countC = 0)
+    (h : RS.SC.Steps t u) : u.countC = 0 := by
+  refine h.rec (motive := fun (a b : SCTerm) _ => a.countC = 0 → b.countC = 0)
+    ?_ ?_ h0
+  · intro a ha; exact ha
+  · intro a b c s _ ih ha
+    exact ih (scStep_cfree ha s)
+
+/-- **C-CERTIFICATE**: a C-free source cannot reach a C-bearing target. -/
+theorem sc_cfree_not_reach {t u : SCTerm} (ht : t.countC = 0) (hu : 0 < u.countC) :
+    ¬ RS.SC.Steps t u :=
+  fun h => by have := scSteps_cfree_pres ht h; omega
