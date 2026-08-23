@@ -7920,3 +7920,45 @@ complementarity up as the program's structural theorem-sketch for decidability.
   (2) probe whether branching storms' reconvergence (confluence) yields ANY finite
   description (dev-tower cofinality applied to a branching storm — is the tower
   eventually forced even when the term branches?). (3) the S-calculus consolidation.
+
+## 2026-08-23 — Stage 337: the review at 336 — the frontier at bedrock
+
+**The dev-tower does not tame branching storms.** Probed: the complete-development
+tower on a residue storm explodes in both size and width (width 2755 by dev^24). So
+confluence/cofinality gives a rendezvous line, but that line is itself wild — no
+finite description. Branching-unbounded storms resist leftmost AND parallel handles.
+This is the honest bedrock of the open problem.
+
+**The program's final standing (218 stages), stated without overclaim.**
+PROVED (machine-checked, [propext, Quot.sound]):
+  - THE REDUCTION: reachability decidable whenever either endpoint weakly normalizes;
+    open region = storm→storm (sc_reach_dec_of_either_wn).
+  - THE BULK: WN = SN (conservation, sc_wn_sn) ⟹ every normalizer decidable.
+  - THE CORRIDORS: two engine families, climb+pump principles, three trichotomies,
+    certified deciders, a prediction grid.
+  - THE BRACKET: SN ⊂ bounded-orbit ⊂ forced-prefix-into-decidable, all decidable.
+  - THE COMPLEMENTARITY WALLS: erasable⟹S-free⟹SN (sc_sfree_SN); S-erosion limit;
+    burn cost — no term is both discardable and computing.
+OPEN (honest):
+  - storm→storm reachability, specifically the ~7% BRANCHING-UNBOUNDED storms, which
+    are covered by NO proved decision procedure and resist every structural handle
+    tried (leftmost explodes, dev-tower explodes, no size/count invariant bounds them).
+  - Their no-universal-machine status is a CASE (the complementarity), not a theorem.
+
+**Honest verdict.** The Wolfram-adjacent question is REDUCED (with full verification of
+everything around it) to the decidability of reachability among branching-unbounded
+{S,C} storms — a genuine, hard, open problem with no handle the program could find.
+The considered lean remains DECIDABLE / no-universal-machine, on the strength of the
+complementarity, but this is belief backed by walls, not proof. That is the truthful
+terminus of the autonomous investigation.
+
+**Ledger.** 387 pins, 10,561 lines, 710 commits, zero warnings, [propext, Quot.sound]; 218
+consecutive autonomous stages (119–337).
+
+**Where the program can still go (ranked, honestly modest).** (1) Consolidate the
+S-calculus walls into one documented section (organization, not new math). (2) Attempt
+a decidability theorem for a NARROWER branching class (e.g. bounded-WIDTH branching:
+every reachable state has ≤ k redexes — finitely-branching-with-cap). (3) Formalize
+the complementarity's core as a single stated theorem-with-hypotheses (the no-machine
+case as a conditional result). None of these closes the open problem; all are honest
+incremental value.
