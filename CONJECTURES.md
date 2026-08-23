@@ -7951,3 +7951,17 @@ vector addition system, via the feature-vector abstraction refined to faithfulne
 if C18 holds, decidability follows from Leroux's theorem. This is the most promising
 route to closing L1 the program has found, and it ties the whole undecidability
 investigation (the complementarity) to a named classical decidability result.
+
+### Stage 339: the first non-reachability certificates
+
+From the ideonomy pass: `sc_sfree_not_reach` and `sc_cfree_not_reach` — an S-free
+source cannot reach an S-bearing target, and dually for C — because atom-freeness is
+preserved along reduction. These are the first pinned instances of the certificate
+algebra (Lens 1): the provable, non-reachability half of the two-sided decider whose
+practical form resolved 98% of random pairs. They are narrow (only atom-presence
+separation), but they establish the shape: a preserved property yields a sound
+non-reachability test. The completeness of this algebra — enough certificates to
+separate EVERY non-reachable pair — is exactly L1/C18 restated in certificate form,
+and the VAS placement (Stage 338) predicts the complete algebra is the VAS-feasibility
+check (which the probe showed catches 156/160 non-reachable pairs — the atom-freeness
+certificates are two coordinates of that vector test).

@@ -7974,3 +7974,12 @@ incremental value.
   ¬F(t,u) ⟹ ¬Steps t u (the provable half of the two-sided decider). (2) close the
   4-pair gap — is it depth or genuine over-approximation? (deeper search / finer
   features). (3) C18 faithfulness — what feature set makes the abstraction exact?
+
+## 2026-08-23 — Stage 339: the first non-reachability certificates
+
+- Two hundred twenty autonomous stages (119–339). The ideonomy direction is bearing
+  fruit: the co-semidecider's provable core has its first two theorems (atom-freeness
+  certificates). Ranking: (1) more certificates — is there a preserved property beyond
+  atom-freeness? (spine-head atom preservation? the pinned structural walls recast as
+  certificates?). (2) the VAS-feasibility formalization (the full feature check as a
+  sound certificate — harder, needs the vector reachability). (3) the 341 review.

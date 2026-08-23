@@ -1097,7 +1097,11 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE VAS PLACEMENT (Stage 338, ideonomy, C18): the
+confluence makes even the trees rejoin. NON-REACHABILITY CERTIFICATES (Stage 339,
+`sc_sfree_not_reach`/`sc_cfree_not_reach`): atom-freeness is preserved,
+so an atom-free source cannot reach an atom-bearing target — the first
+pinned instances of the co-semidecider's provable half; the algebra's
+completeness is L1/C18 in certificate form. THE VAS PLACEMENT (Stage 338, ideonomy, C18): the
 complementarity bars the zero-test, placing {S,C} storms on the VAS
 (decidable) side of the Minsky line — WHY decidability should hold; a
 feature-vector certificate + forward search already resolves 98% of
