@@ -7892,3 +7892,27 @@ into an engine family). L1's open residue is precisely: BRANCHING storms with
 unbounded orbit that never become forced — whose existence the classification (C13-
 generalized) denies. The program has now PROVED decidability for every term-class it
 has ever exhibited; the open problem is whether an un-exhibited class exists.
+
+### Stage 336: the residue is real — a correction to Stage 335
+
+An honest probe corrects an overclaim. Random sampling (n=9–11, 400 terms) classifies
+as: 92% SN, ~7% BRANCHING-UNBOUNDED (grow AND keep branching forever), ~0.5% each
+forced-grow and bounded. A verified residue specimen `S(SS)C((SS)(CS))SS` grows
+10→7987 with branch-width median 735, branching throughout — a genuine term OUTSIDE
+the proved bracket (not SN, not bounded-orbit, not eventually-forced). **Stage 335's
+"every wild census term sits in the bracket" was true but misleading:** the census
+CHAMPIONS were selected for being forced (corridors), so of course they're in the
+bracket; RANDOM storms are overwhelmingly branching-unbounded and are NOT. So L1 as
+stated ("every unbounded-orbit term is eventually a forced engine") is FALSE — these
+storms branch forever while growing. Corrected picture:
+- The proved decidability bracket (SN ⊂ bounded-orbit ⊂ forced-prefix) covers ~92%+
+  plus the corridor sliver, but NOT the ~7% branching-unbounded storms.
+- Those storms remain subject to the COMPLEMENTARITY (no universal machine: the
+  erasure/erosion walls apply to every term) — so the no-computation CASE stands —
+  but their reachability has NO proved decision procedure. They are the true, honest
+  open core of storm→storm.
+- L1 must be restated as the bare open problem: is reachability among branching-
+  unbounded storms decidable? The classification does NOT reduce them to corridors;
+  confluence makes their (tree-shaped, reconverging) reachable sets structured but not
+  obviously finitely-describable. This is where the genuine difficulty lives, and the
+  program should stop implying otherwise.

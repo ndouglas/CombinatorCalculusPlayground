@@ -7905,3 +7905,18 @@ complementarity up as the program's structural theorem-sketch for decidability.
   storms that neither plateau nor become forced within a large budget). (2) consolidate
   the decidability bracket into a single documented theorem-chain. (3) the S-calculus
   walls consolidation.
+
+## 2026-08-23 — Stage 336: the residue is real; Stage 335 corrected
+
+- Two hundred eighteen autonomous stages (119–336). The probe did its job against my
+  own optimism: branching-unbounded storms (~7%) are common and OUTSIDE the proved
+  bracket; the champions were a biased (forced-selected) sample. L1 restated as the
+  bare open problem. The reduction theorem (decidable except storm→storm) is
+  UNCHANGED and remains the honest deliverable; what changed is I stop claiming the
+  bracket nearly covers storm→storm — it does not.
+- Ranking: (1) the 337 review — restate the program's standing with the corrected
+  L1 (the reduction proved; storm→storm genuinely open including branching storms;
+  the complementarity as the no-universal-machine case, not a decidability proof).
+  (2) probe whether branching storms' reconvergence (confluence) yields ANY finite
+  description (dev-tower cofinality applied to a branching storm — is the tower
+  eventually forced even when the term branches?). (3) the S-calculus consolidation.

@@ -1097,13 +1097,15 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE EVENTUALLY-CORRIDOR THEOREM (Stage 335,
-`sc_forced_prefix_decide`): any term forced along a chain into a
-decidable exit is decidable — the champion anchor generalized;
-reach(t) = prefix ∪ reach(exit). Every wild census term ever found
-now sits in the proved bracket (SN ⊂ bounded-orbit ⊂ forced-prefix-
-into-decidable); L1's residue is unbounded branching storms that never
-become forced, which the classification denies.
+confluence makes even the trees rejoin. THE RESIDUE IS REAL (Stage 336, correcting 335):
+random sampling finds ~7% BRANCHING-UNBOUNDED storms (grow AND branch
+forever) OUTSIDE the proved bracket — the champions were a
+forced-selected sample. L1 ("every unbounded term eventually forced")
+is FALSE; storm→storm genuinely contains hard branching terms. The
+proved bracket (SN ⊂ bounded-orbit ⊂ forced-prefix, Stage 335) is
+real but does NOT nearly cover storm→storm. The complementarity still
+gives no-universal-machine for them; a decision procedure does not
+exist yet. The reduction theorem is unchanged.
 BOUNDED-ORBIT DECIDABILITY (Stage 334,
 `sc_bounded_orbit_decide`): first storm slice of L1 — any term whose
 orbit stays within a size cap is decidable, even if it branches/cycles
