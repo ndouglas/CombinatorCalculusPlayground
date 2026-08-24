@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE WSTS LEAD (Stage 342, ideonomy II, C19): a
+confluence makes even the trees rejoin. C19 REFUTED / THE CRITICAL-BOUNDARY THEME (Stage
+343): the WSTS route fails — monotonicity (needs head/arity protected)
+and WQO (needs free arity growth) are incompatible for {S,C}. Meta:
+{S,C} reachability sits EXACTLY on the boundary of VAS (C18), WSTS
+(C19), and Minsky (complementarity) frameworks — a critical system,
+which is why it is genuinely hard. THE WSTS LEAD (Stage 342, ideonomy II, C19): a
 new sound-decidability route — {S,C} might be a well-structured
 transition system (⟹ decidable coverability by backward analysis).
 Naive Kruskal embedding fails (~13%, all head-spine insertions),

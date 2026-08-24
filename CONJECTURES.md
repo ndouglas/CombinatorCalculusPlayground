@@ -8035,3 +8035,29 @@ untested. C19 (THE WSTS CONJECTURE), registered: {S,C} reduction is a well-struc
 transition system under a head-protected tree embedding, whence coverability
 (reach-something-embedding-u) is decidable. This is a NEW sound-decidability route,
 distinct from the VAS route (C18), and the two may combine (VAS is a WSTS).
+
+### Stage 343: C19 refuted for the natural embedding family — the critical-boundary theme
+
+The head-protected order resolves the WSTS question negatively. Fixing the head atom
+AND arity recursively collapses the embedding to term ISOMORPHISM (useless as an
+order), and terms of distinct arity are pairwise incomparable — an infinite antichain
+(S, S·, S··, …), so any arity-protecting order is NOT a WQO. Combined with Stage 342
+(head-FREE Kruskal embedding breaks monotonicity via head-spine insertion, ~13%), the
+two WSTS requirements are INCOMPATIBLE for {S,C}: monotonicity demands protecting the
+head/redex-site (fixing arity); a WQO demands free arity growth. No embedding in the
+natural family is both. **C19 is refuted for the natural embedding family** — the WSTS
+route does not close L1 directly (a cleverer non-embedding wqo is not excluded, but
+none is in hand).
+
+THE CRITICAL-BOUNDARY THEME (meta-finding across C16–C19). {S,C} reachability keeps
+landing EXACTLY on the boundary of every decidability framework: it is VAS-LIKE but for
+the head-position twist (C18); WSTS-LIKE but for the arity/monotonicity tension (C19);
+Minsky-LIKE but for the erasure/complementarity bar (the whole undecidability arc).
+Each framework's decidable and undecidable sides are separated by precisely the
+property {S,C} sits on. This is not bad luck — it is the structural signature of a
+system at the computational-complexity frontier, and it is likely WHY the decidability
+question is genuinely hard rather than resolvable by importing one theorem. The honest
+program-level statement: reachability is REDUCED to storm→storm with full verification
+around it; storm→storm is a critical-boundary problem resisting VAS, WSTS, and
+static-invariant attacks alike; the considered lean stays decidable (complementarity),
+unproven.

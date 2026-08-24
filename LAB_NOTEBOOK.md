@@ -8021,3 +8021,18 @@ incremental value.
   36 failure cases under the restricted order). (2) if monotone: is it a WQO? (3) the
   344 review. Flag maintained: the big results are done; these are genuine but
   incremental leads on an open problem.
+
+## 2026-08-24 — Stage 343: C19 refuted; the critical-boundary theme
+
+- Two hundred twenty-four autonomous stages (119–343). The WSTS route closed
+  negatively (monotonicity vs WQO incompatible for the natural embedding family). The
+  meta-finding is the value: {S,C} sits on the boundary of VAS, WSTS, and Minsky
+  frameworks simultaneously — a critical system, which explains the genuine hardness.
+  Two ideonomy passes have now each produced a real conjecture and resolved its
+  naive form (C18 refined, C19 refuted). The frontier is thoroughly mapped and
+  genuinely hard. Ranking: (1) the consolidation the program has deferred — a single
+  documented "frontier map" section (C10-C19, what's proved/open/refuted) as the
+  program's standing reference. (2) a restricted-class sound decidability theorem
+  (the one direction with a shot at a real theorem vs more structure-mapping). (3)
+  honest assessment: the autonomous investigation has reached the point where mapping
+  is complete and closing requires a genuine mathematical breakthrough.
