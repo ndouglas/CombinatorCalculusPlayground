@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. NON-REACHABILITY CERTIFICATES (Stage 339,
+confluence makes even the trees rejoin. FEATURE CHECK SOUND-NOT-FAITHFUL (Stage 340):
+the 13 gap pairs stay unreached after 150k-state search — the naive
+5-feature vector over-approximates, so C18 needs finer (structural-
+wall) certificates; the refined target is a two-tier algebra
+(quantitative features + qualitative walls) whose completeness = C18.
+NON-REACHABILITY CERTIFICATES (Stage 339,
 `sc_sfree_not_reach`/`sc_cfree_not_reach`): atom-freeness is preserved,
 so an atom-free source cannot reach an atom-bearing target — the first
 pinned instances of the co-semidecider's provable half; the algebra's

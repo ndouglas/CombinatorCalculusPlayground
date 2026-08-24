@@ -7965,3 +7965,23 @@ separate EVERY non-reachable pair — is exactly L1/C18 restated in certificate 
 and the VAS placement (Stage 338) predicts the complete algebra is the VAS-feasibility
 check (which the probe showed catches 156/160 non-reachable pairs — the atom-freeness
 certificates are two coordinates of that vector test).
+
+### Stage 340: the feature check is sound but not faithful — C18 refined
+
+Closing the Stage-338 gap: the feature-feasible-but-unresolved pairs (13 collected)
+remain unreached after 150k-state deep search — 0 turned out reachable-deeper. So
+they are genuine over-approximation cases: the cheap 5-coordinate feature vector
+(leaf, countS, #C-redex, #S-redex, spine) is SOUND as a non-reachability test (a
+missing feature-vector always certifies correctly) but NOT FAITHFUL — some genuinely
+non-reachable pairs pass the feature check inconclusively. Refinement of C18: the
+naive feature abstraction is a proper over-approximation; faithfulness needs finer
+certificates. The natural finer certificates are the program's own STRUCTURAL WALLS
+(head-provenance, cargo, suffix, no-pair) — qualitative separations the quantitative
+feature vector cannot see. So the certificate algebra is two-tiered: quantitative
+(counts/features, catch most) + structural (walls, catch the qualitative residue).
+C18 restated: the JOINT algebra (features + walls) is complete — every non-reachable
+pair is separated by some quantitative or structural certificate. The 13 gap pairs
+are the concrete test set for whether the pinned walls close the quantitative gap;
+that is the next probe. Honest status: the two-sided decider is sound both ways and
+resolves ~98% cheaply, but completeness (C18) is unproven and the naive features
+alone are demonstrably insufficient.

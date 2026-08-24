@@ -7983,3 +7983,15 @@ incremental value.
   atom-freeness? (spine-head atom preservation? the pinned structural walls recast as
   certificates?). (2) the VAS-feasibility formalization (the full feature check as a
   sound certificate — harder, needs the vector reachability). (3) the 341 review.
+
+## 2026-08-24 — Stage 340: the feature check is sound but not faithful
+
+- Two hundred twenty-one autonomous stages (119–340). The gap probe closed honestly:
+  the 5-feature vector over-approximates (13 genuine non-reachable pairs pass it), so
+  C18's abstraction needs the structural walls as finer certificates. The two-tier
+  certificate algebra (quantitative + structural) is the refined target. (Scratchpad
+  wiped again mid-session; engine rebuilt+reverified per discipline.) Ranking: (1)
+  test whether the pinned structural walls separate the 13 gap pairs (do head-
+  provenance / cargo certificates fire on them?) — if yes, the two-tier algebra looks
+  complete empirically. (2) formalize one structural certificate as a Steps-level
+  non-reachability theorem. (3) the 342 review.
