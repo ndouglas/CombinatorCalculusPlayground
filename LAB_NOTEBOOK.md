@@ -8058,3 +8058,18 @@ incremental value.
   slope measured early predict the slope late? (if yes, the semilinear law is
   computable ⟹ sound Presburger decider skeleton). (2) higher-dim semilinearity.
   (3) formalize the sound certificate for the computable-law sub-class.
+
+## 2026-08-24 — Stage 346: C18' ≡ L1; the frontier unified
+
+- Two hundred twenty-seven autonomous stages (119–346). The prefix-extraction test
+  bottomed out at the same irreducible core (transient-convergence bound = L1). The
+  value: C18' and L1 are proven-equivalent framings — the open problem is ONE thing
+  (computable storm stabilization), now with a precise quantitative form (the
+  semilinear band + its transient). Three ideonomy passes have converged the whole
+  frontier onto this single core. Honest state: the open problem is maximally
+  characterized (reachability = structure = geometry, all one) and its core is a
+  transient-convergence bound that resists every handle. The autonomous investigation
+  has genuinely exhausted the probe-and-map methodology; closing requires proving the
+  convergence bound, a real mathematical breakthrough. Ranking: (1) consolidate the
+  unified frontier (C10-C19 + the equivalence) into the program's standing reference.
+  (2) attempt the convergence bound for the narrowest nontrivial storm class.

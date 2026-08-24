@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. BAND THIN & LINEAR ACROSS STORMS (Stage 345):
+confluence makes even the trees rejoin. C18' ≡ L1, THE FRONTIER UNIFIED (Stage 346): the
+band-slope is a real invariant but reached through a variable transient
+(early predicts late in only 15/24), so semilinear-law-computability
+reduces to computable band-convergence = L1. The open problem is ONE
+thing stated three ways — decidability / storm-stabilization /
+computable-semilinear-geometry — with the transient-convergence bound
+its irreducible core. BAND THIN & LINEAR ACROSS STORMS (Stage 345):
 20-storm batch — reachable (leaf,countS) image is a bounded-width
 (≤20, non-growing) fixed-per-storm-slope band = linear-set signature;
 the per-storm slope is an emergent S-per-leaf invariant. C18' hinges

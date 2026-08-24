@@ -8102,3 +8102,25 @@ S-per-leaf ratio — which is exactly the kind of quantity the corridor ledgers 
 in closed form for engines. So the computability question (C18') is sharpened to: is
 this slope (and the band's period/offset/width) extractable from a bounded prefix of
 t's orbit? — the next probe, and the hinge on which a SOUND Presburger decider turns.
+
+### Stage 346: C18' ≡ L1 — semilinear-law-computability IS storm-stabilization
+
+The prefix-extraction hinge: early-window slope predicts late-window slope in only
+15/24 storms (median diff 0.042, max 0.260). The asymptotic band-slope is a genuine
+invariant, but it is approached through a VARIABLE-LENGTH TRANSIENT — a fixed prefix
+cannot reliably read it. So the semilinear law is not naively prefix-extractable;
+extracting it requires ADAPTIVE convergence-detection (run until the band stabilizes),
+and whether that convergence is guaranteed within a COMPUTABLE bound is exactly the
+question of whether the storm settles into its engine/band structure — which is L1.
+
+**THE UNIFICATION (the stage's real content).** C18' (the semilinear description of
+reach(t)'s feature-image is computable) and L1 (every storm's reachable set is an
+engine-plus-bounded-transient) are THE SAME PROBLEM: both are "every storm converges
+to a computable (semilinear / engine) steady state within a computable bound." The
+semilinearity work (344–345) did not bypass L1 — it gave L1 a precise QUANTITATIVE
+FORM: the steady state is a thin linear band, and the open question is the computable-
+boundedness of the transient before it. The program's open frontier is therefore ONE
+problem, now sharply stated three equivalent ways: (reachability) is storm→storm
+decidable; (structure) does every storm stabilize computably; (geometry) is the
+reachable feature-image a computable semilinear set. All three are the same critical-
+boundary question, and the transient-convergence bound is its irreducible core.
