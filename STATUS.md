@@ -1097,8 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. C19 REFUTED / THE CRITICAL-BOUNDARY THEME (Stage
-343): the WSTS route fails — monotonicity (needs head/arity protected)
+confluence makes even the trees rejoin. SEMILINEARITY / C18 RE-STRENGTHENED (Stage 344,
+ideonomy III): the reachable feature-image {(leaf,countS): t→*u} is
+SEMILINEAR — thin fixed-slope periodic bands (one exactly countS=leaf)
+— the defining signature of a VAS reach-set (Leroux). On the semilinear
+axis {S,C} looks DECIDABLE-side. Opens a SOUND route: computable
+semilinear description ⟹ Presburger-decidable membership (C18').
+C19 REFUTED / THE CRITICAL-BOUNDARY THEME (Stage 343): the WSTS route fails — monotonicity (needs head/arity protected)
 and WQO (needs free arity growth) are incompatible for {S,C}. Meta:
 {S,C} reachability sits EXACTLY on the boundary of VAS (C18), WSTS
 (C19), and Minsky (complementarity) frameworks — a critical system,

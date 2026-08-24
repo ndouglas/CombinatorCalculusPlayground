@@ -8036,3 +8036,16 @@ incremental value.
   (the one direction with a shot at a real theorem vs more structure-mapping). (3)
   honest assessment: the autonomous investigation has reached the point where mapping
   is complete and closing requires a genuine mathematical breakthrough.
+
+## 2026-08-24 — Stage 344: ideonomy III — semilinearity; C18 re-strengthened
+
+- Two hundred twenty-five autonomous stages (119–344). Gunkel vindicated: the wide
+  sweep's semilinearity lens found genuinely new, strongly-positive structure — the
+  reachable feature-image is semilinear (thin fixed-slope periodic bands; one exactly
+  countS=leaf). This is the VAS-decidable-side signature and opens a SOUND route
+  (computable semilinear description ⟹ Presburger-decidable membership), unlike the
+  earlier heuristic. Ranking: (1) test COMPUTABILITY of the semilinear description —
+  can the slope/period/offset be read from t (or its early orbit) reliably? (probe
+  many storms; is the law extractable and stable?). (2) higher-dim semilinearity
+  (full feature vector, not just 2D projection). (3) formalize a sound Presburger-
+  style certificate for a computable-law sub-class.

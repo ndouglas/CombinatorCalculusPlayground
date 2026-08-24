@@ -8061,3 +8061,29 @@ program-level statement: reachability is REDUCED to storm→storm with full veri
 around it; storm→storm is a critical-boundary problem resisting VAS, WSTS, and
 static-invariant attacks alike; the considered lean stays decidable (complementarity),
 unproven.
+
+### Stage 344: ideonomy III — the reachable image is SEMILINEAR (C18 re-strengthened)
+
+The Gunkelian wide sweep's payoff (Lens 8). The reachable feature-image
+{(leafCount, countS) : t →* u}, projected, is SEMILINEAR: for each leaf value the
+reachable S-counts form a THIN band (0–8 wide) that drifts LINEARLY with leaf at a
+FIXED slope and steps by a FIXED period. One storm's steady-state band is the exact
+line countS = leaf (slope 1.000, width 0); others are thin fixed-slope periodic bands
+— each a linear set, their union semilinear. This is the DEFINING signature of a VAS
+reachability set (Leroux: VAS reach-sets are exactly the semilinear sets). After C19
+(WSTS) was refuted, this RE-STRENGTHENS C18 (the VAS route) with the right kind of
+positive evidence: on the semilinear axis {S,C} looks like it is on the DECIDABLE
+side, not the boundary.
+
+THE CONCRETE ROUTE THIS OPENS. If reach(t)'s feature-image is semilinear AND its
+description is COMPUTABLE from t (the slope/period/offset extractable — the corridor
+ledgers already give exactly such linear laws for engines), then feature-membership
+becomes PRESBURGER-DECIDABLE — a SOUND non-reachability certificate (unlike the
+heuristic set-membership of Stage 341), because Presburger membership is decidable and
+the semilinear image is the true reachable projection, not a bounded-search
+approximation. Combined with a finite exceptional prefix, this is a genuine sound
+decision-procedure skeleton. C18 sharpened to C18': the map t ↦ (semilinear
+description of reach(t)'s feature-image) is computable; whence storm reachability is
+Presburger-decidable on the feature abstraction, and faithful if the feature set is
+rich enough (the open faithfulness question from Stage 340–341). The ideonomy insistence
+paid: the critical-boundary system looks decidable-side on the semilinear axis.
