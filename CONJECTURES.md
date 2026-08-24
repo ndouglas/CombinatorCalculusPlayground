@@ -8087,3 +8087,18 @@ description of reach(t)'s feature-image) is computable; whence storm reachabilit
 Presburger-decidable on the feature abstraction, and faithful if the feature set is
 rich enough (the open faithfulness question from Stage 340–341). The ideonomy insistence
 paid: the critical-boundary system looks decidable-side on the semilinear axis.
+
+### Stage 345: the band is thin, linear, bounded-width across storms
+
+Batch test of the semilinear signature (20 storms): the reachable (leaf, countS) image
+is a thin band of BOUNDED transverse width (16/20 with max-width ≤ 12, all ≤ 20, NOT
+growing with leaf) drifting at a well-defined PER-STORM slope (0.34–1.0, a near-
+continuous spectrum of S-density growth rates across storms). Bounded width + fixed
+slope per storm = the geometric signature of a linear set; the union over the storm's
+structure is semilinear. This is a NECESSARY condition for VAS-reachability structure
+and it holds robustly (caveats: 2D projection, bounded-search width may under-count,
+4/20 thicker). The per-storm slope is an emergent invariant — the storm's asymptotic
+S-per-leaf ratio — which is exactly the kind of quantity the corridor ledgers compute
+in closed form for engines. So the computability question (C18') is sharpened to: is
+this slope (and the band's period/offset/width) extractable from a bounded prefix of
+t's orbit? — the next probe, and the hinge on which a SOUND Presburger decider turns.

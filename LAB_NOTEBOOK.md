@@ -8049,3 +8049,12 @@ incremental value.
   many storms; is the law extractable and stable?). (2) higher-dim semilinearity
   (full feature vector, not just 2D projection). (3) formalize a sound Presburger-
   style certificate for a computable-law sub-class.
+
+## 2026-08-24 — Stage 345: band thin/linear/bounded-width across 20 storms
+
+- Two hundred twenty-six autonomous stages (119–345). Semilinear signature holds in
+  batch (thin bounded bands, per-storm slopes). The hinge is now computability of the
+  band law from a bounded prefix. Ranking: (1) THE PREFIX-EXTRACTION TEST — does the
+  slope measured early predict the slope late? (if yes, the semilinear law is
+  computable ⟹ sound Presburger decider skeleton). (2) higher-dim semilinearity.
+  (3) formalize the sound certificate for the computable-law sub-class.

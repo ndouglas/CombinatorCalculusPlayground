@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. SEMILINEARITY / C18 RE-STRENGTHENED (Stage 344,
+confluence makes even the trees rejoin. BAND THIN & LINEAR ACROSS STORMS (Stage 345):
+20-storm batch — reachable (leaf,countS) image is a bounded-width
+(≤20, non-growing) fixed-per-storm-slope band = linear-set signature;
+the per-storm slope is an emergent S-per-leaf invariant. C18' hinges
+on whether that law is prefix-extractable (⟹ sound Presburger decider).
+SEMILINEARITY / C18 RE-STRENGTHENED (Stage 344,
 ideonomy III): the reachable feature-image {(leaf,countS): t→*u} is
 SEMILINEAR — thin fixed-slope periodic bands (one exactly countS=leaf)
 — the defining signature of a VAS reach-set (Leroux). On the semilinear
