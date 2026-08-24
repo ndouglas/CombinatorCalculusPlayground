@@ -8009,3 +8009,15 @@ incremental value.
   "eventually-periodic feature trajectory" storms). (2) consolidate the certificate
   results into a documented section. (3) the 343 review. Flag: returns are diminishing
   on the C18 heuristic refinements; the honest big results are done.
+
+## 2026-08-24 — Stage 342: ideonomy II — WSTS, and the head-position obstruction
+
+- Two hundred twenty-three autonomous stages (119–342). Ideonomy II found the WSTS
+  route and its precise obstruction: naive Kruskal embedding is broken by head-spine
+  insertion (~13%), pointing to a head-protected order (C19). Honest pattern note:
+  the last several stages each find a real lead that hits the genuine hardness — this
+  is what a hard frontier looks like. Ranking: (1) probe the head-protected embedding
+  — does restricting insertions to argument positions restore monotonicity? (test the
+  36 failure cases under the restricted order). (2) if monotone: is it a WQO? (3) the
+  344 review. Flag maintained: the big results are done; these are genuine but
+  incremental leads on an open problem.

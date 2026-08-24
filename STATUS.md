@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. RICH FEATURES CLOSE THE GAP, HEURISTICALLY (Stage
+confluence makes even the trees rejoin. THE WSTS LEAD (Stage 342, ideonomy II, C19): a
+new sound-decidability route — {S,C} might be a well-structured
+transition system (⟹ decidable coverability by backward analysis).
+Naive Kruskal embedding fails (~13%, all head-spine insertions),
+pointing to a head-protected order; whether it is monotone AND a WQO
+is open. RICH FEATURES CLOSE THE GAP, HEURISTICALLY (Stage
 341): all 13 gap pairs are non-reachable (400k search) and separated
 by rich features — 100% sample resolution — BUT feature-membership is
 unsound (features not preserved; storm feature-sets never stabilize).

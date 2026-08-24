@@ -8007,3 +8007,31 @@ two-tier picture: (i) SOUND certificates = atom-freeness (proven) + structural w
 membership); (ii) HEURISTIC resolvers = rich-feature membership (empirically 100% but
 unsound). C18 = the sound algebra is complete, and remains open; the rich-feature
 success says the TARGET is plausibly separable, not that the current tools prove it.
+
+### Stage 342: ideonomy II — the WSTS lead, and its precise obstruction
+
+Second ideonomy pass, on the sharpened question (a SOUND storm-decidability route).
+Four fresh lenses: (A) well-structured transition systems — decidable coverability by
+backward analysis if reduction is embedding-monotone over a WQO (Kruskal); (B)
+backward reachability (the convergent direction for growing storms); (C) regular-tree-
+language reach-sets; (D) quotient by confluence. Lens A had the leverage and a
+concrete probe.
+
+THE PROBE: is {S,C} reduction embedding-monotone (a→b, c⊵a ⟹ c→*d, b⊴d)? Result:
+gentle/congruence embeddings hold (128/128), but ADVERSARIAL inside-insertion FAILS
+36/284 (~13%) — and every failure is a HEAD-SPINE insertion (inserting a node into the
+active head turns a's redex into a different one, so b never re-appears). So {S,C} is
+NOT a WSTS under naive Kruskal embedding: applicative reduction has a privileged head
+position that homeomorphic embedding ignores.
+
+THE LEAD, honestly qualified. The obstruction is localized and structural (head-spine
+only), which points to a HEAD-PROTECTED order — an embedding that may lengthen argument
+subtrees but not the head spine. Under such an order reduction might be monotone
+(argument-insertions commute with head-redexes via the cargo/suffix walls), restoring
+WSTS and giving decidable coverability. The open sub-questions: (i) is the head-
+protected embedding still a WQO? (restricting an embedding can break well-quasi-
+ordering); (ii) is reduction actually monotone under it? Both are genuine and
+untested. C19 (THE WSTS CONJECTURE), registered: {S,C} reduction is a well-structured
+transition system under a head-protected tree embedding, whence coverability
+(reach-something-embedding-u) is decidable. This is a NEW sound-decidability route,
+distinct from the VAS route (C18), and the two may combine (VAS is a WSTS).
