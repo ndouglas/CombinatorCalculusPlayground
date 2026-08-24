@@ -7985,3 +7985,25 @@ are the concrete test set for whether the pinned walls close the quantitative ga
 that is the next probe. Honest status: the two-sided decider is sound both ways and
 resolves ~98% cheaply, but completeness (C18) is unproven and the naive features
 alone are demonstrably insufficient.
+
+### Stage 341: rich features close the gap empirically — but soundness is the catch
+
+The 13 gap pairs: all confirmed non-reachable (400k-state search), and ALL 13
+separated by a richer feature vector (base counts + max-depth + depth-2 subterm-
+pattern multiset). So the two-sided HEURISTIC decider with rich features resolves
+100% of the sample — no non-reachable pair evaded it. Strong empirical support for
+C18's spirit (a finite feature battery separates every non-reachable pair).
+
+THE CATCH, recorded honestly. Feature-set-membership is a SOUND non-reachability
+certificate only if the feature is PRESERVED under reduction (an invariant); the only
+preserved features are atom-freeness (countS=0, countC=0 — Stage 339). Rich features
+(subterm patterns, counts) are NOT preserved — they change every fire — so "richfeats(u)
+absent from the shallow reachable feature-set" is a HEURISTIC flag, not a proof (a
+deeper reduct could realize it; and for growing storms the feature-set never
+stabilizes, so bounded search can't saturate it). The 400k-search confirmation shows
+the heuristic did not LIE on this sample, but it is not a certificate. So the honest
+two-tier picture: (i) SOUND certificates = atom-freeness (proven) + structural walls
+(proven) + genuine VAS-reachability of the update system (not the cheap set-
+membership); (ii) HEURISTIC resolvers = rich-feature membership (empirically 100% but
+unsound). C18 = the sound algebra is complete, and remains open; the rich-feature
+success says the TARGET is plausibly separable, not that the current tools prove it.

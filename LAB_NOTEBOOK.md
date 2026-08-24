@@ -7995,3 +7995,17 @@ incremental value.
   provenance / cargo certificates fire on them?) — if yes, the two-tier algebra looks
   complete empirically. (2) formalize one structural certificate as a Steps-level
   non-reachability theorem. (3) the 342 review.
+
+## 2026-08-24 — Stage 341: rich features close the gap (heuristically)
+
+- Two hundred twenty-two autonomous stages (119–341). Honest refinement: rich
+  features empirically separate all 13 gap pairs (100% sample resolution), but the
+  feature-membership test is unsound (features not preserved; storm feature-sets don't
+  stabilize). The sound path stays atom-freeness + structural walls + true VAS. The
+  C18 target looks separable; the tools don't yet prove it. This is grinding the
+  margins — each stage adds an epsilon of C18-picture with careful caveats. Ranking:
+  (1) PIVOT to leverage — attempt C18 (sound decidability) for a genuinely RESTRICTED
+  storm class where feature-sets DO stabilize (bounded-orbit already done; try
+  "eventually-periodic feature trajectory" storms). (2) consolidate the certificate
+  results into a documented section. (3) the 343 review. Flag: returns are diminishing
+  on the C18 heuristic refinements; the honest big results are done.

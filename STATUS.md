@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. FEATURE CHECK SOUND-NOT-FAITHFUL (Stage 340):
+confluence makes even the trees rejoin. RICH FEATURES CLOSE THE GAP, HEURISTICALLY (Stage
+341): all 13 gap pairs are non-reachable (400k search) and separated
+by rich features — 100% sample resolution — BUT feature-membership is
+unsound (features not preserved; storm feature-sets never stabilize).
+Sound certificates stay atom-freeness + walls + true VAS; C18's target
+looks separable but is unproven. FEATURE CHECK SOUND-NOT-FAITHFUL (Stage 340):
 the 13 gap pairs stay unreached after 150k-state search — the naive
 5-feature vector over-approximates, so C18 needs finer (structural-
 wall) certificates; the refined target is a two-tier algebra
