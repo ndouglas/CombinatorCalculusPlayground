@@ -8218,3 +8218,46 @@ genuine open WSTS-for-higher-order-rewriting research, not a probe-scale fix. Th
 program has now characterized the open problem's hardness at three converging levels:
 no local invariant (Stage 347), no naive WSTS (C19), and no finite-depth acceleration
 (this stage) — all the same fractal critical-boundary obstruction.
+
+### Stage 351: THE FRONTIER MAP — the decidability program's standing reference
+
+Consolidation of the open frontier after the ideonomy arc (338–350). The Wolfram-
+adjacent question is REDUCED, with full machine-checked verification of everything
+around it, to a single problem stated in provably-equivalent forms, and that problem's
+hardness is now precisely characterized.
+
+THE ONE OPEN PROBLEM (equivalent framings, all proven inter-reducible in the ledger):
+ · REACHABILITY: is storm→storm reachability decidable? (all other phases: DECIDED)
+ · STRUCTURE (L1): does every storm's reachable set stabilize to an engine-plus-
+   bounded-transient within a computable bound?
+ · GEOMETRY (C18'): is reach(t)'s feature-image a computable semilinear set?
+ · CONVERGENCE: is the transient before the semilinear band computably bounded?
+
+WHAT IS KNOWN ABOUT IT (the characterization):
+ + POSITIVE: the reachable feature-image IS semilinear (thin fixed-slope periodic
+   bands, Stage 344–345) — the VAS-decidable-side signature; embedding-subsumed
+   exploration TERMINATES (finite Kruskal trees, Stage 348).
+ − OBSTRUCTIONS (why it is hard, at three converging levels):
+   (1) no LOCAL invariant confines it — per-step feature jumps are unbounded
+       (sc_countS_jump_unbounded, Stage 347);
+   (2) no NAIVE WSTS — monotonicity (needs head/arity protection) and WQO (needs free
+       arity growth) are incompatible (C19, Stage 342–343);
+   (3) no FINITE-DEPTH acceleration — the monotonicity obstruction is FRACTAL,
+       recurring at every subterm depth (Stage 350).
+ = All three are one self-similar critical-boundary tension: {S,C} sits exactly on the
+   VAS/WSTS/Minsky decidable-boundary at every level of term structure.
+
+THE DECIDED TERRITORY (machine-checked, [propext, Quot.sound]):
+   reduction (either-endpoint-WN decidable), conservation (WN=SN), the corridor
+   classification (two family laws, climb+pump, three trichotomies, deciders), the
+   complementarity walls (no universal machine), the certificate algebra (atom-freeness
+   separations), and the decidability bracket (SN ⊂ bounded-orbit ⊂ forced-prefix).
+
+THE ROUTES FORWARD (all next-order, beyond probe scale):
+   (a) formalize Kruskal/WSTS/VAS machinery in the proof assistant and prove C20 via a
+       reduction-monotone spine-aware WQO (deep, and the fractal obstruction says the
+       WQO must handle inward promotion);
+   (b) a global Leroux-style semilinear-separator argument (C18);
+   (c) a genuine mathematical breakthrough on the convergence bound.
+   None is reachable by the probe-and-per-step-invariant methodology, which the program
+   has now provably exhausted (Stage 347).
