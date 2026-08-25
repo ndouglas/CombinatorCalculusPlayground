@@ -1178,3 +1178,6 @@ import CombinatorCalculusPlayground.Universality.OneRule
 
 /-- info: 'sc_cfree_not_reach' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in #print axioms sc_cfree_not_reach
+
+/-- info: 'sc_countS_jump_unbounded' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms sc_countS_jump_unbounded

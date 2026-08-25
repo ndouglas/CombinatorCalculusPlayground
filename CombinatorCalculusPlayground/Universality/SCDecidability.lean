@@ -10615,3 +10615,39 @@ theorem scSteps_cfree_pres {t u : SCTerm} (h0 : t.countC = 0)
 theorem sc_cfree_not_reach {t u : SCTerm} (ht : t.countC = 0) (hu : 0 < u.countC) :
     ¬ RS.SC.Steps t u :=
   fun h => by have := scSteps_cfree_pres ht h; omega
+
+-- ## Stage 347: THE UNBOUNDED-JUMP OBSTRUCTION — why the convergence bound is global.
+-- Attempting the convergence bound (the open core): the natural strategies are a
+-- size-based transient bound (refuted empirically — variable transients) and an
+-- inductive affine band invariant `countS ≤ a·leaf + b` (refuted on paper: an S-fire
+-- adds countS(x)−1, needing countS(x) ≤ a|x|−a+1, false for S-heavy x). The common
+-- cause, pinned here: a SINGLE S-fire can raise the S-count by an UNBOUNDED amount
+-- (it duplicates an arbitrary argument). So no per-step (local/inductive) invariant
+-- can confine the reachable band — the band's boundedness is a GLOBAL/emergent
+-- property, which is precisely why the convergence bound resists a local proof.
+
+/-- An S-stack of `k` copies: S-count exactly `k`. -/
+def scSStack : Nat → SCTerm
+  | 0 => .C
+  | k + 1 => .app .S (scSStack k)
+
+theorem scSStack_countS : ∀ k, (scSStack k).countS = k
+  | 0 => rfl
+  | k + 1 => by
+      have h1 : SCTerm.countS .S = 1 := rfl
+      show SCTerm.countS .S + (scSStack k).countS = k + 1
+      rw [scSStack_countS k, h1]
+      omega
+
+/-- **THE UNBOUNDED-JUMP OBSTRUCTION**: for every bound `B`, a single fire raises the
+S-count by at least `B`. Hence no locally-bounded (inductive) invariant confines the
+reachable feature-band; the convergence bound must be global. -/
+theorem sc_countS_jump_unbounded (B : Nat) :
+    ∃ t u : SCTerm, SCStep t u ∧ t.countS + B ≤ u.countS := by
+  refine ⟨.app (.app (.app .S .C) .C) (scSStack (B + 1)),
+    .app (.app .C (scSStack (B + 1))) (.app .C (scSStack (B + 1))),
+    SCStep.S_red .C .C (scSStack (B + 1)), ?_⟩
+  show ((1 + 0) + 0) + (scSStack (B + 1)).countS + B
+    ≤ (0 + (scSStack (B + 1)).countS) + (0 + (scSStack (B + 1)).countS)
+  rw [scSStack_countS]
+  omega
