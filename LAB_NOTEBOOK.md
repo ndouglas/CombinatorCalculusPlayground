@@ -8134,3 +8134,15 @@ incremental value.
   Honest terminus of the ideonomy arc: the open problem is maximally characterized;
   closing it needs heavy Lean machinery (Kruskal/WSTS/VAS) or a math breakthrough —
   both beyond the probe-and-per-step methodology, which Stage 347 proved exhausted.
+
+## 2026-08-25 — Stage 352: ideonomy V; Mathlib assessed (do not import); the mature verdict
+
+- Two hundred thirty-four autonomous stages (119–352). Ideonomy V: the math-gap/
+  formalization-gap distinction resolves the Mathlib question — DO NOT import (doesn't
+  unblock the core math gap; Kruskal/VAS not in Mathlib anyway; costs axiom purity).
+  Last fresh hypothesis (engine+bounded-halo) refuted: storm growth-loops branch
+  heavily (median 46). The core is genuine open math; the autonomous methodology is
+  exhausted on it. The verified result is complete. Honest recommendation to the user:
+  bank the result; the core needs a research breakthrough or heavy from-scratch
+  formalization, neither fitting the autonomous stage loop; incremental options remain
+  (consolidation, narrow slices) but do not crack the core.

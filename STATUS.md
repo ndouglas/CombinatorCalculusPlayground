@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE FRACTAL OBSTRUCTION (Stage 350): the
+confluence makes even the trees rejoin. IDEONOMY V / MATHLIB ASSESSED (Stage 352): the
+core is a MATH gap, not a formalization gap — Mathlib doesn't unblock
+it (Kruskal/VAS not in Mathlib; costs axiom purity), so DO NOT import.
+Last fresh hypothesis (storms = engine + bounded halo) refuted:
+growth-loops branch heavily (median 46). The verified result is
+complete; the core needs a research breakthrough. THE FRACTAL OBSTRUCTION (Stage 350): the
 composite embedding is better (9% vs 13%) but still not monotone —
 reduction promotes grown material into protected SUBTERM positions, so
 the obstruction recurs at every depth. Finite-depth protection leaks;

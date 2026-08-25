@@ -8261,3 +8261,43 @@ THE ROUTES FORWARD (all next-order, beyond probe scale):
    (c) a genuine mathematical breakthrough on the convergence bound.
    None is reachable by the probe-and-per-step-invariant methodology, which the program
    has now provably exhausted (Stage 347).
+
+### Stage 352: ideonomy V — the strategic verdict, and the Mathlib assessment
+
+Running the whole status through ideonomy with the Mathlib question live. The
+decision-relevant lens: FORMALIZATION gaps (a library can close) vs MATH gaps (it
+cannot).
+
+THE MATHLIB ASSESSMENT (project-level decision, recorded):
+ · The CORE (reduction-monotone structure / the fractal obstruction) is a MATH gap:
+   the WQO we need does not exist yet (naive embeddings provably non-monotone at every
+   depth). No import supplies an untrue theorem.
+ · The heavy target theorems our routes would need — Kruskal's tree theorem, VAS-
+   reachability (Leroux) — are almost certainly NOT in Mathlib (Kruskal unformalized
+   there to my knowledge; VAS reachability formalized nowhere). So Mathlib does not
+   unblock the routes forward either.
+ · Mathlib offers WQO infrastructure + Dickson's lemma, but even the bounded-arity
+   slice needs tree-embedding = Kruskal, not Dickson — so that slice stays blocked too.
+ · COST: Mathlib is Classical.choice-pervasive; importing it forfeits the program's
+   [propext, Quot.sound] purity for every dependent result.
+ VERDICT: do NOT import Mathlib. It buys little against the actual bottleneck (a
+ mathematical idea) and costs the axiom discipline. It is the right tool only once the
+ math exists, not to find it.
+
+THE LAST FRESH HYPOTHESIS, REFUTED. "Storms = engine + bounded halo" (growth-loops
+forced, branching a bounded reconverging halo): all 10 tested storms' embedding growth-
+loops BRANCH heavily (width median 46, max 190) — branching is pervasive, woven into
+the growth mechanism, not a transient halo. Consistent with Stage 336; storms are
+genuinely branching-unbounded, not disguised corridors, even in their loops.
+
+THE MATURE VERDICT. Across five ideonomy passes and ~35 probes, the open core has been
+established as a genuine MATHEMATICAL gap — pervasively branching, non-monotone at
+every depth, semilinear-shaped but with a computably-unbounded transient — that no
+probe-scale idea cracks and no available library unblocks. The autonomous probe-and-
+formalize methodology is genuinely exhausted on the core. What remains is either a
+human/research mathematical breakthrough (reduction-monotone structure, or a global
+Leroux-style argument) or a multi-month from-scratch formalization of Kruskal/VAS — and
+the fractal obstruction (Stage 350) suggests even Kruskal would not suffice. The
+program's result stands complete and verified: the Wolfram-adjacent question REDUCED,
+with full machine-checked verification of everything around it, to one sharply-
+characterized, VAS-anchored, critical-boundary open problem.
