@@ -1097,7 +1097,14 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE ACCELERATION CRUX (Stage 349): C20's two
+confluence makes even the trees rejoin. THE FRACTAL OBSTRUCTION (Stage 350): the
+composite embedding is better (9% vs 13%) but still not monotone —
+reduction promotes grown material into protected SUBTERM positions, so
+the obstruction recurs at every depth. Finite-depth protection leaks;
+full-depth collapses to isomorphism (non-WQO). Hardness now
+characterized at three levels (no local invariant / no naive WSTS / no
+finite-depth acceleration), all one self-similar critical-boundary
+tension. THE ACCELERATION CRUX (Stage 349): C20's two
 naive embeddings sit on opposite horns — full Kruskal terminates but
 unsound; arity-fixed sound but non-terminating (storm arity grows,
 7/12). The target is a redex-site-protected + Higman-tail composite

@@ -8107,3 +8107,19 @@ incremental value.
   (1) probe reduction-monotonicity of the redex-site-protected/Higman-tail embedding
   directly (the decisive test). (2) if monotone: the acceleration route is proven
   viable in principle. (3) if not: characterize the residual failure.
+
+## 2026-08-25 — Stage 350: the fractal obstruction
+
+- Two hundred thirty-one autonomous stages (119–350). The composite embedding test:
+  9% failures (better than 13% naive), failures diagnostic — reduction promotes grown
+  material into protected subterm positions, so the obstruction is FRACTAL (recurs at
+  every depth). Finite-depth protection leaks; full-depth collapses to isomorphism
+  (non-WQO). The acceleration route needs a WQO monotone under spine-reorganizing
+  rewrite — deep open WSTS-for-higher-order research. The hardness is now
+  characterized at three levels (no local invariant / no naive WSTS / no finite-depth
+  acceleration), all the same self-similar critical-boundary tension. This is a
+  genuine deep terminus for the acceleration route at probe scale. Ranking: (1) step
+  back — consolidate the C16-C20 frontier + the fractal-obstruction characterization
+  into the standing reference (the honest map of a well-understood hard problem). (2)
+  the narrowest positive slice (bounded-arity storms: head-aware DOES terminate there
+  — a provable decidable sub-class). (3) rest.

@@ -8194,3 +8194,27 @@ real, subtle, open heart of C20, and now its precisely-stated form. This is bona
 WSTS-for-combinators research: the acceleration route is viable iff the redex-site-
 protected/Higman-tail embedding is reduction-monotone, which is the sharpest single
 question the whole decidability program now rests on.
+
+### Stage 350: the fractal obstruction — why WSTS-style acceleration resists {S,C}
+
+The decisive monotonicity test of the redex-site-protected + Higman-tail embedding
+(⊴*: same head, first-3 args pointwise, tail Higman-subsequence): it IMPROVES over
+naive Kruskal (30/333 ≈ 9% failures vs ~13%) but is still NOT reduction-monotone. The
+failures are diagnostic: growing an argument (even a leaf, C → (C S)) inserts material
+that reduction PROMOTES into a protected argument-position of a SUBTERM — e.g. b
+expects `x` in arg-1 of a sub-redex, but the grown-in `S` has been shifted there, and
+the heads mismatch. So top-level redex-site protection is not preserved by reduction,
+because reduction reorganizes spines at every level and promotes tail material inward.
+
+THE STRUCTURAL VERDICT. The monotonicity obstruction is FRACTAL / self-similar: sound
+subsumption would require protecting redex sites at ALL depths simultaneously, which
+collapses the embedding to term isomorphism (Stage 343: non-WQO, non-terminating);
+any finite-depth protection leaks (non-sound). This is the precise, deep reason {S,C}
+resists the WSTS/acceleration route (C19, C20) — not a missing trick but a self-similar
+tension: the exact VAS/WSTS boundary property recurs at every level of the term tree.
+C20 refined to its true difficulty: it needs an embedding that handles inward
+promotion — equivalently, a WQO monotone under a spine-reorganizing rewrite — which is
+genuine open WSTS-for-higher-order-rewriting research, not a probe-scale fix. The
+program has now characterized the open problem's hardness at three converging levels:
+no local invariant (Stage 347), no naive WSTS (C19), and no finite-depth acceleration
+(this stage) — all the same fractal critical-boundary obstruction.
