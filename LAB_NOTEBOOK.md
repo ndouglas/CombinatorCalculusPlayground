@@ -8123,3 +8123,14 @@ incremental value.
   into the standing reference (the honest map of a well-understood hard problem). (2)
   the narrowest positive slice (bounded-arity storms: head-aware DOES terminate there
   — a provable decidable sub-class). (3) rest.
+
+## 2026-08-25 — Stage 351: the frontier map; artifact refreshed
+
+- Two hundred thirty-three autonomous stages (119–351). Consolidated the ideonomy arc
+  (338–350) into THE FRONTIER MAP (standing reference): one open problem, four
+  equivalent framings, three converging obstructions (all one fractal critical-boundary
+  tension), the decided territory, and three next-order routes forward. Artifact
+  refreshed in place with the VAS/semilinear evidence and the fractal obstruction.
+  Honest terminus of the ideonomy arc: the open problem is maximally characterized;
+  closing it needs heavy Lean machinery (Kruskal/WSTS/VAS) or a math breakthrough —
+  both beyond the probe-and-per-step methodology, which Stage 347 proved exhausted.
