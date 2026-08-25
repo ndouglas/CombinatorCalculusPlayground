@@ -8301,3 +8301,26 @@ the fractal obstruction (Stage 350) suggests even Kruskal would not suffice. The
 program's result stands complete and verified: the Wolfram-adjacent question REDUCED,
 with full machine-checked verification of everything around it, to one sharply-
 characterized, VAS-anchored, critical-boundary open problem.
+
+### Stage 353: ideonomy VI — the shared representation is the right (small) state space
+
+A genuinely fresh, decisive finding. Every prior framework treated terms as TREES,
+which explode; under maximal sharing (hash-consed DAG), the explosion is almost
+entirely illusory. Measured along a storm: tree size 10 → 15,593 while DAG-nodes
+(distinct subterms) grow only 9 → 245 — SUBLINEARLY in fire count (DAG/fires ratio
+FALLS 9 → 0.82), with tree/DAG compression WIDENING without bound (1× → 64×). The
+storm's real state is ~60× smaller than its tree and grows far slower.
+
+WHY, AND WHAT IT MEANS. Uniform garbage (the swapmill/metronome junk pairs, all
+identical) shares to O(1) DAG nodes; the counter (tower C^k) shares to an O(k) chain.
+So the DAG IS the VAS/pushdown configuration made concrete — the semilinear structure
+(Stage 344) lives natively in the shared representation, where uniform emission
+collapses and only the genuine counters remain. This reframes the whole decidability
+problem: the RIGHT state space is the shared DAG, not the tree, and there the effective
+complexity is dramatically lower (sublinear-in-fires, ~linear-in-counter). It does not
+finitize (DAG still grows), but it strongly reinforces the VAS route (C18) and tells
+any future decision procedure to work on DAGs — the tree explosion was a
+representation artifact, not intrinsic complexity. C21 (THE SHARING CONJECTURE),
+registered: a storm's DAG-complexity grows linearly in its counter (polynomially in
+fires), so reachability, posed on the shared representation, has polynomially-bounded
+state — the tractable-if-decidable form of the problem.

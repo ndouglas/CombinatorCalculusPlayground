@@ -8146,3 +8146,13 @@ incremental value.
   bank the result; the core needs a research breakthrough or heavy from-scratch
   formalization, neither fitting the autonomous stage loop; incremental options remain
   (consolidation, narrow slices) but do not crack the core.
+
+## 2026-08-25 — Stage 353: ideonomy VI — sharing collapses the explosion (C21)
+
+- Two hundred thirty-five autonomous stages (119–353). Fresh insight (the user was
+  right to push): the tree explosion is ~60x sharing; the DAG (shared) state grows
+  sublinearly in fires. The shared representation IS the VAS configuration — uniform
+  junk shares to O(1), counters are DAG chains. Reframes the problem onto the small
+  shared state space (C21). Not finitizing, but the right representation. Ranking:
+  (1) ideonomy VII (the relevant-logic connection — a classical decidable/undecidable
+  precedent). (2) DAG-native reachability probe. 

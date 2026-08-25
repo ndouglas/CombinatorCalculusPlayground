@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. IDEONOMY V / MATHLIB ASSESSED (Stage 352): the
+confluence makes even the trees rejoin. THE SHARED REPRESENTATION (Stage 353, ideonomy
+VI, C21): the tree explosion is ~60x illusory SHARING — the DAG (shared)
+state grows sublinearly in fires while trees explode. The DAG IS the
+VAS configuration (uniform junk shares to O(1), counters are chains);
+the semilinear structure lives natively there. The right state space
+is the shared DAG, not the tree. IDEONOMY V / MATHLIB ASSESSED (Stage 352): the
 core is a MATH gap, not a formalization gap — Mathlib doesn't unblock
 it (Kruskal/VAS not in Mathlib; costs axiom purity), so DO NOT import.
 Last fresh hypothesis (storms = engine + bounded halo) refuted:
