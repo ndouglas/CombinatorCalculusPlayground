@@ -8124,3 +8124,26 @@ problem, now sharply stated three equivalent ways: (reachability) is storm→sto
 decidable; (structure) does every storm stabilize computably; (geometry) is the
 reachable feature-image a computable semilinear set. All three are the same critical-
 boundary question, and the transient-convergence bound is its irreducible core.
+
+### Stage 347: the unbounded-jump obstruction — the bound must be global
+
+The honest attempt on the convergence bound, following the when-stuck protocol. Two
+natural local strategies, both refuted: (a) a size-based transient bound (Stage 346:
+transients are variable, no size predicts them); (b) an inductive affine band
+invariant `countS ≤ a·leaf+b` (an S-fire adds `countS(x)−1`, requiring
+`countS(x) ≤ a|x|−a+1`, false whenever x is S-heavy). Their common cause, now a pinned
+theorem: `sc_countS_jump_unbounded` — for every B, a single fire raises the S-count by
+≥ B (duplicating an arbitrary argument). So NO per-step / inductive / local invariant
+can confine the reachable band; its boundedness is a GLOBAL, emergent property of
+reach(t), not a step-preserved one.
+
+WHAT THIS TELLS THE PROOF. The convergence bound (≡ C18' ≡ L1) cannot be obtained by
+the program's workhorse method — a monovariant or inductive invariant checked per
+step. It requires a GLOBAL argument over whole reduction sequences. This is exactly
+the character of VAS reachability (Leroux's proof is global — semilinear inductive
+invariants over the whole run, not per-step), which re-affirms C18 as the RIGHT frame:
+the missing theorem is a global semilinear-invariant argument, and the per-step walls
+(the program's strength) are provably insufficient alone. The 3-attempt protocol
+verdict: the convergence bound is not reachable by local means; the next real attempt
+must import or build the global (VAS/Leroux-style) machinery — a genuine, large,
+next-order undertaking beyond per-step probing.

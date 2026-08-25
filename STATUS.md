@@ -1097,7 +1097,12 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. C18' ≡ L1, THE FRONTIER UNIFIED (Stage 346): the
+confluence makes even the trees rejoin. THE UNBOUNDED-JUMP OBSTRUCTION (Stage 347): the
+convergence-bound attempt refuted both local strategies (size-transient,
+affine invariant); pinned why — sc_countS_jump_unbounded: a single fire
+can raise countS by any B, so no inductive invariant confines the band.
+The bound needs a GLOBAL semilinear argument (VAS/Leroux-style), not
+per-step walls — beyond probe-scale. C18' ≡ L1, THE FRONTIER UNIFIED (Stage 346): the
 band-slope is a real invariant but reached through a variable transient
 (early predicts late in only 15/24), so semilinear-law-computability
 reduces to computable band-convergence = L1. The open problem is ONE

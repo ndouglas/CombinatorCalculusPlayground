@@ -8073,3 +8073,14 @@ incremental value.
   convergence bound, a real mathematical breakthrough. Ranking: (1) consolidate the
   unified frontier (C10-C19 + the equivalence) into the program's standing reference.
   (2) attempt the convergence bound for the narrowest nontrivial storm class.
+
+## 2026-08-24 — Stage 347: the unbounded-jump obstruction (convergence-bound attempt)
+
+- Two hundred twenty-eight autonomous stages (119–347). Attempted the convergence
+  bound; both local strategies refuted; pinned WHY (unbounded per-step jumps ⟹ no
+  inductive invariant confines the band). The honest verdict: the bound needs a
+  GLOBAL semilinear argument (VAS/Leroux-style), not the program's per-step walls —
+  a next-order undertaking. This is the clean terminus of what per-step probing can
+  do. Ranking: (1) the standing-reference consolidation (C10-C19, the equivalences,
+  the obstruction) — genuine closure. (2) if pursuing further: scope what importing
+  VAS/Leroux machinery into Lean would require (very large). (3) rest.
