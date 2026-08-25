@@ -8388,3 +8388,32 @@ termination; does soundness survive? That is the precise Kripke sweet-spot probe
 the whole route turns on it. Genuine progress: we now HAVE soundness (new asset) and
 the remaining task is a WQO refinement that preserves it — exactly what Kripke's lemma
 is engineered to deliver.
+
+### Stage 356: THE SWEET SPOT EXISTS — a sound AND terminating order at d≤2
+
+The ideonomy-guided substitution (alphabet-fineness dimension) hit. Depth-d-truncated
+multiset subsumption, swept over d:
+   d=1: monotonicity 0/198 fail, terminates 4/4 storms
+   d=2: monotonicity 0/181 fail, terminates 4/4 storms
+   d=3: 0/168 fail, terminates 2/4
+   d=4: 0/207 fail, terminates 1/4
+So at SMALL depth (d≤2) the order is BOTH sound-monotone AND terminating — the first
+order in the whole program with both (tree-embed: terminating-unsound; full-multiset:
+sound-nonterminating; d≤2: both). Termination degrades as d grows (finer → fewer
+subsumptions), confirming the Kripke/Dickson picture: the finite depth-d alphabet is a
+WQO, and small d keeps subsumption firing while the containment structure keeps it
+monotone.
+
+WHAT IS AND ISN'T ESTABLISHED (rigor, after prior over-claims). ESTABLISHED: a
+sound-monotone, terminating COVERABILITY construction w.r.t. ⊑_d exists at d≤2 — the
+enabling layer C20 needed, which no prior order supplied. NOT YET ESTABLISHED: that
+this decides EXACT reachability. Monotonicity (WSTS-compatibility) is necessary but the
+full decision procedure's exactness needs: (i) the coverable set at d≤2 correctly
+bounds reach(t), and (ii) exact membership recovered via the semilinear band
+(Presburger) within each accelerated class. Small d is COARSE, so ⊑_d-coverability is
+weaker than exact reachability — the gap must be closed by the band arithmetic. C20
+upgraded: the acceleration route now has a working sound+terminating coverability layer
+(d≤2); the remaining step is exact-reachability recovery (coverability + Presburger
+band membership), and its decision-soundness must be verified against ground truth —
+the next probe. This is the first time the route has had a functioning enabling layer,
+and it came from the installed ideonomy skill's substitution operator.

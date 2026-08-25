@@ -8184,3 +8184,16 @@ incremental value.
   sweet-spot probe (sound AND terminating?). (2) if it holds, that IS the decision
   procedure — formalize. (3) if soundness breaks at finite depth, characterize the
   minimal sound depth.
+
+## 2026-08-25 — Stage 356: the sweet spot (d≤2 sound+terminating) — ideonomy skill delivers
+
+- Two hundred thirty-eight autonomous stages (119–356). The installed skill's
+  substitution operator (alphabet-fineness) found it: depth-d-truncated multiset
+  subsumption is BOTH sound (0%) AND terminating at d≤2 — first order with both. This
+  is the enabling coverability layer C20 lacked. RIGOR: establishes terminating+
+  monotone coverability-mod-⊑_d, NOT yet exact reachability (small d is coarse). Next:
+  verify decision-soundness — does d≤2 coverability + Presburger band membership decide
+  reachability correctly vs ground truth? Ranking: (1) the decision-soundness
+  verification (the difference between "enabling layer works" and "decision procedure").
+  (2) if it holds, this is THE procedure — formalize the pieces. (3) characterize the
+  minimal sound+terminating d formally.

@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE KRIPKE MULTISET ANGLE (Stage 355): multiset-
+confluence makes even the trees rejoin. THE SWEET SPOT (Stage 356): depth-d-truncated
+multiset subsumption is BOTH sound (0%) AND terminating at d≤2 — the
+FIRST order in the program with both (the ideonomy skill's substitution
+operator found it). Establishes a sound+terminating COVERABILITY layer
+(the enabling piece C20 lacked); exact-reachability recovery via
+Presburger band membership + decision-soundness verification is next.
+THE KRIPKE MULTISET ANGLE (Stage 355): multiset-
 subterm-inclusion is the first SOUND subsumption order (0/341
 monotonicity failures vs 13% tree-embed) but NOT a WQO (non-
 terminating, depth 106) — complementary tradeoff. The ideonomy skill
