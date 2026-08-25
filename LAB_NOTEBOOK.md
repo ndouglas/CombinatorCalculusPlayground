@@ -8084,3 +8084,15 @@ incremental value.
   do. Ranking: (1) the standing-reference consolidation (C10-C19, the equivalences,
   the obstruction) — genuine closure. (2) if pursuing further: scope what importing
   VAS/Leroux machinery into Lean would require (very large). (3) rest.
+
+## 2026-08-24 — Stage 348: ideonomy IV — coverability construction terminates; C20
+
+- Two hundred twenty-nine autonomous stages (119–348). Gunkel vindicated a fourth
+  time: the global-argument sweep found the acceleration route (C20) — embedding-
+  subsumed exploration terminates (tiny finite trees, Kruskal), the first global
+  method producing a finite object for storms. It unifies VAS/Kruskal/semilinearity/
+  head-obstruction into one decision-procedure skeleton with a single gap (head-aware
+  soundness of subsumption). Ranking: (1) probe head-aware subsumption — does
+  restricting to head-preserving embeddings keep termination AND restore soundness?
+  (the crux of C20). (2) measure the accelerated-loop bands = the semilinear pieces.
+  (3) scope Kruskal-in-Lean (heavy) for eventual formalization.

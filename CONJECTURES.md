@@ -8147,3 +8147,29 @@ the missing theorem is a global semilinear-invariant argument, and the per-step 
 verdict: the convergence bound is not reachable by local means; the next real attempt
 must import or build the global (VAS/Leroux-style) machinery — a genuine, large,
 next-order undertaking beyond per-step probing.
+
+### Stage 348: ideonomy IV — the coverability construction terminates (the global method lives)
+
+The Gunkelian global-argument sweep's payoff (Lens 7). Embedding-subsumed forward
+exploration — expand a term unless an ANCESTOR embeds into it, in which case accelerate
+the growing loop — TERMINATES on all 8 tested storms, with TINY pruned trees (5–27
+nodes, depth 4–7). This is Kruskal's tree theorem delivering: no infinite ancestor-
+embedding chain exists, so the tree is finite by König. So the Karp–Miller / VAS-native
+COVERABILITY CONSTRUCTION has its enabling property for {S,C} — a finite canonical
+object representing the accelerated reachable structure. This is the first GLOBAL
+method (Stage 347 proved local methods insufficient) that actually produces a finite
+object for storms, and it dovetails with the semilinearity (Stage 344): the accelerated
+ancestor-embedding loops ARE the linear bands.
+
+C20 (THE ACCELERATION ROUTE), registered. The decision-procedure skeleton: (i)
+embedding-subsumed exploration terminates → finite coverability tree [Kruskal, CONFIRMED
+empirically; needs Kruskal in the proof assistant to formalize]; (ii) each subsumed
+loop accelerates to a semilinear band [matches Stage 344]; (iii) reachability =
+membership in the finite union of accelerated bands [Presburger-decidable]. THE ONE
+GAP: soundness of subsumption — pruning t' because ancestor t⊴t' is sound only under
+WSTS-monotonicity, which fails on head-insertions (~13%, Stage 342). So the route needs
+HEAD-AWARE acceleration (subsume only on head-preserving embeddings, accelerate head-
+changing branches separately). This is the sharpest, most concrete decidability route
+the program has produced: a finite construction (Kruskal) + semilinear bands (probed)
++ one identified soundness gap (head-awareness). It unifies every ideonomy thread —
+VAS (C18), WQO/Kruskal (finiteness), the head-obstruction (C19), semilinearity (C18').

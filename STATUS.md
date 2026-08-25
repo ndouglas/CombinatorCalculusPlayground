@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE UNBOUNDED-JUMP OBSTRUCTION (Stage 347): the
+confluence makes even the trees rejoin. THE ACCELERATION ROUTE (Stage 348, ideonomy IV,
+C20): embedding-subsumed exploration TERMINATES for storms (tiny finite
+trees, by Kruskal) — the first GLOBAL method producing a finite object,
+unifying VAS/Kruskal/semilinearity/head-obstruction into one decision-
+procedure skeleton (finite coverability tree + semilinear accelerated
+bands + Presburger membership); the one gap is head-aware soundness of
+subsumption. THE UNBOUNDED-JUMP OBSTRUCTION (Stage 347): the
 convergence-bound attempt refuted both local strategies (size-transient,
 affine invariant); pinned why — sc_countS_jump_unbounded: a single fire
 can raise countS by any B, so no inductive invariant confines the band.
