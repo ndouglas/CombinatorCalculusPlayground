@@ -8156,3 +8156,18 @@ incremental value.
   shared state space (C21). Not finitizing, but the right representation. Ranking:
   (1) ideonomy VII (the relevant-logic connection — a classical decidable/undecidable
   precedent). (2) DAG-native reachability probe. 
+
+## 2026-08-25 — Stage 354: ideonomy VII — {S,C} = relevant logic (Urquhart boundary)
+
+- Two hundred thirty-six autonomous stages (119–354). The deepest fresh connection:
+  {S,C} IS the relevant (non-erasing/weakening-free) combinatory fragment (grounded:
+  the complementarity = no K = no weakening). Relevant logic is Urquhart's classical
+  decidable/undecidable boundary — full R UNDECIDABLE (1984), decidable fragments via
+  Kripke's-lemma multiset-WQO. This (a) softens the lean honestly (undecidability is
+  now a live classical-precedent possibility, not just decidable-leaning), (b) supplies
+  two concrete technique-imports (Kripke multiset-WQO for the decidable side —
+  potentially sidesteps the fractal tree obstruction; Urquhart's encoding for the
+  undecidable side). The problem is relocated onto a mapped classical boundary.
+  Ranking: (1) probe the Kripke-lemma multiset-WQO angle — is a CONTRACTION-MULTISET
+  order (not tree embedding) reduction-monotone? (the fresh technical lead). (2)
+  scope Urquhart's encoding as an undecidability template. 

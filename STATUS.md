@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE SHARED REPRESENTATION (Stage 353, ideonomy
+confluence makes even the trees rejoin. THE RELEVANT-LOGIC CONNECTION (Stage 354, ideonomy
+VII): {S,C} IS the relevant (weakening-free) combinatory fragment
+(grounded: complementarity = no K = no weakening) — Urquhart's
+classical decidable/undecidable boundary (full R UNDECIDABLE 1984;
+decidable fragments via Kripke's-lemma multiset-WQO). Softens the lean
+(undecidability now a live classical possibility) and imports two
+techniques (Kripke multiset-WQO / Urquhart encoding). THE SHARED REPRESENTATION (Stage 353, ideonomy
 VI, C21): the tree explosion is ~60x illusory SHARING — the DAG (shared)
 state grows sublinearly in fires while trees explode. The DAG IS the
 VAS configuration (uniform junk shares to O(1), counters are chains);

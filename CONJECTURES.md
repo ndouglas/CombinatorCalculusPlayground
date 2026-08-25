@@ -8324,3 +8324,39 @@ representation artifact, not intrinsic complexity. C21 (THE SHARING CONJECTURE),
 registered: a storm's DAG-complexity grows linearly in its counter (polynomially in
 fires), so reachability, posed on the shared representation, has polynomially-bounded
 state — the tractable-if-decidable form of the problem.
+
+### Stage 354: ideonomy VII — the relevant-logic connection (and a warning)
+
+The most consequential connection of all the passes, and one that CHECKS the lean.
+Under Curry–Howard, combinators are implicational axioms: S : (A→B→C)→(A→B)→A→C
+(contraction+application), C : (A→B→C)→B→A→C (permutation), K : A→B→A (weakening).
+{S,C} lacks K — and the complementarity (Stages 329–332) already PROVED {S,C} cannot
+erase, i.e. cannot express K, i.e. has no weakening. So {S,C} is exactly the
+NON-ERASING / RELEVANT fragment of combinatory logic: contraction (S) and permutation
+(C) without weakening (K). This is not an analogy; it is the identity of the system.
+
+WHY IT MATTERS — BOTH WAYS. Relevant logic is the classical home of exactly this
+critical boundary:
+ · UNDECIDABLE PRECEDENT: Urquhart (1984) proved full propositional relevant logic R
+   UNDECIDABLE — a system built on the same contraction-without-weakening structure as
+   {S,C}. This is the FIRST external evidence that {S,C} reachability could be
+   genuinely UNDECIDABLE, and it names the mechanism (rich contraction structure
+   encoding computation). It is a serious counterweight to the decidable lean, and
+   intellectual honesty requires flagging it: the lean should soften from "very likely
+   decidable" to "genuinely uncertain, with classical precedent on both sides."
+ · DECIDABLE TECHNIQUE: decidable relevant fragments are proven via KRIPKE'S LEMMA — a
+   sequence/multiset WQO (Dickson-flavored, weaker than full Kruskal) tailored to
+   contraction structures. This is a technique BUILT for our exact features and may
+   sidestep the fractal obstruction (which killed the tree-embedding WQO), because it
+   orders the CONTRACTION MULTISET, not the tree.
+
+THE REFRAMED FRONTIER. {S,C} reachability is a reduction/reachability problem in
+relevant combinatory logic, sitting on the Urquhart decidable/undecidable boundary.
+The critical-boundary theme (C16–C20) now has a NAMED classical instance where the
+question went undecidable — which both explains the persistent hardness and warns the
+answer may be undecidable. The two concrete research imports: Kripke's-lemma multiset-
+WQO (decidable-side tool, sidesteps the fractal tree obstruction) and Urquhart's
+geometric encoding (undecidable-side tool, a template for an actual undecidability
+proof via contraction). This is the richest, most actionable fresh direction the
+ideonomy arc has produced, and it relocates the problem from "unclassified hard" to
+"a known-hard boundary with a literature and techniques on both sides."
