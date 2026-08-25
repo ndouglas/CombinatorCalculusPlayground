@@ -8173,3 +8173,24 @@ changing branches separately). This is the sharpest, most concrete decidability 
 the program has produced: a finite construction (Kruskal) + semilinear bands (probed)
 + one identified soundness gap (head-awareness). It unifies every ideonomy thread —
 VAS (C18), WQO/Kruskal (finiteness), the head-obstruction (C19), semilinearity (C18').
+
+### Stage 349: the acceleration crux — a redex-site-protected, Higman-tail embedding
+
+C20's crux, probed and sharpened. The two naive embeddings sit on opposite horns:
+full Kruskal embedding TERMINATES (Stage 348) but is UNSOUND (head-insertion breaks
+monotonicity); arity-preserving head-aware embedding is SOUND but does NOT TERMINATE —
+storm arity grows unboundedly (7/12 storms, one reaching spine-length 123), so the
+arity antichain kills the WQO. Neither alone gives a sound terminating acceleration.
+
+THE RESOLUTION SHAPE (the precise remaining target). What C20 needs is a MIDDLE
+embedding: protect the redex SITE (head atom + first three arguments, pointwise —
+excluding exactly the Stage-342 head-insertion failures, so monotone/SOUND) while
+Higman-embedding the argument TAIL (args 4+ as a subsequence — allowing arity growth
+under a WQO, so TERMINATING). By Higman + Kruskal + Dickson this composite is a WQO;
+by redex-site protection it is monotone. The one genuine subtlety: reduction
+REORGANIZES the spine (S f g x → (f x)(g x) drops top-arity 3→2 and moves the head),
+so "redex-site protected" must be shown STABLE under the simulating reduction — the
+real, subtle, open heart of C20, and now its precisely-stated form. This is bona fide
+WSTS-for-combinators research: the acceleration route is viable iff the redex-site-
+protected/Higman-tail embedding is reduction-monotone, which is the sharpest single
+question the whole decidability program now rests on.

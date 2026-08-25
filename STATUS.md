@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE ACCELERATION ROUTE (Stage 348, ideonomy IV,
+confluence makes even the trees rejoin. THE ACCELERATION CRUX (Stage 349): C20's two
+naive embeddings sit on opposite horns — full Kruskal terminates but
+unsound; arity-fixed sound but non-terminating (storm arity grows,
+7/12). The target is a redex-site-protected + Higman-tail composite
+(WQO by Higman/Kruskal, monotone by site-protection), viable IFF it is
+reduction-monotone — the single subtle question the program now rests
+on. THE ACCELERATION ROUTE (Stage 348, ideonomy IV,
 C20): embedding-subsumed exploration TERMINATES for storms (tiny finite
 trees, by Kruskal) — the first GLOBAL method producing a finite object,
 unifying VAS/Kruskal/semilinearity/head-obstruction into one decision-

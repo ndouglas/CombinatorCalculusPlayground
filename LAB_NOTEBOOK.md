@@ -8096,3 +8096,14 @@ incremental value.
   restricting to head-preserving embeddings keep termination AND restore soundness?
   (the crux of C20). (2) measure the accelerated-loop bands = the semilinear pieces.
   (3) scope Kruskal-in-Lean (heavy) for eventual formalization.
+
+## 2026-08-25 — Stage 349: the acceleration crux — the right embedding
+
+- Two hundred thirty autonomous stages (119–349). C20's crux localized: full Kruskal
+  terminates-but-unsound, arity-fixed sound-but-nonterminating (arity grows, 7/12),
+  so the target is a redex-site-protected + Higman-tail composite embedding, viable
+  iff it is reduction-monotone (subtle: reduction reorganizes the spine). The whole
+  decidability program now rests on this one WSTS-for-combinators question. Ranking:
+  (1) probe reduction-monotonicity of the redex-site-protected/Higman-tail embedding
+  directly (the decisive test). (2) if monotone: the acceleration route is proven
+  viable in principle. (3) if not: characterize the residual failure.
