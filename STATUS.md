@@ -1097,7 +1097,13 @@ proof would make {S,C} reachability DECIDABLE via the frontier
 equivalence. THE LINE (Stage 255, `sc_mt5T_line`): the
 climber's reachable set is totally ordered by reduction — one infinite
 road; corridors are lines, storms are trees that never descend, and
-confluence makes even the trees rejoin. THE RELEVANT-LOGIC CONNECTION (Stage 354, ideonomy
+confluence makes even the trees rejoin. THE KRIPKE MULTISET ANGLE (Stage 355): multiset-
+subterm-inclusion is the first SOUND subsumption order (0/341
+monotonicity failures vs 13% tree-embed) but NOT a WQO (non-
+terminating, depth 106) — complementary tradeoff. The ideonomy skill
+(now installed) points to the sweet spot: bounded-depth-subterm
+multiset (finite alphabet → Dickson-WQO → terminating), sound?
+THE RELEVANT-LOGIC CONNECTION (Stage 354, ideonomy
 VII): {S,C} IS the relevant (weakening-free) combinatory fragment
 (grounded: complementarity = no K = no weakening) — Urquhart's
 classical decidable/undecidable boundary (full R UNDECIDABLE 1984;

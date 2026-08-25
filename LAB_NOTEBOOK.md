@@ -8171,3 +8171,16 @@ incremental value.
   Ranking: (1) probe the Kripke-lemma multiset-WQO angle — is a CONTRACTION-MULTISET
   order (not tree embedding) reduction-monotone? (the fresh technical lead). (2)
   scope Urquhart's encoding as an undecidability template. 
+
+## 2026-08-25 — Stage 355: Kripke multiset angle — first SOUND order (ideonomy skill installed)
+
+- Installed latentwill/ideonomy-plain globally (~/.claude/skills/ideonomy-plain,
+  symlinked); ran its pick script for a real method tuple. Kripke multiset-inclusion:
+  SOUND (0/341, a first) but not a WQO (non-terminating, depth 106). Complementary
+  tradeoff to tree-embedding. Progress: first sound subsumption order. Ideonomy tuple
+  (substitution) points to the sweet spot: bounded-depth-subterm multiset (finite
+  alphabet → Dickson-WQO → terminating) — probe whether it stays sound. Two hundred
+  thirty-seven autonomous stages (119–355). Ranking: (1) the bounded-depth-multiset
+  sweet-spot probe (sound AND terminating?). (2) if it holds, that IS the decision
+  procedure — formalize. (3) if soundness breaks at finite depth, characterize the
+  minimal sound depth.

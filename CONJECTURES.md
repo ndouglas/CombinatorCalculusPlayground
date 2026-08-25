@@ -8360,3 +8360,31 @@ geometric encoding (undecidable-side tool, a template for an actual undecidabili
 proof via contraction). This is the richest, most actionable fresh direction the
 ideonomy arc has produced, and it relocates the problem from "unclassified hard" to
 "a known-hard boundary with a literature and techniques on both sides."
+
+### Stage 355: the Kripke multiset angle — a SOUND order at last (ideonomy skill, for real)
+
+Probed via the installed ideonomy-plain skill (tuple: substitution · tree-finding ·
+atlas / autonomy · predictability · longevity — genuine machinery, not YOLO). The
+Kripke insight — order the CONTRACTION MULTISET, forgetting head position — was tested
+as multiset-subterm-inclusion subsumption (prune c if ancestor a has M(a) ⊆ M(c)).
+
+RESULT, two-sided:
+ + SOUND: monotonicity holds 0/341 failures — the FIRST sound subsumption order the
+   program has found (tree-embedding was 13% unsound, composite 9%). Structurally
+   guaranteed: M(a) ⊆ M(c) forces a to be a subterm of c, so c fires a's redex intact.
+ − NOT A WQO: subsumed exploration does NOT terminate — all 6 storms blew the 40k-node
+   cap with unsubsumed chains to depth 106. The condition is monotone precisely
+   because it is strong (forces containment), and non-terminating precisely because it
+   is strong (rarely fires). Complementary to tree-embedding (terminating-unsound).
+
+THE IDEONOMY-GUIDED NEXT MOVE (substitution on the alphabet-fineness dimension; tree-
+finding the order-variant lattice). The order relation has a TREE of variants by
+alphabet fineness: coarsest = atom-counts N^2 (WQO by Dickson, but unsound/over-
+approximating, Stage 340); finest = all-subterms (sound, non-WQO, this stage);
+Kripke's lemma lives in BETWEEN — a multiset over a FINITE alphabet (subterms up to a
+bounded depth/shape) that is Dickson-WQO (terminating) yet fine enough to stay sound.
+SUBSTITUTE "all subterms" → "subterms up to depth d": finite alphabet ⟹ WQO ⟹
+termination; does soundness survive? That is the precise Kripke sweet-spot probe, and
+the whole route turns on it. Genuine progress: we now HAVE soundness (new asset) and
+the remaining task is a WQO refinement that preserves it — exactly what Kripke's lemma
+is engineered to deliver.
